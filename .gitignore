@@ -1,0 +1,27 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Existing private documents, generated indexes and local environment
+/ai/
+/data/
+/doc_store/
+/chroma_db/
+/temp/
+/output/
+/documents.json
+__pycache__/
+*.py[cod]
+.venv/
+
+# New application build outputs
+node_modules/
+dist/
+target/
+coverage/
+.pytest_cache/
+.ruff_cache/
+*.log
+.DS_Store
+Thumbs.db
