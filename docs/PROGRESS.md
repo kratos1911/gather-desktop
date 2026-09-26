@@ -63,3 +63,7 @@ Found an existing repository on main with no commits and no remote, and reused i
 Four component tests and the production frontend build passed again. Relevant documentation diff whitespace issues were fixed. The full initial baseline diff reports existing whitespace issues in legacy/template files; no unrelated legacy formatting rewrite was performed. Lint remains unconfigured, native/visual QA remains unverified, and a public repository/remote is not configured. No product runtime changes in this checkpoint, so the prior native build evidence is retained rather than claiming a new native QA run.
 
 TASK-001 is complete in the baseline commit containing this entry. Next: TASK-004 local processing contract using synthetic text only. Audience research, visual review and automated lint/CI remain explicit tasks. Nothing was pushed, published or uploaded.
+
+## 2026-09-26 — GitHub repository created
+
+At the user's request, created private repository https://github.com/kratos1911/gather-desktop using the existing authenticated GitHub account. Connected origin, pushed main, and verified remote commit b89ceec matches local HEAD. Reviewed all 74 tracked files before upload; excluded personal document folders, environment secrets, dependencies and build outputs. No model weights or original documents were uploaded. This is source hosting, not a production application release.

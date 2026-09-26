@@ -18,7 +18,7 @@ Gather is a provisional name for a Windows desktop content library with semantic
 
 No real import, worker, embeddings, model downloads, Supabase project connection, auth, durable search index, chat or signed installer. No native/visual/E2E verification. Previous browser opening was declined; that limitation was not bypassed. Canvas is stubbed in component tests, so passing tests do not verify the orb renderer.
 
-Lint is not configured yet; TASK-011 tracks it. The full initial baseline diff also reports pre-existing trailing-whitespace issues in legacy files; those are not hidden or counted as a clean full-diff check. Working-directory Git repository exists on main with no remote; the TASK-001 baseline commit contains the existing implementation and workflow documents. No GitHub repository was created or pushed.
+Lint is not configured yet; TASK-011 tracks it. The full initial baseline diff also reports pre-existing trailing-whitespace issues in legacy files; those are not hidden or counted as a clean full-diff check. Git repository: https://github.com/kratos1911/gather-desktop (private). origin is configured; main tracks origin/main. Baseline commit b89ceec was pushed and its remote hash verified. The TASK-001 baseline contains the existing implementation and workflow documents.
 
 ## Current task
 
