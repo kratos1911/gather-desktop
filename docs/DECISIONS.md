@@ -44,3 +44,14 @@ and labels; keep expected answers out of model inputs. Distinguish document
 retrieval from evidence retrieval and absent-answer behavior. This authored
 English development set is not independently reviewed or held out; broader
 corpora and visual/OCR evaluation remain required before release claims.
+
+## ADR-012: untuned lexical comparator and strict scoring (27 September 2026)
+
+Use standard-library TF-IDF cosine retrieval as an inexpensive, reproducible
+keyword baseline. No query-specific synonyms, stopwords, stemming or label access.
+All positive-score chunks are ranked; score document recall after deduplicating
+sources, but evidence recall on the first five chunks. Preserve absent queries
+outside answerable metric denominators and do not equate candidates with answer
+claims. Require complete rankings, valid source/chunk pairs and matching corpus
+and processed-index hashes. This comparator is not production retrieval or proof
+that embeddings are unnecessary. No provider dependency or paid resource added.

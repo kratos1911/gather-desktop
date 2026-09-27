@@ -29,13 +29,18 @@ The four tests cover combined filters and empty recovery; selected-source naviga
 
 Text development fixtures and the scoring specification live in
 `tests/evaluation/README.md`. Run `python -m unittest discover -s tests/evaluation -v`
-for seven corpus integrity tests and `python -m scripts.prepare_text_evaluation`
+for 21 corpus/scoring/baseline tests and `python -m scripts.prepare_text_evaluation`
 for a version/fingerprint/category summary. Optional `--output output/evaluation/text-v1`
 exports index, questions and separate labels using the real text processor.
 Current inventory: 14 documents, 35 answerable + 5 absent questions, 16 chunks.
-No model accuracy or latency has been measured. Scoring code and retrieval
-baseline remain pending; document recall and passage evidence recall must be
-reported separately, with absent-answer behavior outside recall denominators.
+`python -m scripts.score_text_evaluation` runs the offline keyword baseline and
+exports rankings and metrics. `--run path/to/run.json --output output/evaluation/rescored`
+scores existing rankings. Tests verify hand-calculated partial recall/MRR,
+document deduplication before cutoff, sixth-document exclusion, passage evidence,
+overlap, absent denominators, malformed/missing/stale rankings and deterministic
+keyword retrieval. No AI model accuracy or latency has been measured. Baseline
+results are in tests/evaluation/BASELINE.md; unsupported-answer rate stays null
+until an answerability system exists.
 
 Version synthetic/approved fixtures, queries, model/runtime versions, hardware and results. Start with >=30 text and >=20 visual/OCR queries as described in MODEL_STRATEGY.md. Measure quality by category, not only aggregate accuracy. Proposed thresholds are not current results.
 

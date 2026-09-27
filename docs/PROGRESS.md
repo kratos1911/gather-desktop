@@ -140,3 +140,31 @@ visual/OCR, 10,000-chunk performance, isolation or chat quality claims.
 
 TASK-005 stays partial. Next: offline scoring harness and lexical baseline,
 followed by provider/model selection with budget before any paid evaluation.
+
+## 2026-09-27 — TASK-005 scorer and keyword baseline
+
+Implemented scripts/score_text_evaluation.py: label-free TF-IDF cosine ranking,
+complete-run validation and per-query/category document Recall@5, MRR@5 and
+evidence Recall@5. Runs pin both corpus and processed-index hashes; unknown,
+duplicate, incomplete, mismatched or nonfinite results are rejected. Array order
+defines rank. Document deduplication precedes the five-document cutoff; passage
+scoring uses five chunks, with overlap counted once per expected evidence span.
+
+Measured the unchanged text-v1 development corpus: document/evidence Recall@5
+34/35 = 0.9714285714, MRR@5 0.8666666667. Only q18 misses expected evidence;
+four of five absent questions return candidates. No answerability or semantic
+claim is made. Reviewed this high score against the tiny 14-document/16-chunk
+corpus and documented its limitations in tests/evaluation/BASELINE.md rather
+than tuning data or claiming the product target achieved.
+
+Checks: 21 evaluation tests pass, including 14 new scorer/baseline tests with
+hand-calculated outcomes, stale/incomplete result rejection and cutoff cases.
+Both direct baseline and saved-run CLI scoring pass. TypeScript/frontend build
+passes. No desktop/native code changed; no native/component rerun claimed.
+Reviewed staged paths and diff whitespace; limited secret scan found no matches.
+Generated run/report JSON remains under ignored output/evaluation/text-v1.
+
+No models, provider SDKs, network calls, personal data or paid resources involved.
+TASK-005 remains partial until model/tokenizer/dimension/cost/latency benchmarks.
+Next: provider/model benchmark configuration and adapter; budget/provider must
+be selected before hosted evaluation. Cloud deployment remains deferred.

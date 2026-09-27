@@ -1,6 +1,6 @@
 # Delivery tasks
 
-Current checkpoint: TASK-005 corpus preparation complete; model evaluation remains partial. Cloud AI is the target under ADR-009; deployment and budget are deferred. Next: implement the offline scoring harness and lexical baseline before provider integration.
+Current checkpoint: TASK-005 corpus, offline scorer and keyword baseline complete; model evaluation remains partial. Cloud AI is the target under ADR-009; deployment and budget are deferred. Next: model/provider benchmark configuration and adapter, with hosting gated on budget/provider selection.
 
 | ID | Task | Status | Acceptance / evidence |
 | --- | --- | --- | --- |
@@ -8,7 +8,7 @@ Current checkpoint: TASK-005 corpus preparation complete; model evaluation remai
 | TASK-002 | Validate audience and comparable products | Ready | Record user interviews/feedback or explicitly unvalidated hypotheses; compare primary-source alternatives; decide initial audience/regions |
 | TASK-003 | Desktop shell and design verification | Partial | Frontend/native build and four component tests pass; actual visual, keyboard, zoom and motion checks still pending after browser permission denial |
 | TASK-004 | Transport-independent text processing contract | Done | 12 standard-library tests pass; strict JSON/base64/UTF-8 and 64 KiB source limit; source offsets, hashes/versioned IDs, overlap and retry determinism verified; no personal imports or cloud writes; see services/worker/README.md |
-| TASK-005 | Cloud-oriented embedding evaluation | Partial | text-v1: 14 fictional TXT/MD documents, 35 answerable + 5 absent questions, 16 processed chunks; 7 corpus tests and frontend build pass; versioned inputs/labels generated separately; scoring protocol documented. Scorer, lexical baseline, models/tokenizer/dimension/latency/cost benchmarks pending; no paid calls or downloads |
+| TASK-005 | Cloud-oriented embedding evaluation | Partial | Corpus + TF-IDF baseline + strict offline scorer implemented; 21 evaluation tests and frontend build pass. Development-set document/evidence Recall@5 0.9714, MRR@5 0.8667; 4/5 absent queries return candidates (not an answerability result). See tests/evaluation/BASELINE.md. Models/tokenizer/dimension/latency/cost benchmarks still pending; no paid calls/downloads |
 | TASK-006 | Supabase identity and private schema | Needs project configuration | Versioned migrations; supported signup/session/logout flow; enforce audience decision; RLS and two-user isolation tests; secure session storage; quota policy |
 | TASK-007 | Text import-to-search vertical slice | Depends on 005/006 | Import TXT/MD -> durable processing -> all passages -> real search -> reader -> deletion; retry/restart/dedup/isolation tests; user-readable errors |
 | TASK-008 | Native document formats | Depends on 007 | PDF/DOCX/PPTX parsers; preserved page/slide/section references; long-document and malformed-file cases; scanned pages correctly identified |

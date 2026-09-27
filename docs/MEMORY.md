@@ -8,6 +8,8 @@ Gather is a provisional name for a Windows desktop content library with semantic
 
 ## Implemented
 
+- Offline TF-IDF keyword baseline and strict scoring harness with corpus/index fingerprints, per-category and per-query metrics. Twenty-one evaluation tests pass. Baseline text-v1 document/evidence Recall@5 is 0.9714 and MRR@5 is 0.8667; 4/5 absent queries return candidates. This is a tiny development comparator, not semantic search or an answerability system.
+
 - Retrieval development corpus text-v1: 14 synthetic documents and 40 queries (35 answerable, 5 absent), with exact evidence mapped to 16 real processing chunks. Seven integrity tests pass. Export tool separates index/query inputs from relevance labels; no model results yet. See tests/evaluation/README.md.
 
 - Transport-independent Python text processor: bounded typed request/results, strict UTF-8 TXT/Markdown, original source offsets, deterministic hashes/versioned passage IDs, structured safe errors. Twelve synthetic tests pass. No filesystem/network/model calls or new dependencies in this module.
@@ -26,11 +28,11 @@ Lint is not configured yet; TASK-011 tracks it. The full initial baseline diff a
 
 ## Current task
 
-TASK-005 corpus preparation complete on feature/retrieval-evaluation-corpus, based on local TASK-004 commit b7862f0. Seven evaluation tests and frontend build pass. Model benchmarking remains partial; no cloud provisioning or personal file access. No desktop/native code changed in this checkpoint, so prior component/native evidence is retained, not claimed rerun.
+TASK-005 scorer/baseline checkpoint complete on feature/retrieval-scoring-baseline, based on corpus commit 4cb8e6f. Twenty-one evaluation tests, CLI baseline/saved-run scoring and frontend build pass. Model benchmarking remains partial; no cloud provisioning or personal file access. No desktop/native code changed, so prior component/native evidence is retained, not claimed rerun.
 
 ## Next implementation
 
-TASK-005: implement the offline scorer and lexical baseline against frozen text-v1, then select the provider/model and perform tokenizer/embedding evaluation. Hosted evaluation/deployment require a selected budget/provider. TASK-002 audience research and TASK-003 visual QA remain open. The small authored English corpus is a development set, not a held-out benchmark or visual/OCR test.
+TASK-005: select provider/model benchmark configuration and build its adapter, then perform tokenizer/embedding evaluation against the frozen baseline. Hosted evaluation/deployment require a selected budget/provider. Add harder long-document and independently reviewed unseen questions before release claims. TASK-002 audience research and TASK-003 visual QA remain open.
 
 ## Inputs needed before later gates
 

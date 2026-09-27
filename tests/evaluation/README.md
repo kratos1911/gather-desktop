@@ -41,7 +41,7 @@ first 1,024 characters. IDs and question text are unique. Absent questions have
 empty labels and an authored rationale. These checks cannot establish that
 human relevance judgements are correct; review labels before using results.
 
-## Planned scoring protocol
+## Scoring protocol
 
 For answerable questions, report **document Recall@5**: unique relevant documents
 in the top five unique returned documents divided by all labelled relevant
@@ -64,7 +64,46 @@ a related laptop receipt is not proof that it contains a serial number.
 Require one result entry for every query ID, with an empty list representing a
 real no-result response. Missing IDs, unknown documents/chunks, mismatched corpus
 hashes or duplicate result IDs invalidate the run rather than silently improving
-the denominator. Scorer/provider integration is still to be implemented.
+the denominator. The offline scorer is implemented; model/provider integration
+remains pending.
+
+## Lexical baseline and saved runs
+
+```powershell
+python -m scripts.score_text_evaluation
+python -m scripts.score_text_evaluation --run output/evaluation/text-v1/baseline/run.json --output output/evaluation/text-v1/rescored
+```
+
+The default writes `run.json` and `report.json` to ignored
+`output/evaluation/text-v1/baseline`. Rankings contain all positive-score chunks
+so document deduplication happens before top-five selection. The scorer treats
+array order as rank; numeric scores are optional and never compared across runs.
+Each hit has `document_id` and `chunk_id`. Every query needs an explicit result,
+including `hits: []` for a completed request with no candidates. A failed request
+must not be disguised as empty results; fix/retry the run before scoring.
+
+Run metadata requires schema_version 1, corpus_version, corpus_sha256,
+index_sha256 and a nonempty retriever identifier. The index fingerprint covers
+processed text, chunk IDs/ranges and parser/chunker versions, preventing stale
+rankings after processing changes even if corpus content has not changed.
+An external adapter must use the same prepared index and metadata; include its
+provider/model revision/configuration in its retriever identifier or additional
+metadata. This is an offline developer utility, not an authenticated upload API.
+
+`tfidf-cosine-v1` is a standard-library keyword comparator: Unicode casefold,
+alphanumeric terms retaining internal hyphens, no stemming/stopword removal,
+logarithmic term frequency `1 + ln(count)`, smoothed IDF
+`1 + ln((1 + chunk_count)/(1 + document_frequency))`, L2 normalization and
+cosine similarity. IDF is computed across chunks, not source files. Unknown
+query terms are ignored; zero vectors yield no candidates. Ties break by source
+ID then chunk ID. It receives no labels and has no corpus-specific synonyms or
+tuned thresholds. This is neither semantic search nor Supabase full-text search.
+
+Absent-query candidate counts are diagnostic, not an unsupported-answer rate:
+the baseline makes no answer/support claim and implements no calibrated
+abstention. That rate is explicitly null until an answerability layer exists.
+
+See [the measured baseline](BASELINE.md) for results and limitations.
 
 ## Benchmark gate and limitations
 

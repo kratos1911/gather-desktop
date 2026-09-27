@@ -48,6 +48,10 @@ documents and 40 questions with expected source evidence. Run
 `python -m scripts.prepare_text_evaluation` for its inventory. No model accuracy
 is claimed from these integrity checks.
 
+Run `python -m scripts.score_text_evaluation` for the offline keyword baseline
+and scoring report. See [baseline results and limitations](tests/evaluation/BASELINE.md).
+This comparator is not connected to the desktop and performs no AI/cloud calls.
+
 ## Repository hygiene
 
 Private files, model indexes, secrets, local Python environments and build outputs are ignored by `.gitignore`. Do not force-add those paths. No original files are automatically imported into the new app or uploaded to a cloud service.
