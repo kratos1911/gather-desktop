@@ -27,6 +27,16 @@ The four tests cover combined filters and empty recovery; selected-source naviga
 
 ## Evaluation and E2E
 
+Text development fixtures and the scoring specification live in
+`tests/evaluation/README.md`. Run `python -m unittest discover -s tests/evaluation -v`
+for seven corpus integrity tests and `python -m scripts.prepare_text_evaluation`
+for a version/fingerprint/category summary. Optional `--output output/evaluation/text-v1`
+exports index, questions and separate labels using the real text processor.
+Current inventory: 14 documents, 35 answerable + 5 absent questions, 16 chunks.
+No model accuracy or latency has been measured. Scoring code and retrieval
+baseline remain pending; document recall and passage evidence recall must be
+reported separately, with absent-answer behavior outside recall denominators.
+
 Version synthetic/approved fixtures, queries, model/runtime versions, hardware and results. Start with >=30 text and >=20 visual/OCR queries as described in MODEL_STRATEGY.md. Measure quality by category, not only aggregate accuracy. Proposed thresholds are not current results.
 
 Native end-to-end flow: install -> cloud setup/sign in -> import -> wait for ready -> search with different wording -> open cited source -> ask question -> restart -> retrieve again -> delete -> verify absent -> sign out. Repeat with user isolation, slow network, quotas and failure recovery. Cloud-provider spending/retention controls require verification before hosted tests.

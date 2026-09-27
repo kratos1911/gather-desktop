@@ -42,6 +42,12 @@ The user selected cloud AI on 27 September: no end-user model downloads are plan
 
 With Python 3.11 or newer, run `python -m unittest discover -s tests/worker -v` from this folder. See [the processing contract](services/worker/README.md) for input limits, offset semantics and recovery behavior. These tests use synthetic content only.
 
+The [retrieval development set](tests/evaluation/README.md) contains 14 fictional
+documents and 40 questions with expected source evidence. Run
+`python -m unittest discover -s tests/evaluation -v` to validate it, or
+`python -m scripts.prepare_text_evaluation` for its inventory. No model accuracy
+is claimed from these integrity checks.
+
 ## Repository hygiene
 
 Private files, model indexes, secrets, local Python environments and build outputs are ignored by `.gitignore`. Do not force-add those paths. No original files are automatically imported into the new app or uploaded to a cloud service.

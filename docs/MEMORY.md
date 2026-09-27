@@ -8,6 +8,8 @@ Gather is a provisional name for a Windows desktop content library with semantic
 
 ## Implemented
 
+- Retrieval development corpus text-v1: 14 synthetic documents and 40 queries (35 answerable, 5 absent), with exact evidence mapped to 16 real processing chunks. Seven integrity tests pass. Export tool separates index/query inputs from relevance labels; no model results yet. See tests/evaluation/README.md.
+
 - Transport-independent Python text processor: bounded typed request/results, strict UTF-8 TXT/Markdown, original source offsets, deterministic hashes/versioned passage IDs, structured safe errors. Twelve synthetic tests pass. No filesystem/network/model calls or new dependencies in this module.
 
 - Desktop shell with fixture library, filters, reader, model lineup and preview policy screens.
@@ -24,11 +26,11 @@ Lint is not configured yet; TASK-011 tracks it. The full initial baseline diff a
 
 ## Current task
 
-TASK-004 complete on feature/text-processing-contract. Twelve worker tests, four component tests, frontend build and updated native build are the checkpoint checks (see PROGRESS.md). Cloud wording corrected in preview; it remains disconnected. No cloud provisioning or personal file access.
+TASK-005 corpus preparation complete on feature/retrieval-evaluation-corpus, based on local TASK-004 commit b7862f0. Seven evaluation tests and frontend build pass. Model benchmarking remains partial; no cloud provisioning or personal file access. No desktop/native code changed in this checkpoint, so prior component/native evidence is retained, not claimed rerun.
 
 ## Next implementation
 
-TASK-005: prepare synthetic retrieval queries/expected source evidence, then evaluate the cloud model/provider options. Paid evaluation and deployment require a selected budget/provider. TASK-002 audience research and TASK-003 visual QA remain open.
+TASK-005: implement the offline scorer and lexical baseline against frozen text-v1, then select the provider/model and perform tokenizer/embedding evaluation. Hosted evaluation/deployment require a selected budget/provider. TASK-002 audience research and TASK-003 visual QA remain open. The small authored English corpus is a development set, not a held-out benchmark or visual/OCR test.
 
 ## Inputs needed before later gates
 

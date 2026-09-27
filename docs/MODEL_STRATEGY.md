@@ -65,6 +65,13 @@ For visual chat, pass selected source images to a supported vision runtime. Text
 
 ## Benchmark before locking defaults
 
+27 September checkpoint: text-v1 now contains 14 fictional documents, 35
+answerable text queries and 5 absent queries. Evidence is mapped through the
+real processor, with integrity checks and separate exported labels. See
+../tests/evaluation/README.md for commands and the planned scoring protocol.
+No models have been evaluated. This small English development set does not
+satisfy the later visual/OCR, realistic-scale or independently reviewed gates.
+
 Use synthetic or user-approved fixtures: native and scanned PDFs, DOCX tables, text-heavy and visual slides, screenshots and photos. Keep video evaluation for its delivery phase.
 
 Evaluate at least 30 text queries and 20 visual/OCR queries covering paraphrases, exact identifiers, objects/colors, late-document passages, mixed-format results and absent answers. Measure Recall@5 by category, ranking quality and search p50/p95. Do not average away poor photo performance with easy text queries.

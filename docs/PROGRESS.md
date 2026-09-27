@@ -109,3 +109,34 @@ unverified; browser denial was respected. Lint is still unconfigured.
 Checkpoint branch: feature/text-processing-contract. TASK-004 is complete to
 its isolated processing criteria. Next is TASK-005 synthetic retrieval fixtures,
 queries and expected evidence before cloud benchmark/provider deployment.
+
+## 2026-09-27 — TASK-005 retrieval corpus preparation
+
+Created text-v1, an original fictional English development set: 14 TXT/Markdown
+documents, 40 queries and 37 labelled evidence spans across 35 answerable queries.
+Categories: 20 paraphrase, 6 exact, 4 confusable, 3 late-document, 2 multiple-source
+and 5 absent questions. Near-match receipts/schedules/bookings/stock figures
+serve as distractors. A longer workshop handbook puts relevant evidence beyond
+the first 1,024 characters. Absent questions have authored rationales.
+
+Added scripts/prepare_text_evaluation.py using only standard-library code and
+the existing processor. It validates unique IDs/questions, exact evidence,
+chunk containment, late/multiple-source categories and absent labels; exports
+index and queries separately from gold labels; pins a canonical corpus hash.
+Default invocation prints inventory only. Generated exports stay in ignored
+output/evaluation/text-v1, not in Git. No model/cloud/personal data was accessed.
+
+Checks: seven evaluation unit tests pass; preparation/export produces 16 chunks
+and fingerprint 07836c70107491a5a44d7d00c7f50bb69802c62b871841537e74163a8fdf6a4c.
+TypeScript/frontend build passes. No UI/native inputs changed, so no native or
+component rerun was needed. Reviewed source quotes and labels against documents;
+staged diff whitespace and limited secret/path checks pass.
+
+Documented document Recall@5, evidence Recall@5, MRR@5, category reporting,
+missing-run rejection and separate absent-answer behavior. Scorer implementation,
+lexical baseline and model benchmarks remain pending. The small authored corpus
+is deliberately labelled development-only: no independent/held-out, multilingual,
+visual/OCR, 10,000-chunk performance, isolation or chat quality claims.
+
+TASK-005 stays partial. Next: offline scoring harness and lexical baseline,
+followed by provider/model selection with budget before any paid evaluation.

@@ -34,3 +34,13 @@ away citation positions. Content hashes and versioned chunk IDs make retries
 deterministic, but are never ownership credentials. Start with 64 KiB sources
 and 1,024-character passages; actual tokenizer limits are TASK-005's gate.
 Do not add an HTTP service, provider SDK or desktop bridge to test extraction.
+
+## ADR-011: source-grounded retrieval development fixtures (27 September 2026)
+
+Use original fictional TXT/Markdown documents with manually authored evidence
+quotes. Derive exact offsets/acceptable overlapping chunks through TASK-004
+rather than hand-maintaining chunk IDs. Fingerprint source content, questions
+and labels; keep expected answers out of model inputs. Distinguish document
+retrieval from evidence retrieval and absent-answer behavior. This authored
+English development set is not independently reviewed or held out; broader
+corpora and visual/OCR evaluation remain required before release claims.
