@@ -79,6 +79,6 @@ describe("preview workspace", () => {
       "does not read, upload or index",
     );
     await user.click(screen.getByRole("button", { name: "Models & setup" }));
-    expect(screen.getAllByText("Not installed")).toHaveLength(4);
+    expect(screen.getAllByText("Not connected")).toHaveLength(4);
   });
 });

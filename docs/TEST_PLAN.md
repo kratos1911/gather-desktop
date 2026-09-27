@@ -2,6 +2,11 @@
 
 ## Current executable checks
 
+`python -m unittest discover -s tests/worker -v` (Python 3.11+) runs 12 synthetic
+processing tests: exact source coverage, Unicode/BOM/CRLF, boundary/overlap,
+stable retry IDs, empty/invalid/oversized/binary inputs, response bounds and
+recovery without content in errors. No cloud, model or private-data access.
+
 From repository root: `./scripts/desktop.ps1 test` runs four React component tests. `./scripts/desktop.ps1 build` checks TypeScript and builds frontend assets. Use the documented Tauri build for native changes. Lint/format enforcement and CI remain TASK-011; do not report them as passed yet.
 
 The four tests cover combined filters and empty recovery; selected-source navigation; honest disconnected import/model state; accurate privacy/copyright navigation. jsdom cannot prove browser/native rendering, GPU performance, accessibility or inference.
@@ -18,13 +23,13 @@ The four tests cover combined filters and empty recovery; selected-source naviga
 | Chat | Selected-source isolation, follow-ups, grounded citations, absent evidence, prompt injection, cancellation and timeout |
 | Deletion | Immediate exclusion, all derivatives removed, Storage failure retry, restart during cleanup |
 | UI | Loading/empty/error/offline states, keyboard/focus, screen reader labels, reduced motion, narrow windows and 200% scaling |
-| Installer | Clean Windows machine, first-run downloads, update, uninstall/data choice, no Python/dev tools required |
+| Installer | Clean Windows machine, cloud setup, update, uninstall/data choice, no Python/dev tools or model downloads required |
 
 ## Evaluation and E2E
 
 Version synthetic/approved fixtures, queries, model/runtime versions, hardware and results. Start with >=30 text and >=20 visual/OCR queries as described in MODEL_STRATEGY.md. Measure quality by category, not only aggregate accuracy. Proposed thresholds are not current results.
 
-Native end-to-end flow: install -> setup/sign in -> import -> wait for ready -> search with different wording -> open cited source -> ask question -> restart -> retrieve again -> delete -> verify absent -> sign out. Repeat with user isolation, slow network and failure recovery.
+Native end-to-end flow: install -> cloud setup/sign in -> import -> wait for ready -> search with different wording -> open cited source -> ask question -> restart -> retrieve again -> delete -> verify absent -> sign out. Repeat with user isolation, slow network, quotas and failure recovery. Cloud-provider spending/retention controls require verification before hosted tests.
 
 Choose the native/browser test harness in TASK-011/013. Browser tests alone do not cover Tauri capabilities or local workers. Do not introduce another browser tool to bypass the prior access denial.
 

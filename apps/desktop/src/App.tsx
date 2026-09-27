@@ -99,8 +99,8 @@ export default function App() {
             <div className="screen-heading">
               <h1>Models & setup</h1>
               <p className="subtitle">
-                Our recommended starting lineup. Downloads and benchmarking come
-                next.
+                Candidates for cloud processing. Hosting and benchmarking are
+                still pending.
               </p>
             </div>
             <div className="model-list">
@@ -112,16 +112,16 @@ export default function App() {
                     <p>{model.description}</p>
                     <code>{model.id}</code>
                   </div>
-                  <span className="tag">Not installed</span>
+                  <span className="tag">Not connected</span>
                 </article>
               ))}
             </div>
             <OrbPreview />
             <div className="info-panel">
               <p>
-                Models run locally. Supabase stores the searchable index in the
-                cloud, so search still needs internet. No model downloads or
-                account connections happen in this preview.
+                AI processing is planned for the cloud, with no model downloads
+                required on your device. Hosting and Supabase are not connected
+                in this preview. Provider and usage limits are still being decided.
               </p>
             </div>
           </section>

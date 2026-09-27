@@ -2,6 +2,13 @@
 
 Status: researched shortlist and benchmark plan, not measured winners. No models downloaded or benchmarked in this step.
 
+27 September update: ADR-009 changes the deployment target to cloud-hosted AI.
+The hardware/on-device sections below document the previous selection rationale,
+not the current distribution plan. Re-evaluate candidates for cloud cost,
+quality, startup time and throughput; end users will not download these weights.
+Provider, runtime and paid deployment remain deferred. TASK-005 begins with a
+versioned synthetic evaluation corpus before any paid benchmark or model download.
+
 ## Product requirement
 
 The user clarified that the inspiration is Samsung Gallery-style natural-language retrieval across many content types: documents, slides, PDFs, Word files, photos and eventually videos. This describes the desired experience; it is not a claim about Samsung's internal architecture. Photos and scanned pages are part of the planned product, not an optional unrelated extension. Deliver native-text search first, then visual/OCR retrieval before calling the broader search objective complete.

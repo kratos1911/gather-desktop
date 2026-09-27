@@ -1,5 +1,14 @@
 # Desktop knowledge library — project blueprint
 
+## Superseding deployment decision: 27 September 2026
+
+ADR-009 and ARCHITECTURE.md supersede this document's historical local-worker,
+local-model, SQLite-queue and zero-recurring-cost proposals below. The current
+target is a desktop client with authenticated cloud processing and Supabase Free.
+No end-user model downloads are planned. Provider/budget/deployment are deferred;
+no paid resources have been created. The ingestion, citation, ownership and
+reconciliation requirements below still apply on the cloud service boundary.
+
 Status: supporting detailed blueprint, 26 September 2026. The local desktop preview is built; no cloud service or production release exists. Use PRD.md and ARCHITECTURE.md as the canonical product/architecture entry points, TASKS.md at the repository root for work, and MEMORY.md for current state. PROGRESS.md is historical and includes superseded decisions.
 
 ## Product promise

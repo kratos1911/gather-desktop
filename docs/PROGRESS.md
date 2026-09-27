@@ -67,3 +67,45 @@ TASK-001 is complete in the baseline commit containing this entry. Next: TASK-00
 ## 2026-09-26 — GitHub repository created
 
 At the user's request, created private repository https://github.com/kratos1911/gather-desktop using the existing authenticated GitHub account. Connected origin, pushed main, and verified remote commit b89ceec matches local HEAD. Reviewed all 74 tracked files before upload; excluded personal document folders, environment secrets, dependencies and build outputs. No model weights or original documents were uploaded. This is source hosting, not a production application release.
+
+## 2026-09-27 — TASK-004 text-processing contract and cloud decision
+
+User explicitly selected cloud AI, with hosting deferred. Recorded ADR-009,
+superseded local inference in canonical architecture/product/rules/current state,
+and labelled earlier blueprint/model research as historical where applicable.
+Cloud provider, budget, queue and runtime remain undecided. No paid provisioning,
+model downloads or external document processing occurred. Updated preview copy
+to say cloud processing is planned and disconnected.
+
+Implemented a dependency-free Python processing module in services/worker:
+strict bounded JSON/base64/UTF-8 input, TXT/Markdown preservation, exact Unicode
+code-point source ranges, deterministic content hashes/versioned passage IDs,
+bounded overlap and fixed structured errors. Original source bytes are never
+modified. No filesystem, network, logging, persistence or model calls in the
+processor. Two committed fixtures and generated test inputs are synthetic.
+The module is reusable in a future cloud worker, not an active server.
+
+Verification:
+- Bundled Python: `python -m unittest discover -s tests/worker -v`: 12 tests pass.
+- `scripts/desktop.ps1 test` with compatible Node on PATH: four component tests pass.
+- `scripts/desktop.ps1 build`: TypeScript/frontend build pass.
+- Tauri CLI `build --debug --no-bundle`: final frontend/native development build
+  passes; updated executable at apps/desktop/src-tauri/target/debug/gather-desktop.exe.
+- Staged diff whitespace check passes. Explicit staged path review excludes
+  private/generated content; limited known-token/private-key scan found no matches.
+
+Review: clarified code-point versus JavaScript UTF-16 offsets, preserved BOM and
+CRLF, rejected duplicate JSON keys/invalid request IDs/control bytes, verified
+complete source reconstruction and deterministic retry identity. Removed stale
+local-download wording found in the preview during review. Content identity is
+not authorization; future persistence must scope deduplication by owner.
+
+Limits: 64 KiB source is a conservative module limit, not the planned upload
+limit. Character chunking still requires tokenizer validation in TASK-005.
+Durable jobs, IPC/API integration, auth, semantic search, chat and cloud cost/
+retention controls are unimplemented. Native runtime/visual/E2E QA remains
+unverified; browser denial was respected. Lint is still unconfigured.
+
+Checkpoint branch: feature/text-processing-contract. TASK-004 is complete to
+its isolated processing criteria. Next is TASK-005 synthetic retrieval fixtures,
+queries and expected evidence before cloud benchmark/provider deployment.

@@ -1,5 +1,12 @@
 # Privacy and release audit
 
+27 September architecture update: cloud-hosted inference is planned under
+ADR-009, but no external processor is connected. Before enabling uploads, review
+the chosen provider's retention, logging, regions and subprocessors, publish
+accurate processing disclosures and implement deletion across storage/jobs and
+any retained inference artifacts. The original local-model budget assumptions
+in the historical audit below are superseded; provider and budget are deferred.
+
 Date: 26 September 2026. Scope: current desktop source, build configuration, dependencies and legacy root Python source. This is an engineering audit, not certification of legal compliance. The attachment's headline sums are not automatic fines per file/user. Applicability depends on operator, audience, jurisdiction and actual behavior.
 
 ## 1. COPPA / account creation

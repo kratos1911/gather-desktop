@@ -7,7 +7,7 @@ Follow Read -> Understand -> Plan -> Implement -> Test -> Review -> Fix -> Commi
 - Build the desktop app in apps/desktop. Root Python scripts are legacy; do not run them against personal documents during checks.
 - Apply every item in docs/DESIGN_AVOID_LIST.md. Preserve licensing/provenance and distinguish inspiration from copied code or generated assets.
 - Before adding accounts, uploads, telemetry, email or payments, consult docs/PRIVACY_RELEASE_AUDIT.md and close the relevant implementation gates. Do not invent contact details or claim legal compliance.
-- Keep models local and ongoing service costs at zero unless the user changes the budget. Supabase Free is the planned vector backend.
+- Target cloud-hosted AI per the user's 27 September decision. Provider, budget and deployment are deferred; do not provision paid resources yet. Supabase Free remains the planned vector backend.
 - Explain significant decisions in simple language. Record completed work, checks and unverified items in docs/PROGRESS.md.
 - Never pass off fixtures as semantic results or sample animation as actual model work.
 - Test meaningful changed behavior and build the frontend. When native inputs/assets change, rebuild the desktop executable too.

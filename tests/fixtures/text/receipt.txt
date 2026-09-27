@@ -1,0 +1,5 @@
+Synthetic receipt
+Item: desk lamp
+Total: 450 INR
+Reference: TEST-004
+This receipt is fictional and used only to verify text processing.

@@ -2,32 +2,32 @@
 
 ## Current implementation
 
-apps/desktop contains a React/TypeScript interface, synthetic fixtures, component tests and a Tauri Windows shell. No auth, worker, database client, inference runtime or upload pipeline is connected. Four component tests and a native development build passed in the previous checkpoint. See MEMORY.md for current status.
+apps/desktop contains a React/TypeScript interface, synthetic fixtures, component tests and a Tauri Windows shell. services/worker contains a transport-independent TXT/Markdown processing module with synthetic tests. No auth, processing endpoint, database client, inference runtime or upload pipeline is connected. See MEMORY.md for verification.
 
 ## Target boundaries
 
 ```text
-React UI -> typed application services -> narrowly scoped Tauri commands
-                                     -> local Python worker (structured IPC)
-Local worker -> parsers / OCR / embeddings / chat runtime
-Local worker -> authenticated Supabase APIs -> RLS-protected Postgres + pgvector
-                                          -> private Storage objects
-Local SQLite -> durable job state and restart/retry coordination
+React UI -> typed application services -> authenticated cloud API (planned)
+Tauri -> narrowly scoped native file selection (planned)
+Cloud API -> bounded ingestion jobs -> Python processing worker
+Worker -> parsers / cloud OCR / embedding / chat adapters
+Cloud service -> ownership-enforced Supabase Postgres + pgvector
+              -> private Storage objects
 ```
 
-Supabase Auth supplies user sessions; OS-backed credential storage is to be selected and tested. SQLite is for local job state, not a second cloud vector index. Do not introduce a hosted Python server or public localhost listener without an ADR.
+ADR-009 supersedes local AI deployment. Supabase Auth supplies user sessions; OS-backed credential storage is to be selected and tested. Cloud provider, API framework, durable queue and inference runtime are deferred decisions. No server or paid resource is provisioned. The current pure processing module can be tested locally and reused in the cloud. No required end-user models or local inference server.
 
 ## Architecture rules
 
 - UI components contain no SQL, model execution, filesystem traversal or provider credentials.
 - Application services own workflow/state transitions; adapters own external/storage/runtime calls.
-- Validate IPC messages, file size/type/content and paths at the native/worker boundary. Treat the desktop client as untrusted for cloud authorization.
+- Validate requests, file size/type/content and paths at native/API/worker boundaries. Authenticate requests and enforce owner/quota checks server-side; never trust owner IDs supplied by the desktop.
 - Enforce ownership, quota and resource relationships in Supabase policies/functions. Never distribute a service-role key or database password.
 - Text and visual vectors occupy different model-versioned spaces. Fuse result ranks, never raw scores from incompatible models.
 - Commit all indexed passages before ready state. Use idempotent writes and bounded durable retries.
 - Storage and Postgres operations need reconciliation because they are not one transaction.
 - Selected-source retrieval constrains chat; source text is evidence, not executable instructions.
-- Run heavy processing outside the interface process; models load on demand with bounded memory and concurrency.
+- Run heavy processing in cloud workers with bounded memory/concurrency. Provider secrets stay on the server. Define request quotas, timeouts and spend controls before hosted inference.
 
 ## Layout
 

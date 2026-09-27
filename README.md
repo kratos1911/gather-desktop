@@ -2,7 +2,7 @@
 
 A Windows desktop application being rebuilt to find saved content by meaning and answer questions about selected documents with source citations.
 
-**Current status: step 1, interface foundation.** The new application is in `apps/desktop`. It shows clearly labelled synthetic content. Real import, embeddings, Supabase and model inference are not connected yet. The root Python scripts remain legacy; the privacy audit removed remote preview requests and sensitive console output. Original data folders remain untouched.
+**Current status: interface foundation and text-processing prerequisite.** The new application is in `apps/desktop` and still shows clearly labelled synthetic content. `services/worker` has tested TXT/Markdown extraction and passage generation, not yet connected to the interface. Real import, embeddings, Supabase and model inference are not connected. Legacy scripts and original data folders remain untouched in this step.
 
 ## Start here
 
@@ -34,9 +34,13 @@ For a fresh checkout, install the prerequisites in the desktop instructions and 
 
 ## Intended stack
 
-Tauri + React + TypeScript, a local Python processing worker, Supabase Auth/Storage/Postgres with pgvector, and locally executed models. Starting candidates: EmbeddingGemma 300M (text search), SigLIP 2 Base (photos), Qwen3.5 4B (chat/vision) and PaddleOCR PP-OCRv5 (scanned text). Quantization, model versions, dimensions and runtime performance remain benchmark decisions.
+Tauri + React + TypeScript, an authenticated cloud service with Python processing workers, and Supabase Auth/Storage/Postgres with pgvector. Starting model candidates remain EmbeddingGemma, SigLIP 2, Qwen3.5 and PaddleOCR, subject to cloud evaluation. Provider, framework, queue and deployment are deferred decisions.
 
-The service budget is zero recurring fees. Supabase free-tier capacity is finite and search needs connectivity. Model downloads and device hardware requirements will be explicit during setup.
+The user selected cloud AI on 27 September: no end-user model downloads are planned. Hosting budget is undecided and no paid resources are authorized yet. Supabase Free remains the planned vector backend. See ADR-009.
+
+## Processing tests
+
+With Python 3.11 or newer, run `python -m unittest discover -s tests/worker -v` from this folder. See [the processing contract](services/worker/README.md) for input limits, offset semantics and recovery behavior. These tests use synthetic content only.
 
 ## Repository hygiene
 

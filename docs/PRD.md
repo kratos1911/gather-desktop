@@ -12,7 +12,7 @@ Initial working audience: individuals using Windows who save study, research and
 
 ## First usable slice
 
-Import one supported text document, see processing status, retrieve a passage by meaning, open its source, and delete it completely. This requires local processing, authenticated Supabase storage/retrieval and ownership enforcement. An isolated model benchmark is a technical prerequisite, not this completed user flow.
+Import one supported text document, see processing status, retrieve a passage by meaning, open its source, and delete it completely. This requires authenticated cloud processing, Supabase storage/retrieval and ownership enforcement. An isolated model benchmark is a technical prerequisite, not this completed user flow.
 
 ## MVP scope
 
@@ -22,7 +22,7 @@ Import one supported text document, see processing status, retrieve a passage by
 - Ranked hybrid search, grouped by source file, with excerpts and page/slide/section/image references.
 - File processing states, bounded retries, duplicate handling and safe deletion.
 - Selected-document chat with citations, insufficient-evidence answers and cancellation.
-- Installable build with explicit model downloads and hardware requirements.
+- Installable desktop client without required model downloads; cloud processing, connectivity and usage limits explained during setup.
 
 Office preview initially means extracted text plus opening/downloading the original, not guaranteed native-format rendering. Old binary DOC/PPT, spreadsheets, audio/video and other formats must be labelled unsupported until an explicit task adds them. Do not claim universal file support.
 
@@ -43,4 +43,4 @@ Mobile, payments, public sharing, collaboration, agents that modify files, cross
 
 Provisional quality targets: text Recall@5 >=90% on a versioned answerable-query set; visual/OCR quality reported separately; warm search p95 <2 seconds on a documented 10,000-chunk corpus/connection. These are targets, not observed performance. Chat latency and RAM/VRAM limits are set after hardware benchmarking.
 
-Budget: zero recurring paid services. Supabase free capacity is finite; local inference consumes user hardware. See MODEL_STRATEGY.md and DECISIONS.md.
+Hosting decision, 27 September: AI runs in the cloud. Provider and operating budget are deferred; no spending or provisioning is authorized yet. Supabase Free remains planned with finite capacity. See ADR-009 and MODEL_STRATEGY.md.

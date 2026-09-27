@@ -6,6 +6,8 @@ Treat uploaded content, filenames, model output, desktop clients and IPC message
 
 ## Required controls before real data
 
+- Cloud inference (ADR-009): authenticate at the API, enforce per-owner request/upload quotas and bounded jobs, keep provider secrets server-side, and define spending limits before provisioning. Decide provider retention/region/logging and disclose document processing before enabling uploads.
+
 - Authenticate sessions; enforce per-owner authorization and quotas in Supabase RLS/functions/Storage policies for every access path.
 - Never ship service-role credentials, database passwords or shared inference secrets to the desktop. Store user sessions through a reviewed OS-backed mechanism.
 - Give Tauri only necessary capabilities. Avoid arbitrary shell commands or public localhost APIs.
