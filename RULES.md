@@ -20,6 +20,9 @@ Use docs/TEST_PLAN.md and docs/SECURITY.md as gates. Respect previous denied too
 
 ## Git and release
 
+User preference (27 September): commit locally as checkpoints, but push only on
+an explicit user request to push. Do not infer push permission from "continue".
+
 Use explicit staging paths and inspect staged files/diffs. Exclude secrets, personal files, model caches, environments and generated artifacts. Make small descriptive commits after checks. Use a feature branch for substantial subsequent work and review before merging. Do not invent Git identity or overwrite others' changes. Push/create remote repositories only with a known authorized destination.
 
 Release through a test installer and QA before public distribution. Record release limitations, rollback and monitoring. No secrets/document content in logs; no silent paid dependencies, telemetry or model downloads.

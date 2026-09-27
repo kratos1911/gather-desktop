@@ -1,6 +1,6 @@
 # Delivery tasks
 
-Current checkpoint: TASK-005 saved-vector adapter, exact cosine search and RRF comparison implemented and unit-tested. Real model evaluation remains partial. Next: select provider/model/budget and implement a producer for genuine embedding exports; no paid calls are authorized yet.
+Current checkpoint: TASK-005 request client tested with mocks; user deferred provider/account and live tests. Continue independent TASK-011 quality checks. No pushes without an explicit request.
 
 | ID | Task | Status | Acceptance / evidence |
 | --- | --- | --- | --- |

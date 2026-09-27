@@ -183,6 +183,22 @@ and in tests/evaluation/VECTORS.md. Cloud provider/producer is not implemented;
 this checkpoint is a consumer for eventual exported embeddings. No model weights,
 API calls, uploads, credentials or spending were involved.
 
+## 2026-09-27 — Embedding request client; provider deferred
+
+Added a server/developer-only client with token/request caps, all-input preflight,
+bounded batches, response-index reordering, dimensions/model/vector checks,
+optional usage accounting, HTTPS timeout/body bound/no redirects and sanitized
+errors. Tests inject mock transport and tokenizer; none performs a network call.
+Read Together's official embeddings API shape as candidate protocol only; model
+availability and live provider behavior remain unverified. No default endpoint,
+credentials, CLI or automatic retry. Token caps are not dollar spending limits.
+
+User has no provider account and deferred it; no provider-specific benchmark,
+truncation assurance or genuine vector export is claimed. User also required
+explicit permission for every future push; recorded in AGENTS.md/RULES.md.
+Twenty worker tests (eight new), 29 evaluation tests and frontend build pass.
+No native assets changed. Continue independent TASK-011 quality tooling next.
+
 Checks: 29 evaluation tests pass, including eight new hand-calculated vector
 tests for cosine, magnitude stability, ties, invalid vectors, incomplete/mixed/
 stale/truncated exports and rank-based fusion. TypeScript/frontend build passes.

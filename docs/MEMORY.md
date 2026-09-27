@@ -4,9 +4,17 @@ Updated: 27 September 2026. This is the present-state summary; PROGRESS.md is ch
 
 ## Product and constraints
 
+27 September steering: user has no provider account yet and explicitly deferred
+it. Continue independent work without paid/live calls. Commit locally; push only
+on an explicit request to push.
+
 Gather is a provisional name for a Windows desktop content library with semantic text/photo search and selected-source chat. Tauri/React/TypeScript and Supabase Free remain. User chose cloud AI on 27 September (ADR-009); provider, budget and deployment are deferred. No paid resources authorized/provisioned. No end-user model downloads planned. Design avoid-list applies. No agentic file modification, payment feature or mobile app in MVP.
 
 ## Implemented
+
+- Server/developer-only embedding request client with batching, full-job token
+  preflight, bounded HTTPS, index reordering and safe errors. Eight mocked tests
+  pass; no real tokenizer/provider/export integration or cost measurement yet.
 
 - Saved-vector evaluation adapter with exact normalized cosine ranking and equal-weight RRF (k=60) comparison to TF-IDF. Export metadata checks model/revision/templates/tokenizer/dimensions, corpus/index hashes and truncation. Twenty-nine evaluation tests pass; vector evidence is synthetic math tests only. No actual embedding model has run.
 
@@ -29,6 +37,10 @@ No real desktop import, connected worker/cloud endpoint, embeddings, Supabase pr
 Lint is not configured yet; TASK-011 tracks it. The full initial baseline diff also reports pre-existing trailing-whitespace issues in legacy files; those are not hidden or counted as a clean full-diff check. Git repository: https://github.com/kratos1911/gather-desktop (private). origin is configured; main tracks origin/main. Baseline commit b89ceec was pushed and its remote hash verified. The TASK-001 baseline contains the existing implementation and workflow documents.
 
 ## Current task
+
+Latest checkpoint: request-client mock checks pass (20 worker + 29 evaluation
+tests and frontend build). Provider-dependent TASK-005 work is deferred by user;
+TASK-011 quality tooling is next. No GitHub push authorized.
 
 TASK-005 vector-evaluation checkpoint on feature/vector-evaluation, based on scorer commit 3d3cda0. Twenty-nine evaluation tests and frontend build pass. Actual vector-export CLI benchmark awaits genuine provider output; no cloud provisioning or personal file access. No desktop/native code changed, so prior component/native evidence is retained, not claimed rerun.
 
