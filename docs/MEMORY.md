@@ -8,6 +8,8 @@ Gather is a provisional name for a Windows desktop content library with semantic
 
 ## Implemented
 
+- Saved-vector evaluation adapter with exact normalized cosine ranking and equal-weight RRF (k=60) comparison to TF-IDF. Export metadata checks model/revision/templates/tokenizer/dimensions, corpus/index hashes and truncation. Twenty-nine evaluation tests pass; vector evidence is synthetic math tests only. No actual embedding model has run.
+
 - Offline TF-IDF keyword baseline and strict scoring harness with corpus/index fingerprints, per-category and per-query metrics. Twenty-one evaluation tests pass. Baseline text-v1 document/evidence Recall@5 is 0.9714 and MRR@5 is 0.8667; 4/5 absent queries return candidates. This is a tiny development comparator, not semantic search or an answerability system.
 
 - Retrieval development corpus text-v1: 14 synthetic documents and 40 queries (35 answerable, 5 absent), with exact evidence mapped to 16 real processing chunks. Seven integrity tests pass. Export tool separates index/query inputs from relevance labels; no model results yet. See tests/evaluation/README.md.
@@ -28,11 +30,11 @@ Lint is not configured yet; TASK-011 tracks it. The full initial baseline diff a
 
 ## Current task
 
-TASK-005 scorer/baseline checkpoint complete on feature/retrieval-scoring-baseline, based on corpus commit 4cb8e6f. Twenty-one evaluation tests, CLI baseline/saved-run scoring and frontend build pass. Model benchmarking remains partial; no cloud provisioning or personal file access. No desktop/native code changed, so prior component/native evidence is retained, not claimed rerun.
+TASK-005 vector-evaluation checkpoint on feature/vector-evaluation, based on scorer commit 3d3cda0. Twenty-nine evaluation tests and frontend build pass. Actual vector-export CLI benchmark awaits genuine provider output; no cloud provisioning or personal file access. No desktop/native code changed, so prior component/native evidence is retained, not claimed rerun.
 
 ## Next implementation
 
-TASK-005: select provider/model benchmark configuration and build its adapter, then perform tokenizer/embedding evaluation against the frozen baseline. Hosted evaluation/deployment require a selected budget/provider. Add harder long-document and independently reviewed unseen questions before release claims. TASK-002 audience research and TASK-003 visual QA remain open.
+TASK-005: select provider/model/budget and implement the real embedding producer with token checks, batching, timeouts and cost accounting. The saved-vector consumer is ready; provider connection and semantic benchmarks are not. Add harder long-document and independently reviewed unseen questions before release claims. TASK-002 audience research and TASK-003 visual QA remain open.
 
 ## Inputs needed before later gates
 

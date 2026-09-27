@@ -29,7 +29,7 @@ The four tests cover combined filters and empty recovery; selected-source naviga
 
 Text development fixtures and the scoring specification live in
 `tests/evaluation/README.md`. Run `python -m unittest discover -s tests/evaluation -v`
-for 21 corpus/scoring/baseline tests and `python -m scripts.prepare_text_evaluation`
+for 29 corpus/scoring/baseline/vector tests and `python -m scripts.prepare_text_evaluation`
 for a version/fingerprint/category summary. Optional `--output output/evaluation/text-v1`
 exports index, questions and separate labels using the real text processor.
 Current inventory: 14 documents, 35 answerable + 5 absent questions, 16 chunks.
@@ -41,6 +41,12 @@ overlap, absent denominators, malformed/missing/stale rankings and deterministic
 keyword retrieval. No AI model accuracy or latency has been measured. Baseline
 results are in tests/evaluation/BASELINE.md; unsupported-answer rate stays null
 until an answerability system exists.
+
+Vector tests use known numbers to verify normalization/cosine, negative scores,
+extreme finite magnitudes, ties, incomplete/mixed/stale/truncated exports and
+RRF rank fusion independent of raw score magnitude. They are not semantic
+quality tests. See tests/evaluation/VECTORS.md for the export contract and CLI.
+No real model export or cloud provider has been exercised.
 
 Version synthetic/approved fixtures, queries, model/runtime versions, hardware and results. Start with >=30 text and >=20 visual/OCR queries as described in MODEL_STRATEGY.md. Measure quality by category, not only aggregate accuracy. Proposed thresholds are not current results.
 

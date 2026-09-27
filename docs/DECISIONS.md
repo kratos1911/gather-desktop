@@ -55,3 +55,13 @@ outside answerable metric denominators and do not equate candidates with answer
 claims. Require complete rankings, valid source/chunk pairs and matching corpus
 and processed-index hashes. This comparator is not production retrieval or proof
 that embeddings are unnecessary. No provider dependency or paid resource added.
+
+## ADR-013: saved-vector adapter before hosted inference (27 September 2026)
+
+Decouple embedding production from offline comparison using a versioned export.
+Validate consistent spaces and complete results before exact normalized cosine
+ranking; compare it with TF-IDF and equal-weight RRF (constant 60). Use exhaustive
+search for the small evaluation set so approximate-index behavior cannot obscure
+model comparisons. Keep all similarity signs; do not invent an abstention
+threshold. Tag synthetic vectors explicitly and never report their scores as
+model quality. Real provider selection/token checks/usage accounting remain open.

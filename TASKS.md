@@ -1,6 +1,6 @@
 # Delivery tasks
 
-Current checkpoint: TASK-005 corpus, offline scorer and keyword baseline complete; model evaluation remains partial. Cloud AI is the target under ADR-009; deployment and budget are deferred. Next: model/provider benchmark configuration and adapter, with hosting gated on budget/provider selection.
+Current checkpoint: TASK-005 saved-vector adapter, exact cosine search and RRF comparison implemented and unit-tested. Real model evaluation remains partial. Next: select provider/model/budget and implement a producer for genuine embedding exports; no paid calls are authorized yet.
 
 | ID | Task | Status | Acceptance / evidence |
 | --- | --- | --- | --- |
@@ -8,7 +8,7 @@ Current checkpoint: TASK-005 corpus, offline scorer and keyword baseline complet
 | TASK-002 | Validate audience and comparable products | Ready | Record user interviews/feedback or explicitly unvalidated hypotheses; compare primary-source alternatives; decide initial audience/regions |
 | TASK-003 | Desktop shell and design verification | Partial | Frontend/native build and four component tests pass; actual visual, keyboard, zoom and motion checks still pending after browser permission denial |
 | TASK-004 | Transport-independent text processing contract | Done | 12 standard-library tests pass; strict JSON/base64/UTF-8 and 64 KiB source limit; source offsets, hashes/versioned IDs, overlap and retry determinism verified; no personal imports or cloud writes; see services/worker/README.md |
-| TASK-005 | Cloud-oriented embedding evaluation | Partial | Corpus + TF-IDF baseline + strict offline scorer implemented; 21 evaluation tests and frontend build pass. Development-set document/evidence Recall@5 0.9714, MRR@5 0.8667; 4/5 absent queries return candidates (not an answerability result). See tests/evaluation/BASELINE.md. Models/tokenizer/dimension/latency/cost benchmarks still pending; no paid calls/downloads |
+| TASK-005 | Cloud-oriented embedding evaluation | Partial | Corpus, TF-IDF, scorer, saved-vector adapter, exact cosine and RRF comparison implemented; 29 evaluation tests and frontend build pass. Vector tests use hand-authored numbers only, no semantic accuracy claim. TF-IDF baseline unchanged (BASELINE.md). Real export producer/provider/tokenizer/dimension/latency/cost benchmarks pending |
 | TASK-006 | Supabase identity and private schema | Needs project configuration | Versioned migrations; supported signup/session/logout flow; enforce audience decision; RLS and two-user isolation tests; secure session storage; quota policy |
 | TASK-007 | Text import-to-search vertical slice | Depends on 005/006 | Import TXT/MD -> durable processing -> all passages -> real search -> reader -> deletion; retry/restart/dedup/isolation tests; user-readable errors |
 | TASK-008 | Native document formats | Depends on 007 | PDF/DOCX/PPTX parsers; preserved page/slide/section references; long-document and malformed-file cases; scanned pages correctly identified |

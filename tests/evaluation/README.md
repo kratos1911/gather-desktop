@@ -105,6 +105,10 @@ abstention. That rate is explicitly null until an answerability layer exists.
 
 See [the measured baseline](BASELINE.md) for results and limitations.
 
+The [saved-vector adapter](VECTORS.md) adds exact cosine and RRF comparison once
+genuine embeddings are available. Its math/validation tests use synthetic vectors;
+no model quality result exists yet.
+
 ## Benchmark gate and limitations
 
 Before hosted testing: choose provider/model revision and license, query/document

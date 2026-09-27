@@ -168,3 +168,28 @@ No models, provider SDKs, network calls, personal data or paid resources involve
 TASK-005 remains partial until model/tokenizer/dimension/cost/latency benchmarks.
 Next: provider/model benchmark configuration and adapter; budget/provider must
 be selected before hosted evaluation. Cloud deployment remains deferred.
+
+## 2026-09-27 — TASK-005 vector comparison foundation
+
+Added scripts/evaluate_vectors.py: a saved-embedding adapter, consistent-space
+validation, stable L2 normalization/exact cosine ranking, and equal-weight
+reciprocal rank fusion with TF-IDF (k=60). Requires complete versioned exports
+with model/revision/templates/tokenizer/dimensions, corpus/index hashes and no
+truncation. Keeps zero/negative cosine candidates without claiming answerability.
+CLI comparison retains provenance/configuration/rankings/reports together.
+
+Explained techniques and controlled-comparison methodology during implementation
+and in tests/evaluation/VECTORS.md. Cloud provider/producer is not implemented;
+this checkpoint is a consumer for eventual exported embeddings. No model weights,
+API calls, uploads, credentials or spending were involved.
+
+Checks: 29 evaluation tests pass, including eight new hand-calculated vector
+tests for cosine, magnitude stability, ties, invalid vectors, incomplete/mixed/
+stale/truncated exports and rank-based fusion. TypeScript/frontend build passes.
+No native or UI changes, so no native/component rerun. Reviewed staged paths and
+diff whitespace; limited credential-pattern scan found no matches.
+
+No real vector export/CLI quality benchmark has been run. Synthetic vectors are
+test fixtures only; the prior TF-IDF measurements are unchanged. TASK-005 remains
+partial. Next: provider/model/budget selection and a genuine embedding producer
+with batching, token validation, bounded requests and usage accounting.
