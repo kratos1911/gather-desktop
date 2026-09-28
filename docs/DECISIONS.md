@@ -81,3 +81,11 @@ Distinguish bookmark saving, available metadata, extracted page text and actual
 video understanding. Inaccessible content remains a useful saved link. Build
 synthetic extraction first, then owner-scoped persistence and restricted cloud
 fetching. See BOOKMARKS.md for states, SSRF controls and release gates.
+
+## ADR-016: search first and offline bookmark parsing (28 September 2026)
+
+User deferred chat until later. Prioritize source ingestion and search; chat is
+not a first-search release gate. Use a bounded standard-library HTML parser for
+the initial offline contract, preserving metadata/text provenance and unavailable
+states. This is a conservative heuristic, not universal article extraction or an
+SSRF-safe fetcher. Real-world parser evaluation and cloud fetching remain pending.

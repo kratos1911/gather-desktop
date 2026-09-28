@@ -1,5 +1,7 @@
 # Design entry point
 
+28 September priority: build search first; selected-source chat is deferred.
+
 The governing rules are [DESIGN_AVOID_LIST.md](DESIGN_AVOID_LIST.md); implementation guidance is [DESIGN_DIRECTION.md](DESIGN_DIRECTION.md). Keep those as the single source for detailed design rather than maintaining competing copies.
 
 Current system: local Segoe UI/system sans-serif, warm light surfaces, dark ink, restrained green accent, named spacing tokens, explicit focus feedback and solid controls. No Inter/purple-gradient/template reset from generic guides.

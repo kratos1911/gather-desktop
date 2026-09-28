@@ -16,7 +16,7 @@ Gather is a provisional name for a Windows desktop content library with semantic
   TypeScript, Prettier and frontend build pass. Native development build passes.
   Manual GitHub workflow authored; remote execution unverified.
 - Links/bookmarks added to product scope and delivery plan in BOOKMARKS.md.
-  Specification only: no bookmark UI, storage, fetcher or extraction implemented.
+  Offline extraction implemented with ten synthetic tests. No bookmark UI, storage or fetcher.
 
 - Server/developer-only embedding request client with batching, full-job token
   preflight, bounded HTTPS, index reordering and safe errors. Eight mocked tests
@@ -46,11 +46,11 @@ Frontend lint and format checks are configured; remote CI and native E2E remain 
 
 Latest checkpoint: TASK-011 local checks pass; bookmark scope accepted on
 28 September. Provider-dependent TASK-005 work remains deferred by user.
-No GitHub push authorized. Bookmark implementation is next, not completed.
+No GitHub push authorized. Offline bookmark processing passes; live bookmark search remains pending. Chat deferred by user on 28 September.
 
 ## Next implementation
 
-TASK-016: implement offline bookmark URL/HTML processing with synthetic fixtures,
+TASK-018: connect offline bookmark extraction to versioned passages and keyword search with synthetic fixtures,
 source provenance and honest fallback states. It needs no cloud account or live
 fetching. TASK-017 later connects persistence, restricted fetching and search.
 Provider connection and semantic benchmarks remain pending. Add harder long-document

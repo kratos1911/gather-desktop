@@ -230,3 +230,21 @@ restricted network access and search. No bookmark functionality implemented yet.
 
 Provider accounts, paid calls and cloud deployment remain deferred. Changes stay
 local; no push or remote workflow dispatch authorized.
+
+## 2026-09-28 — TASK-016 offline bookmark extraction; chat deferred
+
+Implemented URL normalization/validation, metadata and main/article text extraction,
+body fallback, paragraph offsets, content hash/version and explicit unavailable
+reasons. Bounded UTF-8 input and HTML nesting; preserves notes when extraction
+is unavailable. No network requests, model calls, personal inputs or dependencies.
+This does not save bookmarks in the desktop or produce semantic search results.
+
+Ten new synthetic tests cover URL rejection, metadata-only video links, malformed
+HTML, Unicode/entities, malicious elements, limits, deterministic extraction and
+fallback. Full local quality runner passes: 30 worker + 29 evaluation + four UI
+tests (63), lint, types, formatting and frontend build. No native inputs/assets
+changed; no native rebuild or visual/runtime verification claimed this turn.
+
+Chat deferred per user. Next TASK-018 connects bookmark evidence to versioned
+passages and keyword retrieval, independently of provider setup. Live fetching
+still requires network security and privacy gates. Keep all commits local.

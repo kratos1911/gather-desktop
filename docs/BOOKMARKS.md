@@ -1,6 +1,6 @@
 # Links and bookmarks
 
-Requested 28 September 2026. Accepted scope; implementation pending.
+Requested 28 September 2026. Offline parsing implemented; live integration pending. Chat deferred until search works.
 
 ## Flow
 
@@ -16,6 +16,16 @@ URL/title/notes remain eligible for ordinary keyword search once persistence is
 connected, even when page text cannot be extracted.
 
 ## Techniques and coverage
+
+Implemented offline API: `extract_bookmark(url, html=None, notes="")` in
+services/worker/bookmarks.py. HTML must be UTF-8 bytes, at most 64 KiB; nesting
+is capped at 256 and notes at 8192 characters. Ten synthetic tests pass.
+The heuristic prefers main/article text; body fallback can include boilerplate.
+It removes selected non-content elements, not all advertising or CSS-hidden text.
+Extracted strings must be rendered as text, never inserted as HTML. Paragraph
+offsets refer to normalized extracted text, not the original HTML. Source hash
+and parser version support future indexing; no passages are indexed yet.
+URL validation does not resolve DNS and is not sufficient authorization to fetch.
 
 - URL parsing and conservative normalization for owner-scoped duplicate handling.
   Retain the original URL; do not indiscriminately strip queries/fragments.
@@ -69,9 +79,9 @@ source provenance, malformed/unsafe URLs, malicious HTML, missing fields,
 unsupported/oversized content and fallback. No real fetch/account required.
 
 TASK-017: save-link UI and private persistence, restricted fetcher, durable jobs,
-semantic indexing/chat and deletion. Test two-user isolation, redirected blocked
+semantic indexing and deletion. Chat is deferred. Test two-user isolation, redirected blocked
 addresses, DNS rebinding, retries/restart, duplicates, refresh and disappearing
 pages. Add bookmark evaluation in a new version; preserve frozen text-v1.
 
-No bookmark input, persistence, fetcher or semantic bookmark results are implemented
+No desktop bookmark input, persistence, fetcher or semantic bookmark results are implemented
 by this specification. Provider selection and deployment remain deferred.

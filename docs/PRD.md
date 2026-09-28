@@ -4,7 +4,7 @@ Status: agreed direction; implementation is still a synthetic desktop preview.
 
 ## What and why
 
-Gather (working name) helps people retrieve saved information without remembering filenames or exact wording. The inspiration is Gallery-style natural-language search extended to PDFs, presentations, Word documents, notes, screenshots and photos. A second core outcome is asking questions about a selected source with traceable evidence.
+Gather (working name) helps people retrieve saved information without remembering filenames or exact wording. The inspiration is Gallery-style natural-language search extended to PDFs, presentations, Word documents, notes, screenshots and photos. Selected-source chat is a later phase; the current priority is search.
 
 ## Users
 
@@ -22,7 +22,7 @@ Import one supported text document, see processing status, retrieve a passage by
 - Photos (initially JPEG/PNG), screenshots and scanned-page OCR as a required second retrieval slice.
 - Ranked hybrid search, grouped by source file, with excerpts and page/slide/section/image references.
 - File processing states, bounded retries, duplicate handling and safe deletion.
-- Selected-document chat with citations, insufficient-evidence answers and cancellation.
+- Selected-document chat is deferred until the search flow is working.
 - Installable desktop client without required model downloads; cloud processing, connectivity and usage limits explained during setup.
 
 Office preview initially means extracted text plus opening/downloading the original, not guaranteed native-format rendering. Old binary DOC/PPT, spreadsheets, audio/video and other formats must be labelled unsupported until an explicit task adds them. Do not claim universal file support.
@@ -37,7 +37,7 @@ Mobile, payments, public sharing, collaboration, agents that modify files, cross
 2. Search retrieves relevant content beyond the beginning of a long document.
 3. Photo descriptions and OCR text retrieve actual matching source content.
 4. User A cannot list, read, search, chat with or delete user B's content.
-5. Chat is scoped to the selected source and citations point to retrieved evidence.
+5. Deferred chat acceptance: selected-source isolation and citations to retrieved evidence.
 6. Deletion removes search visibility immediately and eventually removes every owned derivative and stored original, with failed cleanup retried.
 7. Restart/retry does not duplicate passages or mark incomplete indexing as ready.
 8. A clean Windows installation can complete the core flow without developer tools.
