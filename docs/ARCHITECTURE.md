@@ -31,6 +31,12 @@ ADR-009 supersedes local AI deployment. Supabase Auth supplies user sessions; OS
 
 ## Layout
 
+Planned bookmark boundary: persist an owner-scoped source before asynchronous
+enrichment; a restricted cloud fetcher and metadata/article adapters produce safe
+text with URL/fetch-time/provenance. Reuse the existing chunk/embedding pipeline.
+Failed fetching retains the bookmark. No arbitrary page-script execution or
+untrusted HTML inside Tauri. See BOOKMARKS.md; no fetcher is implemented yet.
+
 Existing: apps/desktop/src/components, fixtures.ts, App.tsx, src-tauri, scripts/desktop.ps1, docs.
 
 Create as needed, not as empty scaffolding: apps/desktop/src/features, services, types; services/worker; supabase/migrations; tests/fixtures; tests/evaluation. Keep fixture mode explicit until each service is real. Preserve legacy root Python files for reference; do not run them against personal documents during checks.

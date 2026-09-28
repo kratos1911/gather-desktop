@@ -1,4 +1,4 @@
-param([ValidateSet('preview', 'desktop', 'build', 'test', 'install')][string]$Action = 'preview')
+param([ValidateSet('preview', 'desktop', 'build', 'test', 'install', 'lint', 'typecheck', 'format-check')][string]$Action = 'preview')
 $ErrorActionPreference = 'Stop'
 $appPath = Join-Path $PSScriptRoot '../apps/desktop'
 $nodeCandidates = @(Get-Command node.exe -All -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source)
@@ -19,6 +19,9 @@ try {
         'desktop' { & $nodePath node_modules/@tauri-apps/cli/tauri.js dev }
         'build' { & $nodePath scripts/frontend.mjs build }
         'test' { & $nodePath node_modules/vitest/vitest.mjs run }
+        'lint' { & $nodePath node_modules/eslint/bin/eslint.js . }
+        'typecheck' { & $nodePath node_modules/typescript/bin/tsc --noEmit }
+        'format-check' { & $nodePath node_modules/prettier/bin/prettier.cjs --check src scripts '*.ts' '*.json' '*.mjs' index.html }
     }
     if ($LASTEXITCODE -ne 0) { throw "Desktop task failed with exit code $LASTEXITCODE" }
 } finally { Pop-Location; $env:PATH = $previousPath }

@@ -209,3 +209,24 @@ No real vector export/CLI quality benchmark has been run. Synthetic vectors are
 test fixtures only; the prior TF-IDF measurements are unchanged. TASK-005 remains
 partial. Next: provider/model/budget selection and a genuine embedding producer
 with batching, token validation, bounded requests and usage accounting.
+
+## 2026-09-28 — Local quality checks and bookmark scope
+
+TASK-011: added frontend ESLint, explicit type/format checks, a fail-fast local
+runner and a manual-only GitHub workflow. Fixed formatting reported on the first
+run. Final local runner passes: 20 worker + 29 evaluation + four UI tests (53),
+ESLint, TypeScript, Prettier and frontend build. Rebuilt native development
+executable with `cargo build --locked --features tauri/custom-protocol`; passed.
+No runtime/visual/E2E or remote CI verification claimed. Dependency installation
+reported zero known vulnerabilities; this is not a complete security audit.
+
+User added links/bookmarks, including social/video, blog and gaming URLs.
+Recorded scope, flow, extraction limits, source provenance and restricted-fetch
+requirements in BOOKMARKS.md and the product/architecture/design/security plans.
+Technique: save first, enrich metadata/readable text separately, then reuse
+chunking and retrieval. Preserve a URL/notes fallback when extraction is blocked.
+TASK-016 is offline synthetic parsing; TASK-017 connects private persistence,
+restricted network access and search. No bookmark functionality implemented yet.
+
+Provider accounts, paid calls and cloud deployment remain deferred. Changes stay
+local; no push or remote workflow dispatch authorized.

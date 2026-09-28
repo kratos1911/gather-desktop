@@ -7,7 +7,12 @@ processing tests: exact source coverage, Unicode/BOM/CRLF, boundary/overlap,
 stable retry IDs, empty/invalid/oversized/binary inputs, response bounds and
 recovery without content in errors. No cloud, model or private-data access.
 
-From repository root: `./scripts/desktop.ps1 test` runs four React component tests. `./scripts/desktop.ps1 build` checks TypeScript and builds frontend assets. Use the documented Tauri build for native changes. Lint/format enforcement and CI remain TASK-011; do not report them as passed yet.
+From repository root: `./scripts/check.ps1` runs 20 worker tests (12 processing
+plus eight mocked embedding-client tests), 29 evaluation tests, frontend ESLint,
+TypeScript, Prettier, four component tests and frontend build. Use `-Python` to
+specify a Python executable. These local checks pass; the manual GitHub workflow
+is authored but has not run remotely. Use the documented Tauri build for native
+changes; the latest native development build passes. Runtime/E2E remains unverified.
 
 The four tests cover combined filters and empty recovery; selected-source navigation; honest disconnected import/model state; accurate privacy/copyright navigation. jsdom cannot prove browser/native rendering, GPU performance, accessibility or inference.
 
@@ -17,6 +22,7 @@ The four tests cover combined filters and empty recovery; selected-source naviga
 | --- | --- |
 | Worker/extraction | Empty/malformed/oversized/unsupported input, stable locations, all document sections, safe errors |
 | Ingestion | Restart, retry, duplicate content, partial failure, missing source, quota, bounded concurrency |
+| Bookmarks (planned) | URL validation, metadata/article provenance, inaccessible-page fallback, malicious HTML, size limits, private-address/redirect/DNS-rebinding rejection, duplicate/refresh/restart/delete and two-user isolation; see BOOKMARKS.md |
 | Auth/access | Signup policy, login/logout/expiry, wrong credentials, two-user denial on every file/chunk/chat/storage/search path |
 | Retrieval | Paraphrases, exact identifiers, late-document passages, no-answer queries, owner filtering, model-version mismatch |
 | Photos/OCR | Visual descriptions, rotation/small text, confidence, separate-space fusion, source locations |

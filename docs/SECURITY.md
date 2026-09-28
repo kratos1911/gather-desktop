@@ -6,6 +6,12 @@ Treat uploaded content, filenames, model output, desktop clients and IPC message
 
 ## Required controls before real data
 
+- Bookmark enrichment (planned): enforce the fetch boundary in BOOKMARKS.md before
+  network access. Reject unsafe schemes, embedded credentials and non-public
+  destinations; enforce DNS/redirect/connection checks and egress restrictions,
+  bounded responses/timeouts and safe text rendering. Never forward user cookies.
+  Treat fetched pages as untrusted evidence; exclude sensitive URLs from logs.
+
 - Cloud inference (ADR-009): authenticate at the API, enforce per-owner request/upload quotas and bounded jobs, keep provider secrets server-side, and define spending limits before provisioning. Decide provider retention/region/logging and disclose document processing before enabling uploads.
 
 - Authenticate sessions; enforce per-owner authorization and quotas in Supabase RLS/functions/Storage policies for every access path.

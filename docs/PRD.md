@@ -18,6 +18,7 @@ Import one supported text document, see processing status, retrieve a passage by
 
 - Windows desktop app and private account/library.
 - Native-text PDF, DOCX, PPTX, TXT and Markdown import.
+- Links/bookmarks as private library sources: save URL and optional notes, extract available metadata/readable page text, then search indexed content. Includes blog, gaming and social/video URLs; extraction support varies. See BOOKMARKS.md.
 - Photos (initially JPEG/PNG), screenshots and scanned-page OCR as a required second retrieval slice.
 - Ranked hybrid search, grouped by source file, with excerpts and page/slide/section/image references.
 - File processing states, bounded retries, duplicate handling and safe deletion.
@@ -40,6 +41,7 @@ Mobile, payments, public sharing, collaboration, agents that modify files, cross
 6. Deletion removes search visibility immediately and eventually removes every owned derivative and stored original, with failed cleanup retried.
 7. Restart/retry does not duplicate passages or mark incomplete indexing as ready.
 8. A clean Windows installation can complete the core flow without developer tools.
+9. Saving a valid public-web URL preserves the bookmark even when extraction fails. Distinguish metadata-only from extracted/indexed sources. A video URL/title is not evidence that video content was indexed. Chat uses only actual extracted evidence or user notes.
 
 Provisional quality targets: text Recall@5 >=90% on a versioned answerable-query set; visual/OCR quality reported separately; warm search p95 <2 seconds on a documented 10,000-chunk corpus/connection. These are targets, not observed performance. Chat latency and RAM/VRAM limits are set after hardware benchmarking.
 

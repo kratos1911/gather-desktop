@@ -54,6 +54,16 @@ This comparator is not connected to the desktop and performs no AI/cloud calls.
 
 ## Repository hygiene
 
+Run `./scripts/check.ps1` for the local quality checks (Python 3.11+ required;
+optional `-Python` selects its executable). This covers worker/evaluation/UI
+tests, lint, types, formatting and frontend build. The manual GitHub workflow
+has not been executed remotely; native runtime verification is separate.
+
+[Links and bookmarks](docs/BOOKMARKS.md) are now planned alongside files:
+save URLs and notes, extract available metadata/readable text, then reuse search
+and selected-source chat. Saving a video URL does not imply understanding its
+video. Bookmark implementation is pending.
+
 Private files, model indexes, secrets, local Python environments and build outputs are ignored by `.gitignore`. Do not force-add those paths. No original files are automatically imported into the new app or uploaded to a cloud service.
 
 - [Design avoid list](docs/DESIGN_AVOID_LIST.md)

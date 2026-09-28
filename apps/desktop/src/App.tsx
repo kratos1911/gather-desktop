@@ -121,7 +121,8 @@ export default function App() {
               <p>
                 AI processing is planned for the cloud, with no model downloads
                 required on your device. Hosting and Supabase are not connected
-                in this preview. Provider and usage limits are still being decided.
+                in this preview. Provider and usage limits are still being
+                decided.
               </p>
             </div>
           </section>
@@ -281,7 +282,9 @@ export default function App() {
         <footer className="policy-footer" aria-label="Policy information">
           <button onClick={() => navigate("privacy")}>Privacy notice</button>
           <button onClick={() => navigate("terms")}>Preview terms</button>
-          <button onClick={() => navigate("copyright")}>Copyright procedure</button>
+          <button onClick={() => navigate("copyright")}>
+            Copyright procedure
+          </button>
         </footer>
       </main>
     </div>

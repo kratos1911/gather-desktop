@@ -1,6 +1,6 @@
 # Delivery tasks
 
-Current checkpoint: TASK-005 request client tested with mocks; user deferred provider/account and live tests. Continue independent TASK-011 quality checks. No pushes without an explicit request.
+Current checkpoint: local quality checks pass; remote CI execution pending. Links/bookmarks accepted on 28 September. Next independent task: TASK-016 synthetic bookmark processing. Provider/account/live tests remain deferred; no pushes without an explicit request.
 
 | ID | Task | Status | Acceptance / evidence |
 | --- | --- | --- | --- |
@@ -14,11 +14,13 @@ Current checkpoint: TASK-005 request client tested with mocks; user deferred pro
 | TASK-008 | Native document formats | Depends on 007 | PDF/DOCX/PPTX parsers; preserved page/slide/section references; long-document and malformed-file cases; scanned pages correctly identified |
 | TASK-009 | Photo and OCR retrieval slice | Depends on 007 | JPEG/PNG and scanned text ingestion; SigLIP plus OCR; separate vector spaces and rank fusion; actual source results; category-specific evaluation |
 | TASK-010 | Selected-source chat slice | Depends on 007 | Pin Qwen runtime/quantization; scoped retrieval, streaming, cancellation, citations, missing-evidence and injection tests; measured resource limits |
-| TASK-011 | Automated quality checks | Ready | Explicit lint/typecheck/format scripts and applicable CI checks; documented commands; no false lint-pass claims before this exists |
+| TASK-011 | Automated quality checks | Partial | Local runner passes 20 worker + 29 evaluation + 4 UI tests, ESLint, TypeScript, Prettier and frontend build. Manual CI workflow authored, not pushed/executed remotely. No native E2E claim |
 | TASK-012 | Security and code review | Continuous / release gate | Threat model, input limits, access isolation, deletion reconciliation, license/secret scan, reviewed changes; close privacy audit owner inputs |
 | TASK-013 | Preview installer and QA | Depends on core slices | Clean Windows install/update/uninstall; cloud setup; network/low-disk/offline/quota scenarios; no developer tools or model downloads required |
 | TASK-014 | Production distribution | Depends on 012/013 | Approved destination, signing decision, final policies, backup/restore and rollback; verified release artifacts; no public upload before ready |
 | TASK-015 | Monitoring and iteration | After release | Privacy-preserving failures/performance/quota metrics; opt-in telemetry only; issue triage and tested patch releases |
+| TASK-016 | Bookmark processing contract | Ready | Synthetic URL validation and safe metadata/article extraction, provenance and unavailable fallback; no live fetch/account; see docs/BOOKMARKS.md |
+| TASK-017 | Bookmark save-to-search flow | Depends on 006/007/016 | Private save/edit/delete, restricted fetching/enrichment, search/chat, retry/refresh, SSRF and two-user tests; video content separately scoped |
 
 ## Completed task brief: TASK-004
 

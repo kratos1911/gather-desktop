@@ -9,3 +9,7 @@ Required screens/states: library, processing queue, search results, reader, sele
 Use keyboard-operable controls, visible focus, meaningful labels, reduced-motion support, and preserved reading position. Windows narrow/normal/wide windows and 200% scaling must be checked. Optional Lenis remains reader-only and off by default. Thinking Orbs must not imply work that is not happening.
 
 Before design completion: verify screenshots/native appearance, focus behavior, scrolling, contrast for actual component states and motion preferences. Current visual verification is pending; do not substitute successful compilation for it.
+
+Planned bookmarks: Save link form with URL and optional title/notes; distinguish
+saved, metadata-only and searchable content. Show domain, fetch date and status.
+Open original is explicit. Render safe text; failed enrichment keeps the bookmark.

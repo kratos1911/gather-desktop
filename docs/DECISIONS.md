@@ -65,3 +65,19 @@ search for the small evaluation set so approximate-index behavior cannot obscure
 model comparisons. Keep all similarity signs; do not invent an abstention
 threshold. Tag synthetic vectors explicitly and never report their scores as
 model quality. Real provider selection/token checks/usage accounting remain open.
+
+## ADR-014: local quality command and manual CI (28 September 2026)
+
+Use ESLint/TypeScript/Prettier plus the existing Python and UI tests/build in one
+local command. Pin added development dependencies and commit the lockfile.
+GitHub workflow is manual-dispatch only; authored but not run or pushed. Native
+build/QA remains separate. User explicitly controls all pushes.
+
+## ADR-015: bookmarks as library sources (28 September 2026)
+
+User requested links including blogs, gaming sites and Instagram video URLs.
+Save URL/notes first and enrich asynchronously; reuse the passage/vector pipeline.
+Distinguish bookmark saving, available metadata, extracted page text and actual
+video understanding. Inaccessible content remains a useful saved link. Build
+synthetic extraction first, then owner-scoped persistence and restricted cloud
+fetching. See BOOKMARKS.md for states, SSRF controls and release gates.

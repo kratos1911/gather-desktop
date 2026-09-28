@@ -1,6 +1,6 @@
 # Current project state
 
-Updated: 27 September 2026. This is the present-state summary; PROGRESS.md is chronological history and may describe superseded conditions.
+Updated: 28 September 2026. This is the present-state summary; PROGRESS.md is chronological history and may describe superseded conditions.
 
 ## Product and constraints
 
@@ -11,6 +11,12 @@ on an explicit request to push.
 Gather is a provisional name for a Windows desktop content library with semantic text/photo search and selected-source chat. Tauri/React/TypeScript and Supabase Free remain. User chose cloud AI on 27 September (ADR-009); provider, budget and deployment are deferred. No paid resources authorized/provisioned. No end-user model downloads planned. Design avoid-list applies. No agentic file modification, payment feature or mobile app in MVP.
 
 ## Implemented
+
+- Local quality runner: 20 worker, 29 evaluation and four UI tests, ESLint,
+  TypeScript, Prettier and frontend build pass. Native development build passes.
+  Manual GitHub workflow authored; remote execution unverified.
+- Links/bookmarks added to product scope and delivery plan in BOOKMARKS.md.
+  Specification only: no bookmark UI, storage, fetcher or extraction implemented.
 
 - Server/developer-only embedding request client with batching, full-job token
   preflight, bounded HTTPS, index reordering and safe errors. Eight mocked tests
@@ -34,19 +40,22 @@ Gather is a provisional name for a Windows desktop content library with semantic
 
 No real desktop import, connected worker/cloud endpoint, embeddings, Supabase project connection, auth, durable search index, chat or signed installer. Processing is tested in isolation, with character-based passages pending tokenizer validation. No native/visual/E2E verification. Previous browser opening was declined; that limitation was not bypassed. Canvas is stubbed in component tests, so passing tests do not verify the orb renderer.
 
-Lint is not configured yet; TASK-011 tracks it. The full initial baseline diff also reports pre-existing trailing-whitespace issues in legacy files; those are not hidden or counted as a clean full-diff check. Git repository: https://github.com/kratos1911/gather-desktop (private). origin is configured; main tracks origin/main. Baseline commit b89ceec was pushed and its remote hash verified. The TASK-001 baseline contains the existing implementation and workflow documents.
+Frontend lint and format checks are configured; remote CI and native E2E remain unverified. The full initial baseline diff also reports pre-existing trailing-whitespace issues in legacy files; those are not hidden or counted as a clean full-diff check. Git repository: https://github.com/kratos1911/gather-desktop (private). origin is configured; main tracks origin/main. Baseline commit b89ceec was pushed and its remote hash verified. The TASK-001 baseline contains the existing implementation and workflow documents.
 
 ## Current task
 
-Latest checkpoint: request-client mock checks pass (20 worker + 29 evaluation
-tests and frontend build). Provider-dependent TASK-005 work is deferred by user;
-TASK-011 quality tooling is next. No GitHub push authorized.
-
-TASK-005 vector-evaluation checkpoint on feature/vector-evaluation, based on scorer commit 3d3cda0. Twenty-nine evaluation tests and frontend build pass. Actual vector-export CLI benchmark awaits genuine provider output; no cloud provisioning or personal file access. No desktop/native code changed, so prior component/native evidence is retained, not claimed rerun.
+Latest checkpoint: TASK-011 local checks pass; bookmark scope accepted on
+28 September. Provider-dependent TASK-005 work remains deferred by user.
+No GitHub push authorized. Bookmark implementation is next, not completed.
 
 ## Next implementation
 
-TASK-005: select provider/model/budget and implement the real embedding producer with token checks, batching, timeouts and cost accounting. The saved-vector consumer is ready; provider connection and semantic benchmarks are not. Add harder long-document and independently reviewed unseen questions before release claims. TASK-002 audience research and TASK-003 visual QA remain open.
+TASK-016: implement offline bookmark URL/HTML processing with synthetic fixtures,
+source provenance and honest fallback states. It needs no cloud account or live
+fetching. TASK-017 later connects persistence, restricted fetching and search.
+Provider connection and semantic benchmarks remain pending. Add harder long-document
+and independently reviewed unseen questions before release claims. TASK-002
+audience research and TASK-003 visual QA remain open.
 
 ## Inputs needed before later gates
 
