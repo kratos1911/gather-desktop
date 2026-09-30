@@ -14,7 +14,7 @@ Current checkpoint: local quality checks pass; remote CI execution pending. Link
 | TASK-008 | Native document formats | Depends on 007 | PDF/DOCX/PPTX parsers; preserved page/slide/section references; long-document and malformed-file cases; scanned pages correctly identified |
 | TASK-009 | Photo and OCR retrieval slice | Depends on 007 | JPEG/PNG and scanned text ingestion; SigLIP plus OCR; separate vector spaces and rank fusion; actual source results; category-specific evaluation |
 | TASK-010 | Selected-source chat slice | Deferred by user, 28 September | Pin Qwen runtime/quantization; scoped retrieval, streaming, cancellation, citations, missing-evidence and injection tests; measured resource limits |
-| TASK-011 | Automated quality checks | Partial | Local runner passes 37 worker + 29 evaluation + 4 UI tests, ESLint, TypeScript, Prettier and frontend build. Manual CI workflow authored, not pushed/executed remotely. No native E2E claim |
+| TASK-011 | Automated quality checks | Partial | Local runner passes 45 worker + 29 evaluation + 4 UI tests, ESLint, TypeScript, Prettier and frontend build. Manual CI workflow authored, not pushed/executed remotely. No native E2E claim |
 | TASK-012 | Security and code review | Continuous / release gate | Threat model, input limits, access isolation, deletion reconciliation, license/secret scan, reviewed changes; close privacy audit owner inputs |
 | TASK-013 | Preview installer and QA | Depends on core slices | Clean Windows install/update/uninstall; cloud setup; network/low-disk/offline/quota scenarios; no developer tools or model downloads required |
 | TASK-014 | Production distribution | Depends on 012/013 | Approved destination, signing decision, final policies, backup/restore and rollback; verified release artifacts; no public upload before ready |
@@ -25,7 +25,7 @@ Current checkpoint: local quality checks pass; remote CI execution pending. Link
 
 ## Planned task TASK-019
 
-Additional planned task TASK-019: Crawl4AI webpage and yt-dlp metadata/subtitle adapters.
+Partial TASK-019 (eight synthetic output-adapter tests pass; runner, pins and live checks pending): Crawl4AI webpage and yt-dlp metadata/subtitle adapters.
 Depends on TASK-018 and fetch/privacy review. Acceptance: versioned backend,
 normalized output/provenance, mocked success/unavailable/limit/error checks,
 documented external recipients and safe invocation. No desktop-cookie Instagram

@@ -56,3 +56,11 @@ Reviewed during the recommendation on 30 September:
 
 Status: selected, not installed or connected. No network scraping or paid
 provisioning is implied by this selection.
+
+## Output-adapter checkpoint
+
+TASK-019 is partial. Pure Crawl4AI dictionary and yt-dlp metadata/normalized-cue
+adapters feed the shared passage pipeline. See
+[contract](../../services/worker/EXTRACTION_ADAPTERS.md). Eight synthetic tests
+pass; the tools themselves are not installed or executed. Runners, dependency
+pins, subtitle-file parsing and live compatibility checks remain next.

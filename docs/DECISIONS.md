@@ -134,3 +134,11 @@ version the whole extracted bookmark so retries remain stable and refresh change
 cannot share stale chunk IDs. IDs are not access control. TF-IDF remains an
 offline test baseline, not claimed semantic search. No evaluation imports in the
 worker. Crawl4AI/yt-dlp output normalization follows as TASK-019.
+
+## ADR-022: normalize extractor output before enabling execution
+
+Use pure Crawl4AI/yt-dlp output adapters and the existing passage builder. Preserve
+Markdown without HTML reparsing; subtitle chunks retain overlapping timing cues,
+language and automatic-caption provenance. Backend version/fetch time participate
+in revision identity. Caller-supplied fixtures are not proof of live extraction.
+Keep TASK-019 partial until isolated runners, pins and network checks exist.

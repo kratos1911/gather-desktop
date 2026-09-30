@@ -27,6 +27,13 @@ def prepare_bookmark(source_id: str, url: str, html: bytes | None = None,
     if not isinstance(source_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", source_id):
         raise ValueError("INVALID_SOURCE_ID")
     bookmark = extract_bookmark(url, html, notes=notes, content_type=content_type)
+    return prepare_extracted(source_id, bookmark)
+
+
+def prepare_extracted(source_id: str, bookmark: dict) -> dict:
+    """Internal boundary for normalized, validated extraction adapters."""
+    if not isinstance(source_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", source_id):
+        raise ValueError("INVALID_SOURCE_ID")
     fields = {"url": bookmark["original_url"], "notes": bookmark["notes"],
               "page_text": bookmark["text"]}
     fields.update({f"metadata.{key}": value for key, value in sorted(bookmark["metadata"].items())})

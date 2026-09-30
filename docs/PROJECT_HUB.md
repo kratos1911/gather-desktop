@@ -33,7 +33,7 @@ Open [[docs/knowledge/Search flow.canvas|Search flow canvas]] for the visual map
 
 ## Latest verified development checkpoint
 
-As of the 30 September cleanup, 70 tests passed (37 worker, 29 evaluation, four UI), along
+As of the 30 September cleanup, 78 tests passed (45 worker, 29 evaluation, four UI), along
 with lint, types, formatting and frontend build. These checks were rerun after the bookmark passage adapter. Native build previously passed; runtime,
 visual verification and remote CI remain unverified.
 
@@ -48,7 +48,7 @@ Extraction stack accepted 30 September: [[docs/knowledge/EXTRACTION_STACK|Crawl4
 Agent Reach is optional; tools are selected but not installed or integrated.
 
 TASK-018 is complete: offline bookmark passages and keyword retrieval tests.
-Next: TASK-019 Crawl4AI/yt-dlp extraction adapters. Then connect private storage,
+TASK-019 output adapters tested; next are isolated runners and subtitle parsing. Then connect private storage,
 restricted fetching and genuine cloud embeddings as their prerequisites become
 available. Chat stays deferred. Commit locally; push only on the user's request.
 

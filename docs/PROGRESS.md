@@ -314,3 +314,18 @@ source URL and matching excerpt. Full runner: 37 worker + 29 evaluation + four U
 = 70 tests; lint, types, format and frontend build pass. No native inputs changed,
 so native build not rerun. No live scraping, storage, model or UI integration.
 Updated Obsidian hub and canvas. TASK-019 is next. No push.
+
+## 2026-09-30 — TASK-019 output normalization checkpoint
+
+Added pure Crawl4AI Markdown/metadata and yt-dlp single-video metadata/normalized
+subtitle-cue adapters. Preserves backend version, retrieval timestamp and final
+URL where supplied; handles HTTP/extraction failures without copying raw errors.
+Cue timing/language/automatic flags survive passage chunking. Added generic text
+bounds and input checks; no tools, subprocesses, models or network fetching.
+
+Eight new synthetic tests pass. Full checks: 45 worker + 29 evaluation + four UI
+= 78 tests; lint, types, formatting and frontend build pass. No native inputs
+changed; native build not rerun. Official protocol docs reviewed; actual package
+compatibility is unverified. TASK-019 partial: isolated runner, pins/licenses,
+VTT/SRT parsing and network/privacy checks still pending. Obsidian notes updated.
+No push.
