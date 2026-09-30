@@ -4,7 +4,7 @@ Read docs/PRD.md, docs/ARCHITECTURE.md, docs/DESIGN.md, RULES.md, TASKS.md and d
 
 Follow Read -> Understand -> Plan -> Implement -> Test -> Review -> Fix -> Commit -> Update documentation. Select one task and its acceptance criteria. Keep current status in MEMORY.md, work/evidence in TASKS.md, rationale in DECISIONS.md and historical updates in PROGRESS.md. Do not mark partial or unverified features complete.
 
-- Build the desktop app in apps/desktop. Root Python scripts are legacy; do not run them against personal documents during checks.
+- Build the desktop app in apps/desktop. Old Python scripts are archived in legacy; do not run or import them against personal documents during checks.
 - Apply every item in docs/DESIGN_AVOID_LIST.md. Preserve licensing/provenance and distinguish inspiration from copied code or generated assets.
 - Before adding accounts, uploads, telemetry, email or payments, consult docs/PRIVACY_RELEASE_AUDIT.md and close the relevant implementation gates. Do not invent contact details or claim legal compliance.
 - Target cloud-hosted AI per the user's 27 September decision. Provider, budget and deployment are deferred; do not provision paid resources yet. Supabase Free remains the planned vector backend.

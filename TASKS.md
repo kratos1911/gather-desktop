@@ -23,13 +23,21 @@ Current checkpoint: local quality checks pass; remote CI execution pending. Link
 | TASK-018 | Bookmark passage-to-search adapter | Ready | Map extracted text, metadata and notes to versioned passages; verify keyword retrieval and provenance using synthetic bookmarks. No cloud account required. |
 | TASK-017 | Bookmark save-to-search flow | Depends on 006/007/016 | Private save/edit/delete, restricted fetching/enrichment, search, retry/refresh, SSRF and two-user tests; video content separately scoped |
 
-## Completed task brief: TASK-004
+## Planned task TASK-019
 
 Additional planned task TASK-019: Crawl4AI webpage and yt-dlp metadata/subtitle adapters.
 Depends on TASK-018 and fetch/privacy review. Acceptance: versioned backend,
 normalized output/provenance, mocked success/unavailable/limit/error checks,
 documented external recipients and safe invocation. No desktop-cookie Instagram
 integration or real semantic results claimed. See docs/knowledge/EXTRACTION_STACK.md.
+
+## Cleanup checkpoint
+
+TASK-020: repository organization complete; 109 tracked-file dispositions recorded,
+six legacy files archived, three unused logos removed. 63 tests and frontend
+quality/build checks pass. See docs/REPOSITORY_AUDIT.md.
+
+## Completed task brief: TASK-004
 
 **Context:** Read canonical docs and preserve the existing UI. The next risk is consistent document representation, not another decorative screen.
 

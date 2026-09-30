@@ -117,3 +117,11 @@ preserve existing save/index/fetch security boundaries. No autonomous agent,
 media download, transcription or visual video analysis is part of the initial
 adapter. faster-whisper and chat remain deferred. Open-source licensing does
 not make cloud operation free. Implementation order: TASK-018, TASK-019, TASK-017.
+
+## ADR-020: archive historical prototype rather than discard it
+
+On 30 September the user requested repository cleanup. Preserve the old PyQt,
+Ollama, Chroma and agent experiments unchanged under legacy/ for reference, with
+explicit unsupported status. Remove only unreferenced scaffold logos and OS
+metadata. Preserve private data, environments, user notes and build dependencies.
+Historical audit paths describe the old layout and remain historical evidence.

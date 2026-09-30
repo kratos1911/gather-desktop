@@ -48,7 +48,7 @@ untrusted HTML inside Tauri. See BOOKMARKS.md; no fetcher is implemented yet.
 
 Existing: apps/desktop/src/components, fixtures.ts, App.tsx, src-tauri, scripts/desktop.ps1, docs.
 
-Create as needed, not as empty scaffolding: apps/desktop/src/features, services, types; services/worker; supabase/migrations; tests/fixtures; tests/evaluation. Keep fixture mode explicit until each service is real. Preserve legacy root Python files for reference; do not run them against personal documents during checks.
+Create as needed, not as empty scaffolding: apps/desktop/src/features, services, types; services/worker; supabase/migrations; tests/fixtures; tests/evaluation. Keep fixture mode explicit until each service is real. Old root Python files now live in legacy for reference; do not run them against personal documents during checks.
 
 ## Release path
 

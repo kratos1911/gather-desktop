@@ -33,9 +33,8 @@ Open [[docs/knowledge/Search flow.canvas|Search flow canvas]] for the visual map
 
 ## Latest verified development checkpoint
 
-As of 28 September, 63 tests passed (30 worker, 29 evaluation, four UI), along
-with lint, types, formatting and frontend build. These checks were not rerun for
-the 30 September documentation setup. Native build previously passed; runtime,
+As of the 30 September cleanup, 63 tests passed (30 worker, 29 evaluation, four UI), along
+with lint, types, formatting and frontend build. These checks were rerun after archiving legacy files and removing unused logos. Native build previously passed; runtime,
 visual verification and remote CI remain unverified.
 
 Implemented building blocks: desktop fixture preview, TXT/Markdown processing,
@@ -52,3 +51,5 @@ TASK-018: turn bookmark text, metadata and notes into versioned passages and
 verify keyword retrieval with source references. Then connect private storage,
 restricted fetching and genuine cloud embeddings as their prerequisites become
 available. Chat stays deferred. Commit locally; push only on the user's request.
+
+Repository organization: [[docs/REPOSITORY_AUDIT|File-by-file cleanup audit]].

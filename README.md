@@ -2,7 +2,12 @@
 
 A Windows desktop application being rebuilt to find saved content by meaning and answer questions about selected documents with source citations.
 
-**Current status: interface foundation and text-processing prerequisite.** The new application is in `apps/desktop` and still shows clearly labelled synthetic content. `services/worker` has tested TXT/Markdown extraction and passage generation, not yet connected to the interface. Real import, embeddings, Supabase and model inference are not connected. Legacy scripts and original data folders remain untouched in this step.
+**Current status: interface foundation and offline processing.** The application
+in `apps/desktop` shows labelled synthetic content. `services/worker` contains
+tested TXT/Markdown processing, bookmark extraction and a mocked embedding client.
+Real import, embeddings, Supabase and model inference are not connected. Chat is
+deferred. Old scripts are preserved in [legacy](legacy/README.md); original data
+folders and secrets remain untouched.
 
 ## Start here
 

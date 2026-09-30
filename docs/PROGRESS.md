@@ -283,3 +283,19 @@ links, adapter boundaries and acceptance gates. No dependencies installed or
 network extraction performed. TASK-018 remains the next implementation task.
 Documentation-only checks: internal links and diff whitespace; no app build or
 tests rerun. Prior 63-test result remains historical evidence. No push.
+
+## 2026-09-30 — Repository cleanup
+
+Inventoried all 109 tracked files, read tracked bytes, parsed Python syntax without
+execution and checked active entry points/references. Archived six original root
+prototype files unchanged in legacy/ with explicit unsupported/reference status.
+Deleted three unreferenced scaffold SVG logos and root .DS_Store metadata. Kept
+native icons, lockfiles, licences, source, tests and documentation. Preserved
+private data/secrets, environments, generated outputs and user canvas. No legacy
+code was run; this was not a full correctness/security review of every module.
+
+Checks: 30 worker + 29 evaluation + four UI tests pass; lint, types, formatting
+and frontend build pass. Native development executable rebuilt successfully via
+cargo build --locked --features tauri/custom-protocol. Visual/runtime verification
+remains pending. Updated onboarding, architecture and Obsidian hub/state; full
+per-file record in REPOSITORY_AUDIT.md. TASK-018 remains next. No push.

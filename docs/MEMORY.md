@@ -71,4 +71,10 @@ Supabase project/public configuration; audience/regions; operator/contact and fi
 Project hub: [[docs/PROJECT_HUB]]. Shared repository notes are the source of truth;
 concepts, ideas, templates and the search-flow canvas supplement the canonical
 documents. Local template/daily-note configuration saved; Obsidian UI not verified.
-Latest 63-test result is from 28 September, not rerun for documentation setup.
+Latest 63-test result was rerun during the 30 September repository cleanup.
+
+## Repository cleanup
+
+Six root prototype files moved unchanged to legacy/; three unused starter logos
+removed. Original data, secrets, environments and user notes preserved. See
+docs/REPOSITORY_AUDIT.md for all 109 original tracked-file dispositions.
