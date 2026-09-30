@@ -160,3 +160,11 @@ hostname verification; browser subresources and redirects require the same
 boundary. Do not equate DNS preflight tests with SSRF-safe live extraction.
 Direct pins selected from PyPI: Crawl4AI 0.9.4 (Apache-2.0), yt-dlp 2026.8.19
 (Unlicense). Transitive licences/lock and installed compatibility remain pending.
+
+## ADR-025: network-disabled initial container
+
+Use a dedicated extraction build context allowlist, non-root/read-only runtime,
+resource limits, no host mounts and network_mode none for supplied-output jobs.
+Do not enable networking until controlled egress and redirected/subresource
+connections are enforced. Docker base tag and transitive pins are not yet locked
+by digest. The current container is a preparatory artifact, not verified isolation.

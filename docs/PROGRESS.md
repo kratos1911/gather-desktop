@@ -359,3 +359,18 @@ checks pass: 61 worker + 29 evaluation + four UI = 94 tests; lint, types, format
 and frontend build. Native assets unchanged; no native rebuild. TASK-019 partial.
 Next: enforced network execution boundary and isolated extractor environment.
 No cloud provisioning, personal browser access or push.
+
+## 2026-09-30 — Offline runner and container configuration
+
+Added bounded one-job stdin/stdout runner with strict fields, duplicate-key
+rejection, generic errors and no shell dispatch. Added Dockerfile, allowlisted
+build context and Compose configuration with no network, no host mounts,
+non-root/read-only filesystem, dropped capabilities and resource limits.
+Compose configuration validates. Docker Linux engine unavailable; attempted
+hidden Docker Desktop start but engine remained unreachable. Image build and
+installed packages/isolation unverified; no live scraping performed.
+
+Four runner tests added. Full local runner passes 65 worker + 29 evaluation + four
+UI = 98 tests, lint/types/format/frontend build. No native inputs changed. TASK-019
+remains partial: restore Docker engine, build/lock image, enforce egress and add
+live tool execution. No push, browser-session access or paid provisioning.

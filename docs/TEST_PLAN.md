@@ -7,7 +7,7 @@ processing tests: exact source coverage, Unicode/BOM/CRLF, boundary/overlap,
 stable retry IDs, empty/invalid/oversized/binary inputs, response bounds and
 recovery without content in errors. No cloud, model or private-data access.
 
-From repository root: `./scripts/check.ps1` runs 61 worker tests (eight network-policy, eight subtitle, eight extraction-adapter, seven bookmark-passage, ten bookmark, 12 processing
+From repository root: `./scripts/check.ps1` runs 65 worker tests (four runner, eight network-policy, eight subtitle, eight extraction-adapter, seven bookmark-passage, ten bookmark, 12 processing
 plus eight mocked embedding-client tests), 29 evaluation tests, frontend ESLint,
 TypeScript, Prettier, four component tests and frontend build. Use `-Python` to
 specify a Python executable. These local checks pass; the manual GitHub workflow

@@ -12,7 +12,7 @@ Gather is a provisional name for a Windows desktop content library with semantic
 
 ## Implemented
 
-- Local quality runner: 61 worker, 29 evaluation and four UI tests, ESLint,
+- Local quality runner: 65 worker, 29 evaluation and four UI tests, ESLint,
   TypeScript, Prettier and frontend build pass. Native development build passes.
   Manual GitHub workflow authored; remote execution unverified.
 - Links/bookmarks added to product scope and delivery plan in BOOKMARKS.md.
@@ -70,7 +70,7 @@ Supabase project/public configuration; audience/regions; operator/contact and fi
 Project hub: [[docs/PROJECT_HUB]]. Shared repository notes are the source of truth;
 concepts, ideas, templates and the search-flow canvas supplement the canonical
 documents. Local template/daily-note configuration saved; Obsidian UI not verified.
-Latest 94-test result was rerun during the 30 September repository cleanup.
+Latest 98-test result was rerun during the 30 September repository cleanup.
 
 ## Repository cleanup
 
@@ -96,3 +96,11 @@ TASK-019 remains partial; installed/pinned runners and live network checks remai
 TASK-019 partial: direct extractor pins recorded; eight synthetic destination
 policy tests pass. No packages installed or real DNS performed. Connection/egress
 isolation, transitive dependency lock and executable runner remain unfinished.
+
+## Runner checkpoint and environment limitation
+
+Bounded offline JSON runner and network-disabled Docker configuration added.
+Docker CLI validates Compose, but Linux engine is unavailable after startup
+attempt. Image build, package installation and runtime isolation are unverified.
+Runner only consumes supplied extraction outputs; live URL extraction and enforced
+public-only egress remain unfinished. TASK-019 remains partial.

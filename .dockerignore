@@ -1,0 +1,6 @@
+**
+!services/
+!services/worker/
+!services/worker/*.py
+!services/worker/requirements-extraction.txt
+!services/worker/Dockerfile
