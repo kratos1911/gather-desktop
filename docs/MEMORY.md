@@ -50,6 +50,11 @@ No GitHub push authorized. Offline bookmark processing passes; live bookmark sea
 
 ## Next implementation
 
+30 September: Agent Reach requested for bookmark extraction. Integration research
+and boundaries recorded in docs/knowledge/AGENT_REACH.md; not installed or live.
+Its documented Instagram path needs desktop Chrome login and is not enabled in
+the cloud plan. TASK-019 follows the independent passage/search adapter work.
+
 TASK-018: connect offline bookmark extraction to versioned passages and keyword search with synthetic fixtures,
 source provenance and honest fallback states. It needs no cloud account or live
 fetching. TASK-017 later connects persistence, restricted fetching and search.

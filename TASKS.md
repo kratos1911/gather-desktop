@@ -25,6 +25,12 @@ Current checkpoint: local quality checks pass; remote CI execution pending. Link
 
 ## Completed task brief: TASK-004
 
+Additional planned task TASK-019: Agent Reach public-page adapter evaluation.
+Depends on TASK-018 and fetch/privacy review. Acceptance: versioned backend,
+normalized output/provenance, mocked success/unavailable/limit/error checks,
+documented external recipients and safe invocation. No desktop-cookie Instagram
+integration or real semantic results claimed. See docs/knowledge/AGENT_REACH.md.
+
 **Context:** Read canonical docs and preserve the existing UI. The next risk is consistent document representation, not another decorative screen.
 
 **Task:** Implement the transport-independent processing contract and synthetic text extraction/chunking module, exercised locally before future cloud integration.

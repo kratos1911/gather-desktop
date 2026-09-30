@@ -263,3 +263,13 @@ JSON on disk. No Obsidian window interaction or visual verification performed.
 Documentation-only change; no app tests/build rerun. Latest code evidence remains
 63 tests and frontend quality/build checks from 28 September. Corrected stale
 worker-test counts in state/task summaries. TASK-018 remains next. No push.
+
+## 2026-09-30 — Agent Reach integration direction
+
+Reviewed the upstream English README and package metadata. Recorded the user's
+extraction-toolkit preference, public-page adapter scope, third-party reader
+boundary, desktop-session Instagram limitation and separate save/index states.
+Updated Obsidian hub, bookmark/architecture notes, current state and TASK-019.
+No package installed, browser session accessed, URL scraped or model invoked.
+Documentation-only checkpoint: diff and local note references checked; application
+checks not rerun. TASK-018 remains next and chat remains deferred. No push.

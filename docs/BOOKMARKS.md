@@ -17,6 +17,11 @@ connected, even when page text cannot be extracted.
 
 ## Techniques and coverage
 
+30 September: user selected Agent Reach as the preferred extraction toolkit for
+supported sources. See [[docs/knowledge/AGENT_REACH]] for adapter boundaries and
+the desktop-session limitation of its Instagram integration. Live integration
+is pending; it does not replace Gather persistence, chunking or semantic search.
+
 Implemented offline API: `extract_bookmark(url, html=None, notes="")` in
 services/worker/bookmarks.py. HTML must be UTF-8 bytes, at most 64 KiB; nesting
 is capped at 256 and notes at 8192 characters. Ten synthetic tests pass.

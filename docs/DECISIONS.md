@@ -98,3 +98,12 @@ notes, idea/session templates and a status-labelled canvas; avoid a duplicate
 task ledger. Keep Obsidian settings/workspace local, preserve personal notes, and
 do not enable services or community plugins. Update this knowledge base during
 development checkpoints; app UI behavior remains unverified.
+
+## ADR-018: Agent Reach-backed extraction adapters (30 September 2026)
+
+User requested Agent Reach for saved links. Prefer selected upstream tools behind
+explicit worker adapters; Gather owns durable bookmarks, passage provenance,
+embeddings and retrieval. Toolkit setup is not a production fetching API.
+Instagram's documented desktop Chrome-session path does not fit the current
+cloud-worker plan. Public-page integration remains pending review and tests.
+See docs/knowledge/AGENT_REACH.md for sources, limits and delivery gates.

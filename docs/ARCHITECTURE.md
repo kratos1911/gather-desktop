@@ -10,6 +10,10 @@ apps/desktop contains a React/TypeScript interface, synthetic fixtures, componen
 
 ## Target boundaries
 
+Bookmark extraction preference: Agent Reach-backed tools behind explicit worker
+adapters, subject to per-backend deployment/privacy checks. See
+[[docs/knowledge/AGENT_REACH]]. No generic agent shell in the ingestion path.
+
 ```text
 React UI -> typed application services -> authenticated cloud API (planned)
 Tauri -> narrowly scoped native file selection (planned)
