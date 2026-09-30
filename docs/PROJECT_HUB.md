@@ -45,8 +45,8 @@ search app yet. Details and evidence belong in the linked state and task notes.
 
 ## Immediate next step
 
-Extraction preference added 30 September: [[docs/knowledge/AGENT_REACH|Agent Reach]],
-with supported-source adapters and documented deployment limits; not integrated.
+Extraction stack accepted 30 September: [[docs/knowledge/EXTRACTION_STACK|Crawl4AI and yt-dlp]].
+Agent Reach is optional; tools are selected but not installed or integrated.
 
 TASK-018: turn bookmark text, metadata and notes into versioned passages and
 verify keyword retrieval with source references. Then connect private storage,

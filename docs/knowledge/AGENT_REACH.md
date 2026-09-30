@@ -1,7 +1,8 @@
 # Agent Reach integration
 
-User requested 30 September 2026. Preferred extraction toolkit for supported
-bookmark sources; not installed, connected or verified in Gather yet.
+Historical proposal, superseded later on 30 September 2026 by
+[[docs/knowledge/EXTRACTION_STACK]]. Agent Reach is now optional, not the core
+extraction toolkit. Never installed, connected or verified in Gather.
 Return to [[docs/PROJECT_HUB]] and [[docs/BOOKMARKS]].
 
 ## What the upstream project provides

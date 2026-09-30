@@ -50,10 +50,10 @@ No GitHub push authorized. Offline bookmark processing passes; live bookmark sea
 
 ## Next implementation
 
-30 September: Agent Reach requested for bookmark extraction. Integration research
-and boundaries recorded in docs/knowledge/AGENT_REACH.md; not installed or live.
-Its documented Instagram path needs desktop Chrome login and is not enabled in
-the cloud plan. TASK-019 follows the independent passage/search adapter work.
+30 September final choice: Crawl4AI for public webpages and yt-dlp for supported
+video metadata/available subtitles. Agent Reach is optional. See
+docs/knowledge/EXTRACTION_STACK.md. Tools not installed or live. Transcription,
+visual video understanding and chat remain deferred. TASK-019 follows TASK-018.
 
 TASK-018: connect offline bookmark extraction to versioned passages and keyword search with synthetic fixtures,
 source provenance and honest fallback states. It needs no cloud account or live

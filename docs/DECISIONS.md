@@ -107,3 +107,13 @@ embeddings and retrieval. Toolkit setup is not a production fetching API.
 Instagram's documented desktop Chrome-session path does not fit the current
 cloud-worker plan. Public-page integration remains pending review and tests.
 See docs/knowledge/AGENT_REACH.md for sources, limits and delivery gates.
+
+## ADR-019: Crawl4AI and yt-dlp selected (30 September 2026)
+
+User accepted the recommended stack: self-hosted Crawl4AI for webpages and yt-dlp
+for supported video metadata/available subtitles. Supersedes ADR-018's core
+Agent Reach preference; Agent Reach remains optional. Use explicit adapters and
+preserve existing save/index/fetch security boundaries. No autonomous agent,
+media download, transcription or visual video analysis is part of the initial
+adapter. faster-whisper and chat remain deferred. Open-source licensing does
+not make cloud operation free. Implementation order: TASK-018, TASK-019, TASK-017.

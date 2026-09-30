@@ -17,10 +17,10 @@ connected, even when page text cannot be extracted.
 
 ## Techniques and coverage
 
-30 September: user selected Agent Reach as the preferred extraction toolkit for
-supported sources. See [[docs/knowledge/AGENT_REACH]] for adapter boundaries and
-the desktop-session limitation of its Instagram integration. Live integration
-is pending; it does not replace Gather persistence, chunking or semantic search.
+30 September final selection: Crawl4AI for webpages, yt-dlp for supported video
+metadata and available subtitles. See [[docs/knowledge/EXTRACTION_STACK]].
+Agent Reach is optional; live integration remains pending. Extractors do not
+replace Gather persistence, chunking or semantic search.
 
 Implemented offline API: `extract_bookmark(url, html=None, notes="")` in
 services/worker/bookmarks.py. HTML must be UTF-8 bytes, at most 64 KiB; nesting

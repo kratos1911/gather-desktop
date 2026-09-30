@@ -273,3 +273,13 @@ Updated Obsidian hub, bookmark/architecture notes, current state and TASK-019.
 No package installed, browser session accessed, URL scraped or model invoked.
 Documentation-only checkpoint: diff and local note references checked; application
 checks not rerun. TASK-018 remains next and chat remains deferred. No push.
+
+## 2026-09-30 — Extraction stack accepted
+
+Recorded user acceptance of Crawl4AI plus yt-dlp. Updated current architecture,
+bookmark plan, TASK-019, state and Obsidian hub; retained Agent Reach research
+with an explicit superseded banner. Added EXTRACTION_STACK with scope, source
+links, adapter boundaries and acceptance gates. No dependencies installed or
+network extraction performed. TASK-018 remains the next implementation task.
+Documentation-only checks: internal links and diff whitespace; no app build or
+tests rerun. Prior 63-test result remains historical evidence. No push.

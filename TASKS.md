@@ -25,11 +25,11 @@ Current checkpoint: local quality checks pass; remote CI execution pending. Link
 
 ## Completed task brief: TASK-004
 
-Additional planned task TASK-019: Agent Reach public-page adapter evaluation.
+Additional planned task TASK-019: Crawl4AI webpage and yt-dlp metadata/subtitle adapters.
 Depends on TASK-018 and fetch/privacy review. Acceptance: versioned backend,
 normalized output/provenance, mocked success/unavailable/limit/error checks,
 documented external recipients and safe invocation. No desktop-cookie Instagram
-integration or real semantic results claimed. See docs/knowledge/AGENT_REACH.md.
+integration or real semantic results claimed. See docs/knowledge/EXTRACTION_STACK.md.
 
 **Context:** Read canonical docs and preserve the existing UI. The next risk is consistent document representation, not another decorative screen.
 

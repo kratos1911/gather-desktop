@@ -10,9 +10,10 @@ apps/desktop contains a React/TypeScript interface, synthetic fixtures, componen
 
 ## Target boundaries
 
-Bookmark extraction preference: Agent Reach-backed tools behind explicit worker
-adapters, subject to per-backend deployment/privacy checks. See
-[[docs/knowledge/AGENT_REACH]]. No generic agent shell in the ingestion path.
+Selected bookmark extraction: self-hosted Crawl4AI for webpages and yt-dlp for
+supported video metadata/available subtitles, behind explicit worker adapters.
+See [[docs/knowledge/EXTRACTION_STACK]]. Not installed or connected yet; no
+generic agent shell in the ingestion path. Agent Reach is optional, not core.
 
 ```text
 React UI -> typed application services -> authenticated cloud API (planned)
