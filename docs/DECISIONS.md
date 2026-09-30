@@ -150,3 +150,13 @@ Preserve overlapping/repeated cues and multiline text; strip display markup and
 ignore VTT NOTE/STYLE/REGION blocks. Reject malformed cue blocks atomically.
 Keep download/network execution separate and TASK-019 partial. Reference:
 https://www.w3.org/TR/webvtt1/ (checked 30 September 2026).
+
+## ADR-024: destination preflight is separate from network enforcement
+
+Use an injected resolver and reject any non-public/mixed DNS answer, alternate
+numeric host notation and non-web ports. Return immutable approved addresses.
+The future transport must connect without resolving again and preserve TLS
+hostname verification; browser subresources and redirects require the same
+boundary. Do not equate DNS preflight tests with SSRF-safe live extraction.
+Direct pins selected from PyPI: Crawl4AI 0.9.4 (Apache-2.0), yt-dlp 2026.8.19
+(Unlicense). Transitive licences/lock and installed compatibility remain pending.

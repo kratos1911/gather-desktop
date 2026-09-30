@@ -33,7 +33,7 @@ Open [[docs/knowledge/Search flow.canvas|Search flow canvas]] for the visual map
 
 ## Latest verified development checkpoint
 
-As of the 30 September cleanup, 86 tests passed (53 worker, 29 evaluation, four UI), along
+As of the 30 September cleanup, 94 tests passed (61 worker, 29 evaluation, four UI), along
 with lint, types, formatting and frontend build. These checks were rerun after the bookmark passage adapter. Native build previously passed; runtime,
 visual verification and remote CI remain unverified.
 

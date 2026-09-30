@@ -343,3 +343,19 @@ cue references. Full runner passes: 53 worker + 29 evaluation + four UI = 86 tes
 lint, types, formatting and frontend build. Native inputs unchanged; no rebuild
 or visual QA claimed. TASK-019 still partial; next isolated/pinned extraction
 runners and network controls. Updated Obsidian state/hub. No push.
+
+## 2026-09-30 — Extractor destination policy and direct pins
+
+Implemented pure public-destination preflight with injected DNS, all-answer
+validation, port restrictions, sanitized resolver errors and immutable approved
+addresses. Eight tests cover mixed/private/metadata/special ranges, malformed or
+large answers, literal IPs, numeric hosts and changed DNS answers. This does not
+perform network I/O or prevent rebinding unless the future transport uses the
+approved addresses. No isolation or live runner claim.
+
+Recorded PyPI-verified direct pins in requirements-extraction.txt. Not installed;
+transitive lock and complete dependency licence review remain pending. Full
+checks pass: 61 worker + 29 evaluation + four UI = 94 tests; lint, types, formatting
+and frontend build. Native assets unchanged; no native rebuild. TASK-019 partial.
+Next: enforced network execution boundary and isolated extractor environment.
+No cloud provisioning, personal browser access or push.
