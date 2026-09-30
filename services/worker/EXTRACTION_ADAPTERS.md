@@ -11,7 +11,8 @@ Cues are `{start: seconds, end: seconds, text: string}`; starts must be ordered,
 times finite/nonnegative and ends after starts. Overlapping cues are allowed.
 Language and automatic-caption provenance accompany each subtitle passage.
 Offsets refer to the joined transcript; each chunk carries overlapping cue spans.
-This does not parse VTT/SRT, fetch subtitle URLs or analyze video frames.
+The separate subtitles.py parser now supplies bounded VTT/SRT cues. Neither
+module fetches subtitle URLs or analyzes video frames.
 
 Both require an explicit backend version and timezone-aware retrieval timestamp,
 retained in output and revision identity. These are caller assertions, not proof
@@ -29,7 +30,7 @@ Eight synthetic tests plus existing passage tests cover failures, Markdown,
 redirect provenance, metadata-only results, cues, limits and revision changes.
 No Crawl4AI/yt-dlp installation or real compatibility test has occurred. Dependency
 pinning/license review, isolated execution, network enforcement, bounded subtitle
-downloads/parsing and approved public-site tests are still required in TASK-019.
+downloads and approved public-site tests are still required in TASK-019.
 Self-hosted execution will contact destination sites; any third-party reader or
 proxy requires an explicit recorded data-recipient decision before use.
 

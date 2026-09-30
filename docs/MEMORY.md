@@ -12,7 +12,7 @@ Gather is a provisional name for a Windows desktop content library with semantic
 
 ## Implemented
 
-- Local quality runner: 45 worker, 29 evaluation and four UI tests, ESLint,
+- Local quality runner: 53 worker, 29 evaluation and four UI tests, ESLint,
   TypeScript, Prettier and frontend build pass. Native development build passes.
   Manual GitHub workflow authored; remote execution unverified.
 - Links/bookmarks added to product scope and delivery plan in BOOKMARKS.md.
@@ -70,7 +70,7 @@ Supabase project/public configuration; audience/regions; operator/contact and fi
 Project hub: [[docs/PROJECT_HUB]]. Shared repository notes are the source of truth;
 concepts, ideas, templates and the search-flow canvas supplement the canonical
 documents. Local template/daily-note configuration saved; Obsidian UI not verified.
-Latest 78-test result was rerun during the 30 September repository cleanup.
+Latest 86-test result was rerun during the 30 September repository cleanup.
 
 ## Repository cleanup
 
@@ -83,4 +83,10 @@ Seven new synthetic tests; no desktop search, storage or actual embeddings.
 
 TASK-019 partial: eight synthetic output-adapter tests pass. Markdown preserved,
 subtitle cue timing/language tracked. No installed extractors or live requests.
-Next: isolated runner, bounded subtitle parsing and network enforcement.
+Next: isolated runner and network enforcement.
+
+## Subtitle parsing checkpoint
+
+services/worker/subtitles.py now parses a bounded UTF-8 SRT/WebVTT subset into
+normalized cues. Eight tests include byte-to-passage timestamp preservation.
+TASK-019 remains partial; installed/pinned runners and live network checks remain.

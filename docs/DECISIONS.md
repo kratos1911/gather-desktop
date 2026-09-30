@@ -142,3 +142,11 @@ Markdown without HTML reparsing; subtitle chunks retain overlapping timing cues,
 language and automatic-caption provenance. Backend version/fetch time participate
 in revision identity. Caller-supplied fixtures are not proof of live extraction.
 Keep TASK-019 partial until isolated runners, pins and network checks exist.
+
+## ADR-023: bounded caption parsing before downloads
+
+Use a strict retrieval-oriented UTF-8 SRT/WebVTT subset, not a browser renderer.
+Preserve overlapping/repeated cues and multiline text; strip display markup and
+ignore VTT NOTE/STYLE/REGION blocks. Reject malformed cue blocks atomically.
+Keep download/network execution separate and TASK-019 partial. Reference:
+https://www.w3.org/TR/webvtt1/ (checked 30 September 2026).

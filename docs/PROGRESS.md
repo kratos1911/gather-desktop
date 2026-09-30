@@ -329,3 +329,17 @@ changed; native build not rerun. Official protocol docs reviewed; actual package
 compatibility is unverified. TASK-019 partial: isolated runner, pins/licenses,
 VTT/SRT parsing and network/privacy checks still pending. Obsidian notes updated.
 No push.
+
+## 2026-09-30 — Subtitle parsing checkpoint
+
+Added bounded SRT/WebVTT caption parser: UTF-8/BOM/line-ending handling, timestamp
+validation, cue identifiers, display-markup removal, entity decoding, overlap
+preservation and size/count limits. Unsupported formats and malformed blocks
+raise generic errors without returning a partial transcript. This is a subset,
+not full WebVTT rendering/conformance. No external dependencies or live downloads.
+
+Eight new tests, including subtitle bytes through yt-dlp output adapter to passage
+cue references. Full runner passes: 53 worker + 29 evaluation + four UI = 86 tests;
+lint, types, formatting and frontend build. Native inputs unchanged; no rebuild
+or visual QA claimed. TASK-019 still partial; next isolated/pinned extraction
+runners and network controls. Updated Obsidian state/hub. No push.
