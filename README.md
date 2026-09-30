@@ -54,6 +54,9 @@ This comparator is not connected to the desktop and performs no AI/cloud calls.
 
 ## Repository hygiene
 
+Open [the project hub](docs/PROJECT_HUB.md) in Obsidian for linked progress,
+tasks, architecture, search concepts, decisions and the search-flow canvas.
+
 Run `./scripts/check.ps1` for the local quality checks (Python 3.11+ required;
 optional `-Python` selects its executable). This covers worker/evaluation/UI
 tests, lint, types, formatting and frontend build. The manual GitHub workflow

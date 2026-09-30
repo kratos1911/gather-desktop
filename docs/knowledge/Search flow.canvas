@@ -1,0 +1,127 @@
+{
+  "nodes": [
+    {
+      "id": "source",
+      "type": "text",
+      "text": "Save file or link\nPLANNED desktop ingestion",
+      "x": 0,
+      "y": 0,
+      "width": 330,
+      "height": 135
+    },
+    {
+      "id": "parse",
+      "type": "text",
+      "text": "Extract text + metadata\nOFFLINE TXT/MD and HTML implemented",
+      "x": 380,
+      "y": 0,
+      "width": 330,
+      "height": 135
+    },
+    {
+      "id": "chunk",
+      "type": "text",
+      "text": "Versioned passages + provenance\nTXT/MD implemented; bookmark adapter NEXT",
+      "x": 760,
+      "y": 0,
+      "width": 330,
+      "height": 135
+    },
+    {
+      "id": "keyword",
+      "type": "text",
+      "text": "Keyword ranking: TF-IDF\nEVALUATION baseline implemented",
+      "x": 400,
+      "y": 220,
+      "width": 330,
+      "height": 135
+    },
+    {
+      "id": "vector",
+      "type": "text",
+      "text": "Cloud embeddings + Supabase\nPLANNED; provider/configuration pending",
+      "x": 800,
+      "y": 220,
+      "width": 330,
+      "height": 135
+    },
+    {
+      "id": "results",
+      "type": "text",
+      "text": "Combine ranks -> source excerpts\nPLANNED connected search",
+      "x": 600,
+      "y": 440,
+      "width": 330,
+      "height": 135
+    },
+    {
+      "id": "chat",
+      "type": "text",
+      "text": "Selected-source chat\nDEFERRED until search works",
+      "x": 1000,
+      "y": 440,
+      "width": 330,
+      "height": 135
+    },
+    {
+      "id": "hub",
+      "type": "file",
+      "file": "docs/PROJECT_HUB.md",
+      "x": 0,
+      "y": 240,
+      "width": 330,
+      "height": 240
+    }
+  ],
+  "edges": [
+    {
+      "id": "e0",
+      "fromNode": "source",
+      "fromSide": "right",
+      "toNode": "parse",
+      "toSide": "left"
+    },
+    {
+      "id": "e1",
+      "fromNode": "parse",
+      "fromSide": "right",
+      "toNode": "chunk",
+      "toSide": "left"
+    },
+    {
+      "id": "e2",
+      "fromNode": "chunk",
+      "fromSide": "bottom",
+      "toNode": "keyword",
+      "toSide": "top"
+    },
+    {
+      "id": "e3",
+      "fromNode": "chunk",
+      "fromSide": "bottom",
+      "toNode": "vector",
+      "toSide": "top"
+    },
+    {
+      "id": "e4",
+      "fromNode": "keyword",
+      "fromSide": "bottom",
+      "toNode": "results",
+      "toSide": "top"
+    },
+    {
+      "id": "e5",
+      "fromNode": "vector",
+      "fromSide": "bottom",
+      "toNode": "results",
+      "toSide": "top"
+    },
+    {
+      "id": "e6",
+      "fromNode": "results",
+      "fromSide": "right",
+      "toNode": "chat",
+      "toSide": "left"
+    }
+  ]
+}

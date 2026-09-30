@@ -11,4 +11,5 @@ Follow Read -> Understand -> Plan -> Implement -> Test -> Review -> Fix -> Commi
 - Explain significant decisions in simple language. Record completed work, checks and unverified items in docs/PROGRESS.md.
 - Never pass off fixtures as semantic results or sample animation as actual model work.
 - Keep commits local. Push to GitHub only when the user explicitly asks to push; routine permission to continue development is not push authorization.
+- Use docs/PROJECT_HUB.md and relevant Obsidian-linked notes as working references. Maintain the hub, concepts and flow map alongside canonical task/state/decision/progress documents. Preserve user-authored notes; label proposed ideas and unverified behavior explicitly.
 - Test meaningful changed behavior and build the frontend. When native inputs/assets change, rebuild the desktop executable too.

@@ -248,3 +248,18 @@ changed; no native rebuild or visual/runtime verification claimed this turn.
 Chat deferred per user. Next TASK-018 connects bookmark evidence to versioned
 passages and keyword retrieval, independently of provider setup. Live fetching
 still requires network security and privacy gates. Keep all commits local.
+
+## 2026-09-30 — Obsidian project knowledge base
+
+Found an existing .obsidian vault in the repository with a root daily note and
+Untitled.canvas. Preserved both. Added PROJECT_HUB, concept glossary, accepted
+ideas/open questions, maintenance workflow, session/idea templates and a search
+flow canvas with implemented/planned/deferred states. Added AGENTS maintenance
+instructions so future work consults and updates these notes. Configured local
+template and daily-note paths; ignored .obsidian settings/workspace in Git.
+
+Checked new internal links, canvas IDs/edges/file references and configuration
+JSON on disk. No Obsidian window interaction or visual verification performed.
+Documentation-only change; no app tests/build rerun. Latest code evidence remains
+63 tests and frontend quality/build checks from 28 September. Corrected stale
+worker-test counts in state/task summaries. TASK-018 remains next. No push.

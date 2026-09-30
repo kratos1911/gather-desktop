@@ -89,3 +89,12 @@ not a first-search release gate. Use a bounded standard-library HTML parser for
 the initial offline contract, preserving metadata/text provenance and unavailable
 states. This is a conservative heuristic, not universal article extraction or an
 SSRF-safe fetcher. Real-world parser evaluation and cloud fetching remain pending.
+
+## ADR-017: one documentation set for Obsidian and development (30 September 2026)
+
+User requested ongoing Obsidian reference and documentation. Use the repository
+as the existing vault, with PROJECT_HUB linking canonical documents. Add learning
+notes, idea/session templates and a status-labelled canvas; avoid a duplicate
+task ledger. Keep Obsidian settings/workspace local, preserve personal notes, and
+do not enable services or community plugins. Update this knowledge base during
+development checkpoints; app UI behavior remains unverified.

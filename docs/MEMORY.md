@@ -1,6 +1,6 @@
 # Current project state
 
-Updated: 28 September 2026. This is the present-state summary; PROGRESS.md is chronological history and may describe superseded conditions.
+Updated: 30 September 2026. This is the present-state summary; PROGRESS.md is chronological history and may describe superseded conditions.
 
 ## Product and constraints
 
@@ -12,7 +12,7 @@ Gather is a provisional name for a Windows desktop content library with semantic
 
 ## Implemented
 
-- Local quality runner: 20 worker, 29 evaluation and four UI tests, ESLint,
+- Local quality runner: 30 worker, 29 evaluation and four UI tests, ESLint,
   TypeScript, Prettier and frontend build pass. Native development build passes.
   Manual GitHub workflow authored; remote execution unverified.
 - Links/bookmarks added to product scope and delivery plan in BOOKMARKS.md.
@@ -60,3 +60,10 @@ audience research and TASK-003 visual QA remain open.
 ## Inputs needed before later gates
 
 Supabase project/public configuration; audience/regions; operator/contact and final policies; cloud provider, budget, model/license/runtime selection; signing and public distribution destination. Do not request secrets in chat. Current .env is private legacy configuration and is not copied into the new app.
+
+## Obsidian workspace
+
+Project hub: [[docs/PROJECT_HUB]]. Shared repository notes are the source of truth;
+concepts, ideas, templates and the search-flow canvas supplement the canonical
+documents. Local template/daily-note configuration saved; Obsidian UI not verified.
+Latest 63-test result is from 28 September, not rerun for documentation setup.

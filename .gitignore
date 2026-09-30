@@ -25,3 +25,6 @@ coverage/
 *.log
 .DS_Store
 Thumbs.db
+
+# Local Obsidian settings, plugin state and workspace layout
+/.obsidian/
