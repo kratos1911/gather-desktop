@@ -90,3 +90,11 @@ pages. Add bookmark evaluation in a new version; preserve frozen text-v1.
 
 No desktop bookmark input, persistence, fetcher or semantic bookmark results are implemented
 by this specification. Provider selection and deployment remain deferred.
+
+## TASK-018 checkpoint
+
+Offline passage preparation is implemented; see
+[worker contract](../services/worker/BOOKMARK_PASSAGES.md). Seven tests cover
+provenance and TF-IDF retrieval. Passages are not stored or semantically indexed;
+Crawl4AI/yt-dlp output adapters are next. Earlier task descriptions above describe
+the delivery plan, not additional live functionality.

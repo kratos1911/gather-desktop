@@ -1,6 +1,6 @@
 # Delivery tasks
 
-Current checkpoint: local quality checks pass; remote CI execution pending. Links/bookmarks accepted on 28 September. Next independent task: TASK-018 bookmark passage-to-search adapter. Chat deferred. Provider/account/live tests remain deferred; no pushes without an explicit request.
+Current checkpoint: local quality checks pass; remote CI execution pending. Links/bookmarks accepted on 28 September. Next independent task: TASK-019 extraction adapters. Chat deferred. Provider/account/live tests remain deferred; no pushes without an explicit request.
 
 | ID | Task | Status | Acceptance / evidence |
 | --- | --- | --- | --- |
@@ -14,13 +14,13 @@ Current checkpoint: local quality checks pass; remote CI execution pending. Link
 | TASK-008 | Native document formats | Depends on 007 | PDF/DOCX/PPTX parsers; preserved page/slide/section references; long-document and malformed-file cases; scanned pages correctly identified |
 | TASK-009 | Photo and OCR retrieval slice | Depends on 007 | JPEG/PNG and scanned text ingestion; SigLIP plus OCR; separate vector spaces and rank fusion; actual source results; category-specific evaluation |
 | TASK-010 | Selected-source chat slice | Deferred by user, 28 September | Pin Qwen runtime/quantization; scoped retrieval, streaming, cancellation, citations, missing-evidence and injection tests; measured resource limits |
-| TASK-011 | Automated quality checks | Partial | Local runner passes 30 worker + 29 evaluation + 4 UI tests, ESLint, TypeScript, Prettier and frontend build. Manual CI workflow authored, not pushed/executed remotely. No native E2E claim |
+| TASK-011 | Automated quality checks | Partial | Local runner passes 37 worker + 29 evaluation + 4 UI tests, ESLint, TypeScript, Prettier and frontend build. Manual CI workflow authored, not pushed/executed remotely. No native E2E claim |
 | TASK-012 | Security and code review | Continuous / release gate | Threat model, input limits, access isolation, deletion reconciliation, license/secret scan, reviewed changes; close privacy audit owner inputs |
 | TASK-013 | Preview installer and QA | Depends on core slices | Clean Windows install/update/uninstall; cloud setup; network/low-disk/offline/quota scenarios; no developer tools or model downloads required |
 | TASK-014 | Production distribution | Depends on 012/013 | Approved destination, signing decision, final policies, backup/restore and rollback; verified release artifacts; no public upload before ready |
 | TASK-015 | Monitoring and iteration | After release | Privacy-preserving failures/performance/quota metrics; opt-in telemetry only; issue triage and tested patch releases |
 | TASK-016 | Bookmark processing contract | Done | Ten synthetic tests pass; bounded offline HTML extraction and URL validation. No live fetch. |
-| TASK-018 | Bookmark passage-to-search adapter | Ready | Map extracted text, metadata and notes to versioned passages; verify keyword retrieval and provenance using synthetic bookmarks. No cloud account required. |
+| TASK-018 | Bookmark passage-to-search adapter | Done | Seven synthetic tests pass: field provenance, deterministic/versioned IDs, failed-page notes, late-passage TF-IDF retrieval. Map extracted text, metadata and notes to versioned passages; verify keyword retrieval and provenance using synthetic bookmarks. No cloud account required. |
 | TASK-017 | Bookmark save-to-search flow | Depends on 006/007/016 | Private save/edit/delete, restricted fetching/enrichment, search, retry/refresh, SSRF and two-user tests; video content separately scoped |
 
 ## Planned task TASK-019

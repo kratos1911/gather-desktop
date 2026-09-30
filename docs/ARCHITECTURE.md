@@ -4,7 +4,8 @@
 
 28 September: chat is deferred until search works. The offline bookmark parser
 in services/worker/bookmarks.py extracts supplied HTML without network access.
-It is not yet connected to desktop persistence, passages or search.
+Offline bookmark passages now reuse text chunking and are tested with TF-IDF.
+Desktop persistence, live extraction and semantic search remain disconnected.
 
 apps/desktop contains a React/TypeScript interface, synthetic fixtures, component tests and a Tauri Windows shell. services/worker contains a transport-independent TXT/Markdown processing module with synthetic tests. No auth, processing endpoint, database client, inference runtime or upload pipeline is connected. See MEMORY.md for verification.
 

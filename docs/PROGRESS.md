@@ -299,3 +299,18 @@ and frontend build pass. Native development executable rebuilt successfully via
 cargo build --locked --features tauri/custom-protocol. Visual/runtime verification
 remains pending. Updated onboarding, architecture and Obsidian hub/state; full
 per-file record in REPOSITORY_AUDIT.md. TASK-018 remains next. No push.
+
+## 2026-09-30 — TASK-018 bookmark passage adapter
+
+Implemented bounded HTML extraction to field-specific versioned passages, reusing
+text-processing request validation/chunking. Preserved original URL, exact field
+offsets, extraction status/reason and semantic_ready=false. Revision/source/field
+identities distinguish retries, edited notes and separate sources. Notes and URL
+remain processable when extraction is unavailable; invalid field processing
+returns no partial document. Documented contract in services/worker/BOOKMARK_PASSAGES.md.
+
+Seven new tests pass, including late-document TF-IDF retrieval resolving back to
+source URL and matching excerpt. Full runner: 37 worker + 29 evaluation + four UI
+= 70 tests; lint, types, format and frontend build pass. No native inputs changed,
+so native build not rerun. No live scraping, storage, model or UI integration.
+Updated Obsidian hub and canvas. TASK-019 is next. No push.

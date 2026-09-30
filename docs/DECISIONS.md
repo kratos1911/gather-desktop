@@ -125,3 +125,12 @@ Ollama, Chroma and agent experiments unchanged under legacy/ for reference, with
 explicit unsupported status. Remove only unreferenced scaffold logos and OS
 metadata. Preserve private data, environments, user notes and build dependencies.
 Historical audit paths describe the old layout and remain historical evidence.
+
+## ADR-021: field-specific versioned bookmark passages
+
+TASK-018 reuses the existing text processor independently per URL, metadata,
+notes and page-text field. Preserve exact field offsets and label evidence types;
+version the whole extracted bookmark so retries remain stable and refresh changes
+cannot share stale chunk IDs. IDs are not access control. TF-IDF remains an
+offline test baseline, not claimed semantic search. No evaluation imports in the
+worker. Crawl4AI/yt-dlp output normalization follows as TASK-019.

@@ -21,7 +21,7 @@
     {
       "id": "chunk",
       "type": "text",
-      "text": "Versioned passages + provenance\nTXT/MD implemented; bookmark adapter NEXT",
+      "text": "Versioned passages + provenance\nTXT/MD and offline HTML bookmark adapter implemented",
       "x": 760,
       "y": 0,
       "width": 330,
