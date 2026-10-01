@@ -25,7 +25,7 @@ Current checkpoint: local quality checks pass; remote CI execution pending. Link
 
 ## Planned task TASK-019
 
-Partial TASK-019 (eight synthetic output-adapter tests pass; runner, pins and live checks pending): Crawl4AI webpage and yt-dlp metadata/subtitle adapters.
+Partial TASK-019 (output adapters, offline runner and container smoke checks pass; live checks pending): Crawl4AI webpage and yt-dlp metadata/subtitle adapters.
 Depends on TASK-018 and fetch/privacy review. Acceptance: versioned backend,
 normalized output/provenance, mocked success/unavailable/limit/error checks,
 documented external recipients and safe invocation. No desktop-cookie Instagram
@@ -52,3 +52,13 @@ quality/build checks pass. See docs/REPOSITORY_AUDIT.md.
 **Testing:** Synthetic UTF-8, empty input, long text, boundaries/overlap, unsupported encoding, invalid request and size limits. Review the data contract before wiring UI/IPC.
 
 **Report:** What changed, why, checks and evidence, review findings/fixes, remaining issues, commit and updated state.
+
+## TASK-019 container evidence, 1 October
+
+Image build succeeded after Docker became available. Direct package versions and
+pip dependency consistency verified. `scripts/check_extractor_container.py` passes
+synthetic success/error jobs and selected runtime restrictions. Full local checks:
+65 worker + 29 evaluation + 4 UI = 98 tests, lint/types/format/frontend build pass.
+Still open: transitive/base-image locking, enforced public-only egress, actual tool
+invocation, browser dependencies and live compatibility tests. No semantic results
+or end-to-end desktop ingestion claimed.

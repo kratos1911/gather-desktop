@@ -13,7 +13,7 @@ apps/desktop contains a React/TypeScript interface, synthetic fixtures, componen
 
 Selected bookmark extraction: self-hosted Crawl4AI for webpages and yt-dlp for
 supported video metadata/available subtitles, behind explicit worker adapters.
-See [[docs/knowledge/EXTRACTION_STACK]]. Not installed or connected yet; no
+See [[docs/knowledge/EXTRACTION_STACK]]. Installed in the tested offline container only; not connected to live fetching; no
 generic agent shell in the ingestion path. Agent Reach is optional, not core.
 
 ```text

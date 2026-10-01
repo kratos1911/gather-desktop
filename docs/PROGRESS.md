@@ -374,3 +374,19 @@ Four runner tests added. Full local runner passes 65 worker + 29 evaluation + fo
 UI = 98 tests, lint/types/format/frontend build. No native inputs changed. TASK-019
 remains partial: restore Docker engine, build/lock image, enforce egress and add
 live tool execution. No push, browser-session access or paid provisioning.
+
+## 2026-10-01 — Built and checked offline extraction container
+
+Docker Linux engine became available. Built the image successfully; verified
+Crawl4AI 0.9.4 and yt-dlp 2026.8.19 package metadata and pip dependency consistency.
+Added repeatable scripts/check_extractor_container.py: synthetic success/error
+jobs, semantic_ready false, UID 65532, rejected application-directory write,
+unreachable external route, and absence of /app/.env and /app/data all pass.
+Smoke containers removed on exit. These probes do not certify production isolation.
+
+Reran 65 worker + 29 evaluation + 4 UI = 98 tests, lint, types, formatting and
+frontend build successfully. No native inputs changed; no native rebuild needed.
+Updated canonical status, hub, extraction note and Obsidian flow canvas. TASK-019
+remains partial: dependency/base-image locks, public-only egress, browser runtime
+and actual tool invocation/live compatibility remain open. No live scraping,
+cloud provisioning, personal-document processing or push performed.

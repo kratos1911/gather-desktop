@@ -54,7 +54,7 @@ Reviewed during the recommendation on 30 September:
 - [yt-dlp site support limitations](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md)
 - [faster-whisper](https://github.com/SYSTRAN/faster-whisper)
 
-Status: selected, not installed or connected. No network scraping or paid
+Selection checkpoint (30 September): selected, not installed or connected. No network scraping or paid
 provisioning is implied by this selection.
 
 ## Output-adapter checkpoint
@@ -64,3 +64,13 @@ adapters feed the shared passage pipeline. See
 [contract](../../services/worker/EXTRACTION_ADAPTERS.md). Eight synthetic tests
 pass; the tools themselves are not installed or executed. Runners, dependency
 pins, subtitle-file parsing and live compatibility checks remain next.
+
+## Current container checkpoint, 1 October
+
+Crawl4AI 0.9.4 and yt-dlp 2026.8.19 are installed in the built Docker image.
+The bounded runner consumes supplied results; it does not invoke these tools yet.
+SRT/WebVTT parsing and public-address preflight policy have offline tests.
+Container smoke checks verify selected runtime restrictions with networking fully
+disabled. Public-only egress, live invocation, Chromium installation and locked
+transitive dependencies/base image are still pending. See the runner guide and
+TASK-019 for evidence. No real semantic retrieval demonstrated.

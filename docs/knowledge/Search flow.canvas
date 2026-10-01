@@ -12,7 +12,7 @@
     {
       "id": "parse",
       "type": "text",
-      "text": "Extract text + metadata\nOFFLINE TXT/MD and HTML implemented",
+      "text": "Extract text + metadata\nOFFLINE parsers and container runner tested\nLive fetching pending",
       "x": 380,
       "y": 0,
       "width": 330,

@@ -33,8 +33,8 @@ Open [[docs/knowledge/Search flow.canvas|Search flow canvas]] for the visual map
 
 ## Latest verified development checkpoint
 
-As of the 30 September cleanup, 98 tests passed (65 worker, 29 evaluation, four UI), along
-with lint, types, formatting and frontend build. These checks were rerun after the bookmark passage adapter. Native build previously passed; runtime,
+As of the 1 October container checkpoint, 98 tests passed (65 worker, 29 evaluation, four UI), along
+with lint, types, formatting and frontend build. These checks were rerun alongside the Docker smoke checks. Native build previously passed; runtime,
 visual verification and remote CI remain unverified.
 
 Implemented building blocks: desktop fixture preview, TXT/Markdown processing,
@@ -45,10 +45,12 @@ search app yet. Details and evidence belong in the linked state and task notes.
 ## Immediate next step
 
 Extraction stack accepted 30 September: [[docs/knowledge/EXTRACTION_STACK|Crawl4AI and yt-dlp]].
-Agent Reach is optional; tools are selected but not installed or integrated.
+Agent Reach is optional; selected tools are installed in the offline Docker image,
+but live invocation and desktop integration remain pending.
 
 TASK-018 is complete: offline bookmark passages and keyword retrieval tests.
-TASK-019 output adapters tested; next are isolated extraction runners and network enforcement. Then connect private storage,
+TASK-019 offline runner and container smoke checks pass; next are dependency locking,
+public-only network enforcement and actual extraction execution. Then connect private storage,
 restricted fetching and genuine cloud embeddings as their prerequisites become
 available. Chat stays deferred. Commit locally; push only on the user's request.
 

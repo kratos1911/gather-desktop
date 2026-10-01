@@ -70,7 +70,7 @@ Supabase project/public configuration; audience/regions; operator/contact and fi
 Project hub: [[docs/PROJECT_HUB]]. Shared repository notes are the source of truth;
 concepts, ideas, templates and the search-flow canvas supplement the canonical
 documents. Local template/daily-note configuration saved; Obsidian UI not verified.
-Latest 98-test result was rerun during the 30 September repository cleanup.
+Latest 98-test result was rerun on 1 October alongside the container checkpoint.
 
 ## Repository cleanup
 
@@ -97,10 +97,21 @@ TASK-019 partial: direct extractor pins recorded; eight synthetic destination
 policy tests pass. No packages installed or real DNS performed. Connection/egress
 isolation, transitive dependency lock and executable runner remain unfinished.
 
-## Runner checkpoint and environment limitation
+## Runner checkpoint (30 September history)
 
 Bounded offline JSON runner and network-disabled Docker configuration added.
 Docker CLI validates Compose, but Linux engine is unavailable after startup
 attempt. Image build, package installation and runtime isolation are unverified.
 Runner only consumes supplied extraction outputs; live URL extraction and enforced
 public-only egress remain unfinished. TASK-019 remains partial.
+
+## Current checkpoint: 1 October
+
+Docker Linux engine is ready. Extractor image built; installed Crawl4AI 0.9.4 and
+yt-dlp 2026.8.19 verified inside it; pip check passes. Repeatable container smoke
+checks pass for synthetic jobs, non-root UID, application write rejection, an
+unreachable external route and absent checked personal paths. All 98 tests and
+frontend quality/build checks pass. Earlier package/engine limitations above are
+historical. TASK-019 remains partial: no live tool invocation or browser installed.
+Next: dependency/image locking and enforced public-only egress before live fetching.
+No paid resources or GitHub push.
