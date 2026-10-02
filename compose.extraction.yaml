@@ -1,6 +1,7 @@
 name: gather-extraction
 services:
   extractor:
+    platform: linux/amd64
     build:
       context: .
       dockerfile: services/worker/Dockerfile

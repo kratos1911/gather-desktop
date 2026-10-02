@@ -3,6 +3,13 @@
 Updated: 2 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
 choices there are proposed, not implemented. PROGRESS.md records history.
 
+Latest checkpoint: TASK-019A is partial. Base digest, 96 wheel hashes, bootstrap pip
+lock and package/license review added. Rebuild failed because C: filled and Docker
+reported read-only filesystem/image-store I/O errors. Restore space and Docker
+health before rebuild/smoke/hash-rejection/full image scan. PyPI advisory review
+leaves NLTK's high-severity model-path issue open before live extraction. See
+services/worker/DEPENDENCY_REVIEW.md. OKF retained as a later optional export layer.
+
 ## Product and constraints
 
 27 September steering: user has no provider account yet and explicitly deferred
@@ -13,7 +20,7 @@ Gather is a provisional name for a Windows desktop content library with semantic
 
 ## Implemented
 
-- Local quality runner: 65 worker, 29 evaluation and four UI tests, ESLint,
+- Local quality runner: 73 worker, 29 evaluation and four UI tests, ESLint,
   TypeScript, Prettier and frontend build pass. Native development build passes.
   Manual GitHub workflow authored; remote execution unverified.
 - Links/bookmarks added to product scope and delivery plan in BOOKMARKS.md.
@@ -45,8 +52,9 @@ Frontend lint and format checks are configured; remote CI and native E2E remain 
 
 ## Current task
 
-Latest checkpoint: TASK-022 documents the requested system/security delivery plan.
-The 1 October 98-test/container checkpoint is the latest executed runtime evidence.
+TASK-022 documents the system/security delivery plan. TASK-019A added dependency
+locking/review; current source checks total 106 tests. The 1 October container
+checkpoint is historical: the new recipe has not built successfully.
 Provider-dependent TASK-005 work remains deferred by user.
 No GitHub push authorized. Offline bookmark processing passes; live bookmark search remains pending. Chat deferred by user on 28 September.
 
@@ -74,7 +82,8 @@ Supabase project/public configuration; audience/regions; operator/contact and fi
 Project hub: [[docs/PROJECT_HUB]]. Shared repository notes are the source of truth;
 concepts, ideas, templates and the search-flow canvas supplement the canonical
 documents. Local template/daily-note configuration saved; Obsidian UI not verified.
-Latest 98-test result was rerun on 1 October alongside the container checkpoint.
+Latest source checks: 106 tests on 2 October. Latest successful container smoke:
+1 October's prior recipe. Do not confuse these with a verified rebuilt image.
 
 ## Earlier checkpoints (superseded by the 1 October status below)
 

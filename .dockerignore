@@ -3,4 +3,6 @@
 !services/worker/
 !services/worker/*.py
 !services/worker/requirements-extraction.txt
+!services/worker/requirements-extraction.lock
+!services/worker/requirements-bootstrap.lock
 !services/worker/Dockerfile

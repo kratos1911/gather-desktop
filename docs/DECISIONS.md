@@ -1,5 +1,24 @@
 # Architecture decisions
 
+## ADR-029: retain OKF as an optional extension (2 October)
+
+User accepted keeping the recommendation: Open Knowledge Format may later support
+portable linked notes and Obsidian exports. Keep keyword/vector retrieval and
+Supabase as the search core; selected-source RAG chat remains deferred. Preserve
+originals/citations and evaluate generated knowledge before indexing it as trusted
+material. No OKF package or runtime added. Official format reference:
+https://github.com/GoogleCloudPlatform/open-knowledge-format
+
+## ADR-030: hash-locked extraction inputs, explicit review gates
+
+Freeze the tested Linux/amd64 application package set as 96 exact wheel artifacts.
+Pin the Python base by platform digest and bootstrap pip separately. Reject source
+builds/unhashed dependencies during installation; don't assume a lock is proof of
+security. Keep declared-license inventory and a repeatable advisory lookup that
+fails visibly on feed errors/findings. NLTK's unpatched advisory and the incomplete
+OS scan remain gates before live execution. Rebuild verification is blocked by
+Docker storage health on 2 October. See services/worker/DEPENDENCY_REVIEW.md.
+
 ## 2 October proposals: ADR-026 through ADR-028
 
 - ADR-026: propose a modular Python/FastAPI backend and trusted coordinator with

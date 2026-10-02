@@ -294,6 +294,11 @@ decision and verified update integrity. Do not report native QA from browser tes
 
 ## Immediate next task
 
+2 October implementation update: TASK-019A lockfiles/review are authored, but its
+rebuild is blocked by full C: storage and Docker read-only/I/O errors. Restore
+Docker storage and complete the checks in services/worker/DEPENDENCY_REVIEW.md
+before advancing this gate. OKF is optional later work, recorded in ADR-029.
+
 TASK-019A: produce a reproducible extractor image with a base digest, transitive
 dependency lock/hashes and license inventory, then rebuild and run the existing
 container checks. Keep runtime networking disabled until TASK-019B is verified.

@@ -1,4 +1,4 @@
-# Direct dependency pins only, not a complete transitive deployment lock.
+# Direct dependency intent. Docker installs requirements-extraction.lock instead.
 # Verified on PyPI 2026-09-30. Install only in an isolated extractor environment.
 crawl4ai==0.9.4
 yt-dlp==2026.8.19

@@ -25,7 +25,7 @@ def main():
     assert response['document']['fields']['page_text'] == job['result']['markdown']
     assert response['document']['semantic_ready'] is False
     assert json.loads(execute(['extractor'], b'not-json'))['status'] == 'error'
-    probe = '''import errno, importlib.metadata as m, json, os, socket
+    probe = '''import errno, importlib.metadata as m, json, os, pathlib, re, socket
 assert os.getuid() == 65532
 try:
     open('/app/write-probe', 'w').close()
@@ -45,10 +45,21 @@ assert not os.path.exists('/app/.env')
 assert not os.path.exists('/app/data')
 versions = {name:m.version(name) for name in ('crawl4ai','yt-dlp')}
 assert versions == {'crawl4ai':'0.9.4','yt-dlp':'2026.8.19'}
+normalize = lambda name: re.sub(r'[-_.]+', '-', name).lower()
+locked = {}
+for line in pathlib.Path('/app/requirements-extraction.lock').read_text().splitlines():
+    if line and not line.startswith('#'):
+        name, version = line.split()[0].split('==')
+        locked[normalize(name)] = version
+installed = {normalize(d.metadata['Name']): d.version for d in m.distributions()
+             if normalize(d.metadata['Name']) != 'pip'}
+assert installed == locked, 'installed environment differs from lock'
+bootstrap = pathlib.Path('/app/requirements-bootstrap.lock').read_text()
+assert f"pip=={m.version('pip')} --hash=sha256:" in bootstrap
 print(json.dumps(versions))
 '''
     versions = json.loads(execute(['--entrypoint', 'python', 'extractor', '-c', probe]))
-    print('PASS: sample/error jobs, non-root user, read-only app, unreachable external network, excluded personal paths.')
+    print('PASS: sample/error jobs, exact locked packages, non-root user, read-only app, unreachable external network, excluded personal paths.')
     print(json.dumps(versions))
 
 

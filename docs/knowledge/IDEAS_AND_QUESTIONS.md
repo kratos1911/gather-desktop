@@ -20,6 +20,13 @@ Return to [[docs/PROJECT_HUB]]. Accepted choices are recorded in
 
 ## Deferred
 
+OKF (Open Knowledge Format) is retained as an optional later extension, accepted
+2 October: portable knowledge/Obsidian export and linked notes. It does not replace
+hybrid retrieval, Supabase, source originals or the later RAG chat pipeline.
+Any generated notes require source citations and evaluation for omissions/errors.
+Do not implement it before the search foundation. Reference:
+https://github.com/GoogleCloudPlatform/open-knowledge-format
+
 Document chat, video/audio indexing, mobile, collaboration, payments and public
 sharing are not current search implementation work. Historical model candidates
 are proposals, not selected benchmark winners.

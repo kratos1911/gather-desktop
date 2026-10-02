@@ -5,6 +5,11 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 2 October 2026.
 
+Current blocker: C: filled during dependency rebuild; Docker reports read-only/I/O
+errors. TASK-019A locking/review is partial until rebuild and container checks pass.
+See [dependency review](../services/worker/DEPENDENCY_REVIEW.md). Source quality
+checks now cover 106 tests. OKF is saved as a later optional export idea (ADR-029).
+
 [[docs/DELIVERY_PLAN|Current delivery and system design plan]] explains the target
 architecture, flows, security tests and next tasks. Start with TASK-019A, reproducible
 extractor dependencies. Proposed mechanisms are not live implementation.

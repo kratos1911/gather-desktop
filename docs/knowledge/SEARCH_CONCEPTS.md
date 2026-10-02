@@ -5,6 +5,12 @@ tags: [gather, learning, search]
 
 ## Reliability concepts for the next implementation
 
+- Dependency lock: freeze versions, including indirect packages.
+- Artifact hash: check that downloaded bytes match the reviewed package.
+- Image digest: identify a base image's contents instead of following a moving tag.
+- Vulnerability triage: record applicability and unresolved risk; a successful
+  install or a pinned version does not prove safety.
+
 - Idempotency: retry a job without duplicating passages.
 - Lease: a worker temporarily owns a job; expiry permits crash recovery.
 - Generation: a complete index version activated only after validation.
