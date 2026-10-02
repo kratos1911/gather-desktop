@@ -9,6 +9,10 @@ Start here in Obsidian. Updated 2 October 2026.
 architecture, flows, security tests and next tasks. Start with TASK-019A, reproducible
 extractor dependencies. Proposed mechanisms are not live implementation.
 
+[Explorable target architecture](../.archify/architecture-gather-plan-20261002-081351/gather-plan.html)
+has nine passing structural checks and verified plan references; browser/visual
+review was not performed. Save/search flow diagrams are inside DELIVERY_PLAN.md.
+
 ## Goal and present focus
 
 Find saved files and links without remembering their names or exact wording.

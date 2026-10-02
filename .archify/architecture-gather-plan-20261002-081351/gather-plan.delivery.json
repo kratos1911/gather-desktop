@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "b907dba0-f4ff-4e6a-9f64-23694b1422d7",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "D:\\Ollama\\Original_Code\\AI-Agent-Code-Generator-main\\.archify\\architecture-gather-plan-20261002-081351\\candidate.json",
+  "output": "D:\\Ollama\\Original_Code\\AI-Agent-Code-Generator-main\\.archify\\architecture-gather-plan-20261002-081351\\gather-plan.html",
+  "specification": {
+    "sha256": "7e55c2becf4c54f82421ddcdf0aa52255f5e8707c9ef08dbe63ddcbf548ffa06",
+    "bytes": 4691
+  },
+  "artifact": {
+    "sha256": "41cf035e81ff39623af94ab48c11ca356931aada6aa2c92bbd3d0c5c1a6e7d73",
+    "bytes": 764333
+  }
+}

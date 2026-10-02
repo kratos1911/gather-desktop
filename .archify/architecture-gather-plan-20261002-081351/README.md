@@ -1,0 +1,20 @@
+# Gather target architecture
+
+Open [gather-plan.html](gather-plan.html). This is a proposed system, not a live
+deployment. Canonical explanation and save/search flows: [delivery plan](../../docs/DELIVERY_PLAN.md).
+
+Original Gather specification in candidate.json; generated with Archify 3.0.1
+(MIT, tt-a1i/archify). No third-party design screenshots or branding were copied.
+The generated viewer retains its own embedded notices. Specification and artifact
+hashes are recorded in gather-plan.delivery.json.
+
+Delivery and strict provenance checks passed: nine checks, zero composition
+errors/warnings, zero relationship crossings. Thirteen source references verified
+against local commit c0b628f13f02a8b2caa902a565c4d61fbfd5b9c0.
+
+Browser evidence: not run. Perceptual review: not performed. The prior user browser
+restriction was preserved. Used standalone deliver plus strict check instead of
+finalize, whose browser gate would conflict with that restriction. Do not describe
+this as a fully finalized/browser-verified artifact. Automated layout passed;
+the 7.5px aspirational projected-text target was not met (7.09px, above 6px floor).
+Inspect readability in the actual viewer when browser review is permitted.

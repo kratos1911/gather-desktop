@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Gather: proposed search architecture",
+    "output": ".archify/architecture-gather-plan-20261002-081351/gather-plan.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "repository": {
+      "url": "https://github.com/kratos1911/gather-desktop.git",
+      "revision": "c0b628f13f02a8b2caa902a565c4d61fbfd5b9c0",
+      "link_mode": "local-only"
+    }
+  },
+  "components": [
+    {"id":"desktop","type":"frontend","label":"Gather desktop","sublabel":"Tauri + React; fixture UI today","pos":[40,220],"size":[210,76],"sources":[{"path":"docs/DELIVERY_PLAN.md","line":26,"end_line":38}]},
+    {"id":"auth","type":"security","label":"Supabase Auth","sublabel":"Planned identity and sessions","pos":[420,40],"size":[210,76],"sources":[{"path":"docs/DELIVERY_PLAN.md","line":52}]},
+    {"id":"api","type":"backend","label":"Application API","sublabel":"Verify identity, owner and quota","pos":[420,220],"size":[210,76],"sources":[{"path":"docs/DELIVERY_PLAN.md","line":43,"end_line":53}]},
+    {"id":"data","type":"database","label":"Private Supabase data","sublabel":"Postgres + private file Storage","pos":[800,220],"size":[210,76],"sources":[{"path":"docs/DELIVERY_PLAN.md","line":54,"end_line":55},{"path":"docs/DELIVERY_PLAN.md","line":187,"end_line":205}]},
+    {"id":"coordinator","type":"backend","label":"Job coordinator","sublabel":"Leases; validate; publish version","pos":[800,475],"size":[210,76],"sources":[{"path":"docs/DELIVERY_PLAN.md","line":103,"end_line":122}]},
+    {"id":"models","type":"cloud","label":"Cloud model adapter","sublabel":"Provider and budget deferred","pos":[420,475],"size":[210,76],"sources":[{"path":"docs/DELIVERY_PLAN.md","line":58},{"path":"docs/DELIVERY_PLAN.md","line":173,"end_line":177}]},
+    {"id":"sandbox","type":"backend","label":"Extraction sandbox","sublabel":"No DB or provider credentials","pos":[800,760],"size":[210,76],"sources":[{"path":"docs/DELIVERY_PLAN.md","line":56,"end_line":57},{"path":"docs/DELIVERY_PLAN.md","line":108,"end_line":111}]},
+    {"id":"gateway","type":"security","label":"Forced egress gateway","sublabel":"Public IPs; redirects rechecked","pos":[420,760],"size":[210,76],"sources":[{"path":"docs/DELIVERY_PLAN.md","line":217,"end_line":219}]},
+    {"id":"web","type":"external","label":"Public pages / subtitles","sublabel":"Access may fail; keep bookmark","pos":[40,760],"size":[210,76],"sources":[{"path":"docs/DELIVERY_PLAN.md","line":82,"end_line":88},{"path":"docs/DELIVERY_PLAN.md","line":229,"end_line":233}]}
+  ],
+  "connections": [
+    {"id":"request","from":"desktop","to":"api","label":"HTTPS + session"},
+    {"id":"identity","from":"api","to":"auth","label":"Verify token","variant":"security"},
+    {"id":"owned-data","from":"api","to":"data","label":"Owned data / jobs"},
+    {"id":"lease-publish","from":"coordinator","to":"data","label":"Lease / publish"},
+    {"id":"query-vector","from":"api","to":"models","label":"Query embedding"},
+    {"id":"passage-vector","from":"coordinator","to":"models","label":"Passage embeddings"},
+    {"id":"extract","from":"coordinator","to":"sandbox","label":"Bounded job","variant":"dashed"},
+    {"id":"forced-egress","from":"sandbox","to":"gateway","label":"Only exit route","variant":"security"},
+    {"id":"public-fetch","from":"gateway","to":"web","label":"Validated HTTP(S)","variant":"security"}
+  ],
+  "cards": [
+    {"dot":"slate","title":"Status: target design, not live","items":["Existing: fixture desktop and tested offline processing modules.","Docker runner currently has no network. All connected cloud paths are planned.","This diagram pins the delivery-plan commit, not a production deployment."]},
+    {"dot":"emerald","title":"Storage and retrieval","items":["Postgres stores sources, passages, jobs, full-text indexes and versioned vectors.","Private Storage holds original files; database and object cleanup need reconciliation.","API merges owner-scoped lexical and vector ranks; results return to the desktop."]},
+    {"dot":"amber","title":"Trust boundaries","items":["Desktop is untrusted; the API derives identity from a verified session.","Coordinator has narrow server privileges. Extraction receives no reusable credentials.","Gateway must enforce actual connections, including redirects and browser subresources."]},
+    {"dot":"cyan","title":"Next delivery gates","items":["Lock dependencies, then prove egress and process limits, then invoke real extractors.","Build local private persistence and a keyword flow before provider integration.","Only complete model-backed generations become semantic ready; chat comes later."]}
+  ]
+}

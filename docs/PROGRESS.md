@@ -403,3 +403,12 @@ Consulted official Supabase, pgvector, OWASP, Tauri and Cloud Run references.
 No runtime changes, cloud deployment, paid call or push. The prior 98-test result
 is historical evidence, not a new test run. Documentation diff checks pass;
 architecture artifact evidence is recorded separately after generation.
+
+Architecture artifact: .archify/architecture-gather-plan-20261002-081351/.
+Archify deliver and strict provenance check passed all nine structural checks,
+with zero errors/warnings/crossings and 13 verified source references at c0b628f.
+Browser/perceptual checks not run because the prior browser restriction remains;
+standalone delivery used instead of finalize's browser gate. The artifact README
+records this limitation and the aspirational text-size target miss. Hub and
+Obsidian flow canvas link the plan. No application source changed or runtime
+tests rerun. Planning and artifact checkpoints committed locally; nothing pushed.

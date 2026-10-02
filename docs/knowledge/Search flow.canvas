@@ -1,6 +1,15 @@
 {
   "nodes": [
     {
+      "id": "delivery-plan",
+      "type": "file",
+      "file": "docs/DELIVERY_PLAN.md",
+      "x": 0,
+      "y": -260,
+      "width": 710,
+      "height": 200
+    },
+    {
       "id": "source",
       "type": "text",
       "text": "Save file or link\nPLANNED desktop ingestion",
