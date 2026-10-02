@@ -1,0 +1,4 @@
+# Preserve exact bytes used by Archify provenance hashes on Windows checkouts.
+/.archify/architecture-gather-plan-20261002-081351/candidate.json -text
+/.archify/architecture-gather-plan-20261002-081351/gather-plan.html -text
+/.archify/architecture-gather-plan-20261002-081351/gather-plan.delivery.json -text
