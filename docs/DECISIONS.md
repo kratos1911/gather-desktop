@@ -1,5 +1,21 @@
 # Architecture decisions
 
+## 2 October proposals: ADR-026 through ADR-028
+
+- ADR-026: propose a modular Python/FastAPI backend and trusted coordinator with
+  separate restricted extraction. Retain Tauri/Supabase; recommend Cloud Run for
+  later HTTP/batch hosting, subject to budget and egress feasibility. No service
+  provisioned. Avoid additional brokers/GKE until measured requirements justify them.
+- ADR-027: propose private Postgres jobs with atomic claims, leases, bounded retries
+  and reconciliation. Source/version/job persistence is transactional; dispatch is
+  recoverable. Requires concurrency, lease expiry, quota and deletion-race tests.
+- ADR-028: propose separate keyword/semantic readiness and immutable generations.
+  Activate only complete indexes, preserve old versions on failed refresh, and
+  enforce tombstones at publication. Never substitute fake vectors for real AI.
+
+These are planning defaults, not implementation claims. Details, tradeoffs,
+dependencies and acceptance gates: [DELIVERY_PLAN.md](DELIVERY_PLAN.md).
+
 Recorded 26 September 2026 from this project's existing decisions. Accepted means product/architecture direction, not implemented functionality.
 
 | ADR | Decision | Reason / consequences | Status |

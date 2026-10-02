@@ -1,6 +1,7 @@
 # Current project state
 
-Updated: 30 September 2026. This is the present-state summary; PROGRESS.md is chronological history and may describe superseded conditions.
+Updated: 2 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
+choices there are proposed, not implemented. PROGRESS.md records history.
 
 ## Product and constraints
 
@@ -44,19 +45,22 @@ Frontend lint and format checks are configured; remote CI and native E2E remain 
 
 ## Current task
 
-Latest checkpoint: TASK-011 local checks pass; bookmark scope accepted on
-28 September. Provider-dependent TASK-005 work remains deferred by user.
+Latest checkpoint: TASK-022 documents the requested system/security delivery plan.
+The 1 October 98-test/container checkpoint is the latest executed runtime evidence.
+Provider-dependent TASK-005 work remains deferred by user.
 No GitHub push authorized. Offline bookmark processing passes; live bookmark search remains pending. Chat deferred by user on 28 September.
 
 ## Next implementation
 
 30 September final choice: Crawl4AI for public webpages and yt-dlp for supported
 video metadata/available subtitles. Agent Reach is optional. See
-docs/knowledge/EXTRACTION_STACK.md. Tools not installed or live. Transcription,
+docs/knowledge/EXTRACTION_STACK.md. Tools installed in the offline container only. Transcription,
 visual video understanding and chat remain deferred. TASK-019 follows TASK-018.
 
 TASK-018 completed: offline bookmark passages with source/field references and
-TF-IDF retrieval tests. TASK-019 extraction adapters are next. TASK-017 later connects persistence, restricted fetching and search.
+TF-IDF retrieval tests. TASK-019 adapters/offline runner pass; next is TASK-019A,
+dependency/image locking, then enforced egress (019B) and live invocation (019C).
+TASK-021 plans local Supabase schema/job/isolation tests. TASK-017 connects the flow.
 Provider connection and semantic benchmarks remain pending. Add harder long-document
 and independently reviewed unseen questions before release claims. TASK-002
 audience research and TASK-003 visual QA remain open.
@@ -72,7 +76,7 @@ concepts, ideas, templates and the search-flow canvas supplement the canonical
 documents. Local template/daily-note configuration saved; Obsidian UI not verified.
 Latest 98-test result was rerun on 1 October alongside the container checkpoint.
 
-## Repository cleanup
+## Earlier checkpoints (superseded by the 1 October status below)
 
 Six root prototype files moved unchanged to legacy/; three unused starter logos
 removed. Original data, secrets, environments and user notes preserved. See

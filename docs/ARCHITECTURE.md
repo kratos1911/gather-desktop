@@ -1,5 +1,9 @@
 # Architecture: how the product works
 
+Current forward plan: [DELIVERY_PLAN.md](DELIVERY_PLAN.md), dated 2 October.
+It defines proposed API/worker boundaries, job leases, version publication,
+security checks and delivery gates. Proposed mechanisms are not implemented yet.
+
 ## Current implementation
 
 28 September: chat is deferred until search works. The offline bookmark parser

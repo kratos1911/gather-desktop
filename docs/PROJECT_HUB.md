@@ -3,7 +3,11 @@ tags: [gather, project]
 ---
 # Gather project hub
 
-Start here in Obsidian. Updated 30 September 2026.
+Start here in Obsidian. Updated 2 October 2026.
+
+[[docs/DELIVERY_PLAN|Current delivery and system design plan]] explains the target
+architecture, flows, security tests and next tasks. Start with TASK-019A, reproducible
+extractor dependencies. Proposed mechanisms are not live implementation.
 
 ## Goal and present focus
 

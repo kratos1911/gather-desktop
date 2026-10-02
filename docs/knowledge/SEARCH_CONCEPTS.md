@@ -3,6 +3,19 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Reliability concepts for the next implementation
+
+- Idempotency: retry a job without duplicating passages.
+- Lease: a worker temporarily owns a job; expiry permits crash recovery.
+- Generation: a complete index version activated only after validation.
+- Tombstone: a deletion marker that blocks search and late worker publication.
+- Reconciliation: retry unfinished cleanup because object storage and database
+  writes cannot be one transaction.
+- Egress enforcement: control the real network connection, not only its URL.
+
+These production mechanisms are planned, not implemented. See
+[[docs/DELIVERY_PLAN|Delivery plan]] for flows, acceptance tests and next tasks.
+
 Return to [[docs/PROJECT_HUB|Project hub]]. This explains techniques; implementation
 status is maintained in [[docs/MEMORY]] and [[TASKS]].
 

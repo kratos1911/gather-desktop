@@ -1,5 +1,21 @@
 # Delivery tasks
 
+## 2 October planning checkpoint
+
+TASK-022: delivery/security plan documented in docs/DELIVERY_PLAN.md. Planning
+only; runtime gates remain open. Ordered next work:
+
+| Task | Status | Acceptance |
+| --- | --- | --- |
+| TASK-019A | Next | Base digest, transitive hash lock, license inventory/vulnerability triage, rebuilt image and smoke checks |
+| TASK-019B | After 019A | Enforced public-only egress and supervisor; DNS/redirect/subresource/bypass and timeout cleanup tests |
+| TASK-019C | After 019B | Actual Crawl4AI/yt-dlp invocation on approved public tests, bounded output and truthful fallback |
+| TASK-021 | Planned | Local Supabase migrations, two-user RLS/Storage/RPC tests and retry/delete/quota races |
+
+TASK-021 can advance if live-site checks are blocked. No paid AI account needed
+for local schema work. TASK-005 remains provider-gated. Follow vertical slices
+in DELIVERY_PLAN.md. No runtime work is claimed by this planning checkpoint.
+
 Current checkpoint: local quality checks pass; remote CI execution pending. Links/bookmarks accepted on 28 September. Next independent task: TASK-019 extraction adapters. Chat deferred. Provider/account/live tests remain deferred; no pushes without an explicit request.
 
 | ID | Task | Status | Acceptance / evidence |

@@ -390,3 +390,16 @@ Updated canonical status, hub, extraction note and Obsidian flow canvas. TASK-01
 remains partial: dependency/base-image locks, public-only egress, browser runtime
 and actual tool invocation/live compatibility remain open. No live scraping,
 cloud provisioning, personal-document processing or push performed.
+
+## 2026-10-02 — Search-first system and delivery plan
+
+Reviewed desktop fixture path, native capabilities/CSP, offline runner, network
+preflight, Compose and product/security notes. Product Design preflight found no
+saved context; existing project conventions were used. DELIVERY_PLAN.md records
+target flows, a minimal backend, private data model, leases, version publication,
+deletion races, hybrid retrieval, security controls and ordered acceptance gates.
+ADRs 026–028 are proposals; TASK-019A/B/C and TASK-021 describe implementation work.
+Consulted official Supabase, pgvector, OWASP, Tauri and Cloud Run references.
+No runtime changes, cloud deployment, paid call or push. The prior 98-test result
+is historical evidence, not a new test run. Documentation diff checks pass;
+architecture artifact evidence is recorded separately after generation.
