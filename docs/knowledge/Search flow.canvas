@@ -21,7 +21,7 @@
     {
       "id": "parse",
       "type": "text",
-      "text": "Extract text + metadata\nPatched OFFLINE runtime verified\n31 scan records open (4 high)\nLive fetching pending",
+      "text": "Extract text + metadata\nOffline supervisor + local HTTP tests pass\nLive broker/browser egress pending\n31 scan records open (4 high)",
       "x": 380,
       "y": 0,
       "width": 330,

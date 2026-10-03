@@ -88,8 +88,9 @@ semantic indexing and deletion. Chat is deferred. Test two-user isolation, redir
 addresses, DNS rebinding, retries/restart, duplicates, refresh and disappearing
 pages. Add bookmark evaluation in a new version; preserve frozen text-v1.
 
-No desktop bookmark input, persistence, fetcher or semantic bookmark results are implemented
-by this specification. Provider selection and deployment remain deferred.
+No desktop bookmark input, persistence or semantic bookmark results are implemented
+by this specification. A separate backend-only HTTP transport now passes controlled
+local tests; it is not enabled for live bookmarks (services/worker/SUPERVISION.md). Provider selection and deployment remain deferred.
 
 ## TASK-018 checkpoint
 

@@ -1,5 +1,18 @@
 # Extractor image scan review
 
+## Latest code-image verification: 3 October
+
+Image `sha256:28b50a3387d69ae5ed2d015bf6653eb721f5b9fcb76070ec4a9d5c5b2c5d9afd`
+includes restricted transport and supervisor source. Rebuilt with unchanged
+package layers, then rescanned: same 31 advisory IDs, four high/two medium/25 low.
+The current inventory and dispositions below still apply. No suppression or
+additional dependency remediation. Raw report is ignored locally at
+`output/extractor-audit/supervised-image.sarif.json`; SHA-256:
+`d7e7c8f760981ccd3b4f30d13fd0d18379366a583c4ef9e0b687e454de0efff4`.
+Scout again reported a locked temporary archive during cleanup; valid SARIF was
+written and checked. Local supervisor and controlled transport checks passed;
+no live extraction is enabled.
+
 ## Current remediation checkpoint: 3 October 2026
 
 Runtime image: `sha256:af1d72a75b6bd7644b202f261680f8dbe80b349d342400b633f2f5f7f32bc2d8`.

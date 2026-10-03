@@ -25,8 +25,9 @@ Supply one JSON request through stdin and close stdin. No ports, mounts or secre
 are configured. Runtime networking is fully disabled; build-time package downloads
 are separate. The Dockerfile now pins the base digest, 96 application wheels and
 bootstrap pip with hashes. It does not launch extractors or install Chromium.
-An external supervisor must enforce wall-clock timeout; the runner itself has no
-wall-clock cancellation. Do not deploy this as an authenticated production API.
+The host-side DockerJobRunner now enforces execution timeout, output limits and
+cancellation for supplied-output jobs; the runner itself has no wall-clock
+cancellation. See [supervision](SUPERVISION.md). No authenticated API is implemented.
 
 Run `python scripts/check_extractor_container.py` from the repository root after
 building. It verifies synthetic success/error jobs, package versions, non-root UID,

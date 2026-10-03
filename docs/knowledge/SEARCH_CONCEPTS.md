@@ -89,3 +89,16 @@ The installer still exists in the developer build target and parent image layers
 so this is runtime protection, not permanent erasure. Available OS patches are
 pinned and checked separately. Current rescan: 31 open records, four high; live
 extraction is still gated. See [[services/worker/IMAGE_SCAN_REVIEW]].
+
+
+## DNS pinning, redirects and worker supervision
+
+A hostname can change addresses between checking it and connecting. The restricted
+transport resolves once, checks every answer, then connects directly to an approved
+number. TLS still checks the original hostname. A redirect starts a new check.
+This is destination-address pinning, not certificate pinning.
+
+The parser has no network at all. A host-side supervisor starts it with limited
+resources, caps both output streams, and removes its container on timeout or
+cancellation. Controlled tests pass; the fetch broker's full DNS deadline and
+browser networking remain next. [[services/worker/SUPERVISION]] explains the limits.

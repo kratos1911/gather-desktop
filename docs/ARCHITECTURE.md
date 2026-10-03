@@ -10,6 +10,9 @@ security checks and delivery gates. Proposed mechanisms are not implemented yet.
 in services/worker/bookmarks.py extracts supplied HTML without network access.
 Offline bookmark passages now reuse text chunking and are tested with TF-IDF.
 Desktop persistence, live extraction and semantic search remain disconnected.
+A backend-only plain-HTTP transport and offline Docker supervisor now pass local
+controlled tests. Whole-broker DNS deadlines and browser/tool egress remain open;
+see services/worker/SUPERVISION.md.
 
 apps/desktop contains a React/TypeScript interface, synthetic fixtures, component tests and a Tauri Windows shell. services/worker contains a transport-independent TXT/Markdown processing module with synthetic tests. No auth, processing endpoint, database client, inference runtime or upload pipeline is connected. See MEMORY.md for verification.
 

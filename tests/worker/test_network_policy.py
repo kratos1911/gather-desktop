@@ -32,6 +32,11 @@ class NetworkPolicyTests(unittest.TestCase):
             raise AssertionError('must not resolve literal')
         self.assertEqual(approve_destination('https://8.8.8.8', resolver).addresses, ('8.8.8.8',))
 
+    def test_nat64_translation_cannot_encode_a_private_target(self):
+        for address in ['64:ff9b::a00:1', '64:ff9b::808:808', '64:ff9b:1::a00:1']:
+            with self.subTest(address=address), self.assertRaises(ValueError):
+                approve_destination('https://public.example', lambda *_: [address])
+
     def test_unsafe_schemes_credentials_ports_and_numeric_hosts(self):
         for url in ['file:///secret', 'https://u:p@example.com', 'http://example.com:0', 'http://example.com:22', 'http://0177.0.0.1']:
             with self.subTest(url=url), self.assertRaises(ValueError):

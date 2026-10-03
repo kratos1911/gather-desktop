@@ -6,17 +6,19 @@ must be public. Literal addresses skip DNS. The result preserves the normalized
 URL, hostname, port and immutable approved addresses. Errors do not expose the
 resolver's exception text. No real DNS, connections or browser operations occur.
 
-This is preflight only. The future transport must connect to approved addresses
-without a second DNS lookup, verify TLS for the original hostname, and apply the
-same checks on redirects, subtitle downloads and browser subresources. Controlled
-egress is also needed for browsers/tools that open their own connections. Do not
-enable arbitrary user-URL fetching merely because this helper returned success.
-Timeouts for DNS and actual I/O must be enforced by the execution boundary.
+This helper is preflight only. The new backend-only restricted_fetch transport
+dials approved numeric addresses and rechecks redirects, with TLS hostname
+verification. Local controlled tests pass; it is not connected to live jobs.
+Known NAT64 ranges are denied in addition to other non-public/special addresses.
+Browser/tool egress and whole-broker DNS deadlines remain open. See
+[supervision](SUPERVISION.md) for tested boundaries and remaining acceptance.
 
-Direct package pins live in requirements-extraction.txt. They are not a complete
-transitive lock or an installed environment. PyPI metadata reviewed 30 September:
+Direct package intent lives in requirements-extraction.txt; the complete hashed
+wheel lock and installed environment are reviewed in DEPENDENCY_REVIEW.md.
+PyPI metadata initially reviewed 30 September:
 - https://pypi.org/project/crawl4ai/0.9.4/ (Apache-2.0)
 - https://pypi.org/project/yt-dlp/2026.8.19/ (Unlicense)
 
-Eight mock-resolver tests pass. Actual container isolation, installed extraction,
-public-site compatibility and end-to-end SSRF tests are still pending.
+Nine mock-resolver policy tests pass. Offline Docker isolation and supervisor
+checks pass. Live extractor/browser networking and public-site compatibility
+remain unverified; these are not end-to-end live SSRF tests.

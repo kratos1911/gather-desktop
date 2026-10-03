@@ -74,3 +74,12 @@ Container smoke checks verify selected runtime restrictions with networking full
 disabled. Public-only egress, live invocation, Chromium installation and locked
 transitive dependencies/base image are still pending. See the runner guide and
 TASK-019 for evidence. No real semantic retrieval demonstrated.
+
+
+## Current boundary checkpoint, 3 October
+
+Base/wheel locks and available security patches are verified; the rescan retains
+31 records (four high). Plain-HTTP transport and offline Docker supervision pass
+controlled tests. Neither invokes Crawl4AI/yt-dlp or fetches real user links.
+Whole-broker DNS deadlines, browser/tool egress and live compatibility remain open.
+See [[services/worker/SUPERVISION]]; earlier checkpoints above are historical.

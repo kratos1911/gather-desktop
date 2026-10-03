@@ -51,6 +51,9 @@ def approve_destination(url, resolver) -> Destination:
             raise ValueError("DESTINATION_DNS_INVALID") from None
         if (not address.is_global or address.is_multicast or address.is_reserved
                 or address.is_unspecified or address.is_loopback or address.is_link_local
+                or (address.version == 6 and (
+                    address in ipaddress.ip_network('64:ff9b::/96')
+                    or address in ipaddress.ip_network('64:ff9b:1::/48')))
                 or (address.version == 6 and (address.ipv4_mapped or address.sixtofour or address.teredo))):
             raise ValueError("DESTINATION_ADDRESS_DENIED")
         approved.add(str(address))

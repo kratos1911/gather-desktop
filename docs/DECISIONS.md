@@ -1,5 +1,21 @@
 # Architecture decisions
 
+## ADR-033: separate restricted fetching from offline parsing (3 October)
+
+Introduce a small backend-only page transport that approves each DNS/redirect
+hop, dials numeric approved addresses and preserves TLS hostname checks. Do not
+forward cookies or execute page scripts/assets; reject compressed/unbounded data.
+Known NAT64 ranges are denied to avoid translating a public-looking IPv6 address
+into private IPv4. Test injection is trusted code, never a request option.
+
+Keep the supplied-output parser on network none behind DockerJobRunner, with
+fixed operator-selected image digest/entrypoint, bounded I/O and resources,
+timeout/cancellation and exact-container cleanup. No Docker socket in the worker.
+Plain HTTP transport is not browser egress enforcement, and socket deadlines do
+not bound OS DNS. TASK-019B remains partial until a whole-broker process deadline
+and integration are tested. Durable crash cleanup and global quotas remain later
+coordinator responsibilities. See services/worker/SUPERVISION.md.
+
 ## ADR-032: patched runtime without Python installer tooling (3 October)
 
 Keep the existing reviewed base and 96 application wheel pins. Add exact Debian

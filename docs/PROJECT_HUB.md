@@ -9,11 +9,13 @@ Docker recovery is verified: hash-locked build and offline checks pass. Current
 security gate: 31 scan records remain open after verified OpenSSL/PCRE2 patches
 and removal of runtime pip/ensurepip. TASK-023 remains partial (four high findings).
 See [scan review](../services/worker/IMAGE_SCAN_REVIEW.md). Source quality checks
-cover 109 tests. OKF remains a later optional export idea (ADR-029).
+cover 130 tests. OKF remains a later optional export idea (ADR-029).
 
 [[docs/DELIVERY_PLAN|Current delivery and system design plan]] explains the target
 architecture, flows, security tests and next tasks. TASK-023 retains unresolved
-security gates; TASK-019B local isolation work can proceed without live fetching. Proposed mechanisms are not live implementation.
+security gates. TASK-019B transport and offline supervision pass controlled tests;
+whole-broker deadlines and browser/tool egress remain next. See
+[[services/worker/SUPERVISION|Verified worker boundaries]].
 
 [Explorable target architecture](../.archify/architecture-gather-plan-20261002-081351/gather-plan.html)
 has nine passing structural checks and verified plan references; browser/visual
@@ -47,7 +49,7 @@ Open [[docs/knowledge/Search flow.canvas|Search flow canvas]] for the visual map
 
 ## Latest verified development checkpoint
 
-As of 3 October, 109 tests passed (76 worker, 29 evaluation, four UI), with lint,
+As of 3 October, 130 tests passed (97 worker, 29 evaluation, four UI), with lint,
 types, formatting and frontend build. Locked-image smoke and timeout cleanup pass.
 Native build previously passed; visual verification and remote CI remain unverified.
 

@@ -498,3 +498,37 @@ Full checks passed: 109 tests, lint, types, format, frontend build. After cleanu
 change, all 76 worker tests and real smoke were rerun successfully. No native
 inputs/assets changed. Docs and Obsidian notes/canvas updated. Local commit only;
 no cloud spending, browser use, real documents or GitHub push.
+
+## 2026-10-03 - TASK-019B controlled transport and offline supervisor
+
+Added backend-only restricted_fetch: public-address approval, numeric-IP dialing
+without second DNS, peer/TLS identity checks, per-redirect validation, downgrade
+rejection, bounded identity-encoded page bodies and safe errors. It does not
+follow scripts/assets, forward cookies/headers, or use proxy environment settings.
+Known NAT64 translation ranges are now denied. Fifteen tests use controlled local
+HTTP peers plus injected resolver/TLS checks; no public sites or DNS were queried
+by the test suite. Initial stall test exposed a missing explicit read timeout on
+an injected socket; fixed it and reran all worker checks. Slow-header rejection
+and elapsed-time bounds also pass. Whole-broker DNS deadline remains open.
+
+Added host-side DockerJobRunner with operator image digest, fixed command,
+network none, non-root/read-only/capability limits, one local concurrency slot,
+input/stdout/stderr caps, timeout/cancellation and exact-container cleanup.
+Five prelaunch unit tests and real Docker adversarial probes pass: supplied-output
+success/error, timeout, cancellation, excessive stdout/stderr, invalid output,
+failed process, recovery, direct public/private/metadata egress denial, absent
+socket/secrets, read-only path, UID and cgroup resource limits. No job containers
+remain. Docker supervision is not a durable queue or a hosted API; supervisor
+crash/orphan reconciliation and distributed quotas remain planned.
+
+Validation: scripts/check.ps1 passed the 96-worker/29-evaluation/four-UI suite,
+lint, TypeScript, Prettier and frontend build. Added the slow-header case and reran
+all 97 worker tests successfully: current total 130 tests. Final image rebuilt;
+check_worker_supervisor.py passed against it. Scout rescan completed with the same
+31 advisory IDs (4 high, 2 medium, 25 low), documented with image/report hashes.
+Scout temporary archive cleanup reported a file lock; valid SARIF was retained.
+No dependency findings were suppressed. No native inputs changed or native E2E
+claim made. Browser access, live extraction, paid AI and public deployment remain
+off. TASK-019B remains partial: next is a supervised fetch-broker process covering
+DNS, then parser integration and browser/tool egress. Canonical docs, concepts,
+Obsidian hub and flow canvas updated; local commit only, no GitHub push.
