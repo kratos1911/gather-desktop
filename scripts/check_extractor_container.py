@@ -2,26 +2,37 @@
 import json
 from pathlib import Path
 import subprocess
+import time
 import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 COMMAND = ['docker', 'compose', '-f', 'compose.extraction.yaml', 'run', '--rm', '-T']
 
 
-def execute(args, payload=None, timeout=60):
+def execute(args, payload=None, timeout=60, command=None):
     name = 'gather-smoke-' + uuid.uuid4().hex
+    process = subprocess.Popen((command or COMMAND) + ['--name', name] + args,
+                               cwd=ROOT, stdin=subprocess.PIPE,
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     try:
-        result = subprocess.run(COMMAND + ['--name', name] + args, cwd=ROOT,
-                                input=payload, capture_output=True, timeout=timeout)
+        stdout, _ = process.communicate(input=payload, timeout=timeout)
     finally:
-        # Killing the Docker client alone does not reliably stop its container.
-        cleanup = subprocess.run(['docker', 'rm', '-f', name], cwd=ROOT,
-                                 capture_output=True, timeout=30)
-        if cleanup.returncode and b'No such container' not in cleanup.stderr:
-            raise RuntimeError('Smoke container cleanup failed; inspect Docker locally')
-    if result.returncode:
+        # On Windows, communicate after killing Compose can wait on inherited
+        # pipes. Remove the container before draining or closing those pipes.
+        if process.poll() is None:
+            process.kill()
+        try:
+            cleanup = subprocess.run(['docker', 'rm', '-f', name], cwd=ROOT,
+                                     capture_output=True, timeout=30)
+            if cleanup.returncode and b'No such container' not in cleanup.stderr:
+                raise RuntimeError('Smoke container cleanup failed; inspect Docker locally')
+        finally:
+            process.wait(timeout=10)
+            for stream in (process.stdin, process.stdout, process.stderr):
+                stream.close()
+    if process.returncode:
         raise RuntimeError('Container smoke command failed; inspect Docker locally')
-    return result.stdout
+    return stdout
 
 
 def main():
@@ -34,7 +45,7 @@ def main():
     assert response['document']['fields']['page_text'] == job['result']['markdown']
     assert response['document']['semantic_ready'] is False
     assert json.loads(execute(['extractor'], b'not-json'))['status'] == 'error'
-    probe = '''import errno, importlib.metadata as m, json, os, pathlib, re, socket
+    probe = '''import errno, importlib.metadata as m, importlib.util, json, os, pathlib, re, socket, subprocess, sysconfig
 assert os.getuid() == 65532
 try:
     open('/app/write-probe', 'w').close()
@@ -60,11 +71,16 @@ for line in pathlib.Path('/app/requirements-extraction.lock').read_text().splitl
     if line and not line.startswith('#'):
         name, version = line.split()[0].split('==')
         locked[normalize(name)] = version
-installed = {normalize(d.metadata['Name']): d.version for d in m.distributions()
-             if normalize(d.metadata['Name']) != 'pip'}
+installed = {normalize(d.metadata['Name']): d.version for d in m.distributions()}
 assert installed == locked, 'installed environment differs from lock'
-bootstrap = pathlib.Path('/app/requirements-bootstrap.lock').read_text()
-assert f"pip=={m.version('pip')} --hash=sha256:" in bootstrap
+assert importlib.util.find_spec('pip') is None
+assert importlib.util.find_spec('ensurepip') is None
+assert not list(pathlib.Path(sysconfig.get_path('purelib')).glob('pip*'))
+for name, version in {'openssl':'3.5.7-1~deb13u3', 'libssl3t64':'3.5.7-1~deb13u3',
+                      'openssl-provider-legacy':'3.5.7-1~deb13u3',
+                      'libpcre2-8-0':'10.46-1~deb13u3'}.items():
+    actual = subprocess.check_output(['dpkg-query', '-W', '-f=${Version}', name]).decode()
+    assert actual == version, (name, actual)
 print(json.dumps(versions))
 '''
     versions = json.loads(execute(['--entrypoint', 'python', 'extractor', '-c', probe]))
@@ -93,11 +109,24 @@ with tempfile.TemporaryDirectory() as folder:
     assert accepted.returncode == 0, accepted.stderr
 print(json.dumps({'hash_rejection': True, 'correct_hash_accepted': True}))
 '''
-    print(execute(['--entrypoint', 'python', 'extractor', '-c', hash_probe]).decode().strip())
+    # The installer remains a developer-only build target, absent from runtime.
+    installer_check = '''import importlib.metadata as m, pathlib
+bootstrap = pathlib.Path('/app/requirements-bootstrap.lock').read_text()
+assert f"pip=={m.version('pip')} --hash=sha256:" in bootstrap
+'''
+    print(execute(['--entrypoint', 'python', 'gather-extraction-installer', '-c',
+                   installer_check + hash_probe], command=[
+                       'docker', 'run', '--rm', '--network', 'none', '--read-only',
+                       '--user', '65532:65532', '--cap-drop', 'ALL',
+                       '--security-opt', 'no-new-privileges:true', '--memory', '1g',
+                       '--cpus', '1', '--pids-limit', '64',
+                       '--tmpfs', '/tmp:size=67108864,mode=1777']).decode().strip())
+    started = time.monotonic()
     try:
         execute(['--entrypoint', 'python', 'extractor', '-c',
                  'import time; time.sleep(120)'], timeout=3)
     except subprocess.TimeoutExpired:
+        assert time.monotonic() - started < 20, 'Timeout cleanup exceeded its smoke budget'
         print('PASS: timed-out Docker job cleaned up.')
     else:
         raise AssertionError('Timeout was not enforced')

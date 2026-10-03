@@ -1,9 +1,10 @@
 # Extractor dependency checkpoint: 3 October 2026
 
-TASK-019A build and audit checks are verified after Docker recovery. The no-cache
-build, pip dependency check, exact installed-version comparison, intentional bad-hash
-rejection and offline smoke checks pass. The complete image scan reports 51 open
-finding records (10 high, 7 medium, 34 low). See [scan review](IMAGE_SCAN_REVIEW.md).
+TASK-019A build and audit checks are verified after Docker recovery. The initial
+no-cache build and subsequent patched build (cached unchanged install layers),
+pip dependency check, exact installed-version comparison, intentional bad-hash
+rejection and offline smoke checks pass. The complete image scan now reports 31 open
+finding records (4 high, 2 medium, 25 low), down from 51. See [scan review](IMAGE_SCAN_REVIEW.md).
 TASK-023 tracks remediation; do not enable extraction networking.
 
 ## Frozen inputs
@@ -18,7 +19,8 @@ TASK-023 tracks remediation; do not enable extraction networking.
   resolved through PyPI in Linux/amd64 with source builds disabled.
 - Installer: pip 26.2.1 separately hash-pinned in requirements-bootstrap.lock.
   Docker upgrades it before installing the application lock; the rebuilt image
-  and installed version comparison now verify this.
+  and installer-target version comparison verify this. Runtime removes pip and
+  ensurepip entirely after installation; build-tool exposure is separate.
 - requirements-extraction.txt records direct intent. It is not the build input.
 
 Hash enforcement detects changed artifacts; it does not certify package safety.
@@ -43,9 +45,9 @@ Its nonzero exit is intentional: one application dependency remains affected.
 
 | Finding | Disposition |
 | --- | --- |
-| Base-bundled pip 25.0.1: advisory records for archive/wheel/path handling | Added a separate hashed 26.2.1 bootstrap upgrade. Feed reports no advisories for that selected version on the review date. Build-time bootstrap still starts with base pip and installs only the reviewed hashed PyPI wheel. Rebuild verifies the upgrade, but the full scan separately flags pip bundled libraries; see IMAGE_SCAN_REVIEW.md. |
+| Base-bundled pip 25.0.1: advisory records for archive/wheel/path handling | Added a separate hashed 26.2.1 bootstrap upgrade. Feed reports no advisories for that selected version on the review date. Build-time bootstrap still starts with base pip and installs only the reviewed hashed PyPI wheel. Rebuild verifies the upgrade, but the initial full scan separately flagged pip bundled libraries. They are now removed from the runtime along with pip/ensurepip; installer-target exposure is separate. See IMAGE_SCAN_REVIEW.md. |
 | NLTK 3.10.3, GHSA-8mgp-746c-j5xp / CVE-2026-81726, high severity | Upstream lists no patched release. Current offline adapter path does not import NLTK or accept model paths. Retain as an open gate before live extraction: assess actual Crawl4AI call paths, prohibit user-controlled model paths, and verify external sandbox isolation. Do not declare it safe solely because the current runner is offline. |
-| OS/native/browser binaries | Full Docker Scout scan completed after Docker recovery. OS and pip bundled-library findings remain open in IMAGE_SCAN_REVIEW.md. Chromium is not installed. |
+| OS/native/browser binaries | Full Docker Scout scan completed after Docker recovery. Patched OpenSSL/PCRE2 and removed runtime pip/ensurepip; 31 findings remain in IMAGE_SCAN_REVIEW.md. Build-time installer exposure remains separate. Chromium is not installed. |
 
 Detailed local advisory evidence is in ignored output/extractor-audit/. The
 committed facts above preserve the findings without treating a transient feed as
@@ -63,19 +65,22 @@ where applicable; current work performs no browser automation.
 
 ## Reproduction and remaining checks
 
-1. Build with `docker compose -f compose.extraction.yaml build --no-cache`.
+1. Build the developer installer target:
+   `docker build --target installer -t gather-extraction-installer -f services/worker/Dockerfile .`.
+   Build the runtime with `docker compose -f compose.extraction.yaml build --no-cache`.
 2. Run `python scripts/check_extractor_container.py`: locked versions, runtime
    restrictions, bad-hash rejection, correct-hash acceptance and timeout cleanup.
 3. Run the package advisory check and full Docker Scout image scan; triage all
    findings. A completed scan is not a passing security gate.
 4. Remediate TASK-023 before live execution, then repeat these checks.
 
-All build/smoke checks above passed at this checkpoint. The scan did not pass a
+Build/smoke checks passed at this checkpoint; the patched build reused unchanged
+install layers rather than repeating the initial no-cache installation. The scan did not pass a
 clean-security gate. Raw scan evidence is ignored locally; its digest, image ID and
 complete finding inventory are recorded in IMAGE_SCAN_REVIEW.md.
 
 To refresh after a reviewed dependency change, run
-`python scripts/lock_extractor.py --image <reviewed-image-id>` and inspect the
+`python scripts/lock_extractor.py --image <reviewed-installer-image-id>` and inspect the
 lock and inventory diff. Refresh bootstrap separately. Rebuild, compare installed
 packages, run pip check, smoke tests and the advisory check. No automatic upgrades.
 

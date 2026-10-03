@@ -1,5 +1,19 @@
 # Architecture decisions
 
+## ADR-032: patched runtime without Python installer tooling (3 October)
+
+Keep the existing reviewed base and 96 application wheel pins. Add exact Debian
+security versions for OpenSSL/PCRE2, then remove pip plus ensurepip from the runtime
+filesystem. A separate named installer target retains build-time pip/hash checks.
+This reduces runtime attack surface; it does not erase parent layers, make the
+installer target safe for untrusted jobs, or freeze Debian repository availability.
+Do not delete package metadata to hide scanner findings. Full rescan and runtime
+absence/version probes verify the change; remaining findings stay open in TASK-023.
+
+Windows subprocess timeout cleanup must remove the named Docker container before
+closing inherited pipes, since killing Compose alone can wait for its child job.
+A deliberate 120-second job now aborts and cleans up within a 20-second test budget.
+
 ## ADR-031: separate scan completion from security readiness (3 October)
 
 The locked image now builds and passes offline restrictions. Its completed scan

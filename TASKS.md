@@ -8,8 +8,8 @@ only; runtime gates remain open. Ordered next work:
 | Task | Status | Acceptance |
 | --- | --- | --- |
 | TASK-019A | Build and audit verified, 3 October | Base digest + 96 wheel hashes + bootstrap pip lock and declared license inventory. No-cache build, dependency consistency, smoke and actual hash-rejection checks pass. Full image scan completed with open findings; remediation tracked in TASK-023. See services/worker/DEPENDENCY_REVIEW.md |
-| TASK-023 | Ready: security remediation | Triage all 51 scan records (10 high, 7 medium, 34 low), apply reviewed fixes, rebuild and rescan. Review pip bundled copies and NLTK call paths; document remaining applicability with evidence. Live execution stays gated. See services/worker/IMAGE_SCAN_REVIEW.md |
-| TASK-019B | After 019A | Enforced public-only egress and supervisor; DNS/redirect/subresource/bypass and timeout cleanup tests |
+| TASK-023 | Partial: available patches verified | Patched OpenSSL/PCRE2; removed runtime pip/ensurepip; rebuilt and rescanned: 31 records (4 high, 2 medium, 25 low), down from 51. 21 previous records gone; one newly reported GCC advisory. Remaining unpatched/applicability review and build-tool exposure stay open. Smoke verifies fixes and prompt timeout cleanup. See services/worker/IMAGE_SCAN_REVIEW.md |
+| TASK-019B | Ready for local isolation tests; live use gated by 023 | Enforced public-only egress and supervisor; DNS/redirect/subresource/bypass and timeout cleanup tests |
 | TASK-019C | After 019B | Actual Crawl4AI/yt-dlp invocation on approved public tests, bounded output and truthful fallback |
 | TASK-021 | Planned | Local Supabase migrations, two-user RLS/Storage/RPC tests and retry/delete/quota races |
 

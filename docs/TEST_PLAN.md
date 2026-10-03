@@ -63,3 +63,14 @@ Choose the native/browser test harness in TASK-011/013. Browser tests alone do n
 ## Completion evidence
 
 Record exact commands, passed/failed/not-run results and limitations per task. Review code after tests. Fix material issues before a completion commit. Documentation-only changes require link/state/diff checks, not unnecessary full installer builds.
+
+
+## Extractor runtime remediation checks
+
+Build both installer target and runtime per services/worker/RUNNER.md, then run
+scripts/check_extractor_container.py. Verify exact patched Debian versions, all
+96 application versions, absent pip/ensurepip and existing isolation checks.
+Installer-only synthetic checksum probe must reject a wrong hash and accept the
+correct one. A deliberate 120-second sleep must be cancelled and cleaned up
+within 20 seconds, including Windows inherited-pipe handling. A full image rescan
+is required after dependency/image edits; open findings remain release gates.

@@ -79,3 +79,13 @@ A timeout stops waiting for a job; it may leave the actual worker running. The
 Docker smoke harness therefore removes its uniquely named container even on an
 error or timeout. This developer check passes; the production supervisor and
 public-only network enforcement remain planned under TASK-019B.
+
+
+## Runtime attack surface
+
+Build tools install the software; the worker only needs to run it. Removing pip
+and its bootstrap package from the worker removes unnecessary executable code.
+The installer still exists in the developer build target and parent image layers,
+so this is runtime protection, not permanent erasure. Available OS patches are
+pinned and checked separately. Current rescan: 31 open records, four high; live
+extraction is still gated. See [[services/worker/IMAGE_SCAN_REVIEW]].

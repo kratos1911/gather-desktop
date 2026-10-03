@@ -21,7 +21,7 @@
     {
       "id": "parse",
       "type": "text",
-      "text": "Extract text + metadata\nLocked OFFLINE runner verified\nSecurity scan findings open\nLive fetching pending",
+      "text": "Extract text + metadata\nPatched OFFLINE runtime verified\n31 scan records open (4 high)\nLive fetching pending",
       "x": 380,
       "y": 0,
       "width": 330,

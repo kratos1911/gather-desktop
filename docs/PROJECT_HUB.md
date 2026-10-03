@@ -6,13 +6,14 @@ tags: [gather, project]
 Start here in Obsidian. Updated 3 October 2026.
 
 Docker recovery is verified: hash-locked build and offline checks pass. Current
-security gate: 51 image scan records remain open; TASK-023 remediation comes next.
+security gate: 31 scan records remain open after verified OpenSSL/PCRE2 patches
+and removal of runtime pip/ensurepip. TASK-023 remains partial (four high findings).
 See [scan review](../services/worker/IMAGE_SCAN_REVIEW.md). Source quality checks
 cover 109 tests. OKF remains a later optional export idea (ADR-029).
 
 [[docs/DELIVERY_PLAN|Current delivery and system design plan]] explains the target
-architecture, flows, security tests and next tasks. Next is TASK-023, reviewed
-dependency remediation. Proposed mechanisms are not live implementation.
+architecture, flows, security tests and next tasks. TASK-023 retains unresolved
+security gates; TASK-019B local isolation work can proceed without live fetching. Proposed mechanisms are not live implementation.
 
 [Explorable target architecture](../.archify/architecture-gather-plan-20261002-081351/gather-plan.html)
 has nine passing structural checks and verified plan references; browser/visual

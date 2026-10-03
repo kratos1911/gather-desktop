@@ -5,8 +5,10 @@ choices there are proposed, not implemented. PROGRESS.md records history.
 
 Latest checkpoint: TASK-019A hash-locked image rebuilt after Docker recovery.
 Exact installed versions, pip consistency, bad-hash rejection, offline restrictions
-and timeout cleanup pass. Full image scan completed: 51 open records (10 high,
-7 medium, 34 low). TASK-023 remediation is next; live execution remains gated.
+and prompt timeout cleanup pass. TASK-023 patched OpenSSL/PCRE2 and removed
+runtime pip/ensurepip. Rescan: 31 open records (4 high, 2 medium, 25 low), down
+from 51; 21 old records gone and one newly reported GCC advisory. Remaining
+unpatched/applicability and build-tool review stay open; live execution is gated.
 See services/worker/IMAGE_SCAN_REVIEW.md. OKF remains a later optional export layer.
 
 ## Product and constraints
@@ -67,7 +69,8 @@ visual video understanding and chat remain deferred. TASK-019 follows TASK-018.
 
 TASK-018 completed: offline bookmark passages with source/field references and
 TF-IDF retrieval tests. TASK-019 adapters/offline runner pass; next is TASK-023
-dependency remediation, then enforced egress (019B) and live invocation (019C).
+remaining security review. Local enforced-egress/supervisor work (019B) can
+advance without live extraction; live invocation (019C) stays gated.
 TASK-021 plans local Supabase schema/job/isolation tests. TASK-017 connects the flow.
 Provider connection and semantic benchmarks remain pending. Add harder long-document
 and independently reviewed unseen questions before release claims. TASK-002

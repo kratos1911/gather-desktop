@@ -471,3 +471,30 @@ ESLint, TypeScript, Prettier and frontend build. No native inputs/assets changed
 no native rebuild or visual/E2E claim. State, task board, decision, dependency,
 runner, test, delivery and Obsidian hub/concept/canvas notes updated. No paid
 resources, personal documents or GitHub push. Changes committed locally.
+
+## 2026-10-03 - TASK-023 available fixes and full rescan
+
+Pinned installed OpenSSL/libssl/provider to 3.5.7-1~deb13u3 and PCRE2 to
+10.46-1~deb13u3 using authenticated Debian security metadata. Removed pip and
+ensurepip from runtime; developer installer target retains checksum/dependency
+checks. Build succeeded, reusing unchanged hashed-wheel install layers. Runtime
+smoke verifies all 96 application versions, patched OS versions, absent installer
+modules, isolation, synthetic jobs and installer hash rejection/acceptance.
+
+Rescan completed: 31 records (4 high, 2 medium, 25 low), versus 51 (10/7/34).
+Twenty-one prior records disappeared; CVE-2026-95619 is newly reported by the
+refreshed feed. Complete report hashes, inventories, references and dispositions
+are in IMAGE_SCAN_REVIEW.md. Remaining NLTK/GCC/zlib and lower-severity records
+stay open; TASK-023 is partial. No clean-security/live-extraction claim. Scout
+reported a locked temporary archive during cleanup, but wrote a valid SARIF.
+
+Real smoke exposed delayed Windows cleanup: subprocess.run can wait for child
+pipes after killing Compose. Changed to explicit process lifecycle, kill/remove
+before closing pipes. Three regression tests cover ordering, auto-removal and
+cleanup errors. Real 120-second sleep now cancels within a 20-second budget;
+whole final smoke completed in under ten seconds. No smoke containers remain.
+
+Full checks passed: 109 tests, lint, types, format, frontend build. After cleanup
+change, all 76 worker tests and real smoke were rerun successfully. No native
+inputs/assets changed. Docs and Obsidian notes/canvas updated. Local commit only;
+no cloud spending, browser use, real documents or GitHub push.

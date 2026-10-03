@@ -1,5 +1,91 @@
 # Extractor image scan review
 
+## Current remediation checkpoint: 3 October 2026
+
+Runtime image: `sha256:af1d72a75b6bd7644b202f261680f8dbe80b349d342400b633f2f5f7f32bc2d8`.
+Docker Scout 1.24.0 completed a full scan: **31 records: 4 high, 2 medium, 25 low**,
+none critical. Twenty-one previous records disappeared; the refreshed advisory
+feed also reports CVE-2026-95619. No findings were suppressed. TASK-023 remains
+partial, and live extraction remains gated.
+
+Raw report: ignored `output/extractor-audit/remediated-image.sarif.json`.
+SARIF SHA-256: `d7e7c8f760981ccd3b4f30d13fd0d18379366a583c4ef9e0b687e454de0efff4`.
+Scout warned that its temporary archive was locked during cleanup; the valid
+report was written and parsed. Temporary export/cache stayed on D:. No user
+Docker data was deleted.
+
+### Verified changes
+
+- Pinned Debian security packages: openssl, libssl3t64 and openssl-provider-legacy
+  at 3.5.7-1~deb13u3; libpcre2-8-0 at 10.46-1~deb13u3. APT authenticated repository
+  metadata and exact versions are required; an unavailable pin fails the build.
+  This is not a frozen Debian snapshot or bit-identical rebuild guarantee.
+- Removed pip and its vendored code from the runtime filesystem, plus ensurepip
+  and its bundled bootstrap wheel. Installed application distributions still
+  exactly match all 96 locked versions. No metadata-only vulnerability masking.
+- Installer target retains pip for build-time dependency checks and checksum
+  tests. It is not the worker runtime or a deployment target. Parent image layers
+  and builder caches still contain build tools; removal is runtime surface
+  reduction, not archive erasure. Build-time installer exposure remains separate.
+- Build succeeded with cached unchanged wheel-install layers. Runtime version,
+  pip/ensurepip absence, restrictions, synthetic jobs, installer bad/good-hash and
+  deliberate timeout cleanup checks pass. No browser/live extraction was tested.
+
+### Remaining disposition
+
+| Category | Evidence and follow-up |
+| --- | --- |
+| NLTK CVE-2026-81726 | Upstream lists no patch through 3.10.3. Vulnerable model import/export APIs take caller-controlled paths. Offline runner uses output adapters and does not import NLTK; Crawl4AI has tokenizer/downloader paths. No user model-path options are exposed. Keep live execution gated pending supported fix or a demonstrated restricted call path; no blanket safety claim. |
+| GCC CVE-2026-102010 and CVE-2026-95619 | Debian lists gcc-14 14.2.0-19 as unfixed. Respectively C++ priority-queue erase_if and aligned-allocation issues. Source-package matching alone does not establish reachability in each installed binary/wheel; retain open pending native-dependency review or a supported update. |
+| zlib CVE-2026-85091 | Debian marks this source version vulnerable/unfixed, although the description names newer upstream versions. Do not dismiss that discrepancy without package/backport evidence. Retain open. |
+| Remaining two medium and 25 low records | All are retained below, with scanner-reported patch status. Offline restrictions reduce exposure but do not constitute per-advisory dismissal. Review applicability before release; no risk acceptance has been granted. |
+
+Primary references checked 3 October:
+[Debian OpenSSL update](https://tracker.debian.org/news/1805073/accepted-openssl-357-1deb13u3-source-into-stable-security/),
+[PCRE2 tracker](https://security-tracker.debian.org/tracker/CVE-2026-103111),
+[NLTK advisory](https://github.com/nltk/nltk/security/advisories/GHSA-8mgp-746c-j5xp),
+[GCC queue](https://security-tracker.debian.org/tracker/CVE-2026-102010),
+[GCC allocation](https://security-tracker.debian.org/tracker/CVE-2026-95619),
+[zlib tracker](https://security-tracker.debian.org/tracker/CVE-2026-85091).
+
+### Current complete inventory (all open)
+
+| Advisory | Severity | Package(s) | Scanner fixed version |
+| --- | --- | --- | --- |
+| CVE-2005-2541 | LOW | pkg:deb/debian/tar@1.35%2Bdfsg-3.1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2007-5686 | LOW | pkg:deb/debian/shadow@1%3A4.17.4-2?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2010-0928 | LOW | pkg:deb/debian/openssl@3.5.7-1~deb13u3?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2010-4756 | LOW | pkg:deb/debian/glibc@2.41-12%2Bdeb13u4?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2011-3374 | LOW | pkg:deb/debian/apt@3.0.3?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2011-4116 | LOW | pkg:deb/debian/perl@5.40.1-6%2Bdeb13u1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2013-4392 | LOW | pkg:deb/debian/systemd@257.13-1~deb13u1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2017-18018 | LOW | pkg:deb/debian/coreutils@9.7-3?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2018-20796 | LOW | pkg:deb/debian/glibc@2.41-12%2Bdeb13u4?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2019-1010022 | LOW | pkg:deb/debian/glibc@2.41-12%2Bdeb13u4?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2019-1010023 | LOW | pkg:deb/debian/glibc@2.41-12%2Bdeb13u4?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2019-1010024 | LOW | pkg:deb/debian/glibc@2.41-12%2Bdeb13u4?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2019-1010025 | LOW | pkg:deb/debian/glibc@2.41-12%2Bdeb13u4?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2019-9192 | LOW | pkg:deb/debian/glibc@2.41-12%2Bdeb13u4?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2021-45346 | LOW | pkg:deb/debian/sqlite3@3.46.1-7%2Bdeb13u2?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2022-0563 | LOW | pkg:deb/debian/util-linux@2.41.5-0%2Bdeb13u1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2023-31437 | LOW | pkg:deb/debian/systemd@257.13-1~deb13u1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2023-31438 | LOW | pkg:deb/debian/systemd@257.13-1~deb13u1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2023-31439 | LOW | pkg:deb/debian/systemd@257.13-1~deb13u1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2025-5278 | LOW | pkg:deb/debian/coreutils@9.7-3?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2025-70873 | LOW | pkg:deb/debian/sqlite3@3.46.1-7%2Bdeb13u2?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2026-102474 | LOW | pkg:deb/debian/dash@0.5.12-12?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2026-53910 | LOW | pkg:deb/debian/diffutils@1%3A3.10-4?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2026-56391 | LOW | pkg:deb/debian/coreutils@9.7-3?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2026-56392 | LOW | pkg:deb/debian/coreutils@9.7-3?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2025-45582 | MEDIUM | pkg:deb/debian/tar@1.35%2Bdfsg-3.1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2026-102473 | MEDIUM | pkg:deb/debian/dash@0.5.12-12?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2026-102010 | HIGH | pkg:deb/debian/gcc-14@14.2.0-19?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2026-95619 | HIGH | pkg:deb/debian/gcc-14@14.2.0-19?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2026-81726 | HIGH | pkg:pypi/nltk@3.10.3 | not fixed |
+| CVE-2026-85091 | HIGH | pkg:deb/debian/zlib@1%3A1.3.dfsg%2Breally1.3.1-1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+
+## Historical pre-remediation scan
+
 Reviewed 3 October 2026. Docker Scout SARIF contains 51 finding records: 10 high, 7 medium, 34 low; none critical. Advisory aliases may describe the same underlying issue. This is not a clean security result.
 
 Image: sha256:48620415c301651174d236802c6ea27a266ada75c90d1273247543640ce5e513.
