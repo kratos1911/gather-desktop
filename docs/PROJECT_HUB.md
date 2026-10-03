@@ -3,16 +3,16 @@ tags: [gather, project]
 ---
 # Gather project hub
 
-Start here in Obsidian. Updated 2 October 2026.
+Start here in Obsidian. Updated 3 October 2026.
 
-Current blocker: C: filled during dependency rebuild; Docker reports read-only/I/O
-errors. TASK-019A locking/review is partial until rebuild and container checks pass.
-See [dependency review](../services/worker/DEPENDENCY_REVIEW.md). Source quality
-checks now cover 106 tests. OKF is saved as a later optional export idea (ADR-029).
+Docker recovery is verified: hash-locked build and offline checks pass. Current
+security gate: 51 image scan records remain open; TASK-023 remediation comes next.
+See [scan review](../services/worker/IMAGE_SCAN_REVIEW.md). Source quality checks
+cover 109 tests. OKF remains a later optional export idea (ADR-029).
 
 [[docs/DELIVERY_PLAN|Current delivery and system design plan]] explains the target
-architecture, flows, security tests and next tasks. Start with TASK-019A, reproducible
-extractor dependencies. Proposed mechanisms are not live implementation.
+architecture, flows, security tests and next tasks. Next is TASK-023, reviewed
+dependency remediation. Proposed mechanisms are not live implementation.
 
 [Explorable target architecture](../.archify/architecture-gather-plan-20261002-081351/gather-plan.html)
 has nine passing structural checks and verified plan references; browser/visual
@@ -46,9 +46,9 @@ Open [[docs/knowledge/Search flow.canvas|Search flow canvas]] for the visual map
 
 ## Latest verified development checkpoint
 
-As of the 1 October container checkpoint, 98 tests passed (65 worker, 29 evaluation, four UI), along
-with lint, types, formatting and frontend build. These checks were rerun alongside the Docker smoke checks. Native build previously passed; runtime,
-visual verification and remote CI remain unverified.
+As of 3 October, 109 tests passed (76 worker, 29 evaluation, four UI), with lint,
+types, formatting and frontend build. Locked-image smoke and timeout cleanup pass.
+Native build previously passed; visual verification and remote CI remain unverified.
 
 Implemented building blocks: desktop fixture preview, TXT/Markdown processing,
 offline bookmark extraction, TF-IDF baseline, saved-vector comparison and a
@@ -62,7 +62,7 @@ Agent Reach is optional; selected tools are installed in the offline Docker imag
 but live invocation and desktop integration remain pending.
 
 TASK-018 is complete: offline bookmark passages and keyword retrieval tests.
-TASK-019 offline runner and container smoke checks pass; next are dependency locking,
+TASK-019 offline runner and container smoke checks pass; next are dependency remediation,
 public-only network enforcement and actual extraction execution. Then connect private storage,
 restricted fetching and genuine cloud embeddings as their prerequisites become
 available. Chat stays deferred. Commit locally; push only on the user's request.

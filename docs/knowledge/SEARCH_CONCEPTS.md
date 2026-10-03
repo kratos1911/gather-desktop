@@ -67,3 +67,15 @@ workflow requires autonomous agents modifying files.
 - [[tests/evaluation/README|Evaluation corpus]]
 - [[tests/evaluation/VECTORS|Vector comparison protocol]]
 - [[docs/BOOKMARKS|Bookmark extraction and limitations]]
+
+
+## Dependency verification and timeout cleanup
+
+A dependency lock records exact versions and file checksums. A checksum mismatch
+stops installation, but a matching file can still contain a known vulnerability.
+That is why the image is scanned separately. See [[services/worker/IMAGE_SCAN_REVIEW]].
+
+A timeout stops waiting for a job; it may leave the actual worker running. The
+Docker smoke harness therefore removes its uniquely named container even on an
+error or timeout. This developer check passes; the production supervisor and
+public-only network enforcement remain planned under TASK-019B.

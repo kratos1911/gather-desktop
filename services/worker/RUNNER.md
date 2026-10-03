@@ -1,10 +1,10 @@
 # Initial extractor container
 
-Status: the prior image built and offline smoke checks passed on 1 October 2026.
-Crawl4AI 0.9.4 and yt-dlp 2026.8.19 installed inside the container only; pip check
-reported no broken requirements. The 2 October hash-locked rebuild failed after
-C: filled and Docker storage reported read-only/I/O errors. Latest recipe is not
-runtime-verified. See [dependency review](DEPENDENCY_REVIEW.md). TASK-019A is partial.
+Status: the hash-locked image rebuilt successfully after Docker recovery; offline
+smoke checks pass on 3 October 2026. Crawl4AI 0.9.4 and yt-dlp 2026.8.19 are installed
+inside the container only; pip check reports no broken requirements. The full image
+scan has 51 open records. See [dependency review](DEPENDENCY_REVIEW.md) and
+[scan review](IMAGE_SCAN_REVIEW.md). Networking remains disabled.
 
 The runner consumes a supplied extraction-result JSON object, not a live URL job.
 Required fields: backend (crawl4ai or yt-dlp), source_id, url, result,
@@ -30,8 +30,10 @@ Run `python scripts/check_extractor_container.py` from the repository root after
 building. It verifies synthetic success/error jobs, package versions, non-root UID,
 application-directory write rejection, an unreachable external route and absence
 of the checked personal paths. This is not a production security audit or a live
-extraction test. Each probe container is removed after exit.
+extraction test. Each uniquely named probe container is explicitly removed after
+exit or timeout. A deliberate timeout check passes. This developer harness is not
+the production job supervisor required by TASK-019B.
 
-Next: restore Docker storage health, rebuild/smoke/scan the locked image, then
+Next: TASK-023 dependency remediation, then
 enforced public-only egress, tool invocation and live
 compatibility tests. This preparatory runner does not complete live extraction.

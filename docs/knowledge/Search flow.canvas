@@ -21,7 +21,7 @@
     {
       "id": "parse",
       "type": "text",
-      "text": "Extract text + metadata\nPrior OFFLINE runner tested\nHash-locked rebuild blocked: Docker storage\nLive fetching pending",
+      "text": "Extract text + metadata\nLocked OFFLINE runner verified\nSecurity scan findings open\nLive fetching pending",
       "x": 380,
       "y": 0,
       "width": 330,

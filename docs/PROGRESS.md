@@ -444,3 +444,30 @@ storage. No successful new-image build, smoke, intentional hash-mismatch rejecti
 or OS scan claimed. No user files/caches/images were deleted or storage reset.
 TASK-019A stays partial. Restore storage and restart Docker, then rebuild/test/scan.
 Details: services/worker/DEPENDENCY_REVIEW.md. Notes/hub/canvas updated; no push.
+
+## 2026-10-03 - Docker recovery and locked-image verification
+
+Resumed after Docker restart. No-cache image build completed successfully with
+hash-enforced wheel installation and pip check. Exact locked package comparison,
+synthetic success/error jobs, non-root UID, read-only application path, unreachable
+external network and excluded personal paths pass. An actual pip probe rejects a
+wrong artifact hash and accepts its correct hash.
+
+Added unique smoke-container names and explicit removal in finally, including
+client timeout. Three mocked cleanup tests pass; a real deliberately sleeping
+container times out and is removed. No gather-smoke containers remain. This is
+developer verification tooling only, not TASK-019B production job supervision.
+
+Docker Scout full scan completed: 51 records, 10 high / 7 medium / 34 low / no
+critical. Aliases may overlap. IMAGE_SCAN_REVIEW.md records the image/report hash,
+complete inventory and remediation categories. OS patches, pip bundled libraries
+and NLTK remain open. Static inspection found Crawl4AI NLTK tokenizer/downloader
+paths; no live extraction was executed. TASK-023 now tracks remediation before
+networked execution. TASK-019A build/audit acceptance is verified, not security
+readiness or completion of TASK-019.
+
+Full quality runner passed: 76 worker + 29 evaluation + four UI = 109 tests,
+ESLint, TypeScript, Prettier and frontend build. No native inputs/assets changed;
+no native rebuild or visual/E2E claim. State, task board, decision, dependency,
+runner, test, delivery and Obsidian hub/concept/canvas notes updated. No paid
+resources, personal documents or GitHub push. Changes committed locally.

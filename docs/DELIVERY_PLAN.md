@@ -294,12 +294,10 @@ decision and verified update integrity. Do not report native QA from browser tes
 
 ## Immediate next task
 
-2 October implementation update: TASK-019A lockfiles/review are authored, but its
-rebuild is blocked by full C: storage and Docker read-only/I/O errors. Restore
-Docker storage and complete the checks in services/worker/DEPENDENCY_REVIEW.md
-before advancing this gate. OKF is optional later work, recorded in ADR-029.
-
-TASK-019A: produce a reproducible extractor image with a base digest, transitive
-dependency lock/hashes and license inventory, then rebuild and run the existing
-container checks. Keep runtime networking disabled until TASK-019B is verified.
-This prepares safe live extraction without requiring a cloud AI account.
+3 October checkpoint: TASK-019A locked build, package inventory, offline smoke,
+hash-rejection probe and full image scan completed. TASK-023 is next: remediate
+and review the 51 open scan records, rebuild and rescan. Evidence and acceptance
+are in services/worker/IMAGE_SCAN_REVIEW.md and TASKS.md. Keep networking disabled.
+Then implement TASK-019B enforced egress and production supervision before live
+tool invocation. The smoke harness timeout cleanup does not implement that service.
+OKF remains optional later work (ADR-029). No cloud AI account is required here.

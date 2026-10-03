@@ -1,14 +1,13 @@
 # Current project state
 
-Updated: 2 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
+Updated: 3 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
 choices there are proposed, not implemented. PROGRESS.md records history.
 
-Latest checkpoint: TASK-019A is partial. Base digest, 96 wheel hashes, bootstrap pip
-lock and package/license review added. Rebuild failed because C: filled and Docker
-reported read-only filesystem/image-store I/O errors. Restore space and Docker
-health before rebuild/smoke/hash-rejection/full image scan. PyPI advisory review
-leaves NLTK's high-severity model-path issue open before live extraction. See
-services/worker/DEPENDENCY_REVIEW.md. OKF retained as a later optional export layer.
+Latest checkpoint: TASK-019A hash-locked image rebuilt after Docker recovery.
+Exact installed versions, pip consistency, bad-hash rejection, offline restrictions
+and timeout cleanup pass. Full image scan completed: 51 open records (10 high,
+7 medium, 34 low). TASK-023 remediation is next; live execution remains gated.
+See services/worker/IMAGE_SCAN_REVIEW.md. OKF remains a later optional export layer.
 
 ## Product and constraints
 
@@ -20,7 +19,7 @@ Gather is a provisional name for a Windows desktop content library with semantic
 
 ## Implemented
 
-- Local quality runner: 73 worker, 29 evaluation and four UI tests, ESLint,
+- Local quality runner: 76 worker, 29 evaluation and four UI tests, ESLint,
   TypeScript, Prettier and frontend build pass. Native development build passes.
   Manual GitHub workflow authored; remote execution unverified.
 - Links/bookmarks added to product scope and delivery plan in BOOKMARKS.md.
@@ -53,8 +52,9 @@ Frontend lint and format checks are configured; remote CI and native E2E remain 
 ## Current task
 
 TASK-022 documents the system/security delivery plan. TASK-019A added dependency
-locking/review; current source checks total 106 tests. The 1 October container
-checkpoint is historical: the new recipe has not built successfully.
+locking/review; current source checks total 109 tests. The new recipe built and
+passed offline smoke checks. TASK-023 records open scan findings; TASK-019B
+production supervision and egress enforcement remain unimplemented.
 Provider-dependent TASK-005 work remains deferred by user.
 No GitHub push authorized. Offline bookmark processing passes; live bookmark search remains pending. Chat deferred by user on 28 September.
 
@@ -66,8 +66,8 @@ docs/knowledge/EXTRACTION_STACK.md. Tools installed in the offline container onl
 visual video understanding and chat remain deferred. TASK-019 follows TASK-018.
 
 TASK-018 completed: offline bookmark passages with source/field references and
-TF-IDF retrieval tests. TASK-019 adapters/offline runner pass; next is TASK-019A,
-dependency/image locking, then enforced egress (019B) and live invocation (019C).
+TF-IDF retrieval tests. TASK-019 adapters/offline runner pass; next is TASK-023
+dependency remediation, then enforced egress (019B) and live invocation (019C).
 TASK-021 plans local Supabase schema/job/isolation tests. TASK-017 connects the flow.
 Provider connection and semantic benchmarks remain pending. Add harder long-document
 and independently reviewed unseen questions before release claims. TASK-002
@@ -82,8 +82,8 @@ Supabase project/public configuration; audience/regions; operator/contact and fi
 Project hub: [[docs/PROJECT_HUB]]. Shared repository notes are the source of truth;
 concepts, ideas, templates and the search-flow canvas supplement the canonical
 documents. Local template/daily-note configuration saved; Obsidian UI not verified.
-Latest source checks: 106 tests on 2 October. Latest successful container smoke:
-1 October's prior recipe. Do not confuse these with a verified rebuilt image.
+Latest source checks: 109 tests and frontend build on 3 October. Locked-image
+smoke passes, including actual timeout cleanup; no smoke containers remain.
 
 ## Earlier checkpoints (superseded by the 1 October status below)
 
@@ -118,7 +118,7 @@ attempt. Image build, package installation and runtime isolation are unverified.
 Runner only consumes supplied extraction outputs; live URL extraction and enforced
 public-only egress remain unfinished. TASK-019 remains partial.
 
-## Current checkpoint: 1 October
+## Historical checkpoint: 1 October
 
 Docker Linux engine is ready. Extractor image built; installed Crawl4AI 0.9.4 and
 yt-dlp 2026.8.19 verified inside it; pip check passes. Repeatable container smoke

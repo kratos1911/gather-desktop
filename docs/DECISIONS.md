@@ -1,5 +1,14 @@
 # Architecture decisions
 
+## ADR-031: separate scan completion from security readiness (3 October)
+
+The locked image now builds and passes offline restrictions. Its completed scan
+still has open findings, including OS packages and pip bundled dependencies.
+Track all records in IMAGE_SCAN_REVIEW.md and remediate through TASK-023 before
+live execution. Do not treat a top-level package upgrade or disabled networking
+as dismissal of a bundled-library advisory. Developer smoke jobs use unique names
+and explicit cleanup on timeout; this does not replace the production supervisor.
+
 ## ADR-029: retain OKF as an optional extension (2 October)
 
 User accepted keeping the recommendation: Open Knowledge Format may later support

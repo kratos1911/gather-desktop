@@ -7,7 +7,8 @@ only; runtime gates remain open. Ordered next work:
 
 | Task | Status | Acceptance |
 | --- | --- | --- |
-| TASK-019A | Partial: Docker storage blocked | Base digest + 96 wheel hashes + bootstrap pip lock, declared license inventory and PyPI advisory triage implemented. Rebuild failed as C: filled and Docker reported read-only/I/O errors; latest smoke/hash-rejection/OS scan pending. NLTK advisory remains a live-extraction gate. See services/worker/DEPENDENCY_REVIEW.md |
+| TASK-019A | Build and audit verified, 3 October | Base digest + 96 wheel hashes + bootstrap pip lock and declared license inventory. No-cache build, dependency consistency, smoke and actual hash-rejection checks pass. Full image scan completed with open findings; remediation tracked in TASK-023. See services/worker/DEPENDENCY_REVIEW.md |
+| TASK-023 | Ready: security remediation | Triage all 51 scan records (10 high, 7 medium, 34 low), apply reviewed fixes, rebuild and rescan. Review pip bundled copies and NLTK call paths; document remaining applicability with evidence. Live execution stays gated. See services/worker/IMAGE_SCAN_REVIEW.md |
 | TASK-019B | After 019A | Enforced public-only egress and supervisor; DNS/redirect/subresource/bypass and timeout cleanup tests |
 | TASK-019C | After 019B | Actual Crawl4AI/yt-dlp invocation on approved public tests, bounded output and truthful fallback |
 | TASK-021 | Planned | Local Supabase migrations, two-user RLS/Storage/RPC tests and retry/delete/quota races |
@@ -30,7 +31,7 @@ Current checkpoint: local quality checks pass; remote CI execution pending. Link
 | TASK-008 | Native document formats | Depends on 007 | PDF/DOCX/PPTX parsers; preserved page/slide/section references; long-document and malformed-file cases; scanned pages correctly identified |
 | TASK-009 | Photo and OCR retrieval slice | Depends on 007 | JPEG/PNG and scanned text ingestion; SigLIP plus OCR; separate vector spaces and rank fusion; actual source results; category-specific evaluation |
 | TASK-010 | Selected-source chat slice | Deferred by user, 28 September | Pin Qwen runtime/quantization; scoped retrieval, streaming, cancellation, citations, missing-evidence and injection tests; measured resource limits |
-| TASK-011 | Automated quality checks | Partial | Local runner passes 73 worker + 29 evaluation + 4 UI tests, ESLint, TypeScript, Prettier and frontend build. Manual CI workflow authored, not pushed/executed remotely. No native E2E claim |
+| TASK-011 | Automated quality checks | Partial | Local runner passes 76 worker + 29 evaluation + 4 UI tests, ESLint, TypeScript, Prettier and frontend build. Manual CI workflow authored, not pushed/executed remotely. No native E2E claim |
 | TASK-012 | Security and code review | Continuous / release gate | Threat model, input limits, access isolation, deletion reconciliation, license/secret scan, reviewed changes; close privacy audit owner inputs |
 | TASK-013 | Preview installer and QA | Depends on core slices | Clean Windows install/update/uninstall; cloud setup; network/low-disk/offline/quota scenarios; no developer tools or model downloads required |
 | TASK-014 | Production distribution | Depends on 012/013 | Approved destination, signing decision, final policies, backup/restore and rollback; verified release artifacts; no public upload before ready |
