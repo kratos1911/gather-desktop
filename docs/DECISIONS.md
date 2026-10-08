@@ -1,5 +1,20 @@
 # Architecture decisions
 
+## ADR-035: verify source ownership before enabling ingestion (8 October)
+
+Start TASK-021 with Supabase-targeted SQL migrations and a disposable PostgreSQL
+17 harness. The system drive has about 2.7 GB free; avoid the full Supabase stack
+and leave unrelated Docker services untouched. Test-only auth.users/auth.uid
+contracts permit actual role/RLS checks but do not prove JWT, Auth or Storage.
+Pin the test image by digest, use bounded tmpfs/no network/no host ports, clean up
+only the generated test container. No application data is retained.
+
+Clients may read their records and edit title/notes. Creation, ownership,
+versions and deletion are not client-writable. Composite owner/source foreign
+keys stop inconsistent privileged writes. Tombstones hide dependent versions;
+cleanup and quota transactions must precede enabling lifecycle APIs. Do not add
+vector dimensions or ready states before model/publication contracts exist.
+
 ## ADR-034: supervise the entire fetch and pass bytes to offline parsing (8 October)
 
 Use one fixed Python child per fetch so the parent deadline also covers blocked

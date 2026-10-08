@@ -22,6 +22,11 @@ Gather is a provisional name for a Windows desktop content library with semantic
 
 ## Implemented
 
+- TASK-021 preparatory source/version schema: 19 actual PostgreSQL assertions
+  pass for ownership, restricted metadata updates and tombstone visibility.
+  Supabase Auth is emulated only in tests; no real account, Storage, RPC,
+  worker persistence or desktop database connection. See ../supabase/README.md.
+
 - FetchBroker bounds the entire fetch process, including hanging DNS/connect/TLS,
   kills/reaps cancelled or timed-out children and validates bounded responses.
   BookmarkPipeline passes fetched bytes to the offline Docker parser, preserving
@@ -66,6 +71,11 @@ No real desktop import, connected worker/cloud endpoint, embeddings, Supabase pr
 Frontend lint and format checks are configured; remote CI and native E2E remain unverified. The full initial baseline diff also reports pre-existing trailing-whitespace issues in legacy files; those are not hidden or counted as a clean full-diff check. Git repository: https://github.com/kratos1911/gather-desktop (private). origin is configured; main tracks origin/main. Baseline commit b89ceec was pushed and its remote hash verified. The TASK-001 baseline contains the existing implementation and workflow documents.
 
 ## Current task
+
+TASK-021 source ownership slice verified locally on 8 October. Next database
+slice: atomic quota-aware ingestion and durable cleanup transitions, followed by
+full local Supabase Auth/Storage/RPC integration tests when disk capacity permits.
+No full-stack Supabase or durable application persistence claim.
 
 TASK-022 documents the system/security delivery plan. TASK-019A added dependency
 locking/review; current source checks total 145 tests. The new recipe built and

@@ -2,6 +2,12 @@
 
 ## Current executable checks
 
+`python scripts/check_database.py` separately runs 19 SQL assertions against a
+disposable pinned PostgreSQL image. It checks two-user reads/metadata edits,
+column restrictions, owner foreign keys, anonymous/missing identity denial and
+tombstone visibility. Test-only auth shim: JWT/Auth/Storage/RPC and concurrent
+quota/retry/delete behavior remain unverified. See ../supabase/README.md.
+
 `python -m unittest discover -s tests/worker -v` (Python 3.11+) includes 12 synthetic
 text-processing tests: exact source coverage, Unicode/BOM/CRLF, boundary/overlap,
 stable retry IDs, empty/invalid/oversized/binary inputs, response bounds and

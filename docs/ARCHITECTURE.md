@@ -6,6 +6,12 @@ security checks and delivery gates. Proposed mechanisms are not implemented yet.
 
 ## Current implementation
 
+8 October: `supabase/migrations` now defines sources and source_versions with
+ownership RLS, metadata-only client updates and composite ownership references.
+Nineteen PostgreSQL checks pass using a test-only Auth contract shim. This is
+schema groundwork, not connected persistence, Auth, Storage or search. Client
+creation/deletion remains disabled until quota and cleanup APIs are reviewed.
+
 28 September: chat is deferred until search works. The offline bookmark parser
 in services/worker/bookmarks.py extracts supplied HTML without network access.
 Offline bookmark passages now reuse text chunking and are tested with TF-IDF.

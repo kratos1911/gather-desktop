@@ -573,3 +573,22 @@ valid SARIF. Remaining dependency and production gates stay open.
 Canonical docs, Obsidian hub/concepts and flow canvas updated. TASK-019B remains
 partial for browser/tool egress, production broker confinement and public/TLS
 compatibility. Local persistence TASK-021 can proceed independently. No push.
+# 8 October 2026: TASK-021 source ownership foundation
+
+Added Supabase-targeted sources/source_versions migration and disposable pinned
+PostgreSQL 17 checks. Nineteen SQL assertions pass: two-user isolation, own
+metadata persistence, owner/lifecycle write denial, anonymous/missing identity,
+composite owner foreign key and tombstone/dependent-version visibility. The
+container uses no network/ports/host mounts, bounded tmpfs, and was removed after
+the run. Unrelated Docker services were not changed.
+
+Existing quality runner also passes: 112 worker + 29 evaluation + 4 UI tests,
+lint, type checks, formatting and frontend build. No native inputs changed.
+Reviewed SQL privileges and ownership boundaries; no client insert/delete grants
+until quota/cleanup APIs exist. Updated canonical notes, Obsidian hub/concepts
+and flow canvas. Changes committed locally only; no push.
+
+Limits: this uses a test-only Auth contract shim on PostgreSQL, not full Supabase
+services or JWT validation. Storage/RPC, durable jobs, quota/retry/delete races,
+worker persistence and desktop integration remain pending. TASK-021 stays partial.
+Live extraction security gates and cloud AI account deferral remain unchanged.

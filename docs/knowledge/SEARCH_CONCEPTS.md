@@ -111,3 +111,17 @@ the whole fetch in a separate process; the parent can terminate that process whe
 time runs out. A small validated byte response then goes to the no-network parser.
 This flow passes a controlled local test as of 8 October. It prepares passages;
 it does not save a bookmark or create embeddings. See [[services/worker/SUPERVISION]].
+# Database ownership foundation (8 October)
+
+**Row-level security (RLS):** each query is filtered by the signed-in user's
+identity. A forgotten owner filter in application code should not reveal another
+user's source. Privileged database roles can bypass this and must stay server-side.
+
+**Column privileges:** users can edit title/notes, but cannot change ownership or
+processing lifecycle fields. **Composite foreign keys:** a version must reference
+both its source and the same owner, preventing mixed-owner relationships.
+
+**Tombstone:** a deletion timestamp hides the source and its versions immediately.
+Removing stored objects reliably still needs a future durable cleanup workflow.
+Nineteen PostgreSQL checks verify this foundation; the Auth contract is emulated
+in tests. Full Supabase and connected ingestion/search remain pending.
