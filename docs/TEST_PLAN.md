@@ -7,7 +7,7 @@ text-processing tests: exact source coverage, Unicode/BOM/CRLF, boundary/overlap
 stable retry IDs, empty/invalid/oversized/binary inputs, response bounds and
 recovery without content in errors. No cloud, model or private-data access.
 
-From repository root: `./scripts/check.ps1` runs 97 worker tests (15 restricted-HTTP transport, five supervisor, three smoke-container cleanup, eight lock/audit, four runner, nine network-policy, eight subtitle, eight extraction-adapter, seven bookmark-passage, ten bookmark, 12 processing
+From repository root: `./scripts/check.ps1` runs 112 worker tests (nine fetch-broker subprocess, six HTTP-page/pipeline, 15 restricted-HTTP transport, five supervisor, three smoke-container cleanup, eight lock/audit, four runner, nine network-policy, eight subtitle, eight extraction-adapter, seven bookmark-passage, ten bookmark, 12 processing
 plus eight mocked embedding-client tests), 29 evaluation tests, frontend ESLint,
 TypeScript, Prettier, four component tests and frontend build. Use `-Python` to
 specify a Python executable. These local checks pass; the manual GitHub workflow
@@ -81,4 +81,6 @@ runtime. It verifies synthetic success/errors, timeout, cancellation, both outpu
 limits, recovery, kernel resource settings, blocked direct egress and no leftover
 containers. HTTP unit tests use controlled loopback peers and injected public DNS
 answers, never real websites. TLS identity checks are mocked, not full certificate
-handshakes. Broker-wide DNS cancellation and browser egress remain unverified.
+handshakes. Broker-wide DNS/connect/TLS cancellation now passes subprocess tests. Browser
+egress remains unverified. Run scripts/check_bookmark_pipeline.py after rebuilding
+the worker to verify controlled HTTP -> fetch child -> offline Docker -> passages.

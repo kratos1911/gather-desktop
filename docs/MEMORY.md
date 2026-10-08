@@ -1,13 +1,14 @@
 # Current project state
 
-Updated: 3 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
+Updated: 8 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
 choices there are proposed, not implemented. PROGRESS.md records history.
 
 Latest checkpoint: TASK-019A hash-locked image rebuilt after Docker recovery.
 Exact installed versions, pip consistency, bad-hash rejection, offline restrictions
 and prompt timeout cleanup pass. TASK-023 patched OpenSSL/PCRE2 and removed
-runtime pip/ensurepip. Rescan: 31 open records (4 high, 2 medium, 25 low), down
-from 51; 21 old records gone and one newly reported GCC advisory. Remaining
+runtime pip/ensurepip on 3 October. The 8 October code-image rescan reports
+29 records (2 high, 1 medium, 26 low); no dependency versions changed this turn.
+Two GCC records disappeared from the refreshed feed, not through a code fix. Remaining
 unpatched/applicability and build-tool review stay open; live execution is gated.
 See services/worker/IMAGE_SCAN_REVIEW.md. OKF remains a later optional export layer.
 
@@ -21,6 +22,12 @@ Gather is a provisional name for a Windows desktop content library with semantic
 
 ## Implemented
 
+- FetchBroker bounds the entire fetch process, including hanging DNS/connect/TLS,
+  kills/reaps cancelled or timed-out children and validates bounded responses.
+  BookmarkPipeline passes fetched bytes to the offline Docker parser, preserving
+  URL/time/hash/notes and passage provenance. Only controlled loopback integration
+  is verified; no API, desktop ingestion, persistence or semantic results.
+
 - Backend-only restricted HTTP transport: approved numeric address dialing,
   redirect revalidation, TLS identity checks and bounded page bodies. Tested only
   against controlled local peers; resolver/connector injection is trusted code.
@@ -28,7 +35,7 @@ Gather is a provisional name for a Windows desktop content library with semantic
   concurrency, execution timeout, cancellation and cleanup. Actual container
   resource/egress tests pass. Not an API, durable queue or live fetch broker.
 
-- Local quality runner: 97 worker, 29 evaluation and four UI tests, ESLint,
+- Local quality runner: 112 worker, 29 evaluation and four UI tests, ESLint,
   TypeScript, Prettier and frontend build pass. Native development build passes.
   Manual GitHub workflow authored; remote execution unverified.
 - Links/bookmarks added to product scope and delivery plan in BOOKMARKS.md.
@@ -61,10 +68,11 @@ Frontend lint and format checks are configured; remote CI and native E2E remain 
 ## Current task
 
 TASK-022 documents the system/security delivery plan. TASK-019A added dependency
-locking/review; current source checks total 130 tests. The new recipe built and
+locking/review; current source checks total 145 tests. The new recipe built and
 passed offline smoke checks. TASK-023 records open scan findings; TASK-019B
 has a tested offline Docker supervisor and plain-HTTP restricted transport.
-Whole-broker DNS/process deadlines, browser/tool egress and integration remain open.
+Whole-broker DNS/process deadlines and controlled HTTP-to-parser integration
+now pass. Browser/tool egress and production broker confinement remain open.
 Provider-dependent TASK-005 work remains deferred by user.
 No GitHub push authorized. Offline bookmark processing passes; live bookmark search remains pending. Chat deferred by user on 28 September.
 
@@ -78,9 +86,9 @@ visual video understanding and chat remain deferred. TASK-019 follows TASK-018.
 TASK-018 completed: offline bookmark passages with source/field references and
 TF-IDF retrieval tests. TASK-019 adapters/offline runner pass; next is TASK-023
 remaining security review. TASK-019B controlled HTTP transport and offline Docker supervision now pass
-local tests. Next: isolate the fetch broker with a hard deadline covering DNS,
-then connect it to parsing and implement browser/tool egress. Live invocation
-(019C) stays gated.
+local tests. FetchBroker and BookmarkPipeline now pass controlled end-to-end
+HTTP/process/Docker parsing tests. Next: production confinement and browser/tool
+egress; live invocation (019C) stays gated. No persistence or semantic indexing.
 TASK-021 plans local Supabase schema/job/isolation tests. TASK-017 connects the flow.
 Provider connection and semantic benchmarks remain pending. Add harder long-document
 and independently reviewed unseen questions before release claims. TASK-002
@@ -95,7 +103,7 @@ Supabase project/public configuration; audience/regions; operator/contact and fi
 Project hub: [[docs/PROJECT_HUB]]. Shared repository notes are the source of truth;
 concepts, ideas, templates and the search-flow canvas supplement the canonical
 documents. Local template/daily-note configuration saved; Obsidian UI not verified.
-Latest source checks: 130 tests and frontend build on 3 October. Locked-image
+Latest source checks: 145 tests and frontend build on 8 October. Locked-image
 smoke passes, including actual timeout cleanup; no smoke containers remain.
 
 ## Earlier checkpoints (superseded by the 1 October status below)

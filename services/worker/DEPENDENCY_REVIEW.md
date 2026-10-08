@@ -3,8 +3,9 @@
 TASK-019A build and audit checks are verified after Docker recovery. The initial
 no-cache build and subsequent patched build (cached unchanged install layers),
 pip dependency check, exact installed-version comparison, intentional bad-hash
-rejection and offline smoke checks pass. The complete image scan now reports 31 open
-finding records (4 high, 2 medium, 25 low), down from 51. See [scan review](IMAGE_SCAN_REVIEW.md).
+rejection and offline smoke checks pass. The complete image scan on 8 October reports 29 open
+records (2 high, 1 medium, 26 low); dependency versions are unchanged from the
+3 October patched image. The prior scan reported 31; feed changes are not fixes. See [scan review](IMAGE_SCAN_REVIEW.md).
 TASK-023 tracks remediation; do not enable extraction networking.
 
 ## Frozen inputs
@@ -47,7 +48,7 @@ Its nonzero exit is intentional: one application dependency remains affected.
 | --- | --- |
 | Base-bundled pip 25.0.1: advisory records for archive/wheel/path handling | Added a separate hashed 26.2.1 bootstrap upgrade. Feed reports no advisories for that selected version on the review date. Build-time bootstrap still starts with base pip and installs only the reviewed hashed PyPI wheel. Rebuild verifies the upgrade, but the initial full scan separately flagged pip bundled libraries. They are now removed from the runtime along with pip/ensurepip; installer-target exposure is separate. See IMAGE_SCAN_REVIEW.md. |
 | NLTK 3.10.3, GHSA-8mgp-746c-j5xp / CVE-2026-81726, high severity | Upstream lists no patched release. Current offline adapter path does not import NLTK or accept model paths. Retain as an open gate before live extraction: assess actual Crawl4AI call paths, prohibit user-controlled model paths, and verify external sandbox isolation. Do not declare it safe solely because the current runner is offline. |
-| OS/native/browser binaries | Full Docker Scout scan completed after Docker recovery. Patched OpenSSL/PCRE2 and removed runtime pip/ensurepip; 31 findings remain in IMAGE_SCAN_REVIEW.md. Build-time installer exposure remains separate. Chromium is not installed. |
+| OS/native/browser binaries | Full Docker Scout scan completed after Docker recovery. Patched OpenSSL/PCRE2 and removed runtime pip/ensurepip; latest counts and retained findings are in IMAGE_SCAN_REVIEW.md. Build-time installer exposure remains separate. Chromium is not installed. |
 
 Detailed local advisory evidence is in ignored output/extractor-audit/. The
 committed facts above preserve the findings without treating a transient feed as

@@ -2,6 +2,7 @@
 import json
 import sys
 from services.worker.extraction_adapters import crawl4ai_passages, ytdlp_passages
+from services.worker.http_page import http_page_passages
 
 MAX_INPUT = 256 * 1024
 MAX_OUTPUT = 2 * 1024 * 1024
@@ -24,7 +25,8 @@ def run_job(payload):
             raise ValueError()
         arguments = {key: job[key] for key in ('backend_version', 'fetched_at')}
         arguments['notes'] = job.get('notes', '')
-        adapter = {'crawl4ai': crawl4ai_passages, 'yt-dlp': ytdlp_passages}.get(job['backend'])
+        adapter = {'crawl4ai': crawl4ai_passages, 'yt-dlp': ytdlp_passages,
+                   'http-page': http_page_passages}.get(job['backend'])
         if adapter is None:
             raise ValueError()
         document = adapter(job['source_id'], job['url'], job['result'], **arguments)

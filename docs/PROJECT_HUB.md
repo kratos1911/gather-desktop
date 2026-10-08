@@ -3,18 +3,20 @@ tags: [gather, project]
 ---
 # Gather project hub
 
-Start here in Obsidian. Updated 3 October 2026.
+Start here in Obsidian. Updated 8 October 2026.
 
 Docker recovery is verified: hash-locked build and offline checks pass. Current
-security gate: 31 scan records remain open after verified OpenSSL/PCRE2 patches
-and removal of runtime pip/ensurepip. TASK-023 remains partial (four high findings).
+security gate: the 8 October scan reports 29 records, including two high.
+Package versions are unchanged this turn; scan/feed changes are not new code
+fixes. TASK-023 remains partial after earlier OpenSSL/PCRE2 and installer fixes.
 See [scan review](../services/worker/IMAGE_SCAN_REVIEW.md). Source quality checks
-cover 130 tests. OKF remains a later optional export idea (ADR-029).
+cover 145 tests. OKF remains a later optional export idea (ADR-029).
 
 [[docs/DELIVERY_PLAN|Current delivery and system design plan]] explains the target
 architecture, flows, security tests and next tasks. TASK-023 retains unresolved
 security gates. TASK-019B transport and offline supervision pass controlled tests;
-whole-broker deadlines and browser/tool egress remain next. See
+Whole-fetch deadlines and controlled fetch-to-parser integration now pass.
+Production confinement and browser/tool egress remain open. See
 [[services/worker/SUPERVISION|Verified worker boundaries]].
 
 [Explorable target architecture](../.archify/architecture-gather-plan-20261002-081351/gather-plan.html)
@@ -49,7 +51,7 @@ Open [[docs/knowledge/Search flow.canvas|Search flow canvas]] for the visual map
 
 ## Latest verified development checkpoint
 
-As of 3 October, 130 tests passed (97 worker, 29 evaluation, four UI), with lint,
+As of 8 October, 145 tests passed (112 worker, 29 evaluation, four UI), with lint,
 types, formatting and frontend build. Locked-image smoke and timeout cleanup pass.
 Native build previously passed; visual verification and remote CI remain unverified.
 

@@ -1,5 +1,56 @@
 # Extractor image scan review
 
+## Latest verification: 8 October 2026
+
+Image `sha256:4351b0393ac9e419992251735eb0af60cb5fb7c554ea2fd008b001e8f965eb1e`
+includes the fetch broker, page adapter and pipeline. Build reused unchanged
+package layers. Docker Scout 1.24.0 reports **29 records: two high, one medium,
+26 low**. No dependency versions were changed in this checkpoint. GCC records
+CVE-2026-102010 and CVE-2026-95619 are no longer reported by the refreshed scan;
+that is scanner/feed evidence, not a claimed code fix or independent dismissal.
+Severity changed for CVE-2026-102473. All current records remain open.
+
+Raw report: ignored `output/extractor-audit/broker-image-20261008.sarif.json`.
+SHA-256: `2ed6b8f6f336d9f5df1111e4c040b1a9ba210238dccb9acb000fbe20407bb83c`.
+The scanner wrote valid SARIF but again warned that a temporary archive was
+locked during cleanup. No cache/user-data deletion or suppression was performed.
+
+The two high records remain NLTK CVE-2026-81726 and zlib CVE-2026-85091, with
+no fixed version listed by this scan. Existing applicability/deployment gates
+remain. Older dated inventories below are historical, not current counts.
+
+| Advisory | Severity | Package(s) | Scanner fixed version |
+| --- | --- | --- | --- |
+| CVE-2005-2541 | LOW | pkg:deb/debian/tar@1.35%2Bdfsg-3.1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2007-5686 | LOW | pkg:deb/debian/shadow@1%3A4.17.4-2?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2010-0928 | LOW | pkg:deb/debian/openssl@3.5.7-1~deb13u3?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2010-4756 | LOW | pkg:deb/debian/glibc@2.41-12%2Bdeb13u4?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2011-3374 | LOW | pkg:deb/debian/apt@3.0.3?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2011-4116 | LOW | pkg:deb/debian/perl@5.40.1-6%2Bdeb13u1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2013-4392 | LOW | pkg:deb/debian/systemd@257.13-1~deb13u1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2017-18018 | LOW | pkg:deb/debian/coreutils@9.7-3?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2018-20796 | LOW | pkg:deb/debian/glibc@2.41-12%2Bdeb13u4?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2019-1010022 | LOW | pkg:deb/debian/glibc@2.41-12%2Bdeb13u4?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2019-1010023 | LOW | pkg:deb/debian/glibc@2.41-12%2Bdeb13u4?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2019-1010024 | LOW | pkg:deb/debian/glibc@2.41-12%2Bdeb13u4?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2019-1010025 | LOW | pkg:deb/debian/glibc@2.41-12%2Bdeb13u4?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2019-9192 | LOW | pkg:deb/debian/glibc@2.41-12%2Bdeb13u4?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2021-45346 | LOW | pkg:deb/debian/sqlite3@3.46.1-7%2Bdeb13u2?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2022-0563 | LOW | pkg:deb/debian/util-linux@2.41.5-0%2Bdeb13u1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2023-31437 | LOW | pkg:deb/debian/systemd@257.13-1~deb13u1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2023-31438 | LOW | pkg:deb/debian/systemd@257.13-1~deb13u1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2023-31439 | LOW | pkg:deb/debian/systemd@257.13-1~deb13u1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2025-5278 | LOW | pkg:deb/debian/coreutils@9.7-3?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2025-70873 | LOW | pkg:deb/debian/sqlite3@3.46.1-7%2Bdeb13u2?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2026-102473 | LOW | pkg:deb/debian/dash@0.5.12-12?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2026-102474 | LOW | pkg:deb/debian/dash@0.5.12-12?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2026-53910 | LOW | pkg:deb/debian/diffutils@1%3A3.10-4?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2026-56391 | LOW | pkg:deb/debian/coreutils@9.7-3?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2026-56392 | LOW | pkg:deb/debian/coreutils@9.7-3?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2025-45582 | MEDIUM | pkg:deb/debian/tar@1.35%2Bdfsg-3.1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+| CVE-2026-81726 | HIGH | pkg:pypi/nltk@3.10.3 | not fixed |
+| CVE-2026-85091 | HIGH | pkg:deb/debian/zlib@1%3A1.3.dfsg%2Breally1.3.1-1?os_distro=trixie&os_name=debian&os_version=13 | not fixed |
+
 ## Latest code-image verification: 3 October
 
 Image `sha256:28b50a3387d69ae5ed2d015bf6653eb721f5b9fcb76070ec4a9d5c5b2c5d9afd`

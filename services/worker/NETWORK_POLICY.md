@@ -10,7 +10,8 @@ This helper is preflight only. The new backend-only restricted_fetch transport
 dials approved numeric addresses and rechecks redirects, with TLS hostname
 verification. Local controlled tests pass; it is not connected to live jobs.
 Known NAT64 ranges are denied in addition to other non-public/special addresses.
-Browser/tool egress and whole-broker DNS deadlines remain open. See
+Whole-broker DNS deadlines now pass subprocess tests through FetchBroker;
+browser/tool egress remains open. See
 [supervision](SUPERVISION.md) for tested boundaries and remaining acceptance.
 
 Direct package intent lives in requirements-extraction.txt; the complete hashed

@@ -300,7 +300,8 @@ and review scan findings. Available patches and runtime installer removal are
 verified; the rescan has 31 records (four high), down from 51. Evidence and acceptance
 are in services/worker/IMAGE_SCAN_REVIEW.md and TASKS.md. Keep networking disabled.
 TASK-019B now has controlled HTTP transport and offline DockerJobRunner checks.
-Next: supervise the entire fetch broker, including DNS, then integrate broker and
-parser and enforce browser/tool egress. Live invocation remains gated. Durable
+8 October: whole-fetch process deadlines and controlled fetch-to-parser
+integration pass. Next: production broker confinement and browser/tool egress.
+Live invocation remains gated. Durable
 leases, crash/orphan cleanup and hosted API integration are not implemented.
 OKF remains optional later work (ADR-029). No cloud AI account is required here.

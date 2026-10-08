@@ -532,3 +532,44 @@ claim made. Browser access, live extraction, paid AI and public deployment remai
 off. TASK-019B remains partial: next is a supervised fetch-broker process covering
 DNS, then parser integration and browser/tool egress. Canonical docs, concepts,
 Obsidian hub and flow canvas updated; local commit only, no GitHub push.
+
+## 2026-10-08 - Whole-fetch deadline and controlled page-to-passages flow
+
+Implemented FetchBroker with one fixed child process per URL, parent deadline
+covering DNS/connect/TLS/body operations, cancellation, bounded input/output and
+safe errors. Child startup is isolated; only Windows system-directory variables
+are inherited, with no provider/proxy/Python environment settings. Timed-out and
+cancelled processes are killed/reaped and pipes closed; valid output from a child
+that remains running is not published. This is lifecycle isolation, not a host
+filesystem/memory/network sandbox or general process-tree supervisor.
+
+Added http-page adapter and BookmarkPipeline. Actual fetched HTML/XHTML or UTF-8
+plain bytes pass to the network-none Docker parser; source notes, original/final
+URL, timestamp, redirects, body hash and passage provenance are preserved. This
+is explicitly restricted-http output, not simulated Crawl4AI or semantic results.
+Fetch failure/cancellation never invokes the parser; durable bookmark preservation
+still belongs to the future storage/coordinator layer.
+
+Nine broker and six page/pipeline tests added. Tests simulate blocked DNS, connect
+and TLS within real subprocesses, check output flooding/schema failures, recovery,
+reaping, secret environment exclusion and cancellation between stages. A first
+oversize-result fixture exceeded Windows command-line length; changed only that
+fixture to construct its large output inside the child, then verified rejection.
+Full quality runner passed with 110 worker + 29 evaluation + four UI tests and
+lint/types/format/frontend build. Added two more edge cases and reran all 112
+worker tests successfully: current total 145. No native inputs changed.
+
+Docker image rebuilt successfully with unchanged package layers.
+check_bookmark_pipeline.py passed: loopback HTTP redirect -> real broker child ->
+real offline Docker parser -> passages, plus metadata-redirect rejection before
+parsing. No real websites, browser tools, personal documents or paid services used.
+No job containers remain. Scout rescan: 29 records (2 high, 1 medium, 26 low),
+versus 31 on 3 October. No package fixes were made this turn: two GCC records are
+no longer reported by the feed and one advisory severity changed. Full current
+inventory, image digest and SARIF checksum recorded in IMAGE_SCAN_REVIEW.md.
+The scanner again reported a locked temporary archive during cleanup but wrote
+valid SARIF. Remaining dependency and production gates stay open.
+
+Canonical docs, Obsidian hub/concepts and flow canvas updated. TASK-019B remains
+partial for browser/tool egress, production broker confinement and public/TLS
+compatibility. Local persistence TASK-021 can proceed independently. No push.

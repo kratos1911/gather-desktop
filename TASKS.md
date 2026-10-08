@@ -8,8 +8,8 @@ only; runtime gates remain open. Ordered next work:
 | Task | Status | Acceptance |
 | --- | --- | --- |
 | TASK-019A | Build and audit verified, 3 October | Base digest + 96 wheel hashes + bootstrap pip lock and declared license inventory. No-cache build, dependency consistency, smoke and actual hash-rejection checks pass. Full image scan completed with open findings; remediation tracked in TASK-023. See services/worker/DEPENDENCY_REVIEW.md |
-| TASK-023 | Partial: available patches verified | Patched OpenSSL/PCRE2; removed runtime pip/ensurepip; rebuilt and rescanned: 31 records (4 high, 2 medium, 25 low), down from 51. 21 previous records gone; one newly reported GCC advisory. Remaining unpatched/applicability review and build-tool exposure stay open. Smoke verifies fixes and prompt timeout cleanup. See services/worker/IMAGE_SCAN_REVIEW.md |
-| TASK-019B | Partial: controlled transport and offline supervisor verified | 15 local HTTP transport tests, nine destination-policy tests and five supervisor unit tests; real Docker timeout/cancel/output/bypass/resource/cleanup probes pass. Next: whole-broker process deadline including DNS, then broker-to-parser integration and browser/tool egress. Live use gated by 023. See services/worker/SUPERVISION.md |
+| TASK-023 | Partial: available patches verified | Patched OpenSSL/PCRE2; removed runtime pip/ensurepip; rebuilt and rescanned: 31 records (4 high, 2 medium, 25 low), down from 51. 21 previous records gone; one newly reported GCC advisory. Remaining unpatched/applicability review and build-tool exposure stay open. Smoke verifies fixes and prompt timeout cleanup. 8 October code-image scan: 29 records (2 high, 1 medium, 26 low), with unchanged package versions; feed differences are not new fixes. See services/worker/IMAGE_SCAN_REVIEW.md |
+| TASK-019B | Partial: whole-fetch deadline and page pipeline verified, 8 October | Nine broker subprocess tests and six adapter/pipeline tests added; stuck DNS/connect/TLS, cancellation, output limits, cleanup and controlled HTTP-to-Docker-parser flow pass. Browser/tool egress, production broker confinement and public compatibility remain open. Live use gated by 023. See services/worker/SUPERVISION.md |
 | TASK-019C | After 019B | Actual Crawl4AI/yt-dlp invocation on approved public tests, bounded output and truthful fallback |
 | TASK-021 | Planned | Local Supabase migrations, two-user RLS/Storage/RPC tests and retry/delete/quota races |
 
@@ -17,7 +17,7 @@ TASK-021 can advance if live-site checks are blocked. No paid AI account needed
 for local schema work. TASK-005 remains provider-gated. Follow vertical slices
 in DELIVERY_PLAN.md. No runtime work is claimed by this planning checkpoint.
 
-Current checkpoint: local quality checks pass; remote CI execution pending. Links/bookmarks accepted on 28 September. Next independent task: TASK-019B whole-broker deadline and restricted integration. Chat deferred. Provider/account/live tests remain deferred; no pushes without an explicit request.
+Current checkpoint: local quality checks pass; remote CI execution pending. Links/bookmarks accepted on 28 September. Next: TASK-019B production broker confinement/browser egress, or TASK-021 local persistence while live-use security gates remain open. Chat deferred. Provider/account/live tests remain deferred; no pushes without an explicit request.
 
 | ID | Task | Status | Acceptance / evidence |
 | --- | --- | --- | --- |
@@ -31,7 +31,7 @@ Current checkpoint: local quality checks pass; remote CI execution pending. Link
 | TASK-008 | Native document formats | Depends on 007 | PDF/DOCX/PPTX parsers; preserved page/slide/section references; long-document and malformed-file cases; scanned pages correctly identified |
 | TASK-009 | Photo and OCR retrieval slice | Depends on 007 | JPEG/PNG and scanned text ingestion; SigLIP plus OCR; separate vector spaces and rank fusion; actual source results; category-specific evaluation |
 | TASK-010 | Selected-source chat slice | Deferred by user, 28 September | Pin Qwen runtime/quantization; scoped retrieval, streaming, cancellation, citations, missing-evidence and injection tests; measured resource limits |
-| TASK-011 | Automated quality checks | Partial | Local runner passes 97 worker + 29 evaluation + 4 UI tests, ESLint, TypeScript, Prettier and frontend build. Manual CI workflow authored, not pushed/executed remotely. No native E2E claim |
+| TASK-011 | Automated quality checks | Partial | Local runner passes 112 worker + 29 evaluation + 4 UI tests, ESLint, TypeScript, Prettier and frontend build. Manual CI workflow authored, not pushed/executed remotely. No native E2E claim |
 | TASK-012 | Security and code review | Continuous / release gate | Threat model, input limits, access isolation, deletion reconciliation, license/secret scan, reviewed changes; close privacy audit owner inputs |
 | TASK-013 | Preview installer and QA | Depends on core slices | Clean Windows install/update/uninstall; cloud setup; network/low-disk/offline/quota scenarios; no developer tools or model downloads required |
 | TASK-014 | Production distribution | Depends on 012/013 | Approved destination, signing decision, final policies, backup/restore and rollback; verified release artifacts; no public upload before ready |

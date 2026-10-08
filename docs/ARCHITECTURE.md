@@ -11,7 +11,9 @@ in services/worker/bookmarks.py extracts supplied HTML without network access.
 Offline bookmark passages now reuse text chunking and are tested with TF-IDF.
 Desktop persistence, live extraction and semantic search remain disconnected.
 A backend-only plain-HTTP transport and offline Docker supervisor now pass local
-controlled tests. Whole-broker DNS deadlines and browser/tool egress remain open;
+controlled tests. FetchBroker now covers whole-fetch deadlines including DNS;
+BookmarkPipeline connects it to offline parsing. Production broker confinement
+and browser/tool egress remain open;
 see services/worker/SUPERVISION.md.
 
 apps/desktop contains a React/TypeScript interface, synthetic fixtures, component tests and a Tauri Windows shell. services/worker contains a transport-independent TXT/Markdown processing module with synthetic tests. No auth, processing endpoint, database client, inference runtime or upload pipeline is connected. See MEMORY.md for verification.
@@ -52,7 +54,8 @@ Planned bookmark boundary: persist an owner-scoped source before asynchronous
 enrichment; a restricted cloud fetcher and metadata/article adapters produce safe
 text with URL/fetch-time/provenance. Reuse the existing chunk/embedding pipeline.
 Failed fetching retains the bookmark. No arbitrary page-script execution or
-untrusted HTML inside Tauri. See BOOKMARKS.md; no fetcher is implemented yet.
+untrusted HTML inside Tauri. See BOOKMARKS.md; the backend page pipeline is
+verified with controlled local fixtures and is not connected to desktop bookmarks.
 
 Existing: apps/desktop/src/components, fixtures.ts, App.tsx, src-tauri, scripts/desktop.ps1, docs.
 

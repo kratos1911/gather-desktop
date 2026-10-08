@@ -102,3 +102,12 @@ The parser has no network at all. A host-side supervisor starts it with limited
 resources, caps both output streams, and removes its container on timeout or
 cancellation. Controlled tests pass; the fetch broker's full DNS deadline and
 browser networking remain next. [[services/worker/SUPERVISION]] explains the limits.
+
+
+## Whole-fetch deadline and the byte handoff
+
+Socket timeouts do not necessarily stop a stuck DNS lookup. FetchBroker places
+the whole fetch in a separate process; the parent can terminate that process when
+time runs out. A small validated byte response then goes to the no-network parser.
+This flow passes a controlled local test as of 8 October. It prepares passages;
+it does not save a bookmark or create embeddings. See [[services/worker/SUPERVISION]].

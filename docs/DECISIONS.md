@@ -1,5 +1,20 @@
 # Architecture decisions
 
+## ADR-034: supervise the entire fetch and pass bytes to offline parsing (8 October)
+
+Use one fixed Python child per fetch so the parent deadline also covers blocked
+OS DNS and TLS/connect operations. Bound both streams and the decoded result,
+allowlist inherited environment, kill/reap on timeout/cancel, and never publish
+partial or still-running output. No arbitrary child code comes from job data.
+The host process boundary is lifecycle control, not a production OS sandbox.
+
+Add an explicit http-page adapter instead of relabelling raw HTML as Crawl4AI
+output. Preserve URL, fetch time, redirects, raw-body hash and actual parser
+provenance; plaintext remains literal. Pass bytes into the existing network-none
+Docker runner. Failures leave persistence decisions to the future coordinator;
+no save/index or semantic readiness is claimed. Browser/tool egress, durable job
+recovery, external compatibility and open dependency findings remain release gates.
+
 ## ADR-033: separate restricted fetching from offline parsing (3 October)
 
 Introduce a small backend-only page transport that approves each DNS/redirect

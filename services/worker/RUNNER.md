@@ -3,12 +3,13 @@
 Status: the hash-locked image rebuilt successfully after Docker recovery; offline
 smoke checks pass on 3 October 2026. Crawl4AI 0.9.4 and yt-dlp 2026.8.19 are installed
 inside the container only; pip check reports no broken requirements. The full image
-rescan has 31 open records (four high). OpenSSL/PCRE2 are patched; runtime pip
+8 October rescan has 29 records (two high); package versions are unchanged in
+this checkpoint and scan/feed differences are not claimed fixes. OpenSSL/PCRE2 are patched; runtime pip
 and ensurepip are removed. See [dependency review](DEPENDENCY_REVIEW.md) and
 [scan review](IMAGE_SCAN_REVIEW.md). Networking remains disabled.
 
 The runner consumes a supplied extraction-result JSON object, not a live URL job.
-Required fields: backend (crawl4ai or yt-dlp), source_id, url, result,
+Required fields: backend (crawl4ai, yt-dlp or http-page), source_id, url, result,
 backend_version, fetched_at; optional notes. It returns a processed document or
 a generic error. Input cap 256 KiB, output cap 2 MiB. No arbitrary command/options.
 Caption-file support exists separately and is not exposed through this runner yet.
@@ -42,3 +43,9 @@ the production job supervisor required by TASK-019B.
 Next: TASK-023 dependency remediation, then
 enforced public-only egress, tool invocation and live
 compatibility tests. This preparatory runner does not complete live extraction.
+
+
+The http-page backend accepts a bounded base64 body, content type, final URL and
+redirect count from FetchBroker through BookmarkPipeline. It never fetches inside
+the parser. See SUPERVISION.md for the 8 October controlled integration evidence
+and `scripts/check_bookmark_pipeline.py` for reproduction.
