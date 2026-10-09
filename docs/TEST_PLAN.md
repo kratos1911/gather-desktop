@@ -8,7 +8,15 @@ disposable pinned PostgreSQL image. It checks two-user reads/metadata edits,
 column restrictions, owner foreign keys, anonymous/missing identity denial and
 tombstone visibility, atomic quota/idempotency, cleanup rollback, repeated cleanup
 and concurrent save/write/delete behavior. Test-only auth shim: full
-JWT/Auth/Storage/PostgREST behavior remains unverified. See ../supabase/README.md.
+JWT/Auth/Storage/PostgREST behavior is tested separately. See ../supabase/README.md.
+
+`python scripts/supabase_test_stack.py` passes 31 checks using real local Auth,
+PostgREST and Storage services: actual JWT sign-in, RPC ownership, private original
+reads, denied uploads/overwrite/delete, tombstone visibility, failed cleanup guard,
+API deletion and interrupted/repeated finalization. It uses synthetic users/files,
+bounded temporary data mounts and an explicit loopback-only gateway. Services and
+data are removed afterward. Exact hosted parity, concurrent upload fencing,
+background reconciliation and desktop sessions remain unverified.
 
 `python -m unittest discover -s tests/worker -v` (Python 3.11+) includes 12 synthetic
 text-processing tests: exact source coverage, Unicode/BOM/CRLF, boundary/overlap,

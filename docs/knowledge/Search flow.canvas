@@ -48,7 +48,7 @@
     {
       "id": "vector",
       "type": "text",
-      "text": "Cloud embeddings + Supabase\nOwnership/save/delete: 49 database checks pass\nAuth/Storage/search integration pending",
+      "text": "Cloud embeddings + Supabase\n49 DB + 31 real core API checks pass\nPrivate originals + deletion verified locally\nDesktop/embeddings still pending",
       "x": 800,
       "y": 220,
       "width": 330,

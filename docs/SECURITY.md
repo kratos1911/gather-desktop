@@ -6,6 +6,14 @@ Treat uploaded content, filenames, model output, desktop clients and IPC message
 
 ## Required controls before real data
 
+- 9 October local evidence: 31 real core API checks verify JWT ownership, private
+  originals and Storage API deletion before SQL finalization. Public signup and
+  client uploads remain disabled. This does not close upload fencing, signed-URL
+  retention, worker authorization, hosted parity or production dependency gates.
+  See ../supabase/LOCAL_INTEGRATION.md. Never replace Storage API deletion with
+  direct SQL writes to storage.objects; absence checks cannot fence in-flight
+  privileged uploads by themselves.
+
 - Bookmark enrichment (planned): enforce the fetch boundary in BOOKMARKS.md before
   network access. Reject unsafe schemes, embedded credentials and non-public
   destinations; enforce DNS/redirect/connection checks and egress restrictions,

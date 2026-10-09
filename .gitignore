@@ -28,3 +28,7 @@ Thumbs.db
 
 # Local Obsidian settings, plugin state and workspace layout
 /.obsidian/
+
+# Local Supabase CLI exploration/state; no hosted project link belongs in Git.
+/supabase/.temp/
+/supabase/.branches/

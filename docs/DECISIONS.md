@@ -1,5 +1,26 @@
 # Architecture decisions
 
+## ADR-037: verify core APIs and order Storage cleanup before SQL (9 October)
+
+Use real Auth, PostgREST and Storage images with a disposable PostgreSQL database
+to move beyond identity shims. Auth/Storage install their own schemas; the harness
+supplies test roles and exercises real JWTs. Image digests are pinned. Only the
+gateway has an explicit loopback port; database/file data lives in bounded tmpfs.
+This verifies core API behavior, not complete hosted/CLI/default-grant parity.
+
+The CLI's recommended network-level loopback setting still published on all
+interfaces in this environment. Stop that stack and use explicit Compose port
+bindings verified before fixtures. Do not change Docker's global settings or
+unrelated workloads. The CLI is not required by the final test runner.
+
+Create a private, bounded original-file bucket with owner/live-source read policy.
+Keep client upload/overwrite/delete denied. Remove bytes via the Storage API;
+SQL finalization refuses remaining source-prefix object metadata. A failed or
+interrupted external removal retains the cleanup request and slot charge.
+31 API checks pass, including two-owner isolation and retry after external removal.
+No background worker is implemented. In-flight privileged uploads, signed URLs,
+orphan reconciliation and byte/rate budgets need explicit follow-up gates.
+
 ## ADR-036: serialize source quotas and preserve deletion receipts (9 October)
 
 Use per-owner quota row locks to serialize saves and cleanup. Store source,

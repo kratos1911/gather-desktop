@@ -14,7 +14,10 @@ direct creation/deletion remains disabled. The 9 October migration adds SQL
 save/delete functions with slot quotas, durable idempotency receipts, atomic
 tombstone/cleanup requests and private database-only cleanup. Parent locks guard
 late version writes. 45 SQL assertions and four concurrency scenarios pass.
-External Storage cleanup, worker leases and hosted RPC integration remain pending.
+The next migration adds private original reads and a Storage-presence cleanup
+guard. A disposable core-service harness passes 31 actual Auth/PostgREST/Storage
+checks, including API removal before finalization. Worker leases, concurrent
+upload fencing, background reconciliation and hosted/desktop integration remain pending.
 
 28 September: chat is deferred until search works. The offline bookmark parser
 in services/worker/bookmarks.py extracts supplied HTML without network access.

@@ -142,3 +142,17 @@ record. A rollback leaves the request available for retry. Database cleanup
 releases quota once; the receipt survives to stop late save retries recreating
 the source. A future background worker and external Storage reconciliation are
 still required. Version writes lock/check the parent to stop late derivatives.
+
+## Why deleting a file takes two steps (9 October)
+
+The database stores the file's record; Storage holds its bytes. A database
+transaction cannot make both services change atomically. We first hide the source
+and retain a cleanup request, then remove the bytes through Storage's API, then
+finish database cleanup. If interrupted, retrying repeats safe operations.
+The source's quota slot remains occupied until finalization succeeds.
+
+31 local core API checks now verify this order with real synthetic files and
+real Auth-issued JWTs. Storage metadata is never deleted directly by SQL. A
+remaining metadata record blocks finalization; preventing a late upload after
+that check still needs future upload leases/fencing and orphan reconciliation.
+There is no deployed background cleanup worker or desktop connection yet.

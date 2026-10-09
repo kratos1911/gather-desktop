@@ -22,10 +22,17 @@ Gather is a provisional name for a Windows desktop content library with semantic
 
 ## Implemented
 
+- Real core Supabase API harness: 31 checks pass on disposable Auth/PostgREST/
+  Storage + PostgreSQL. Actual JWT login, private reads, denied client writes,
+  tombstone visibility and Storage API deletion before SQL finalization verified.
+  Explicit loopback gateway; no DB host port; synthetic data/containers removed.
+  No desktop integration or background cleanup worker. See ../supabase/LOCAL_INTEGRATION.md.
+
 - TASK-021 database lifecycle: 45 SQL assertions and four concurrent scenarios
   pass for ownership, atomic source-slot quota/idempotent saves, tombstones,
-  database cleanup rollback and late-write protection. Auth is emulated only
-  in tests. No real account, Storage, hosted RPC or desktop connection.
+  database cleanup rollback and late-write protection. This fast suite still uses
+  Auth/Storage metadata shims; the separate API suite uses real local services.
+  No real user account, hosted RPC or desktop connection.
   See ../supabase/README.md for remaining quota/retention/external cleanup gates.
 
 - FetchBroker bounds the entire fetch process, including hanging DNS/connect/TLS,
@@ -73,10 +80,10 @@ Frontend lint and format checks are configured; remote CI and native E2E remain 
 
 ## Current task
 
-TASK-021 quota/save/database-cleanup slice verified locally on 9 October. Next:
-full local Supabase Auth/Storage/RPC integration when disk capacity permits,
-then external-object cleanup reconciliation and processing job leases.
-No full-stack Supabase or durable application persistence claim.
+TASK-021 core API slice verified locally on 9 October. Next: upload fencing and
+external-object reconciliation, then processing job leases. Exact hosted parity,
+desktop sessions and connected persistence remain pending. The CLI binding issue
+was replaced with a disposable Compose harness using explicit loopback ports.
 
 TASK-022 documents the system/security delivery plan. TASK-019A added dependency
 locking/review; current source checks total 145 tests. The new recipe built and

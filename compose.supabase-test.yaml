@@ -1,0 +1,79 @@
+# Disposable integration harness, not a production deployment.
+name: gather-supabase-test
+services:
+  db:
+    image: postgres@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    container_name: gather_integration_db
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    tmpfs: ['/var/lib/postgresql/data:rw,size=256m']
+    volumes: [./tests/supabase/init.sql:/docker-entrypoint-initdb.d/00-roles.sql:ro]
+    healthcheck:
+      test: [CMD, pg_isready, -U, postgres]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+    mem_limit: 384m
+  auth:
+    image: public.ecr.aws/supabase/gotrue@sha256:1736a63078f5922b198c4cbe50f80ab9a2d3b54fe8b7b6cfb2e9dc5dbbc12c6b
+    depends_on:
+      db: {condition: service_healthy}
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: http://127.0.0.1:55431/auth/v1
+      GOTRUE_SITE_URL: http://127.0.0.1:55431
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin@db:5432/postgres
+      GOTRUE_DISABLE_SIGNUP: 'true'
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: 'true'
+      GOTRUE_MAILER_AUTOCONFIRM: 'false'
+      GOTRUE_JWT_SECRET: ${GATHER_TEST_JWT:?Use scripts/supabase_test_stack.py}
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_PASSWORD_MIN_LENGTH: 12
+    mem_limit: 192m
+  rest:
+    image: public.ecr.aws/supabase/postgrest@sha256:d155c6718ed9a9f990d159a2ab7c0a3f16944dbb6d0a0344557421042acfe0df
+    depends_on:
+      db: {condition: service_healthy}
+    environment:
+      PGRST_DB_URI: postgres://authenticator@db:5432/postgres
+      PGRST_DB_SCHEMAS: public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${GATHER_TEST_JWT:?Use scripts/supabase_test_stack.py}
+    mem_limit: 192m
+  storage:
+    image: public.ecr.aws/supabase/storage-api@sha256:6a32896ae2d1ae2ea2d05ecaf6ed6c8a6b091739b469a8cf860ee89b2604d28f
+    depends_on:
+      db: {condition: service_healthy}
+    environment:
+      ANON_KEY: ${GATHER_TEST_ANON:?Use scripts/supabase_test_stack.py}
+      SERVICE_KEY: ${GATHER_TEST_SERVICE:?Use scripts/supabase_test_stack.py}
+      AUTH_JWT_SECRET: ${GATHER_TEST_JWT:?Use scripts/supabase_test_stack.py}
+      DATABASE_URL: postgres://supabase_storage_admin@db:5432/postgres
+      STORAGE_BACKEND: file
+      FILE_STORAGE_BACKEND_PATH: /mnt
+      FILE_SIZE_LIMIT: 65536
+      TENANT_ID: gather-test
+      REGION: local
+      GLOBAL_S3_BUCKET: gather-test
+      ENABLE_IMAGE_TRANSFORMATION: 'false'
+      IMAGE_TRANSFORMATION_ENABLED: 'false'
+      S3_PROTOCOL_ENABLED: 'false'
+    tmpfs: ['/mnt:rw,size=16m']
+    mem_limit: 384m
+  gateway:
+    image: public.ecr.aws/supabase/kong@sha256:1b53405d8680a09d6f44494b7990bf7da2ea43f84a258c59717d4539abf09f6d
+    container_name: gather_integration_gateway
+    ports: ['127.0.0.1:55431:8000']
+    environment:
+      KONG_DATABASE: 'off'
+      KONG_DECLARATIVE_CONFIG: /config/kong.yml
+      KONG_PROXY_LISTEN: 0.0.0.0:8000
+      KONG_ADMIN_LISTEN: 'off'
+      KONG_NGINX_WORKER_PROCESSES: 1
+    volumes: [./tests/supabase/kong.yml:/config/kong.yml:ro]
+    mem_limit: 192m
+# Dedicated Compose network; only the gateway publishes a loopback-only port.

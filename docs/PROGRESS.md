@@ -609,3 +609,31 @@ lint, typecheck, formatting and frontend build. No native inputs changed.
 Updated architecture, decision, state, task, test and Obsidian hub/concepts/map.
 Local checkpoint only; no push. TASK-021 stays partial for Supabase integration,
 external cleanup, byte/rate budgets, receipt retention and processing leases.
+
+## 9 October 2026: real core Supabase API and original-file deletion checks
+
+Added a private originals migration and Storage-presence guard before SQL cleanup.
+A new disposable Compose harness runs actual Auth/PostgREST/Storage with synthetic
+users and TXT bytes. All 31 API checks pass, including JWT login, ownership, denied
+client mutations, immediate tombstone visibility, failed-cleanup preservation,
+Storage API byte removal, interruption before finalization and retry safety.
+The 49 database checks and existing 145 tests also pass, plus lint, types,
+formatting and frontend build. No native inputs changed.
+
+The initial CLI experiment exposed ports beyond loopback despite its documented
+network option. It was stopped before proceeding; the final harness explicitly
+publishes only 127.0.0.1:55431 and checks Docker bindings. The first Auth setup
+disabled email/password login with email signup; the final setup keeps the
+provider enabled and public signup disabled. Test schema permission/startup
+issues were fixed and verified against the actual APIs.
+
+CLI initialization enabled its usage-reporting setting; it was disabled during
+setup. No product telemetry was added. Its stopped test volumes/networks were
+removed, as were the successful harness's users/files/containers. Downloaded
+tooling remains ignored and image caches remain; unrelated workloads were not
+changed or pruned. No cloud resources or paid calls; local checkpoint only.
+
+Updated tasks/state/architecture/security/test notes and Obsidian hub/concepts/map.
+TASK-021 remains partial: this verifies core services, not hosted parity or desktop
+persistence. Upload fencing, background cleanup/reconciliation, session lifecycle,
+production dependency review and processing job leases are still open.
