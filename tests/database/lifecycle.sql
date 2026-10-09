@@ -1,0 +1,47 @@
+insert into auth.users values ('00000000-0000-0000-0000-000000000003');
+insert into gather_private.source_quotas(owner_id,source_limit) values
+ ('00000000-0000-0000-0000-000000000003',1);
+set role authenticated;
+select set_config('request.jwt.claim.sub','00000000-0000-0000-0000-000000000003',false);
+select public.save_source('20000000-0000-0000-0000-000000000001','bookmark','Saved','','https://example.com') as saved_id \gset
+select pg_temp.assert_true(public.save_source('20000000-0000-0000-0000-000000000001','bookmark','Saved','','https://example.com')=:'saved_id','retry returns identical source at full quota');
+select pg_temp.expect_error($q$select public.save_source('20000000-0000-0000-0000-000000000001','file','Different')$q$,'22023','same key different payload rejected');
+select pg_temp.expect_error($q$select public.save_source('20000000-0000-0000-0000-000000000002','file','Extra')$q$,'P0001','quota rejects second source');
+select pg_temp.assert_true(not public.request_source_deletion('10000000-0000-0000-0000-000000000002'),'cross-owner deletion rejected');
+select pg_temp.expect_error('select * from gather_private.source_quotas','42501','quota ledger inaccessible');
+select pg_temp.expect_error('select gather_private.finish_source_cleanup(gen_random_uuid())','42501','client cleanup denied');
+reset role;
+insert into public.source_versions(source_id,owner_id,content_sha256,parser_version)
+ values(:'saved_id','00000000-0000-0000-0000-000000000003',repeat('d',64),'before-delete');
+set role authenticated;
+select pg_temp.assert_true(public.request_source_deletion(:'saved_id'),'delete queues cleanup');
+select pg_temp.assert_true(public.request_source_deletion(:'saved_id'),'repeated delete succeeds');
+select pg_temp.assert_true((select count(*)=0 from public.sources),'delete immediately hides source');
+reset role;
+select pg_temp.assert_true((select count(*)=1 from gather_private.cleanup_requests where source_id=:'saved_id'),'one durable cleanup request');
+select pg_temp.assert_true((select used=1 from gather_private.source_quotas where owner_id='00000000-0000-0000-0000-000000000003'),'pending cleanup retains quota');
+select pg_temp.expect_error(format('insert into public.source_versions(source_id,owner_id,content_sha256,parser_version) values(%L,%L,%L,%L)', :'saved_id','00000000-0000-0000-0000-000000000003',repeat('c',64),'late'),'23503','late worker cannot write after tombstone');
+begin;
+select gather_private.finish_source_cleanup(:'saved_id');
+rollback;
+select pg_temp.assert_true((select count(*)=1 from gather_private.cleanup_requests where source_id=:'saved_id'),'interrupted cleanup transaction retains request');
+select pg_temp.assert_true(gather_private.finish_source_cleanup(:'saved_id'),'cleanup succeeds on retry');
+select pg_temp.assert_true(not exists(select 1 from public.source_versions where source_id=:'saved_id'),'cleanup removes derivative versions');
+select pg_temp.assert_true(not gather_private.finish_source_cleanup(:'saved_id'),'second cleanup is harmless');
+select pg_temp.assert_true((select used=0 from gather_private.source_quotas where owner_id='00000000-0000-0000-0000-000000000003'),'quota released exactly once');
+set role authenticated;
+select pg_temp.assert_true(public.save_source('20000000-0000-0000-0000-000000000001','bookmark','Saved','','https://example.com')=:'saved_id','late save retry returns old receipt');
+select pg_temp.assert_true((select count(*)=0 from public.sources),'late save does not resurrect source');
+select pg_temp.expect_error($q$select public.save_source('20000000-0000-0000-0000-000000000002','file','')$q$,'23514','invalid save rolls back');
+reset role;
+select pg_temp.assert_true((select used=0 from gather_private.source_quotas where owner_id='00000000-0000-0000-0000-000000000003'),'invalid save consumes no quota');
+select pg_temp.assert_true(not exists(select 1 from gather_private.save_receipts where request_key='20000000-0000-0000-0000-000000000002'),'invalid save creates no receipt');
+set role authenticated;
+select set_config('request.jwt.claim.sub','',false);
+select pg_temp.expect_error($q$select public.save_source(gen_random_uuid(),'file','No identity')$q$,'42501','save requires identity');
+select pg_temp.expect_error('select public.request_source_deletion(gen_random_uuid())','42501','delete requires identity');
+select set_config('request.jwt.claim.sub','00000000-0000-0000-0000-000000000002',false);
+select pg_temp.expect_error($q$select public.save_source(gen_random_uuid(),'file','No quota')$q$,'P0001','unconfigured quota fails closed');
+set role anon;
+select pg_temp.expect_error($q$select public.save_source(gen_random_uuid(),'file','Anonymous')$q$,'42501','anonymous RPC denied');
+reset role;

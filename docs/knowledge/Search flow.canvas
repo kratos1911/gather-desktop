@@ -48,7 +48,7 @@
     {
       "id": "vector",
       "type": "text",
-      "text": "Cloud embeddings + Supabase\nSource ownership schema: 19 SQL checks pass\nAuth/Storage/search integration pending",
+      "text": "Cloud embeddings + Supabase\nOwnership/save/delete: 49 database checks pass\nAuth/Storage/search integration pending",
       "x": 800,
       "y": 220,
       "width": 330,

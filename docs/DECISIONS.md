@@ -1,5 +1,22 @@
 # Architecture decisions
 
+## ADR-036: serialize source quotas and preserve deletion receipts (9 October)
+
+Use per-owner quota row locks to serialize saves and cleanup. Store source,
+receipt and slot charge atomically; derive owner from auth.uid() and restrict
+security-definer functions with an empty search path and explicit grants.
+No default allowance: trusted administration must configure it. This is a
+source-count quota only; byte/rate/inference budgets remain future gates.
+
+Retain minimal idempotency receipts after database cleanup so a repeated save
+cannot resurrect a deleted source. Reusing the key with changed input fails.
+Retention/account erasure needs a future explicit policy. Deletes create durable
+cleanup requests and tombstones together, retaining quota until cleanup commits.
+Database-only cleanup has no worker grant and must not finalize future Storage
+assets before verified external deletion. Version writes lock the live parent.
+45 SQL assertions and four concurrency scenarios pass on PostgreSQL with a
+test-only Auth contract; no full Supabase/desktop integration claim.
+
 ## ADR-035: verify source ownership before enabling ingestion (8 October)
 
 Start TASK-021 with Supabase-targeted SQL migrations and a disposable PostgreSQL

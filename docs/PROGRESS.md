@@ -592,3 +592,20 @@ Limits: this uses a test-only Auth contract shim on PostgreSQL, not full Supabas
 services or JWT validation. Storage/RPC, durable jobs, quota/retry/delete races,
 worker persistence and desktop integration remain pending. TASK-021 stays partial.
 Live extraction security gates and cloud AI account deferral remain unchanged.
+
+## 9 October 2026: atomic saves and database cleanup
+
+TASK-021 now includes source-count quotas, idempotent save receipts, atomic
+tombstone/cleanup requests, database-only cleanup and late-version write guards.
+45 SQL assertions plus four concurrent scenarios pass on disposable PostgreSQL.
+These cover repeated/conflicting saves, rollback, quota exhaustion, ownership,
+late retry after deletion, duplicate cleanup and derivative write/delete races.
+No default production quota, account creation, Storage or desktop connection.
+
+Docker was initially unavailable; the later run with Docker access succeeded.
+The initial sandboxed quality run could not complete local-network tests and was
+stopped. The authorized run outside the sandbox passed all 145 existing tests,
+lint, typecheck, formatting and frontend build. No native inputs changed.
+Updated architecture, decision, state, task, test and Obsidian hub/concepts/map.
+Local checkpoint only; no push. TASK-021 stays partial for Supabase integration,
+external cleanup, byte/rate budgets, receipt retention and processing leases.

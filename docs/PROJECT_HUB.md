@@ -62,11 +62,12 @@ search app yet. Details and evidence belong in the linked state and task notes.
 
 ## Immediate next step
 
-TASK-021 foundation now has 19 passing PostgreSQL ownership assertions; see
+TASK-021 now has 45 passing SQL assertions and four concurrent scenarios; see
 [[supabase/README|Database verification and limits]]. No real Supabase services
-or desktop persistence are connected. Next: quota-aware ingestion/cleanup and
-then full Supabase service integration. [[docs/knowledge/SEARCH_CONCEPTS|Concepts]]
-explains row security and composite ownership.
+or desktop persistence are connected. Atomic quota-aware saves and database-only
+cleanup pass. Next: full Supabase service integration, external cleanup and job
+leases. [[docs/knowledge/SEARCH_CONCEPTS|Concepts]] explains row security,
+idempotency and transactions.
 
 Extraction stack accepted 30 September: [[docs/knowledge/EXTRACTION_STACK|Crawl4AI and yt-dlp]].
 Agent Reach is optional; selected tools are installed in the offline Docker image,

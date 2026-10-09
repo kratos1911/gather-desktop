@@ -1,6 +1,6 @@
 # Current project state
 
-Updated: 8 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
+Updated: 9 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
 choices there are proposed, not implemented. PROGRESS.md records history.
 
 Latest checkpoint: TASK-019A hash-locked image rebuilt after Docker recovery.
@@ -22,10 +22,11 @@ Gather is a provisional name for a Windows desktop content library with semantic
 
 ## Implemented
 
-- TASK-021 preparatory source/version schema: 19 actual PostgreSQL assertions
-  pass for ownership, restricted metadata updates and tombstone visibility.
-  Supabase Auth is emulated only in tests; no real account, Storage, RPC,
-  worker persistence or desktop database connection. See ../supabase/README.md.
+- TASK-021 database lifecycle: 45 SQL assertions and four concurrent scenarios
+  pass for ownership, atomic source-slot quota/idempotent saves, tombstones,
+  database cleanup rollback and late-write protection. Auth is emulated only
+  in tests. No real account, Storage, hosted RPC or desktop connection.
+  See ../supabase/README.md for remaining quota/retention/external cleanup gates.
 
 - FetchBroker bounds the entire fetch process, including hanging DNS/connect/TLS,
   kills/reaps cancelled or timed-out children and validates bounded responses.
@@ -72,9 +73,9 @@ Frontend lint and format checks are configured; remote CI and native E2E remain 
 
 ## Current task
 
-TASK-021 source ownership slice verified locally on 8 October. Next database
-slice: atomic quota-aware ingestion and durable cleanup transitions, followed by
-full local Supabase Auth/Storage/RPC integration tests when disk capacity permits.
+TASK-021 quota/save/database-cleanup slice verified locally on 9 October. Next:
+full local Supabase Auth/Storage/RPC integration when disk capacity permits,
+then external-object cleanup reconciliation and processing job leases.
 No full-stack Supabase or durable application persistence claim.
 
 TASK-022 documents the system/security delivery plan. TASK-019A added dependency

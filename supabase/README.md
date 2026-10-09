@@ -17,16 +17,44 @@ Sources hold file/bookmark metadata; versions hold parser/hash provenance.
 Composite foreign keys enforce matching ownership even for privileged writes.
 RLS restricts reads/metadata edits; column grants prevent lifecycle/owner edits.
 Tombstoned sources and their versions are hidden. Authenticated clients cannot
-insert or hard-delete; ingestion quotas and cleanup APIs are not implemented.
+directly insert or hard-delete; SQL functions handle quota-aware saves and deletion
+requests. These functions are not connected to the desktop or a hosted API.
 No status is advertised as indexed, and there are no vectors or search RPCs yet.
 URL shape validation is not SSRF protection and does not authorize fetching.
 
-Nineteen SQL assertions run under actual database roles, covering two users,
+Forty-five SQL assertions and four concurrent scenarios pass, covering two users,
 missing identity, anonymous denial, metadata validation, ownership/lifecycle
 forgery, write denial, composite ownership and tombstone visibility.
 Superusers/BYPASSRLS roles bypass row security; never distribute their credentials.
-Worker authorization, durable jobs, quota/retry/delete races, Storage policies,
+Worker authorization, processing jobs, Storage policies,
 generation publication and end-to-end persistence remain unimplemented.
+
+## Save and deletion transactions (9 October)
+
+`save_source` derives ownership from auth.uid(), locks the owner's quota row,
+and atomically saves source metadata, an idempotency receipt and one used slot.
+Limits must be provisioned explicitly by trusted administration. No production
+limit is chosen. Missing configuration fails closed. A reused UUID request key
+returns the same source ID; a different payload with that key is rejected.
+Receipts retain owner/key/source ID and payload fingerprint, not source text.
+They survive cleanup so old retries cannot recreate deleted sources. Receipt
+retention, request-rate/byte/model-cost quotas and account erasure are still gates.
+The slot ledger covers sources created through this function; preexisting fixture
+rows are unaccounted. A real data migration requires an explicit backfill.
+
+`request_source_deletion` tombstones the source and records cleanup atomically.
+Visibility disappears immediately but the slot stays used until cleanup succeeds.
+The private `finish_source_cleanup` transaction removes database versions/source
+and the queue record and releases the slot once. Failure rolls back all changes.
+It is executable only by the migration owner, with no client/worker grant.
+**Database-only:** there are no stored originals here. Do not use this finalizer
+with future external assets until verified Storage deletion and reconciliation
+are implemented. No background cleanup poller, leases or external retries exist.
+
+Version writes lock and check the parent, preventing writes after a tombstone.
+Lifecycle functions use quota-then-source lock order. Tests include rollback,
+late save/worker retries, distinct/identical concurrent saves, double cleanup and
+concurrent derivative-write/deletion. Full Supabase RPC/JWT behavior is unverified.
 
 Design references: [Supabase RLS](https://supabase.com/docs/guides/database/postgres/row-level-security)
 and [column privileges](https://supabase.com/docs/guides/database/postgres/column-level-security).

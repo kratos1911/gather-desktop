@@ -123,5 +123,22 @@ both its source and the same owner, preventing mixed-owner relationships.
 
 **Tombstone:** a deletion timestamp hides the source and its versions immediately.
 Removing stored objects reliably still needs a future durable cleanup workflow.
-Nineteen PostgreSQL checks verify this foundation; the Auth contract is emulated
-in tests. Full Supabase and connected ingestion/search remain pending.
+The current suite has 45 SQL assertions and four concurrent scenarios; the Auth
+contract is emulated in tests. Full Supabase and connected search remain pending.
+
+## Atomic saves and safe retries (9 October)
+
+**Transaction:** saving the source, its receipt and its quota charge succeeds
+together or rolls back together. **Idempotency key:** a request UUID lets the
+database recognize a retry and return the original ID without another charge.
+Changing the payload with the same key is rejected.
+
+**Row lock:** one user's competing saves take turns checking the same quota row,
+so two requests cannot both spend the last available slot. This currently limits
+source count, not bytes or model costs.
+
+**Durable cleanup request:** deleting writes both a tombstone and pending cleanup
+record. A rollback leaves the request available for retry. Database cleanup
+releases quota once; the receipt survives to stop late save retries recreating
+the source. A future background worker and external Storage reconciliation are
+still required. Version writes lock/check the parent to stop late derivatives.

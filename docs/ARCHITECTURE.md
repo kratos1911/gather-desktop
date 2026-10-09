@@ -10,7 +10,11 @@ security checks and delivery gates. Proposed mechanisms are not implemented yet.
 ownership RLS, metadata-only client updates and composite ownership references.
 Nineteen PostgreSQL checks pass using a test-only Auth contract shim. This is
 schema groundwork, not connected persistence, Auth, Storage or search. Client
-creation/deletion remains disabled until quota and cleanup APIs are reviewed.
+direct creation/deletion remains disabled. The 9 October migration adds SQL
+save/delete functions with slot quotas, durable idempotency receipts, atomic
+tombstone/cleanup requests and private database-only cleanup. Parent locks guard
+late version writes. 45 SQL assertions and four concurrency scenarios pass.
+External Storage cleanup, worker leases and hosted RPC integration remain pending.
 
 28 September: chat is deferred until search works. The offline bookmark parser
 in services/worker/bookmarks.py extracts supplied HTML without network access.
