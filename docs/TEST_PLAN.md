@@ -78,6 +78,15 @@ Choose the native/browser test harness in TASK-011/013. Browser tests alone do n
 
 ## Completion evidence
 
+TASK-005 local CPU export: run tests/evaluation/test_cpu_benchmark.py for token
+limits (including special tokens), invalid vectors and reduced-dimension
+normalization. Unit tests require no third-party ML dependencies or downloads.
+Use scripts/benchmark-cpu.ps1 separately for real model evidence on the fictional
+corpus. Verify D: cache paths, immutable model hash, no truncated inputs, complete
+vector exports, per-category failures and memory/latency reports. Compare all
+dimensions using the same frozen queries. Resource guards must fail before load.
+See CPU_BENCHMARK.md. Do not relabel laptop timing as measured cloud cost.
+
 Record exact commands, passed/failed/not-run results and limitations per task. Review code after tests. Fix material issues before a completion commit. Documentation-only changes require link/state/diff checks, not unnecessary full installer builds.
 
 

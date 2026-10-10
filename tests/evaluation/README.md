@@ -2,7 +2,8 @@
 
 This is original fictional content authored for Gather. It is a development
 fixture, not an independently labelled benchmark, production dataset or proof
-of model accuracy. No model has run against it yet. There are 14 documents,
+of model accuracy. Qwen has now run in a separate D:-only CPU evaluation;
+see [the measured results](../../docs/CPU_BENCHMARK.md). There are 14 documents,
 35 answerable questions and 5 deliberately absent-answer questions.
 
 Topics: database notes, similar lamp/laptop receipts, competing project schedules,
@@ -64,8 +65,8 @@ a related laptop receipt is not proof that it contains a serial number.
 Require one result entry for every query ID, with an empty list representing a
 real no-result response. Missing IDs, unknown documents/chunks, mismatched corpus
 hashes or duplicate result IDs invalidate the run rather than silently improving
-the denominator. The offline scorer is implemented; model/provider integration
-remains pending.
+the denominator. The offline scorer and Qwen CPU export are implemented;
+production serving/provider integration remains pending.
 
 ## Lexical baseline and saved runs
 
@@ -105,9 +106,9 @@ abstention. That rate is explicitly null until an answerability layer exists.
 
 See [the measured baseline](BASELINE.md) for results and limitations.
 
-The [saved-vector adapter](VECTORS.md) adds exact cosine and RRF comparison once
-genuine embeddings are available. Its math/validation tests use synthetic vectors;
-no model quality result exists yet.
+The [saved-vector adapter](VECTORS.md) adds exact cosine and RRF comparison.
+Its math/validation tests use synthetic vectors; the 10 October Qwen benchmark
+uses real model vectors from this fictional corpus. The two are labelled separately.
 
 ## Benchmark gate and limitations
 

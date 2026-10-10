@@ -1,5 +1,21 @@
 # Delivery tasks
 
+## 10 October CPU benchmark checkpoint
+
+TASK-005 local slice complete: real Qwen3-Embedding-0.6B export with immutable
+revision and safetensors hashes; D:-only environment/cache/temp/output; token
+preflight; 256/512/1,024-dimensional dense and RRF evaluation; two/four CPU-thread
+memory/latency measurements. 112 worker + 34 evaluation + 4 UI tests, lint,
+typecheck, formatting, frontend build and pip check pass. See docs/CPU_BENCHMARK.md
+and tests/evaluation/results/qwen-cpu-20261010.json for detailed evidence.
+
+TASK-005 overall stays partial. Next acceptance: larger frozen unseen text set
+and failure review before selecting model/dimensions/fusion, then a bounded CPU
+serving-container test. EmbeddingGemma requires user license acceptance; visual
+models need image/OCR fixtures. Cloud measurement, production runtime/security,
+inference quotas and connected desktop-to-pgvector search remain unverified.
+Local model tests do not authorize paid deployment. No GitHub push.
+
 ## 2 October planning checkpoint
 
 TASK-022: delivery/security plan documented in docs/DELIVERY_PLAN.md. Planning
@@ -25,13 +41,13 @@ Current checkpoint: local quality checks pass; remote CI execution pending. Link
 | TASK-002 | Validate audience and comparable products | Ready | Record user interviews/feedback or explicitly unvalidated hypotheses; compare primary-source alternatives; decide initial audience/regions |
 | TASK-003 | Desktop shell and design verification | Partial | Frontend/native build and four component tests pass; actual visual, keyboard, zoom and motion checks still pending after browser permission denial |
 | TASK-004 | Transport-independent text processing contract | Done | 12 standard-library tests pass; strict JSON/base64/UTF-8 and 64 KiB source limit; source offsets, hashes/versioned IDs, overlap and retry determinism verified; no personal imports or cloud writes; see services/worker/README.md |
-| TASK-005 | Cloud-oriented embedding evaluation | Partial | Corpus, TF-IDF, scorer, saved-vector adapter, exact cosine and RRF comparison implemented; 29 evaluation tests and frontend build pass. Vector tests use hand-authored numbers only, no semantic accuracy claim. TF-IDF baseline unchanged (BASELINE.md). Real export producer/provider/tokenizer/dimension/latency/cost benchmarks pending |
+| TASK-005 | Cloud-oriented embedding evaluation | Partial: first real CPU evidence | Qwen export, tokenizer preflight, 256/512/1,024-dimension evaluation, two/four-thread laptop measurements verified on 10 October. 34 evaluation tests pass. See docs/CPU_BENCHMARK.md. Larger corpus, Gemma/visual comparison, cloud latency/cost and production runtime remain pending |
 | TASK-006 | Supabase identity and private schema | Needs project configuration | Versioned migrations; supported signup/session/logout flow; enforce audience decision; RLS and two-user isolation tests; secure session storage; quota policy |
 | TASK-007 | Text import-to-search vertical slice | Depends on 005/006 | Import TXT/MD -> durable processing -> all passages -> real search -> reader -> deletion; retry/restart/dedup/isolation tests; user-readable errors |
 | TASK-008 | Native document formats | Depends on 007 | PDF/DOCX/PPTX parsers; preserved page/slide/section references; long-document and malformed-file cases; scanned pages correctly identified |
 | TASK-009 | Photo and OCR retrieval slice | Depends on 007 | JPEG/PNG and scanned text ingestion; SigLIP plus OCR; separate vector spaces and rank fusion; actual source results; category-specific evaluation |
 | TASK-010 | Selected-source chat slice | Deferred by user, 28 September | Pin Qwen runtime/quantization; scoped retrieval, streaming, cancellation, citations, missing-evidence and injection tests; measured resource limits |
-| TASK-011 | Automated quality checks | Partial | Local runner passes 112 worker + 29 evaluation + 4 UI tests, ESLint, TypeScript, Prettier and frontend build. Manual CI workflow authored, not pushed/executed remotely. No native E2E claim |
+| TASK-011 | Automated quality checks | Partial | Local checks pass 112 worker + 34 evaluation + 4 UI tests, ESLint, TypeScript, Prettier and frontend build. Manual CI workflow authored, not pushed/executed remotely. No native E2E claim |
 | TASK-012 | Security and code review | Continuous / release gate | Threat model, input limits, access isolation, deletion reconciliation, license/secret scan, reviewed changes; close privacy audit owner inputs |
 | TASK-013 | Preview installer and QA | Depends on core slices | Clean Windows install/update/uninstall; cloud setup; network/low-disk/offline/quota scenarios; no developer tools or model downloads required |
 | TASK-014 | Production distribution | Depends on 012/013 | Approved destination, signing decision, final policies, backup/restore and rollback; verified release artifacts; no public upload before ready |

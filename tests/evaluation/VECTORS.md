@@ -2,12 +2,13 @@
 
 This offline adapter consumes saved embeddings. It does not generate embeddings,
 download weights, contact an API, select a provider or enable semantic search in
-the desktop. The only vectors exercised so far are explicitly synthetic unit
-test numbers, not model output or an accuracy benchmark.
+the desktop. Unit tests use synthetic math fixtures. The separate
+[CPU benchmark](../../docs/CPU_BENCHMARK.md) now exports real Qwen vectors and
+passes them through this adapter; cloud/desktop integration remains pending.
 
 ## Techniques
 
-1. **Dense embeddings:** a future embedding model represents passages and queries
+1. **Dense embeddings:** an embedding model represents passages and queries
    as numeric vectors. Query/document prompting may differ, but both must belong
    to the same versioned embedding space. The model supplies meaning; this script
    does not manufacture it.

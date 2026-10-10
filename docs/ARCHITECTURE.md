@@ -44,10 +44,17 @@ Tauri -> narrowly scoped native file selection (planned)
 Cloud API -> bounded ingestion jobs -> Python processing worker
 Worker -> parsers / cloud OCR / embedding / chat adapters
 Cloud service -> ownership-enforced Supabase Postgres + pgvector
-              -> private Storage objects
+              -> private Cloudflare R2 objects (selected target; adapter pending)
 ```
 
-ADR-009 supersedes local AI deployment. Supabase Auth supplies user sessions; OS-backed credential storage is to be selected and tested. Cloud provider, API framework, durable queue and inference runtime are deferred decisions. No server or paid resource is provisioned. The current pure processing module can be tested locally and reused in the cloud. No required end-user models or local inference server.
+ADR-009 supersedes local AI deployment. Supabase Auth supplies user sessions; OS-backed credential storage is to be selected and tested. The user selected Google Cloud Run with self-hosted CPU inference and R2 for original files; Supabase Free remains Auth/Postgres/pgvector. API framework, durable queue and production inference runtime remain open. The user has set up a Google Cloud account, but no application deployment is verified here. Do not provision paid resources from local benchmark authorization. R2 byte/request limits need application enforcement; the existing local Storage harness does not verify R2. No required end-user models or local inference server.
+
+10 October: TASK-005 adds a developer-only Qwen CPU benchmark on D:. Downloads,
+environment, caches and reports are under ignored output/model-benchmark. This
+is a measurement tool, not the cloud serving endpoint or a desktop integration.
+It checks exact prompted token lengths, embeds offline with pinned safetensors,
+exports versioned vectors and evaluates cosine/RRF against the frozen TF-IDF baseline.
+See [CPU benchmark](CPU_BENCHMARK.md) for evidence and limits.
 
 ## Architecture rules
 

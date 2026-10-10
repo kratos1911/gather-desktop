@@ -13,8 +13,9 @@ Return to [[docs/PROJECT_HUB]]. Accepted choices are recorded in
 - Keep bookmarks useful with URL and notes when extraction cannot succeed.
 - Separate extracted page text from video understanding; a saved video link does
   not mean the video was indexed.
-- Use cloud AI without requiring users to download weights. Provider and budget
-  are deferred; do independent development without paid calls.
+- Use cloud AI without requiring users to download weights: Google Cloud Run,
+  self-hosted CPU first, R2 originals and Supabase Free vectors. Local developer
+  model tests are authorized on D:; paid deployment still requires a concrete budget.
 - Follow the existing design system and avoid-list rather than adding effects
   that imply nonexistent processing.
 
@@ -35,7 +36,7 @@ are proposals, not selected benchmark winners.
 
 | Question | Why it matters | When needed |
 | --- | --- | --- |
-| Cloud provider, model, tokenizer, spending limit and retention? | Determines embedding quality, dimensions, limits and operating cost. | Before genuine hosted evaluation. |
+| Final model/dimensions, serving runtime, spending limit and retention? | Cloud Run CPU is chosen; Qwen has initial local evidence but is not a proven winner. | Before genuine hosted evaluation. |
 | Supabase project configuration and user-session design? | Enables private durable libraries and ownership tests. | Before connected ingestion. |
 | Initial audience, ages and regions? | Shapes signup and privacy requirements. | Before account collection. |
 | Durable queue and API framework? | Needed for retry, cancellation and restart recovery. | Before hosted processing. |

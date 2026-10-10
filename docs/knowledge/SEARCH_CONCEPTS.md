@@ -32,10 +32,10 @@ status is maintained in [[docs/MEMORY]] and [[TASKS]].
 | Chunking | Split a long source into smaller passages. | Current text processor uses 1024-character windows and 128-character overlap; model token limits still need validation. |
 | Provenance | Record where a piece of text came from. | Source identity, parser version, content hash and offsets let results open the right evidence. |
 | TF-IDF | Weight words by how often they occur in a passage and how uncommon they are across the collection. | Implemented keyword baseline; it does not understand synonyms by itself. |
-| Embedding | Represent content as numbers so related meanings can be compared. | Genuine model output is pending; fabricated vectors are only math test fixtures. |
+| Embedding | Represent content as numbers so related meanings can be compared. | Real Qwen vectors are evaluated on the fictional corpus; connected app search remains pending. |
 | Cosine similarity | Compare vector direction rather than magnitude. | Implemented for saved-vector evaluation; useful only within a compatible model space. |
 | Vector database | Store and retrieve vectors with their source records. | Supabase Postgres/pgvector is planned, not connected. |
-| Hybrid search | Combine keyword and semantic rankings. | Helps exact identifiers and paraphrases; end-to-end integration is pending. |
+| Hybrid search | Combine keyword and semantic rankings. | Can help identifiers/paraphrases but must be measured; fixed RRF reduced ranking quality in the first Qwen test. |
 | Reciprocal rank fusion | Combine result positions instead of incompatible score scales. | Evaluation implementation sums 1/(60 + rank) across the two lists. |
 | Recall@5 | How much expected relevant material appears in the first five results? | Document and passage evidence are measured separately. |
 | MRR@5 | Reward the first relevant result for appearing earlier in the top five. | A first-place hit scores 1, second place 1/2; no top-five hit scores 0. |
@@ -49,9 +49,25 @@ A saved article says “pack a waterproof jacket.” Keyword search can find “
 Semantic search should also retrieve it for “what should I wear in the rain?”
 That is intended behavior, not a result established by the current model tests.
 
-The current small keyword corpus missed its rain-packing query. See
-[[tests/evaluation/BASELINE|Measured baseline and limitations]]. High aggregate
-scores on a tiny development set do not prove production search quality.
+The small keyword corpus missed its rain-packing query (q18); Qwen dense retrieval
+found its evidence in the top five at all three tested dimensions. See
+[[docs/CPU_BENCHMARK|Real CPU comparison]] and
+[[tests/evaluation/BASELINE|Keyword baseline]]. This does not verify every possible
+rain query or production search quality.
+
+## What we measured on 10 October
+
+- Token preflight counts the actual model tokens, including the query instruction.
+  An input that is too long fails rather than losing its final paragraphs silently.
+- Matryoshka dimension reduction takes a supported prefix of a model's vector and
+  normalizes it again. At 512 dimensions the raw float payload is half of 1,024;
+  model loading and embedding computation still happen at full model size.
+- Warm latency measures an already loaded model. Our four-thread median was
+  0.324 seconds. It excludes network/database time and does not prove cloud latency.
+- Peak process memory was about 3.64 GiB by the OS measurement. Weight download
+  size was only 1.21 GB; file size and runtime memory are different quantities.
+- Held-out evaluation means fresh questions and sources not used to choose settings.
+  Our initial set is a development comparator, so a broader frozen test is next.
 
 ## Search versus chat
 

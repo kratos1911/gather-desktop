@@ -1,5 +1,32 @@
 # Architecture decisions
 
+## ADR-038: measure self-hosted CPU embeddings on D: before deployment (10 October)
+
+Latest user choices supersede provider-deferred notes: Google Cloud Run,
+self-hosted CPU AI first, R2 originals, Supabase Free Auth/Postgres/pgvector.
+The cloud account exists; no application deployment is verified by this task.
+R2 is object storage, not a replacement vector database. Per-user/global storage
+admission and request/compute quotas remain to be implemented; budget alerts
+are not spending caps. Existing local Supabase Storage tests do not verify R2.
+
+User permits local model downloads/testing on D: because C: has little space.
+Use an isolated D: venv/cache/temp/output and CPU-only wheel, pinned model
+safetensors, no remote model code, anonymous download and offline inference.
+Model artifacts are ignored by Git. This developer benchmark does not change the
+cloud deployment requirement or require end users to download weights.
+
+User explicitly chose Qwen first; EmbeddingGemma terms have not been accepted.
+Keep that candidate pending without bypassing the gate. Keep chat deferred and
+require a separate visual corpus for SigLIP/OCR rather than scoring them as text
+models. Reuse text-v1 and the existing strict cosine/RRF scorer, with labels
+excluded from inference. Reject token overflow before model execution.
+
+Measured all three Qwen dimensions on two/four threads. 512 dimensions has the
+best development-set MRR (0.9857), but no production winner is selected from
+35 answerable examples. Fixed RRF lowered ranking quality versus dense; expand
+the evaluation before choosing fusion. Laptop timing is not Cloud Run billing
+or service capacity. See CPU_BENCHMARK.md for reproducible evidence and limits.
+
 ## ADR-037: verify core APIs and order Storage cleanup before SQL (9 October)
 
 Use real Auth, PostgREST and Storage images with a disposable PostgreSQL database

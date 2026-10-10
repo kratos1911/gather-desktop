@@ -637,3 +637,46 @@ Updated tasks/state/architecture/security/test notes and Obsidian hub/concepts/m
 TASK-021 remains partial: this verifies core services, not hosted parity or desktop
 persistence. Upload fencing, background cleanup/reconciliation, session lifecycle,
 production dependency review and processing job leases are still open.
+
+## 2026-10-10: real Qwen CPU benchmark on D:
+
+User authorized model testing with downloads on D: due to low C: storage, then
+chose Qwen first while EmbeddingGemma license acceptance is pending. Read canonical
+docs and retained the search-first scope; chat and visual/OCR tests remain deferred.
+Recorded later Cloud Run CPU/R2/Supabase choices without deploying paid resources.
+
+Added a dedicated D: environment/cache/temp runner, fixed Qwen commit and artifact
+hash verification, safetensors-only offline loading with remote code disabled,
+exact-token preflight and real vector exports into the existing cosine/RRF scorer.
+CPU dependency versions are frozen in a separate developer constraints file.
+Unit tests cover token overflow/special tokens, invalid vectors, normalization and
+rejection of C: storage. The new environment is isolated from the worker image.
+
+Download: ten artifacts, 1,207,487,158 bytes; revision
+97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3. All model/dependency artifacts remain in
+ignored output/model-benchmark on D:. Download/package network restrictions required
+approved reruns. Available RAM initially measured about 2 GiB; asked the user to
+free memory. They agreed, and both actual runs passed the 4 GiB pre-load guard.
+
+Both two/four-thread CPU float32 runs completed on all 16 passages and 40 queries.
+Actual maximum input was 159 passage tokens and 35 prompted-query tokens; no input
+was truncated. Dense 256/512/1,024 dimensions each scored 100% document/evidence
+Recall@5 on 35 answerable queries; 512-dimensional MRR was 0.9857. Fixed RRF reduced
+MRR; 1,024-dimensional hybrid also lost q18 evidence. All five absent questions
+still return neighbors. These are genuine model outputs on a small fictional
+development set, not production accuracy or an answerability evaluation.
+
+Warm median/p95: 0.707/0.888 seconds at two threads; 0.324/0.376 at four. OS peak
+working set about 3.64 GiB. Model loading follows hash reads, so its time is not
+cold-start evidence. Laptop results do not predict Cloud Run prices or capacity.
+Full raw vectors/reports stay ignored; concise machine-readable evidence with
+raw-artifact hashes is in tests/evaluation/results/qwen-cpu-20261010.json.
+
+The full check runner passed 112 worker, 33 evaluation and 4 UI tests, lint, types,
+formatting and frontend build. Existing loopback tests initially failed/stalled
+inside the network sandbox; the approved full rerun passed. A final storage-guard
+test was then added and the evaluation suite rerun (34 tests). Pip check passes.
+Native assets/inputs were unchanged. No personal files, hosted inference, app
+integration, paid deployment or GitHub push. TASK-005 remains partial; next is a
+broader evaluation and bounded serving-container measurement before selecting
+dimensions/fusion and deployment sizing. Updated canonical and Obsidian notes/map.

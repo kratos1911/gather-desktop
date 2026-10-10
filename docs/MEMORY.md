@@ -1,9 +1,9 @@
 # Current project state
 
-Updated: 9 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
+Updated: 10 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
 choices there are proposed, not implemented. PROGRESS.md records history.
 
-Latest checkpoint: TASK-019A hash-locked image rebuilt after Docker recovery.
+Extractor checkpoint: TASK-019A hash-locked image rebuilt after Docker recovery.
 Exact installed versions, pip consistency, bad-hash rejection, offline restrictions
 and prompt timeout cleanup pass. TASK-023 patched OpenSSL/PCRE2 and removed
 runtime pip/ensurepip on 3 October. The 8 October code-image rescan reports
@@ -14,13 +14,24 @@ See services/worker/IMAGE_SCAN_REVIEW.md. OKF remains a later optional export la
 
 ## Product and constraints
 
-27 September steering: user has no provider account yet and explicitly deferred
-it. Continue independent work without paid/live calls. Commit locally; push only
-on an explicit request to push.
+Latest steering: self-hosted CPU AI on Google Cloud Run, R2 originals and Supabase
+Free Auth/Postgres/pgvector. User has created the Google Cloud account. Application
+deployment remains unverified; do not provision paid resources from benchmark
+permission. On 10 October the user authorized D:-only local model tests, and
+chose Qwen first while EmbeddingGemma license acceptance is pending. Commit
+locally; push only on an explicit request to push.
 
-Gather is a provisional name for a Windows desktop content library with semantic text/photo search and selected-source chat. Tauri/React/TypeScript and Supabase Free remain. User chose cloud AI on 27 September (ADR-009); provider, budget and deployment are deferred. No paid resources authorized/provisioned. No end-user model downloads planned. Design avoid-list applies. No agentic file modification, payment feature or mobile app in MVP.
+Gather is a provisional name for a Windows desktop content library with semantic text/photo search and selected-source chat. Tauri/React/TypeScript and Supabase Free remain. User chose cloud AI on 27 September (ADR-009); later CPU/Cloud Run choices are in ADR-038. No end-user model downloads planned. Design avoid-list applies. No agentic file modification, payment feature or mobile app in MVP. Chat remains deferred until search works.
 
 ## Implemented
+
+- TASK-005 real local CPU benchmark: pinned Qwen3-Embedding-0.6B downloaded to
+  D: and evaluated at 256/512/1,024 dimensions with two/four CPU threads. All
+  dimensions have 100% document/evidence Recall@5 on 35 answerable development
+  queries; 512-dimensional MRR is 0.9857. All five absent queries still return
+  neighbors. Four-thread median/p95 query time: 0.324/0.376 seconds; sampled peak
+  RAM about 3.58 GiB. This is isolated evaluation, not connected app search or
+  cloud performance. 150 source/UI tests and frontend build pass. See CPU_BENCHMARK.md.
 
 - Real core Supabase API harness: 31 checks pass on disposable Auth/PostgREST/
   Storage + PostgreSQL. Actual JWT login, private reads, denied client writes,
@@ -48,7 +59,7 @@ Gather is a provisional name for a Windows desktop content library with semantic
   concurrency, execution timeout, cancellation and cleanup. Actual container
   resource/egress tests pass. Not an API, durable queue or live fetch broker.
 
-- Local quality runner: 112 worker, 29 evaluation and four UI tests, ESLint,
+- Local quality checks: 112 worker, 34 evaluation and four UI tests, ESLint,
   TypeScript, Prettier and frontend build pass. Native development build passes.
   Manual GitHub workflow authored; remote execution unverified.
 - Links/bookmarks added to product scope and delivery plan in BOOKMARKS.md.
@@ -58,11 +69,11 @@ Gather is a provisional name for a Windows desktop content library with semantic
   preflight, bounded HTTPS, index reordering and safe errors. Eight mocked tests
   pass; no real tokenizer/provider/export integration or cost measurement yet.
 
-- Saved-vector evaluation adapter with exact normalized cosine ranking and equal-weight RRF (k=60) comparison to TF-IDF. Export metadata checks model/revision/templates/tokenizer/dimensions, corpus/index hashes and truncation. Twenty-nine evaluation tests pass; vector evidence is synthetic math tests only. No actual embedding model has run.
+- Saved-vector evaluation adapter with exact normalized cosine ranking and equal-weight RRF (k=60) comparison to TF-IDF. Export metadata checks model/revision/templates/tokenizer/dimensions, corpus/index hashes and truncation. Initially synthetic math tests only; now complemented by the real CPU export above. The corpus remains fictional, while the generated vectors are actual model outputs.
 
 - Offline TF-IDF keyword baseline and strict scoring harness with corpus/index fingerprints, per-category and per-query metrics. Twenty-one evaluation tests pass. Baseline text-v1 document/evidence Recall@5 is 0.9714 and MRR@5 is 0.8667; 4/5 absent queries return candidates. This is a tiny development comparator, not semantic search or an answerability system.
 
-- Retrieval development corpus text-v1: 14 synthetic documents and 40 queries (35 answerable, 5 absent), with exact evidence mapped to 16 real processing chunks. Seven integrity tests pass. Export tool separates index/query inputs from relevance labels; no model results yet. See tests/evaluation/README.md.
+- Retrieval development corpus text-v1: 14 synthetic documents and 40 queries (35 answerable, 5 absent), with exact evidence mapped to 16 real processing chunks. Seven integrity tests pass. Export tool separates index/query inputs from relevance labels. See tests/evaluation/README.md and CPU_BENCHMARK.md for the first real model results.
 
 - Transport-independent Python text processor: bounded typed request/results, strict UTF-8 TXT/Markdown, original source offsets, deterministic hashes/versioned passage IDs, structured safe errors. Twelve synthetic tests pass. No filesystem/network/model calls or new dependencies in this module.
 
@@ -74,11 +85,16 @@ Gather is a provisional name for a Windows desktop content library with semantic
 
 ## Not implemented / unverified
 
-No real desktop import, connected worker/cloud endpoint, embeddings, Supabase project connection, auth, durable search index, chat or signed installer. Processing is tested in isolation, with character-based passages pending tokenizer validation. No native/visual/E2E verification. Previous browser opening was declined; that limitation was not bypassed. Canvas is stubbed in component tests, so passing tests do not verify the orb renderer.
+No real desktop import, connected worker/cloud endpoint, production embeddings, Supabase project connection, auth, durable search index, chat or signed installer. Processing and Qwen inference are tested in isolation. The frozen corpus fits the actual tokenizer; arbitrary/long passages still require token-aware production limits. No native/visual/E2E verification. Previous browser opening was declined; that limitation was not bypassed. Canvas is stubbed in component tests, so passing tests do not verify the orb renderer.
 
 Frontend lint and format checks are configured; remote CI and native E2E remain unverified. The full initial baseline diff also reports pre-existing trailing-whitespace issues in legacy files; those are not hidden or counted as a clean full-diff check. Git repository: https://github.com/kratos1911/gather-desktop (private). origin is configured; main tracks origin/main. Baseline commit b89ceec was pushed and its remote hash verified. The TASK-001 baseline contains the existing implementation and workflow documents.
 
 ## Current task
+
+TASK-005 D:-only Qwen CPU slice verified on 10 October. Next: broaden the text
+evaluation before locking dimensions/fusion, then measure the serving container
+under explicit resource limits. EmbeddingGemma waits for license/access; visual
+models need an image/OCR corpus; chat stays deferred. These remain unfinished.
 
 TASK-021 core API slice verified locally on 9 October. Next: upload fencing and
 external-object reconciliation, then processing job leases. Exact hosted parity,
@@ -86,12 +102,12 @@ desktop sessions and connected persistence remain pending. The CLI binding issue
 was replaced with a disposable Compose harness using explicit loopback ports.
 
 TASK-022 documents the system/security delivery plan. TASK-019A added dependency
-locking/review; current source checks total 145 tests. The new recipe built and
+locking/review; current source checks total 150 tests. The new recipe built and
 passed offline smoke checks. TASK-023 records open scan findings; TASK-019B
 has a tested offline Docker supervisor and plain-HTTP restricted transport.
 Whole-broker DNS/process deadlines and controlled HTTP-to-parser integration
 now pass. Browser/tool egress and production broker confinement remain open.
-Provider-dependent TASK-005 work remains deferred by user.
+TASK-005 hosted deployment remains pending; local CPU evidence is now available.
 No GitHub push authorized. Offline bookmark processing passes; live bookmark search remains pending. Chat deferred by user on 28 September.
 
 ## Next implementation

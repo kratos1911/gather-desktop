@@ -3,7 +3,13 @@ tags: [gather, project]
 ---
 # Gather project hub
 
-Start here in Obsidian. Updated 8 October 2026.
+Start here in Obsidian. Updated 10 October 2026.
+
+Latest: [[docs/CPU_BENCHMARK|First real Qwen CPU benchmark]] is verified on D:.
+All 35 answerable development queries have relevant documents in the top five;
+the set is too small to choose a production winner. Four-thread warm median
+0.324 seconds; sampled peak RAM 3.58 GiB. 150 tests and frontend build pass.
+EmbeddingGemma is pending license acceptance; visual/OCR and chat are not tested.
 
 Docker recovery is verified: hash-locked build and offline checks pass. Current
 security gate: the 8 October scan reports 29 records, including two high.
@@ -27,8 +33,9 @@ review was not performed. Save/search flow diagrams are inside DELIVERY_PLAN.md.
 
 Find saved files and links without remembering their names or exact wording.
 Search first; document chat is deferred. Desktop: Tauri + React + TypeScript.
-Cloud AI is planned; Supabase Free is the intended vector backend. No provider
-account, paid resources or live inference is connected.
+Cloud AI is planned on Google Cloud Run, CPU first; Supabase Free is the intended
+vector backend and R2 stores originals. The user created a Google Cloud account.
+No deployed app/inference endpoint is verified. The local benchmark is separate.
 
 ## Navigate the project
 
@@ -61,6 +68,11 @@ mock-tested embedding request client. This is not a working end-to-end semantic
 search app yet. Details and evidence belong in the linked state and task notes.
 
 ## Immediate next step
+
+Continue TASK-005 with a broader frozen text set, then a bounded serving-container
+test before committing to model dimensions, fusion or cloud resource sizing.
+[[docs/CPU_BENCHMARK|Benchmark method and evidence]] explains dense retrieval,
+dimension reduction, timings and their limits. Local downloads are on D: only.
 
 TASK-021 now has 49 database checks plus 31 real Auth/PostgREST/Storage checks;
 see [[supabase/LOCAL_INTEGRATION|Local API verification and limits]]. Private

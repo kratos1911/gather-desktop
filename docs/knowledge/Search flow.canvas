@@ -48,7 +48,7 @@
     {
       "id": "vector",
       "type": "text",
-      "text": "Cloud embeddings + Supabase\n49 DB + 31 real core API checks pass\nPrivate originals + deletion verified locally\nDesktop/embeddings still pending",
+      "text": "Qwen CPU benchmark verified on D:\n256/512/1024 dimensions; cosine + RRF\nCloud Run CPU + Supabase target\nConnected desktop/index still pending",
       "x": 800,
       "y": 220,
       "width": 330,

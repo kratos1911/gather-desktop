@@ -1,13 +1,19 @@
 # Model strategy — researched 26 September 2026
 
-Status: researched shortlist and benchmark plan, not measured winners. No models downloaded or benchmarked in this step.
+Status: researched shortlist, not measured winners. The original 26 September
+research did not download models. See [CPU_BENCHMARK.md](CPU_BENCHMARK.md) for
+the separate 10 October measurement task and its current evidence.
 
 27 September update: ADR-009 changes the deployment target to cloud-hosted AI.
 The hardware/on-device sections below document the previous selection rationale,
 not the current distribution plan. Re-evaluate candidates for cloud cost,
 quality, startup time and throughput; end users will not download these weights.
-Provider, runtime and paid deployment remain deferred. TASK-005 begins with a
-versioned synthetic evaluation corpus before any paid benchmark or model download.
+Latest user choices: Google Cloud Run, self-hosted CPU inference first, Supabase
+Free vectors and R2 originals. Paid deployment is not authorized by permission to
+run local tests. On 10 October the user authorized D:-only model downloads and
+testing, then chose Qwen first because EmbeddingGemma terms are not yet accepted.
+The production runtime and winning model/dimensions remain unselected. Chat stays
+deferred; SigLIP/OCR require their own visual corpus and cannot be scored using text-v1.
 
 ## Product requirement
 
