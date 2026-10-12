@@ -47,6 +47,8 @@ status is maintained in [[docs/MEMORY]] and [[TASKS]].
 | Provenance | Record where a piece of text came from. | Source identity, parser version, content hash and offsets let results open the right evidence. |
 | TF-IDF | Weight words by how often they occur in a passage and how uncommon they are across the collection. | Implemented keyword baseline; it does not understand synonyms by itself. |
 | Embedding | Represent content as numbers so related meanings can be compared. | Real Qwen vectors are evaluated on the fictional corpus; connected app search remains pending. |
+| Persistent inference | Load the model once, then reuse it for multiple requests. | Process boundary tested with synthetic engines; real serving check and container measurements pending. |
+| Single-flight and hard deadline | Run one request at a time; stop the model process if its deadline expires. | Busy rejection and actual process cleanup tested. Container CPU/RAM limits remain pending. |
 | Cosine similarity | Compare vector direction rather than magnitude. | Implemented for saved-vector evaluation; useful only within a compatible model space. |
 | Vector database | Store and retrieve vectors with their source records. | Supabase Postgres/pgvector is planned, not connected. |
 | Hybrid search | Combine keyword and semantic rankings. | Can help identifiers/paraphrases but must be measured; fixed RRF reduced ranking quality in the first Qwen test. |

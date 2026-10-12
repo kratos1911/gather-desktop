@@ -1,5 +1,31 @@
 # Rebuild progress
 
+## 2026-10-12 — persistent CPU serving prerequisite
+
+Selected TASK-005 scope: reusable model process with input/token limits,
+single-flight admission, startup readiness, hard request deadlines and cleanup.
+Implemented services/inference with a local-only Qwen adapter and a D:-only,
+hash-verifying real-model host smoke launcher. No endpoint or image was built.
+
+Evidence: 14 synthetic inference tests pass (including whole-batch token budget,
+startup hang, model crash, timeout/reap/restart and concurrent rejection).
+Full check runner passes 112 worker, 39 evaluation, 4 UI tests and frontend
+lint/types/format/build; the expanded 14-test inference suite separately passes
+after its last test addition: 169 total. Initial sandbox loopback restrictions
+blocked existing HTTP tests; rerun with approved local network access passed.
+No native inputs changed, so no desktop executable rebuild was needed.
+
+Real Qwen serving smoke stopped before loading at the 4 GiB available-RAM guard.
+Docker's actual data disk was found on C:, so no large image pull/build was
+attempted. User will move it to D:. Gemma terms are accepted per user, but no
+local HF token file existed at the checked locations; user will sign in locally.
+No credentials, models or output artifacts added to Git. No cloud provisioning
+or GitHub push. Container resource enforcement, serving measurements and Gemma
+comparison remain unverified; the prior v1/v2 benchmarks remain unchanged.
+
+Next: verify Docker disk destination, available RAM and HF access, then measure
+the real serving runtime and package/test its constrained Linux CPU container.
+
 ## 2026-09-26 — foundation
 
 Completed:

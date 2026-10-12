@@ -2,6 +2,13 @@
 
 ## Trust boundaries
 
+The private inference runtime accepts only trusted engine factories/configuration
+and uses an internal Python-serialized pipe. Never expose that pipe or factory
+selection to clients. Its request limits and process deadlines do not replace OS
+CPU/RAM/PID limits, authenticated ingress, body limits or per-owner quotas. Those
+container/API controls remain pending. The host smoke verifies model hashes,
+loads local safetensors without remote model code and uses fictional inputs only.
+
 Treat uploaded content, filenames, model output, desktop clients and IPC messages as untrusted. Protect account tokens, originals, extracted text, vectors, conversations and logs. See PRIVACY_RELEASE_AUDIT.md for concrete findings and release owner inputs.
 
 ## Required controls before real data

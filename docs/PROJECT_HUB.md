@@ -5,6 +5,12 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 12 October 2026.
 
+Newest: [[services/inference/README|Persistent CPU serving prerequisite]].
+Process reuse, input/token limits and actual timeout cleanup have 14 synthetic
+checks; 169 total tests and frontend quality/build checks pass. Real serving smoke
+paused for RAM. User will move Docker storage from C: to D: and sign in locally
+to Hugging Face; Gemma terms are accepted. Container runtime remains unverified.
+
 Latest: [[docs/TEXT_V2_RESULTS|Fresh text challenge and failure review]]. Forty
 new sources and 64 questions are frozen; real Qwen 512 passes the development
 gate with 100% document recall and 99.11% evidence recall. Exact-code/temporal
@@ -15,7 +21,8 @@ frontend build pass. Next: a local serving container with explicit resource limi
 All 35 answerable development queries have relevant documents in the top five;
 the set is too small to choose a production winner. Four-thread warm median
 0.324 seconds; sampled peak RAM 3.58 GiB. 150 tests and frontend build pass.
-EmbeddingGemma is pending license acceptance; visual/OCR and chat are not tested.
+EmbeddingGemma terms are now accepted; local access/runtime remains unverified.
+Visual/OCR and chat are not tested.
 
 Docker recovery is verified: hash-locked build and offline checks pass. Current
 security gate: the 8 October scan reports 29 records, including two high.

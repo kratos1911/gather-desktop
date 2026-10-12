@@ -48,7 +48,7 @@
     {
       "id": "vector",
       "type": "text",
-      "text": "Qwen v1 + frozen v2 tested on D:\n512 candidate passes with known failures\nNEXT: bounded CPU serving container\nConnected desktop/index still pending",
+      "text": "Qwen v1 + frozen v2 tested on D:\nPersistent process: synthetic controls pass\nNEXT: RAM/disk/login, real serving + container\nConnected desktop/index still pending",
       "x": 800,
       "y": 220,
       "width": 330,

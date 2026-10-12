@@ -18,12 +18,23 @@ Latest steering: self-hosted CPU AI on Google Cloud Run, R2 originals and Supaba
 Free Auth/Postgres/pgvector. User has created the Google Cloud account. Application
 deployment remains unverified; do not provision paid resources from benchmark
 permission. On 10 October the user authorized D:-only local model tests, and
-chose Qwen first while EmbeddingGemma license acceptance is pending. Commit
+chose Qwen first. On 12 October the user confirmed EmbeddingGemma terms accepted;
+local Hugging Face authentication is still unverified. Commit
 locally; push only on an explicit request to push.
 
 Gather is a provisional name for a Windows desktop content library with semantic text/photo search and selected-source chat. Tauri/React/TypeScript and Supabase Free remain. User chose cloud AI on 27 September (ADR-009); later CPU/Cloud Run choices are in ADR-038. No end-user model downloads planned. Design avoid-list applies. No agentic file modification, payment feature or mobile app in MVP. Chat remains deferred until search works.
 
 ## Implemented
+
+- TASK-005 persistent CPU process prerequisite added in services/inference.
+  Fourteen synthetic tests verify bounds, readiness, process reuse, busy rejection,
+  token preflight, deadline termination/reaping and explicit recovery. Full checks
+  pass: 112 worker + 39 evaluation + 14 inference + 4 UI = 169 tests, lint/types/
+  formatting/frontend build. Real Qwen host smoke stopped at the 4 GiB RAM guard.
+  Docker disk is still observed on C:; user will move it to D:. Container build,
+  limits and measurements remain unverified. No HTTP endpoint or cloud deployment.
+  See ../services/inference/README.md. Next: verify disk move/login/free RAM,
+  run host smoke, then implement and measure the bounded Linux serving container.
 
 - TASK-005 fresh challenge: 40 new fictional documents, 64 chunks, 64 questions
   frozen before inference. Qwen 512 dense passes the declared development gate:

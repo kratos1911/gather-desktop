@@ -1,5 +1,18 @@
 # Architecture decisions
 
+## ADR-040: persistent inference behind a killable process (12 October)
+
+Keep the loaded model in a separate reusable process. A timed-out thread cannot
+reliably interrupt native model work, so timeout handling terminates and reaps
+the child. Reject concurrent requests rather than accumulating a queue; require
+an explicit restart after failure. This is a private serving primitive, not an
+HTTP API, OS resource sandbox or Cloud Run deployment. Use the frozen Qwen prompt,
+revision and 512-dimensional space; do not replace the benchmark protocol.
+
+Fourteen synthetic tests pass. Real-model serving measurements wait for memory;
+container packaging waits for verified Docker storage on D:. User confirmed
+Gemma terms accepted and will authenticate locally; no token requested in chat.
+
 ## ADR-039: freeze fresh cases and preserve retrieval failures (12 October)
 
 Advance TASK-005 with text-v2 rather than tune v1. Author 40 fictional sources
