@@ -3,6 +3,20 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Fresh evaluation and failure review
+
+On 12 October, [[docs/TEXT_V2_RESULTS|text-v2]] tested new examples with the same
+model and settings. A corpus fingerprint locks sources, questions and expected
+quotes before inference; later edits invalidate the experiment. New examples
+authored by the same assistant are still not independently reviewed test data.
+
+File recall and passage recall answer different questions. For maker-05, search
+finds both printer manuals, but one actual rescheduling rule ranks sixth. The
+file metric passes while the top-five passage metric exposes the missing evidence.
+Likewise, a semantically similar archived rule can outrank the current one, and
+an exact code can be easier for keyword matching than a dense embedding. Preserve
+these failures and test proposed fixes separately rather than changing gold labels.
+
 ## Reliability concepts for the next implementation
 
 - Dependency lock: freeze versions, including indirect packages.

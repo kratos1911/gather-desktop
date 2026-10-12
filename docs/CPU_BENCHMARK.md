@@ -1,5 +1,9 @@
 # Local CPU embedding benchmark
 
+Follow-up: [12 October fresh challenge](TEXT_V2_RESULTS.md) is now measured with
+the same settings. Run it using `-Corpus text-v2`; its artifacts are isolated in
+`output/model-benchmark/text-v2`. The results below remain the original v1 run.
+
 TASK-005, 10 October 2026. Developer evaluation only; end users will use the
 planned cloud service. Qwen first, as requested after the user confirmed that
 EmbeddingGemma terms have not yet been accepted. Chat remains deferred.

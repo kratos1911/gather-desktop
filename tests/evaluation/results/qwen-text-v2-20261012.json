@@ -1,0 +1,1543 @@
+{
+  "schema_version": 1,
+  "provenance": "real_local_cpu_model_benchmark",
+  "protocol": "../TEXT_V2_PROTOCOL.md",
+  "freeze": {
+    "schema_version": 1,
+    "frozen_on": "2026-10-12",
+    "corpus_version": "gather-text-v2",
+    "corpus_sha256": "d23f63392759b5db751f1a024468908d8d6b3832652ddbdb7234264c8eb4d25b",
+    "documents": 40,
+    "queries": 64,
+    "model_evaluated_at_freeze": false,
+    "protocol": "TEXT_V2_PROTOCOL.md"
+  },
+  "inventory": {
+    "corpus_version": "gather-text-v2",
+    "corpus_sha256": "d23f63392759b5db751f1a024468908d8d6b3832652ddbdb7234264c8eb4d25b",
+    "documents": 40,
+    "queries": 64,
+    "chunks": 64,
+    "categories": {
+      "absent": 8,
+      "confusable": 16,
+      "exact": 8,
+      "late_document": 8,
+      "multiple_sources": 8,
+      "paraphrase": 16
+    }
+  },
+  "measurement": {
+    "measured_at_utc": "2026-10-12T11:48:28.689685+00:00",
+    "model": "Qwen/Qwen3-Embedding-0.6B",
+    "corpus_version": "gather-text-v2",
+    "corpus_sha256": "d23f63392759b5db751f1a024468908d8d6b3832652ddbdb7234264c8eb4d25b",
+    "index_sha256": "18c9a169ecfc06a9eb2cebbf4b758c1312551e2410b5bcfb62fb5b133b1ba482",
+    "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+    "device": "cpu",
+    "dtype": "float32",
+    "threads": 4,
+    "batch_size": 1,
+    "token_limit": 2048,
+    "platform": "Windows-11-10.0.26300-SP0",
+    "cpu": "unknown",
+    "ram_bytes": 16556478464,
+    "model_bytes": 1207487158,
+    "packages": {
+      "torch": "2.8.0+cpu",
+      "transformers": "4.57.6",
+      "huggingface-hub": "0.36.2",
+      "tokenizers": "0.22.2",
+      "safetensors": "0.8.0",
+      "psutil": "7.2.0"
+    },
+    "document_tokens": [
+      125,
+      138,
+      124,
+      157,
+      82,
+      48,
+      46,
+      48,
+      121,
+      126,
+      114,
+      153,
+      71,
+      43,
+      43,
+      45,
+      121,
+      132,
+      129,
+      164,
+      79,
+      41,
+      32,
+      37,
+      114,
+      125,
+      133,
+      165,
+      66,
+      39,
+      32,
+      35,
+      113,
+      130,
+      133,
+      156,
+      77,
+      36,
+      36,
+      35,
+      131,
+      140,
+      115,
+      171,
+      70,
+      45,
+      37,
+      43,
+      128,
+      127,
+      128,
+      164,
+      64,
+      37,
+      38,
+      39,
+      131,
+      132,
+      131,
+      164,
+      75,
+      40,
+      32,
+      36
+    ],
+    "query_tokens": [
+      36,
+      30,
+      35,
+      34,
+      34,
+      31,
+      31,
+      35,
+      34,
+      30,
+      33,
+      38,
+      34,
+      31,
+      32,
+      33,
+      34,
+      28,
+      30,
+      37,
+      32,
+      34,
+      29,
+      29,
+      36,
+      28,
+      34,
+      34,
+      35,
+      33,
+      34,
+      30,
+      38,
+      31,
+      31,
+      34,
+      34,
+      33,
+      34,
+      30,
+      36,
+      29,
+      33,
+      35,
+      36,
+      34,
+      32,
+      37,
+      39,
+      28,
+      33,
+      36,
+      33,
+      32,
+      34,
+      31,
+      37,
+      30,
+      38,
+      36,
+      36,
+      33,
+      33,
+      30
+    ],
+    "load_seconds": 1.4370724000000337,
+    "first_inference_seconds": 0.3595098000005237,
+    "document_index_seconds": 39.73220450000008,
+    "query_seconds": [
+      0.3217136000021128,
+      0.3151225000001432,
+      0.35744619999968563,
+      0.37642289999712375,
+      0.48696039999776985,
+      0.44924859999809996,
+      0.39240549999885843,
+      0.39513540000189096,
+      0.38018790000205627,
+      0.3402435999996669,
+      0.39533030000166036,
+      0.4629032000011648,
+      0.35952869999891846,
+      0.3200502999970922,
+      0.3296887999968021,
+      0.3227270999996108,
+      0.32090140000218526,
+      0.3114841999995406,
+      0.3002422999998089,
+      0.3308921999996528,
+      0.3150640999992902,
+      0.3190617000000202,
+      0.2988455000013346,
+      0.30909299999984796,
+      0.33998199999768985,
+      0.2935011999979906,
+      0.31655379999938305,
+      0.3184234000000288,
+      0.3374880999981542,
+      0.3214659000004758,
+      0.32800119999956223,
+      0.30885330000091926,
+      0.3425609000005352,
+      0.3138631000001624,
+      0.31667949999973644,
+      0.3416484000008495,
+      0.341890700001386,
+      0.3342722999987018,
+      0.3238683999989007,
+      0.3136276999975962,
+      0.328656099998625,
+      0.30278220000036526,
+      0.322393499998725,
+      0.3353438999984064,
+      0.32854090000182623,
+      0.3161344000000099,
+      0.30316299999685725,
+      0.33809390000169515,
+      0.39039490000141086,
+      0.290859000000637,
+      0.3189730999984022,
+      0.32978490000095917,
+      0.3201191000007384,
+      0.30945900000006077,
+      0.3459876999986591,
+      0.365242700001545,
+      0.4028934999987541,
+      0.3576003000016499,
+      0.3545043000012811,
+      0.3550801000019419,
+      0.3645661000009568,
+      0.37081319999924744,
+      0.3201779999981227,
+      0.3071989999989455
+    ],
+    "query_p50_seconds": 0.3285985000002256,
+    "query_p95_seconds": 0.4028934999987541,
+    "sampled_peak_rss_bytes": 3895607296,
+    "process_peak_working_set_bytes": 3904352256
+  },
+  "primary_candidate_dimensions": 512,
+  "gate_thresholds": {
+    "document_recall_at_5": 0.9,
+    "evidence_recall_at_5": 0.9,
+    "document_mrr_at_5": 0.9
+  },
+  "dimensions": {
+    "256": {
+      "embedding_space": {
+        "provider": "self-hosted-cpu",
+        "model": "Qwen/Qwen3-Embedding-0.6B",
+        "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+        "dimensions": 256,
+        "query_template": "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery:{text}",
+        "document_template": "{text}",
+        "tokenizer_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3"
+      },
+      "reports": {
+        "dense": {
+          "scorer_version": "retrieval-at5-v1",
+          "corpus_version": "gather-text-v2",
+          "corpus_sha256": "d23f63392759b5db751f1a024468908d8d6b3832652ddbdb7234264c8eb4d25b",
+          "index_sha256": "18c9a169ecfc06a9eb2cebbf4b758c1312551e2410b5bcfb62fb5b133b1ba482",
+          "retriever": "exact-cosine-v1",
+          "summary": {
+            "queries": 64,
+            "answerable": 56,
+            "absent": 8,
+            "document_recall_at_5": 1.0,
+            "document_mrr_at_5": 0.9702380952380952,
+            "evidence_recall_at_5": 0.9732142857142857,
+            "absent_queries_returning_candidates": 8,
+            "unsupported_answer_rate": null
+          },
+          "categories": {
+            "absent": {
+              "queries": 8,
+              "answerable": 0,
+              "absent": 8,
+              "document_recall_at_5": null,
+              "document_mrr_at_5": null,
+              "evidence_recall_at_5": null,
+              "absent_queries_returning_candidates": 8,
+              "unsupported_answer_rate": null
+            },
+            "confusable": {
+              "queries": 16,
+              "answerable": 16,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.96875,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "exact": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.9166666666666666,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "late_document": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "multiple_sources": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.8125,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "paraphrase": {
+              "queries": 16,
+              "answerable": 16,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.96875,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            }
+          },
+          "nonperfect_answerable_queries": [
+            {
+              "id": "maker-05",
+              "category": "multiple_sources",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.5,
+              "missing_evidence": [
+                {
+                  "document_id": "maker-resin",
+                  "start": 2527,
+                  "end": 2589
+                }
+              ]
+            },
+            {
+              "id": "festival-05",
+              "category": "multiple_sources",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.5,
+              "missing_evidence": [
+                {
+                  "document_id": "festival-outdoor",
+                  "start": 2466,
+                  "end": 2539
+                }
+              ]
+            },
+            {
+              "id": "festival-06",
+              "category": "paraphrase",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "game-03",
+              "category": "confusable",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "field-05",
+              "category": "multiple_sources",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.5,
+              "missing_evidence": [
+                {
+                  "document_id": "field-water",
+                  "start": 2662,
+                  "end": 2735
+                }
+              ]
+            },
+            {
+              "id": "stage-02",
+              "category": "exact",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.3333333333333333,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            }
+          ],
+          "absent_query_ids_returning_candidates": [
+            "museum-08",
+            "maker-08",
+            "festival-08",
+            "game-08",
+            "bike-08",
+            "field-08",
+            "stage-08",
+            "seed-08"
+          ]
+        },
+        "hybrid": {
+          "scorer_version": "retrieval-at5-v1",
+          "corpus_version": "gather-text-v2",
+          "corpus_sha256": "d23f63392759b5db751f1a024468908d8d6b3832652ddbdb7234264c8eb4d25b",
+          "index_sha256": "18c9a169ecfc06a9eb2cebbf4b758c1312551e2410b5bcfb62fb5b133b1ba482",
+          "retriever": "rrf-k60-tfidf-dense-v1",
+          "summary": {
+            "queries": 64,
+            "answerable": 56,
+            "absent": 8,
+            "document_recall_at_5": 1.0,
+            "document_mrr_at_5": 0.9464285714285714,
+            "evidence_recall_at_5": 0.9642857142857143,
+            "absent_queries_returning_candidates": 8,
+            "unsupported_answer_rate": null
+          },
+          "categories": {
+            "absent": {
+              "queries": 8,
+              "answerable": 0,
+              "absent": 8,
+              "document_recall_at_5": null,
+              "document_mrr_at_5": null,
+              "evidence_recall_at_5": null,
+              "absent_queries_returning_candidates": 8,
+              "unsupported_answer_rate": null
+            },
+            "confusable": {
+              "queries": 16,
+              "answerable": 16,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.96875,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "exact": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.9375,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "late_document": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.9375,
+              "evidence_recall_at_5": 0.875,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "multiple_sources": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.875,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "paraphrase": {
+              "queries": 16,
+              "answerable": 16,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.90625,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            }
+          },
+          "nonperfect_answerable_queries": [
+            {
+              "id": "museum-01",
+              "category": "paraphrase",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "maker-05",
+              "category": "multiple_sources",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.5,
+              "missing_evidence": [
+                {
+                  "document_id": "maker-resin",
+                  "start": 2527,
+                  "end": 2589
+                }
+              ]
+            },
+            {
+              "id": "festival-06",
+              "category": "paraphrase",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "game-04",
+              "category": "late_document",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "game-06",
+              "category": "paraphrase",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "game-07",
+              "category": "confusable",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "bike-02",
+              "category": "exact",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "bike-04",
+              "category": "late_document",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.0,
+              "missing_evidence": [
+                {
+                  "document_id": "bike-cargo",
+                  "start": 2500,
+                  "end": 2584
+                }
+              ]
+            },
+            {
+              "id": "field-05",
+              "category": "multiple_sources",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.5,
+              "missing_evidence": [
+                {
+                  "document_id": "field-water",
+                  "start": 2662,
+                  "end": 2735
+                }
+              ]
+            }
+          ],
+          "absent_query_ids_returning_candidates": [
+            "museum-08",
+            "maker-08",
+            "festival-08",
+            "game-08",
+            "bike-08",
+            "field-08",
+            "stage-08",
+            "seed-08"
+          ]
+        }
+      },
+      "raw_artifact_sha256": {
+        "vectors-256.json": "4765467b657a9dab68410f35f6aedb1fef32277cfb401a630216512d9aaee8c5",
+        "scores-256/comparison.json": "e8d3352e989c49cd016dc8682b17eacbd98075698a0e8dad756b6d7f5ee51bde"
+      }
+    },
+    "512": {
+      "embedding_space": {
+        "provider": "self-hosted-cpu",
+        "model": "Qwen/Qwen3-Embedding-0.6B",
+        "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+        "dimensions": 512,
+        "query_template": "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery:{text}",
+        "document_template": "{text}",
+        "tokenizer_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3"
+      },
+      "reports": {
+        "dense": {
+          "scorer_version": "retrieval-at5-v1",
+          "corpus_version": "gather-text-v2",
+          "corpus_sha256": "d23f63392759b5db751f1a024468908d8d6b3832652ddbdb7234264c8eb4d25b",
+          "index_sha256": "18c9a169ecfc06a9eb2cebbf4b758c1312551e2410b5bcfb62fb5b133b1ba482",
+          "retriever": "exact-cosine-v1",
+          "summary": {
+            "queries": 64,
+            "answerable": 56,
+            "absent": 8,
+            "document_recall_at_5": 1.0,
+            "document_mrr_at_5": 0.9613095238095238,
+            "evidence_recall_at_5": 0.9910714285714286,
+            "absent_queries_returning_candidates": 8,
+            "unsupported_answer_rate": null
+          },
+          "categories": {
+            "absent": {
+              "queries": 8,
+              "answerable": 0,
+              "absent": 8,
+              "document_recall_at_5": null,
+              "document_mrr_at_5": null,
+              "evidence_recall_at_5": null,
+              "absent_queries_returning_candidates": 8,
+              "unsupported_answer_rate": null
+            },
+            "confusable": {
+              "queries": 16,
+              "answerable": 16,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.96875,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "exact": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.9166666666666666,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "late_document": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.9375,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "multiple_sources": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.9375,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "paraphrase": {
+              "queries": 16,
+              "answerable": 16,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.96875,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            }
+          },
+          "nonperfect_answerable_queries": [
+            {
+              "id": "maker-05",
+              "category": "multiple_sources",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.5,
+              "missing_evidence": [
+                {
+                  "document_id": "maker-resin",
+                  "start": 2527,
+                  "end": 2589
+                }
+              ]
+            },
+            {
+              "id": "festival-06",
+              "category": "paraphrase",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "game-03",
+              "category": "confusable",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "game-04",
+              "category": "late_document",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "stage-02",
+              "category": "exact",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.3333333333333333,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            }
+          ],
+          "absent_query_ids_returning_candidates": [
+            "museum-08",
+            "maker-08",
+            "festival-08",
+            "game-08",
+            "bike-08",
+            "field-08",
+            "stage-08",
+            "seed-08"
+          ]
+        },
+        "hybrid": {
+          "scorer_version": "retrieval-at5-v1",
+          "corpus_version": "gather-text-v2",
+          "corpus_sha256": "d23f63392759b5db751f1a024468908d8d6b3832652ddbdb7234264c8eb4d25b",
+          "index_sha256": "18c9a169ecfc06a9eb2cebbf4b758c1312551e2410b5bcfb62fb5b133b1ba482",
+          "retriever": "rrf-k60-tfidf-dense-v1",
+          "summary": {
+            "queries": 64,
+            "answerable": 56,
+            "absent": 8,
+            "document_recall_at_5": 1.0,
+            "document_mrr_at_5": 0.9553571428571429,
+            "evidence_recall_at_5": 0.9910714285714286,
+            "absent_queries_returning_candidates": 8,
+            "unsupported_answer_rate": null
+          },
+          "categories": {
+            "absent": {
+              "queries": 8,
+              "answerable": 0,
+              "absent": 8,
+              "document_recall_at_5": null,
+              "document_mrr_at_5": null,
+              "evidence_recall_at_5": null,
+              "absent_queries_returning_candidates": 8,
+              "unsupported_answer_rate": null
+            },
+            "confusable": {
+              "queries": 16,
+              "answerable": 16,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.96875,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "exact": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.9375,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "late_document": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.9375,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "multiple_sources": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.9375,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "paraphrase": {
+              "queries": 16,
+              "answerable": 16,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.9375,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            }
+          },
+          "nonperfect_answerable_queries": [
+            {
+              "id": "maker-05",
+              "category": "multiple_sources",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.5,
+              "missing_evidence": [
+                {
+                  "document_id": "maker-resin",
+                  "start": 2527,
+                  "end": 2589
+                }
+              ]
+            },
+            {
+              "id": "festival-06",
+              "category": "paraphrase",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "game-04",
+              "category": "late_document",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "game-06",
+              "category": "paraphrase",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "game-07",
+              "category": "confusable",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "bike-02",
+              "category": "exact",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            }
+          ],
+          "absent_query_ids_returning_candidates": [
+            "museum-08",
+            "maker-08",
+            "festival-08",
+            "game-08",
+            "bike-08",
+            "field-08",
+            "stage-08",
+            "seed-08"
+          ]
+        }
+      },
+      "raw_artifact_sha256": {
+        "vectors-512.json": "071604694335edf67def0824be3f1f02a80e587742ce14c3a6b6c4bc15eeeb1b",
+        "scores-512/comparison.json": "afc7da59250e42ab339f07a91de1ed83dda103ec2f2bcddfdc7abd3a220d8766"
+      }
+    },
+    "1024": {
+      "embedding_space": {
+        "provider": "self-hosted-cpu",
+        "model": "Qwen/Qwen3-Embedding-0.6B",
+        "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+        "dimensions": 1024,
+        "query_template": "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery:{text}",
+        "document_template": "{text}",
+        "tokenizer_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3"
+      },
+      "reports": {
+        "dense": {
+          "scorer_version": "retrieval-at5-v1",
+          "corpus_version": "gather-text-v2",
+          "corpus_sha256": "d23f63392759b5db751f1a024468908d8d6b3832652ddbdb7234264c8eb4d25b",
+          "index_sha256": "18c9a169ecfc06a9eb2cebbf4b758c1312551e2410b5bcfb62fb5b133b1ba482",
+          "retriever": "exact-cosine-v1",
+          "summary": {
+            "queries": 64,
+            "answerable": 56,
+            "absent": 8,
+            "document_recall_at_5": 1.0,
+            "document_mrr_at_5": 0.9821428571428571,
+            "evidence_recall_at_5": 0.9821428571428571,
+            "absent_queries_returning_candidates": 8,
+            "unsupported_answer_rate": null
+          },
+          "categories": {
+            "absent": {
+              "queries": 8,
+              "answerable": 0,
+              "absent": 8,
+              "document_recall_at_5": null,
+              "document_mrr_at_5": null,
+              "evidence_recall_at_5": null,
+              "absent_queries_returning_candidates": 8,
+              "unsupported_answer_rate": null
+            },
+            "confusable": {
+              "queries": 16,
+              "answerable": 16,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.96875,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "exact": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "late_document": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "multiple_sources": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.875,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "paraphrase": {
+              "queries": 16,
+              "answerable": 16,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.96875,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            }
+          },
+          "nonperfect_answerable_queries": [
+            {
+              "id": "maker-05",
+              "category": "multiple_sources",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.5,
+              "missing_evidence": [
+                {
+                  "document_id": "maker-resin",
+                  "start": 2527,
+                  "end": 2589
+                }
+              ]
+            },
+            {
+              "id": "festival-06",
+              "category": "paraphrase",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "game-03",
+              "category": "confusable",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "field-05",
+              "category": "multiple_sources",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.5,
+              "missing_evidence": [
+                {
+                  "document_id": "field-water",
+                  "start": 2662,
+                  "end": 2735
+                }
+              ]
+            }
+          ],
+          "absent_query_ids_returning_candidates": [
+            "museum-08",
+            "maker-08",
+            "festival-08",
+            "game-08",
+            "bike-08",
+            "field-08",
+            "stage-08",
+            "seed-08"
+          ]
+        },
+        "hybrid": {
+          "scorer_version": "retrieval-at5-v1",
+          "corpus_version": "gather-text-v2",
+          "corpus_sha256": "d23f63392759b5db751f1a024468908d8d6b3832652ddbdb7234264c8eb4d25b",
+          "index_sha256": "18c9a169ecfc06a9eb2cebbf4b758c1312551e2410b5bcfb62fb5b133b1ba482",
+          "retriever": "rrf-k60-tfidf-dense-v1",
+          "summary": {
+            "queries": 64,
+            "answerable": 56,
+            "absent": 8,
+            "document_recall_at_5": 1.0,
+            "document_mrr_at_5": 0.9285714285714286,
+            "evidence_recall_at_5": 0.9821428571428571,
+            "absent_queries_returning_candidates": 8,
+            "unsupported_answer_rate": null
+          },
+          "categories": {
+            "absent": {
+              "queries": 8,
+              "answerable": 0,
+              "absent": 8,
+              "document_recall_at_5": null,
+              "document_mrr_at_5": null,
+              "evidence_recall_at_5": null,
+              "absent_queries_returning_candidates": 8,
+              "unsupported_answer_rate": null
+            },
+            "confusable": {
+              "queries": 16,
+              "answerable": 16,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.9375,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "exact": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.9375,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "late_document": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.9375,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "multiple_sources": {
+              "queries": 8,
+              "answerable": 8,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.875,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            },
+            "paraphrase": {
+              "queries": 16,
+              "answerable": 16,
+              "absent": 0,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.875,
+              "evidence_recall_at_5": 1.0,
+              "absent_queries_returning_candidates": 0,
+              "unsupported_answer_rate": null
+            }
+          },
+          "nonperfect_answerable_queries": [
+            {
+              "id": "museum-01",
+              "category": "paraphrase",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "museum-07",
+              "category": "confusable",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "maker-01",
+              "category": "paraphrase",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "maker-05",
+              "category": "multiple_sources",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.5,
+              "missing_evidence": [
+                {
+                  "document_id": "maker-resin",
+                  "start": 2527,
+                  "end": 2589
+                }
+              ]
+            },
+            {
+              "id": "festival-06",
+              "category": "paraphrase",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "game-04",
+              "category": "late_document",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "game-06",
+              "category": "paraphrase",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "game-07",
+              "category": "confusable",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "bike-02",
+              "category": "exact",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 0.5,
+              "evidence_recall_at_5": 1.0,
+              "missing_evidence": []
+            },
+            {
+              "id": "field-05",
+              "category": "multiple_sources",
+              "returned_candidates": true,
+              "document_recall_at_5": 1.0,
+              "document_mrr_at_5": 1.0,
+              "evidence_recall_at_5": 0.5,
+              "missing_evidence": [
+                {
+                  "document_id": "field-water",
+                  "start": 2662,
+                  "end": 2735
+                }
+              ]
+            }
+          ],
+          "absent_query_ids_returning_candidates": [
+            "museum-08",
+            "maker-08",
+            "festival-08",
+            "game-08",
+            "bike-08",
+            "field-08",
+            "stage-08",
+            "seed-08"
+          ]
+        }
+      },
+      "raw_artifact_sha256": {
+        "vectors-1024.json": "9e3100ba98a79da802986b5496918e3e91b4ac287cc9be959cbbebdeb2a87a4d",
+        "scores-1024/comparison.json": "2f84f5293e2183d57a93c7b5d6aaf16a7b05cd72879f8a461c822fd212bc9dea"
+      }
+    }
+  },
+  "lexical": {
+    "scorer_version": "retrieval-at5-v1",
+    "corpus_version": "gather-text-v2",
+    "corpus_sha256": "d23f63392759b5db751f1a024468908d8d6b3832652ddbdb7234264c8eb4d25b",
+    "index_sha256": "18c9a169ecfc06a9eb2cebbf4b758c1312551e2410b5bcfb62fb5b133b1ba482",
+    "retriever": "tfidf-cosine-v1",
+    "summary": {
+      "queries": 64,
+      "answerable": 56,
+      "absent": 8,
+      "document_recall_at_5": 1.0,
+      "document_mrr_at_5": 0.8836309523809524,
+      "evidence_recall_at_5": 0.9285714285714286,
+      "absent_queries_returning_candidates": 8,
+      "unsupported_answer_rate": null
+    },
+    "categories": {
+      "absent": {
+        "queries": 8,
+        "answerable": 0,
+        "absent": 8,
+        "document_recall_at_5": null,
+        "document_mrr_at_5": null,
+        "evidence_recall_at_5": null,
+        "absent_queries_returning_candidates": 8,
+        "unsupported_answer_rate": null
+      },
+      "confusable": {
+        "queries": 16,
+        "answerable": 16,
+        "absent": 0,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 0.903125,
+        "evidence_recall_at_5": 0.9375,
+        "absent_queries_returning_candidates": 0,
+        "unsupported_answer_rate": null
+      },
+      "exact": {
+        "queries": 8,
+        "answerable": 8,
+        "absent": 0,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 0.875,
+        "evidence_recall_at_5": 1.0,
+        "absent_queries_returning_candidates": 0,
+        "unsupported_answer_rate": null
+      },
+      "late_document": {
+        "queries": 8,
+        "answerable": 8,
+        "absent": 0,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 0.8125,
+        "evidence_recall_at_5": 0.875,
+        "absent_queries_returning_candidates": 0,
+        "unsupported_answer_rate": null
+      },
+      "multiple_sources": {
+        "queries": 8,
+        "answerable": 8,
+        "absent": 0,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 1.0,
+        "evidence_recall_at_5": 0.875,
+        "absent_queries_returning_candidates": 0,
+        "unsupported_answer_rate": null
+      },
+      "paraphrase": {
+        "queries": 16,
+        "answerable": 16,
+        "absent": 0,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 0.8458333333333333,
+        "evidence_recall_at_5": 0.9375,
+        "absent_queries_returning_candidates": 0,
+        "unsupported_answer_rate": null
+      }
+    },
+    "nonperfect_answerable_queries": [
+      {
+        "id": "museum-01",
+        "category": "paraphrase",
+        "returned_candidates": true,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 0.2,
+        "evidence_recall_at_5": 0.0,
+        "missing_evidence": [
+          {
+            "document_id": "museum-loan",
+            "start": 566,
+            "end": 643
+          }
+        ]
+      },
+      {
+        "id": "museum-04",
+        "category": "late_document",
+        "returned_candidates": true,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 0.5,
+        "evidence_recall_at_5": 1.0,
+        "missing_evidence": []
+      },
+      {
+        "id": "museum-05",
+        "category": "multiple_sources",
+        "returned_candidates": true,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 1.0,
+        "evidence_recall_at_5": 0.5,
+        "missing_evidence": [
+          {
+            "document_id": "museum-loan",
+            "start": 2550,
+            "end": 2624
+          }
+        ]
+      },
+      {
+        "id": "museum-07",
+        "category": "confusable",
+        "returned_candidates": true,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 0.25,
+        "evidence_recall_at_5": 1.0,
+        "missing_evidence": []
+      },
+      {
+        "id": "maker-01",
+        "category": "paraphrase",
+        "returned_candidates": true,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 0.5,
+        "evidence_recall_at_5": 1.0,
+        "missing_evidence": []
+      },
+      {
+        "id": "maker-05",
+        "category": "multiple_sources",
+        "returned_candidates": true,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 1.0,
+        "evidence_recall_at_5": 0.5,
+        "missing_evidence": [
+          {
+            "document_id": "maker-resin",
+            "start": 2527,
+            "end": 2589
+          }
+        ]
+      },
+      {
+        "id": "festival-06",
+        "category": "paraphrase",
+        "returned_candidates": true,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 0.5,
+        "evidence_recall_at_5": 1.0,
+        "missing_evidence": []
+      },
+      {
+        "id": "game-02",
+        "category": "exact",
+        "returned_candidates": true,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 0.5,
+        "evidence_recall_at_5": 1.0,
+        "missing_evidence": []
+      },
+      {
+        "id": "game-04",
+        "category": "late_document",
+        "returned_candidates": true,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 0.5,
+        "evidence_recall_at_5": 1.0,
+        "missing_evidence": []
+      },
+      {
+        "id": "game-06",
+        "category": "paraphrase",
+        "returned_candidates": true,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 0.3333333333333333,
+        "evidence_recall_at_5": 1.0,
+        "missing_evidence": []
+      },
+      {
+        "id": "game-07",
+        "category": "confusable",
+        "returned_candidates": true,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 0.2,
+        "evidence_recall_at_5": 0.0,
+        "missing_evidence": [
+          {
+            "document_id": "game-casual",
+            "start": 113,
+            "end": 177
+          }
+        ]
+      },
+      {
+        "id": "bike-02",
+        "category": "exact",
+        "returned_candidates": true,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 0.5,
+        "evidence_recall_at_5": 1.0,
+        "missing_evidence": []
+      },
+      {
+        "id": "bike-04",
+        "category": "late_document",
+        "returned_candidates": true,
+        "document_recall_at_5": 1.0,
+        "document_mrr_at_5": 0.5,
+        "evidence_recall_at_5": 0.0,
+        "missing_evidence": [
+          {
+            "document_id": "bike-cargo",
+            "start": 2500,
+            "end": 2584
+          }
+        ]
+      }
+    ],
+    "absent_query_ids_returning_candidates": [
+      "museum-08",
+      "maker-08",
+      "festival-08",
+      "game-08",
+      "bike-08",
+      "field-08",
+      "stage-08",
+      "seed-08"
+    ]
+  },
+  "primary_candidate_gate_passed": true,
+  "raw_measurement_sha256": "69100b6b1ccca1677d1ea47162e050a388fd803c66d413eccc6e3b8e0fddcbf0",
+  "limitations": [
+    "Authored after v1 results, not independently labelled or blind",
+    "Short bounded English passages, not a load or maximum-context test",
+    "No model/prompt/chunker/fusion tuning on v2",
+    "No cloud latency/cost or answerability claim"
+  ]
+}

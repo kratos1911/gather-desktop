@@ -680,3 +680,53 @@ Native assets/inputs were unchanged. No personal files, hosted inference, app
 integration, paid deployment or GitHub push. TASK-005 remains partial; next is a
 broader evaluation and bounded serving-container measurement before selecting
 dimensions/fusion and deployment sizing. Updated canonical and Obsidian notes/map.
+
+## 2026-10-12: frozen fresh text challenge and failure review
+
+Continued TASK-005 with a bounded, reviewable evaluation slice. Read the canonical
+docs, security/test notes and existing scorer/producer. Authored text-v2: 40
+fictional Markdown sources, 64 processing passages and 64 questions across eight
+new domains. Current, archived and neighbouring records compete. Eight evidence
+spans start beyond character 2,300; eight requested facts are absent. No personal
+documents or external source material were used. This is not independently
+labelled or blind evaluation, and sources are only 166–2,736 characters long.
+
+Validated evidence offsets and froze corpus/labels before inference using
+d23f63392759b5db751f1a024468908d8d6b3832652ddbdb7234264c8eb4d25b.
+Added fixed corpus selection across preparation, benchmark and scoring; freeze
+mutation checks; separate v2 output locations; corpus/index hashes in timing
+metadata. Inference still receives only prepared passages and queries. Preserved
+v1 semantics, canonical fingerprint, lexical scores and twelve raw artifact hashes.
+
+Available RAM initially measured 0.78 GiB; user agreed to free memory. It reached
+5.54 GiB before the test, and the actual model passed its pre-load guard. Reused
+the existing pinned D: Qwen snapshot offline, with four threads and unchanged
+prompt/chunker/float32/cosine/RRF. No model download or cloud provisioning.
+All 64 passages and queries completed; actual tokens 32–171 and 28–39 respectively.
+
+Primary 512 candidate passed the three predeclared >=0.90 gates: document
+Recall@5 1.0, evidence Recall@5 0.9911, MRR@5 0.9613 on 56 answerable questions.
+Median/p95 warm query time 0.329/0.403 seconds; indexing 39.73 seconds; OS peak
+working set 3.64 GiB. These are local short-input timings, not cloud latency/cost.
+All eight absent questions return candidates. Fixed RRF lowers MRR at every
+dimension. 1,024 improves MRR while 512 has better evidence recall; no universal
+or final production winner is selected.
+
+Reviewed every nonperfect 512-dense case: a needed second-source passage ranks
+sixth, historical/current intent is confused in two cases, a solo/team rule is
+confused, and an exact code ranks third. No labels, queries or retrieval settings
+were adjusted after the results. Preserved per-category/failed-query evidence and
+raw-file hashes in tests/evaluation/results/qwen-text-v2-20261012.json. Detailed
+interpretation and next acceptance are in docs/TEXT_V2_RESULTS.md.
+
+Verification: 39 evaluation tests, frontend production build, pip check, v1
+lexical regression and old-artifact hash verification pass. Five new tests cover
+the frozen corpus, source/query/label mutation rejection, evidence offsets,
+disjoint inputs, label separation, output paths and cross-corpus rejection.
+Unchanged worker/UI suites and native build were not repeated. Updated canonical
+docs and Obsidian hub/concepts/flow map. Local commit only, no GitHub push.
+
+TASK-005 remains partial. Next: a private local serving container with measured
+CPU/RAM/concurrency limits, token/request bounds, readiness and failure behavior;
+verify Docker storage is on D: before large builds. Retrieval weaknesses and
+independent real-world relevance review remain open before release claims.

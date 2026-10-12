@@ -1,6 +1,6 @@
 # Current project state
 
-Updated: 10 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
+Updated: 12 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
 choices there are proposed, not implemented. PROGRESS.md records history.
 
 Extractor checkpoint: TASK-019A hash-locked image rebuilt after Docker recovery.
@@ -24,6 +24,15 @@ locally; push only on an explicit request to push.
 Gather is a provisional name for a Windows desktop content library with semantic text/photo search and selected-source chat. Tauri/React/TypeScript and Supabase Free remain. User chose cloud AI on 27 September (ADR-009); later CPU/Cloud Run choices are in ADR-038. No end-user model downloads planned. Design avoid-list applies. No agentic file modification, payment feature or mobile app in MVP. Chat remains deferred until search works.
 
 ## Implemented
+
+- TASK-005 fresh challenge: 40 new fictional documents, 64 chunks, 64 questions
+  frozen before inference. Qwen 512 dense passes the declared development gate:
+  100% document recall, 99.11% evidence recall, MRR 0.9613 on 56 answerable queries.
+  All eight absent cases still return candidates. Five nonperfect dense queries
+  reviewed; exact codes, temporal wording and multi-part passage coverage remain
+  issues. Warm median/p95 0.329/0.403 s, OS peak 3.64 GiB, offline on D:. 39
+  evaluation tests, frontend build, pip check and v1 regression pass. Previous
+  worker/UI checks were not rerun for this evaluation-only change. See TEXT_V2_RESULTS.md.
 
 - TASK-005 real local CPU benchmark: pinned Qwen3-Embedding-0.6B downloaded to
   D: and evaluated at 256/512/1,024 dimensions with two/four CPU threads. All
@@ -59,7 +68,7 @@ Gather is a provisional name for a Windows desktop content library with semantic
   concurrency, execution timeout, cancellation and cleanup. Actual container
   resource/egress tests pass. Not an API, durable queue or live fetch broker.
 
-- Local quality checks: 112 worker, 34 evaluation and four UI tests, ESLint,
+- 10 October full quality checkpoint: 112 worker, 34 evaluation and four UI tests, ESLint,
   TypeScript, Prettier and frontend build pass. Native development build passes.
   Manual GitHub workflow authored; remote execution unverified.
 - Links/bookmarks added to product scope and delivery plan in BOOKMARKS.md.
@@ -91,9 +100,11 @@ Frontend lint and format checks are configured; remote CI and native E2E remain 
 
 ## Current task
 
-TASK-005 D:-only Qwen CPU slice verified on 10 October. Next: broaden the text
-evaluation before locking dimensions/fusion, then measure the serving container
-under explicit resource limits. EmbeddingGemma waits for license/access; visual
+TASK-005 fresh challenge verified on 12 October with settings unchanged from v1.
+Next: measure a local serving container with explicit resource limits; verify
+Docker image storage is on D: before large builds. The 512-dimensional candidate
+advances only to this experiment, not final production selection. Independent
+relevance review and the observed retrieval weaknesses remain open. EmbeddingGemma waits for license/access; visual
 models need an image/OCR corpus; chat stays deferred. These remain unfinished.
 
 TASK-021 core API slice verified locally on 9 October. Next: upload fencing and
@@ -124,8 +135,8 @@ local tests. FetchBroker and BookmarkPipeline now pass controlled end-to-end
 HTTP/process/Docker parsing tests. Next: production confinement and browser/tool
 egress; live invocation (019C) stays gated. No persistence or semantic indexing.
 TASK-021 plans local Supabase schema/job/isolation tests. TASK-017 connects the flow.
-Provider connection and semantic benchmarks remain pending. Add harder long-document
-and independently reviewed unseen questions before release claims. TASK-002
+Provider connection remains pending. v1/v2 semantic benchmarks now exist; add
+independently reviewed real-world and larger-scale cases before release claims. TASK-002
 audience research and TASK-003 visual QA remain open.
 
 ## Inputs needed before later gates
@@ -137,7 +148,8 @@ Supabase project/public configuration; audience/regions; operator/contact and fi
 Project hub: [[docs/PROJECT_HUB]]. Shared repository notes are the source of truth;
 concepts, ideas, templates and the search-flow canvas supplement the canonical
 documents. Local template/daily-note configuration saved; Obsidian UI not verified.
-Latest source checks: 145 tests and frontend build on 8 October. Locked-image
+Latest evaluation checks: 39 tests and frontend build on 12 October; the full
+source/UI checkpoint was 150 tests on 10 October. Locked-image
 smoke passes, including actual timeout cleanup; no smoke containers remain.
 
 ## Earlier checkpoints (superseded by the 1 October status below)

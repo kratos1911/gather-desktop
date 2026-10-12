@@ -1,5 +1,22 @@
 # Delivery tasks
 
+## 12 October fresh text challenge
+
+TASK-005 second local slice complete: 40 new fictional documents, 64 passages,
+64 questions (56 answerable), corpus/labels frozen before inference. Unchanged
+Qwen/prompt/chunker/cosine/RRF evaluated at 256/512/1,024 dimensions. The primary
+512 candidate passes declared >=0.90 gates: document recall 1.0, evidence recall
+0.9911, MRR 0.9613. Five nonperfect dense queries reviewed; all eight absent
+questions still return candidates. Do not claim blind or real-world evaluation.
+39 evaluation tests, frontend build, pip consistency and v1 regression pass;
+twelve v1 raw artifacts still match recorded hashes. See docs/TEXT_V2_RESULTS.md.
+
+Next TASK-005 slice: local serving-container measurement with explicit CPU/RAM/
+concurrency/request limits and D: image storage verified first. 512 dimensions is
+an experimental candidate, not a final production selection. Exact identifiers,
+temporal distinctions and multi-part passage coverage remain quality follow-ups.
+No cloud deployment or GitHub push is authorized by this checkpoint.
+
 ## 10 October CPU benchmark checkpoint
 
 TASK-005 local slice complete: real Qwen3-Embedding-0.6B export with immutable
@@ -9,7 +26,7 @@ memory/latency measurements. 112 worker + 34 evaluation + 4 UI tests, lint,
 typecheck, formatting, frontend build and pip check pass. See docs/CPU_BENCHMARK.md
 and tests/evaluation/results/qwen-cpu-20261010.json for detailed evidence.
 
-TASK-005 overall stays partial. Next acceptance: larger frozen unseen text set
+TASK-005 overall stays partial. Historical next acceptance (now measured above): larger frozen unseen text set
 and failure review before selecting model/dimensions/fusion, then a bounded CPU
 serving-container test. EmbeddingGemma requires user license acceptance; visual
 models need image/OCR fixtures. Cloud measurement, production runtime/security,
@@ -41,13 +58,13 @@ Current checkpoint: local quality checks pass; remote CI execution pending. Link
 | TASK-002 | Validate audience and comparable products | Ready | Record user interviews/feedback or explicitly unvalidated hypotheses; compare primary-source alternatives; decide initial audience/regions |
 | TASK-003 | Desktop shell and design verification | Partial | Frontend/native build and four component tests pass; actual visual, keyboard, zoom and motion checks still pending after browser permission denial |
 | TASK-004 | Transport-independent text processing contract | Done | 12 standard-library tests pass; strict JSON/base64/UTF-8 and 64 KiB source limit; source offsets, hashes/versioned IDs, overlap and retry determinism verified; no personal imports or cloud writes; see services/worker/README.md |
-| TASK-005 | Cloud-oriented embedding evaluation | Partial: first real CPU evidence | Qwen export, tokenizer preflight, 256/512/1,024-dimension evaluation, two/four-thread laptop measurements verified on 10 October. 34 evaluation tests pass. See docs/CPU_BENCHMARK.md. Larger corpus, Gemma/visual comparison, cloud latency/cost and production runtime remain pending |
+| TASK-005 | Cloud-oriented embedding evaluation | Partial: fresh challenge measured | v1 CPU benchmark and frozen v2 challenge verified. 39 evaluation tests and frontend build pass. 512 dimensions advances to bounded serving-container testing; exact/temporal/multi-part retrieval issues remain. See docs/TEXT_V2_RESULTS.md. Independent review, Gemma/visual comparison, cloud latency/cost and production runtime remain pending |
 | TASK-006 | Supabase identity and private schema | Needs project configuration | Versioned migrations; supported signup/session/logout flow; enforce audience decision; RLS and two-user isolation tests; secure session storage; quota policy |
 | TASK-007 | Text import-to-search vertical slice | Depends on 005/006 | Import TXT/MD -> durable processing -> all passages -> real search -> reader -> deletion; retry/restart/dedup/isolation tests; user-readable errors |
 | TASK-008 | Native document formats | Depends on 007 | PDF/DOCX/PPTX parsers; preserved page/slide/section references; long-document and malformed-file cases; scanned pages correctly identified |
 | TASK-009 | Photo and OCR retrieval slice | Depends on 007 | JPEG/PNG and scanned text ingestion; SigLIP plus OCR; separate vector spaces and rank fusion; actual source results; category-specific evaluation |
 | TASK-010 | Selected-source chat slice | Deferred by user, 28 September | Pin Qwen runtime/quantization; scoped retrieval, streaming, cancellation, citations, missing-evidence and injection tests; measured resource limits |
-| TASK-011 | Automated quality checks | Partial | Local checks pass 112 worker + 34 evaluation + 4 UI tests, ESLint, TypeScript, Prettier and frontend build. Manual CI workflow authored, not pushed/executed remotely. No native E2E claim |
+| TASK-011 | Automated quality checks | Partial | 10 October full checkpoint: 112 worker + 34 evaluation + 4 UI, lint/types/format/build pass. 12 October: expanded 39-test evaluation suite and frontend build pass. Manual CI workflow authored, not pushed/executed remotely. No native E2E claim |
 | TASK-012 | Security and code review | Continuous / release gate | Threat model, input limits, access isolation, deletion reconciliation, license/secret scan, reviewed changes; close privacy audit owner inputs |
 | TASK-013 | Preview installer and QA | Depends on core slices | Clean Windows install/update/uninstall; cloud setup; network/low-disk/offline/quota scenarios; no developer tools or model downloads required |
 | TASK-014 | Production distribution | Depends on 012/013 | Approved destination, signing decision, final policies, backup/restore and rollback; verified release artifacts; no public upload before ready |

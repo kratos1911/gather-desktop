@@ -68,7 +68,8 @@ Vector tests use known numbers to verify normalization/cosine, negative scores,
 extreme finite magnitudes, ties, incomplete/mixed/stale/truncated exports and
 RRF rank fusion independent of raw score magnitude. They are not semantic
 quality tests. See tests/evaluation/VECTORS.md for the export contract and CLI.
-No real model export or cloud provider has been exercised.
+Real Qwen exports have now been exercised by the separate CPU benchmark;
+hosted inference is still unverified.
 
 Version synthetic/approved fixtures, queries, model/runtime versions, hardware and results. Start with >=30 text and >=20 visual/OCR queries as described in MODEL_STRATEGY.md. Measure quality by category, not only aggregate accuracy. Proposed thresholds are not current results.
 
@@ -86,6 +87,13 @@ corpus. Verify D: cache paths, immutable model hash, no truncated inputs, comple
 vector exports, per-category failures and memory/latency reports. Compare all
 dimensions using the same frozen queries. Resource guards must fail before load.
 See CPU_BENCHMARK.md. Do not relabel laptop timing as measured cloud cost.
+
+Text-v2: use the fixed --corpus text-v2 option throughout preparation, model
+export and scoring. Validate the corpus freeze before inference, keep labels
+separate and preserve v1 outputs. test_challenge_corpus.py checks mutations,
+source/query disjointness, late evidence, directory separation and mixed-corpus
+rejection. Follow tests/evaluation/TEXT_V2_PROTOCOL.md without retrospective tuning.
+Review every nonperfect primary-candidate query; see TEXT_V2_RESULTS.md.
 
 Record exact commands, passed/failed/not-run results and limitations per task. Review code after tests. Fix material issues before a completion commit. Documentation-only changes require link/state/diff checks, not unnecessary full installer builds.
 

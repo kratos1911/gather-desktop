@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "frozen_on": "2026-10-12",
+  "corpus_version": "gather-text-v2",
+  "corpus_sha256": "d23f63392759b5db751f1a024468908d8d6b3832652ddbdb7234264c8eb4d25b",
+  "documents": 40,
+  "queries": 64,
+  "model_evaluated_at_freeze": false,
+  "protocol": "TEXT_V2_PROTOCOL.md"
+}

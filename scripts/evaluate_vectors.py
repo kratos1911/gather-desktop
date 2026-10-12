@@ -5,7 +5,7 @@ import json
 import math
 from pathlib import Path
 
-from scripts.prepare_text_evaluation import CORPUS, prepare
+from scripts.prepare_text_evaluation import CORPORA, load_corpus, prepare
 from scripts.score_text_evaluation import index_hash, lexical_run, score_run
 
 
@@ -106,13 +106,15 @@ def fuse_runs(index, labels, lexical, dense):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--corpus", choices=CORPORA, default="text-v1")
     parser.add_argument("--vectors", type=Path, required=True, help="Provider-exported JSON; never reads credentials")
-    parser.add_argument("--output", type=Path, default=Path("output/evaluation/text-v1/vectors"))
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args()
+    args.output = args.output or Path("output/evaluation") / args.corpus / "vectors"
     if args.vectors.stat().st_size > 32 * 1024 * 1024:
         parser.error("Embedding export exceeds 32 MiB")
     artifact = json.loads(args.vectors.read_text(encoding="utf-8"))
-    prepared = prepare(json.loads(CORPUS.read_text(encoding="utf-8")))
+    prepared = prepare(load_corpus(args.corpus))
     dense = vector_run(prepared["index"], prepared["queries"], artifact)
     lexical = lexical_run(prepared["index"], prepared["queries"])
     hybrid = fuse_runs(prepared["index"], prepared["labels"], lexical, dense)

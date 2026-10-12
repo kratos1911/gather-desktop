@@ -56,6 +56,11 @@ It checks exact prompted token lengths, embeds offline with pinned safetensors,
 exports versioned vectors and evaluates cosine/RRF against the frozen TF-IDF baseline.
 See [CPU benchmark](CPU_BENCHMARK.md) for evidence and limits.
 
+12 October: evaluation accepts a fixed corpus selection, validates a frozen
+text-v2 fingerprint and separates corpus outputs. The 512-dimensional candidate
+passes the fresh challenge gate with known retrieval weaknesses. The next runtime
+step is a local container experiment, not a deployed API. See TEXT_V2_RESULTS.md.
+
 ## Architecture rules
 
 - UI components contain no SQL, model execution, filesystem traversal or provider credentials.

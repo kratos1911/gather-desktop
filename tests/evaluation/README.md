@@ -1,5 +1,10 @@
 # Retrieval development set: text v1
 
+The original v1 corpus remains unchanged. A separate frozen challenge set is
+available as `--corpus text-v2`: see [its protocol](TEXT_V2_PROTOCOL.md) and
+[measured results](../../docs/TEXT_V2_RESULTS.md). The same scorer evaluates both;
+v2 output directories are separate and its loader checks the freeze fingerprint.
+
 This is original fictional content authored for Gather. It is a development
 fixture, not an independently labelled benchmark, production dataset or proof
 of model accuracy. Qwen has now run in a separate D:-only CPU evaluation;

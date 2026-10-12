@@ -48,7 +48,7 @@
     {
       "id": "vector",
       "type": "text",
-      "text": "Qwen CPU benchmark verified on D:\n256/512/1024 dimensions; cosine + RRF\nCloud Run CPU + Supabase target\nConnected desktop/index still pending",
+      "text": "Qwen v1 + frozen v2 tested on D:\n512 candidate passes with known failures\nNEXT: bounded CPU serving container\nConnected desktop/index still pending",
       "x": 800,
       "y": 220,
       "width": 330,

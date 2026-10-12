@@ -10,7 +10,34 @@ from pathlib import Path
 from services.worker.text_processing import process_request
 
 CORPUS = Path(__file__).resolve().parents[1] / "tests/evaluation/text-v1.json"
+CORPORA = {"text-v1": CORPUS, "text-v2": CORPUS.with_name("text-v2.json")}
 CATEGORIES = {"paraphrase", "exact", "confusable", "late_document", "multiple_sources", "absent"}
+
+
+def corpus_hash(corpus):
+    canonical = json.dumps(corpus, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def load_corpus(name):
+    """Only repository fixtures; a frozen challenge set cannot change unnoticed."""
+    if name not in CORPORA:
+        raise ValueError("Unsupported corpus name")
+    corpus = json.loads(CORPORA[name].read_text(encoding="utf-8"))
+    if corpus["version"] != f"gather-{name}":
+        raise ValueError("Corpus name/version mismatch")
+    if name == "text-v2":
+        freeze = json.loads(CORPORA[name].with_suffix(".freeze.json").read_text(encoding="utf-8"))
+        if corpus_hash(corpus) != freeze["corpus_sha256"]:
+            raise ValueError("Frozen challenge corpus changed; create a new version")
+    return corpus
+
+
+def corpus_run_root(root, name):
+    if name not in CORPORA:
+        raise ValueError("Unsupported corpus name")
+    # Preserve v1 output locations; never overwrite v1 with a challenge run.
+    return root if name == "text-v1" else root / name
 
 
 def _unique_ids(items, name):
@@ -21,12 +48,11 @@ def _unique_ids(items, name):
 
 def prepare(corpus: dict) -> dict:
     """Trusted repository fixture input, not a public request validation boundary."""
-    if corpus["version"] != "gather-text-v1":
+    if corpus["version"] not in {f"gather-{name}" for name in CORPORA}:
         raise ValueError("Unsupported corpus version")
     _unique_ids(corpus["documents"], "document")
     _unique_ids(corpus["queries"], "query")
-    canonical = json.dumps(corpus, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
-    fingerprint = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    fingerprint = corpus_hash(corpus)
     documents = {}
     for source in corpus["documents"]:
         payload = {"version": 1, "request_id": "evaluation", "format": source["format"],
@@ -85,9 +111,10 @@ def prepare(corpus: dict) -> dict:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--corpus", choices=CORPORA, default="text-v1")
     parser.add_argument("--output", type=Path, help="Optional directory for generated inputs and separate labels")
     args = parser.parse_args()
-    prepared = prepare(json.loads(CORPUS.read_text(encoding="utf-8")))
+    prepared = prepare(load_corpus(args.corpus))
     if args.output:
         args.output.mkdir(parents=True, exist_ok=True)
         for name in ("index", "queries", "labels"):

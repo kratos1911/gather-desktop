@@ -3,9 +3,15 @@ tags: [gather, project]
 ---
 # Gather project hub
 
-Start here in Obsidian. Updated 10 October 2026.
+Start here in Obsidian. Updated 12 October 2026.
 
-Latest: [[docs/CPU_BENCHMARK|First real Qwen CPU benchmark]] is verified on D:.
+Latest: [[docs/TEXT_V2_RESULTS|Fresh text challenge and failure review]]. Forty
+new sources and 64 questions are frozen; real Qwen 512 passes the development
+gate with 100% document recall and 99.11% evidence recall. Exact-code/temporal
+ranking and a missed multi-part passage remain open. 39 evaluation tests and
+frontend build pass. Next: a local serving container with explicit resource limits.
+
+10 October checkpoint: [[docs/CPU_BENCHMARK|First real Qwen CPU benchmark]] is verified on D:.
 All 35 answerable development queries have relevant documents in the top five;
 the set is too small to choose a production winner. Four-thread warm median
 0.324 seconds; sampled peak RAM 3.58 GiB. 150 tests and frontend build pass.
@@ -69,8 +75,8 @@ search app yet. Details and evidence belong in the linked state and task notes.
 
 ## Immediate next step
 
-Continue TASK-005 with a broader frozen text set, then a bounded serving-container
-test before committing to model dimensions, fusion or cloud resource sizing.
+The broader frozen text set is measured. Continue TASK-005 with a bounded
+serving-container test before committing to model dimensions, fusion or cloud sizing.
 [[docs/CPU_BENCHMARK|Benchmark method and evidence]] explains dense retrieval,
 dimension reduction, timings and their limits. Local downloads are on D: only.
 

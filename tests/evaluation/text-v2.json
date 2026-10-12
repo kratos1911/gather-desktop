@@ -1,0 +1,912 @@
+{
+  "version": "gather-text-v2",
+  "provenance": "Original fictional challenge examples authored before the first model run on 12 October 2026; not independently labelled or blind.",
+  "documents": [
+    {
+      "id": "museum-loan",
+      "format": "md",
+      "text": "# Tidal Museum ceramic loan handbook\n\nTidal Museum lends ceramic vessels to visiting exhibitions. The registrar owns the loan record while the courier owns the journey log. A curator can describe the glaze but cannot substitute a display photograph for the condition record. Each vessel travels with a numbered cradle; the cradle stays with that vessel throughout packing, display and return. The North Annex has narrow doors, so the receiving team walks the empty route before moving a crate. This handbook concerns ceramic loans, not works on paper or furniture.\n\nA ceramic loan must be accompanied by a trained courier throughout unpacking.\n\n## Working record\n\nThe receiving team photographs the unopened crate on all four sides. They compare the cradle number with the packing sheet before lifting anything. Loose fragments are placed in a separate labelled envelope; they are never pushed back onto the object. The registrar records which side of the display faces the entrance because reflected light can hide an existing mark. A new photograph uses the same camera position as the dispatch image. If the two images differ, the team describes the difference without guessing when it happened. A demonstration crate is available for practising the route and is clearly marked as empty.\n\nThe weekly planning meeting separates transport work from installation work. The driver brings the sealed crate to the loading area, the courier witnesses opening, and the mount technician sets the cradle on its base. Those roles are recorded separately even if one person holds two qualifications. The loading schedule includes space for returning the empty packing materials. Museum staff do not borrow a crate from a neighbouring exhibition just because the dimensions look similar. Visitors continue to use the main entrance while the loading corridor is reserved for the loan team.\n\nAt closing time, the gallery assistant checks the display barrier and photographs the position of the crate lid in storage. They note the room name rather than a vague description such as upstairs. The daily log also records whether cleaning took place nearby and whether any furniture was moved. These observations give the registrar context when reviewing the condition photographs later. They are not an authorization to repair the glaze or alter the mount. Any proposed treatment belongs in a separate conservation record approved before work starts.\n\n## Closing and handover\n\nTidal Museum ceramic return crates must be stored in the east loading alcove overnight.\n\nCeramic loan returns require the blue handover form signed by the courier.\n"
+    },
+    {
+      "id": "museum-paper",
+      "format": "md",
+      "text": "# Tidal Museum paper loan checklist\n\nPaper loans use flat sleeves and a covered inspection table. The exhibition assistant checks labels against the paper-loan register before moving the sleeves. These instructions do not cover ceramic objects.\n\nPaper loan batch TM-P17 contains eleven framed prints.\n\nPaper loans may be unpacked by the registrar without a visiting courier.\n\nPaper loan returns require the green receipt signed by the registrar.\n"
+    },
+    {
+      "id": "museum-old",
+      "format": "md",
+      "text": "# Archived Tidal Museum loading memo\n\nThis memo is retained as history and is superseded for current loans. The former loading entrance was closed during the building extension.\n\nBefore the extension, ceramic crates were left in the west stairwell.\n"
+    },
+    {
+      "id": "museum-shop",
+      "format": "md",
+      "text": "# Tidal Museum shop deliveries\n\nThe shop sells reproductions rather than loan objects. Retail deliveries use a separate purchase ledger and are handled by the stock assistant.\n\nMuseum shop poster deliveries are accepted at the south staff door.\n"
+    },
+    {
+      "id": "museum-tour",
+      "format": "md",
+      "text": "# Tidal Museum visitor tour notes\n\nPublic tours describe local clay, vessel shapes and how glazes reflect light. The guide uses a replica bowl for the handling demonstration. This note contains no loan-insurance valuation or market-price schedule.\n\n\n"
+    },
+    {
+      "id": "maker-resin",
+      "format": "md",
+      "text": "# Beacon Workshop resin printing guide\n\nBeacon Workshop runs a resin printer room and a separate filament area. Every booking names the machine and the material so that a queue position does not imply permission to change either. The resin room coordinator signs off the workstation at the start and end of a session. This fictional operational guide records the workshop process; it is not general chemical safety advice. Manufacturer instructions and the local operating checklist are stored separately. A finished model remains associated with its job card through the wash and cure stations.\n\nBeacon resin printing sessions require a room coordinator to be present.\n\n## Working record\n\nBefore a session, the operator compares the tray identifier with the job card and checks that the proposed print fits the available workspace. The model preview shows support structures as well as the visible object. Supports can change the footprint, so a screenshot of the finished object is not enough for allocating the tray. The coordinator records which station will handle the job after printing. A shared station is reserved separately and must not be assumed to follow automatically from a printer booking. Completed models are labelled before they leave the printer area.\n\nThe workshop keeps a demonstration archive containing successful prints and examples of failed geometry. Each example carries a short explanation of what the operator changed. A hollow object may need a different orientation from a solid demonstration piece even when their outside shape looks identical. Students are asked to save their own preparation notes rather than copying the name of a successful profile. A profile describes a particular machine and material combination. The coordinator reviews changes to the preparation process at the weekly workshop meeting.\n\nAt handover, the operator lists unfinished work and identifies any object still waiting for another station. The following session does not inherit responsibility merely because its booking starts next. The coordinator checks the job board and resolves ownership before making the station available. A photograph of an unlabeled object cannot establish which member printed it. The archive is therefore useful for learning but is not the inventory record. The room log retains the job identifier, workstation and session date so that a later collection request can be traced.\n\n## Closing and handover\n\nUncollected Beacon resin models move to collection drawer R after seven days.\n\nResin-room booking changes close at noon on the preceding day.\n"
+    },
+    {
+      "id": "maker-filament",
+      "format": "md",
+      "text": "# Beacon filament printer rules\n\nThe filament area has its own booking calendar and collection shelves. A resin-room qualification does not substitute for the filament machine induction.\n\nFilament job BF-204 is assigned to printer Cedar.\n\nInducted members may run Beacon filament sessions without a room coordinator.\n\nFilament booking changes close two hours before the session.\n"
+    },
+    {
+      "id": "maker-old",
+      "format": "md",
+      "text": "# Retired Beacon collection notice\n\nThis notice predates the numbered collection drawers. It remains in the archive to explain labels on old job cards.\n\nThe retired resin collection process used the open shelf beside the sink.\n"
+    },
+    {
+      "id": "maker-laser",
+      "format": "md",
+      "text": "# Beacon laser cutter reservations\n\nThe laser cutter is booked by material thickness and sheet size. Printer sessions and laser sessions do not share allocation identifiers.\n\nLaser cutter reservations require the sheet thickness in millimetres.\n"
+    },
+    {
+      "id": "maker-cost",
+      "format": "md",
+      "text": "# Beacon workshop materials stock\n\nThe stock list names resin bottles, filament spools, cleaning cloths and replacement trays. It records counts, not member charges. No hourly printer price or invoice tariff appears in the list.\n\n\n"
+    },
+    {
+      "id": "festival-outdoor",
+      "format": "md",
+      "text": "# Lantern outdoor screening operations\n\nThe Lantern community film festival runs an outdoor screen in Quarry Park and an indoor screen at the civic hall. This guide is for the park team. A venue name appears on every shift sheet because the same film may be shown in both places. The projector technician controls the equipment enclosure and the welcome team controls the audience queue. Volunteers keep those roles distinct when answering visitor questions. Publicity artwork is not the operating schedule; changes are entered in the park screening log.\n\nLantern outdoor screenings move to the civic hall when the park is closed for weather.\n\n## Working record\n\nThe park team marks a route from the main gate to the seating area before the audience arrives. The route avoids the equipment enclosure and preserves access to the public path. Cables are accounted for on the equipment sheet and are checked by the assigned technician. The welcome team keeps a count of occupied seating blocks rather than guessing from the length of the queue. A late arrival may join only after a steward has checked the route. The family seating block is indicated on the site map and should not be confused with the equipment holding area.\n\nDuring the afternoon handover, volunteers compare the venue log with the printed film list. A change of screening location does not automatically change the film order. The public announcement must name the venue as well as the start time. A volunteer at the park gate stays in contact with the hall welcome desk while visitors are being redirected. Printed signs are gathered after the final announcement so that the next day's visitors do not follow an obsolete route. The team retains one copy in the shift folder as a record of what was displayed.\n\nAfter the screening, the technician separates personal equipment from festival equipment before loading the vehicle. The park team walks the seating area in numbered sections and brings found objects to one collection point. Descriptions in the log avoid guessing an owner's name from an item. Unclaimed property is counted again when custody changes. The closing steward signs the park log only after the equipment enclosure, seating sections and public gate have each been checked. These observations are useful even on nights when the screening is moved indoors.\n\n## Closing and handover\n\nFound items from Lantern park screenings go to the civic hall cloakroom the following morning.\n\nThe park team checks in at the north gate ninety minutes before the film.\n"
+    },
+    {
+      "id": "festival-hall",
+      "format": "md",
+      "text": "# Lantern civic hall volunteer sheet\n\nThe hall has a seated audience and its own entry desk. This sheet concerns ordinary indoor screenings, including a second programme that is not shown in the park.\n\nIndoor screening LF-H08 is the short-film programme.\n\nThe hall welcome team checks in forty minutes before the film.\n\nIndoor volunteers report to the foyer desk rather than the park gate.\n"
+    },
+    {
+      "id": "festival-old",
+      "format": "md",
+      "text": "# Lantern previous-year rain arrangement\n\nHistorical planning record only. The depot venue is no longer used by the festival.\n\nLast year, weather cancellations at the park were moved to the bus depot.\n"
+    },
+    {
+      "id": "festival-workshop",
+      "format": "md",
+      "text": "# Lantern animation workshop booking\n\nThe workshop is an afternoon activity, separate from admission to any film screening.\n\nAnimation workshop participants collect materials from the library annex.\n"
+    },
+    {
+      "id": "festival-snacks",
+      "format": "md",
+      "text": "# Lantern concession inventory\n\nThe concession record lists cups, napkins, popcorn cartons and reusable serving trays. It contains stock counts only and does not list ticket income or profit.\n\n\n"
+    },
+    {
+      "id": "game-team",
+      "format": "md",
+      "text": "# Harbor Cup team tournament manual\n\nHarbor Cup runs a team tournament and a separate solo bracket for the fictional game Beacon Arena. A player may enter both, but the schedules and appeal procedures are separate. The team captain submits the roster, while the match referee records results. This manual covers the team competition. Practice-room matches are useful for equipment checks and do not create official results. Bracket screenshots may become outdated, so staff consult the signed match sheet when resolving a scheduling dispute.\n\nHarbor Cup teams may register one substitute before the roster lock.\n\n## Working record\n\nA team checks the displayed names against its registration before the first match. The captain can correct a spelling mistake without changing which player is registered. A player replacement is a different request and is considered under the substitute rule. Match stations are assigned by number; friends who share a controller cannot assume they will use the same station in the next round. The referee records the start of each official match on the match sheet. A restart performed during an equipment check is marked as a practice event and excluded from the result.\n\nBetween rounds, captains consult the published sequence rather than asking opponents to estimate when a station will be free. The volunteer at the desk can explain where to wait but cannot change the referee's recorded result. A printed bracket on the wall is replaced after a round is confirmed. Older sheets are kept in the desk folder because they can help explain how a later correction was made. They are labelled as superseded so that visitors do not mistake them for the current order. Names on the sheet are team names, not proof of who played each map.\n\nThe final review compares each team's signed score sheet with the referee log. If the two disagree, the reviewer identifies the exact map and station before asking for an explanation. General claims that a team usually wins do not resolve a recording error. A review note records the original entry, the corrected entry and the reason for the change. The correction is then reflected in the current bracket without deleting the original sheet. This preserves the sequence of decisions and lets teams understand why their next opponent changed.\n\n## Closing and handover\n\nHarbor Cup team appeals must be filed at the referee desk within ten minutes of the result.\n\nTeam equipment checks begin at 09:20 in room Anchor.\n"
+    },
+    {
+      "id": "game-solo",
+      "format": "md",
+      "text": "# Harbor Cup solo bracket notes\n\nThe solo event uses an individual registration list. It does not inherit team substitute or appeal rules.\n\nSolo match HC-S31 is assigned to station 6.\n\nSolo entrants cannot nominate a substitute after registration.\n\nSolo equipment checks begin at 10:10 in room Buoy.\n"
+    },
+    {
+      "id": "game-old",
+      "format": "md",
+      "text": "# Archived Harbor Cup appeal rule\n\nThis is the previous season’s team manual excerpt. The current season uses a shorter review window.\n\nThe previous team appeal deadline was thirty minutes after the result.\n"
+    },
+    {
+      "id": "game-casual",
+      "format": "md",
+      "text": "# Harbor Cup casual lounge\n\nCasual matches are outside both tournament brackets and award no tournament points.\n\nCasual lounge controllers are borrowed from the welcome counter.\n"
+    },
+    {
+      "id": "game-prizes",
+      "format": "md",
+      "text": "# Harbor Cup trophy packing list\n\nThis list records trophy boxes, ribbons and engraved nameplates. It does not state a cash prize, sponsorship value or payout schedule.\n\n\n"
+    },
+    {
+      "id": "bike-cargo",
+      "format": "md",
+      "text": "# Juniper cargo bicycle service handbook\n\nJuniper Cycle Cooperative maintains cargo bicycles and ordinary commuter bicycles. The service intake records the bicycle category because the workshop uses different stands and collection procedures. This handbook describes the cooperative’s cargo-bicycle workflow rather than general mechanical instructions. A mechanic follows the appropriate manufacturer service documentation for actual repairs. Volunteers may record an observation but may not mark a repair complete merely because a bicycle looks clean. Each job retains the same intake number until collection.\n\nJuniper cargo bicycles must be booked into a floor-level service bay.\n\n## Working record\n\nAt intake, the volunteer copies the frame identifier from the bicycle and asks which accessories will remain attached. A child seat, delivery box or rack can affect storage space even when no repair is requested for that accessory. The list helps the collection volunteer distinguish the bicycle from another of the same colour. The customer keeps the intake receipt while the workshop attaches a separate job tag. A photograph can supplement the description, but it does not replace the identifier on the job card. The mechanic adds observations to that card after inspecting the bicycle.\n\nWork is scheduled by the assigned mechanic after the required parts are checked. A delivered part remains associated with its purchase reference until the mechanic confirms its use. The volunteer does not move a cargo bicycle to an elevated commuter stand merely to make space. A waiting job is placed in the designated holding position and remains visible on the job board. If work cannot continue, the mechanic records the reason and the next action. A generic note saying delayed is insufficient because the next shift needs to know whether it is waiting for a part, an inspection or collection.\n\nBefore handover, the collection volunteer compares the accessory list with the bicycle and gathers any removed parts that were marked for return. They ask the customer to verify the intake number rather than choosing a bicycle by colour. The mechanic’s completion entry and the customer's collection entry are separate events. This distinction prevents a finished repair from disappearing from the holding-area count before its owner arrives. The daily closing record names every bicycle still on site and identifies which ones are awaiting collection rather than mechanical work.\n\n## Closing and handover\n\nCompleted Juniper cargo bicycles are collected from the courtyard gate on Saturdays.\n\nCargo repair estimates are sent only after the mechanic completes the intake inspection.\n"
+    },
+    {
+      "id": "bike-commuter",
+      "format": "md",
+      "text": "# Juniper commuter repair intake\n\nThe commuter service desk accepts ordinary two-wheel bicycles. Cargo bicycles follow the cargo handbook even if their requested repair is small.\n\nCommuter job JC-118 is waiting for a rear mudguard.\n\nCommuter bicycles use the elevated stands in the indoor workshop.\n\nCommuter puncture estimates are given at the service desk before intake.\n"
+    },
+    {
+      "id": "bike-old",
+      "format": "md",
+      "text": "# Juniper former cargo collection arrangement\n\nThis archived notice predates the courtyard opening and no longer describes current collections.\n\nCargo bicycles were formerly collected through the narrow front shop entrance.\n"
+    },
+    {
+      "id": "bike-hire",
+      "format": "md",
+      "text": "# Juniper helmet hire sheet\n\nHelmet hire is a separate borrowing service and does not open a bicycle repair job.\n\nHired helmets are returned to the yellow locker beside reception.\n"
+    },
+    {
+      "id": "bike-members",
+      "format": "md",
+      "text": "# Juniper member meeting agenda\n\nThe meeting agenda covers storage space, workshop volunteer shifts and publicity for a repair demonstration. It gives no repair warranty duration or insurance terms.\n\n\n"
+    },
+    {
+      "id": "field-water",
+      "format": "md",
+      "text": "# Estuary Watch water-sample field manual\n\nEstuary Watch is a fictional citizen-observation project with water-sampling and shore-photography teams. A site code identifies a location but does not say which type of observation was collected there. This manual describes how project records are labelled and handed over. It does not provide public health advice or interpret water quality. The coordinator checks the observation list before assigning a team, and a separate laboratory record will contain any analysis. The field log records what happened at the site without inventing laboratory findings.\n\nEstuary Watch water samples need both the site code and collection time on the bottle label.\n\n## Working record\n\nThe team compares the site marker with the route sheet before filling out its log. A photograph of the location helps explain access conditions, but a photograph alone does not identify a sample bottle. Each bottle has its own written label, and the coordinator checks the label against the field sheet at handover. If a team cannot reach an assigned point, it records the missed visit rather than substituting a nearby point under the original site code. The route sheet is then updated for the next scheduled visit. This preserves the difference between missing data and a genuine measurement at the planned location.\n\nWeather observations are written as observations, with the time at which they were made. A later change in the weather does not replace the earlier entry. The team notes visible conditions using the project vocabulary and avoids drawing conclusions about contamination. A volunteer who notices an unexpected object on the shore records its location separately from the sampling event. The coordinator can then decide which project record should receive the observation. Keeping those records separate prevents a striking photograph from being treated as a laboratory result.\n\nAt the collection point, the coordinator counts bottles against the planned visit list and checks which site codes are missing. A label that cannot be read is described as unreadable rather than reconstructed from memory. The handover record names the team and the collection round so that questions can be directed to the correct field notes. Empty containers are counted separately from collected samples. The transport record begins when the coordinator accepts the labelled collection, not when the volunteers first leave the meeting point. This timing matters when comparing the field sheet with later laboratory intake records.\n\n## Closing and handover\n\nEstuary Watch water bottles are handed to the coordinator at the pier kiosk by 14:00.\n\nWater teams record a missed sampling visit with the status not collected.\n"
+    },
+    {
+      "id": "field-photo",
+      "format": "md",
+      "text": "# Estuary Watch shore photograph protocol\n\nThe photograph project documents fixed views along the shore. Image names are not substitutes for sample-bottle labels.\n\nPhotograph station EW-P09 faces the old footbridge.\n\nShore photographs use a station code and view direction in the image caption.\n\nPhoto teams record a missed station with the status no photograph.\n"
+    },
+    {
+      "id": "field-old",
+      "format": "md",
+      "text": "# Retired Estuary Watch handover note\n\nThe old meeting point became unavailable when the footpath closed. This record is retained to interpret last season’s logs.\n\nWater samples were previously handed over at the bus shelter.\n"
+    },
+    {
+      "id": "field-birds",
+      "format": "md",
+      "text": "# Estuary Watch bird-count sheet\n\nThe bird-count group records observations separately from water collection and fixed-view photography.\n\nBird-count volunteers submit one tally for each fifteen-minute observation interval.\n"
+    },
+    {
+      "id": "field-results",
+      "format": "md",
+      "text": "# Estuary Watch sample dispatch list\n\nThe dispatch list records site codes, bottle counts and transfer dates. Laboratory concentration results have not been included, and the list cannot establish whether a site is safe for swimming.\n\n\n"
+    },
+    {
+      "id": "stage-props",
+      "format": "md",
+      "text": "# Willow Theatre borrowed-props manual\n\nWillow Theatre tracks borrowed stage props separately from costumes and scenery built by its own volunteers. A prop may look ordinary but still belong to a lender who expects the same item back. The production assistant records the lender reference and the scene in which the prop is used. This manual governs borrowed props. A photograph in a rehearsal album is not a loan record, and an actor’s possession of an item does not establish ownership. Each production has a returns sheet that remains open after the final performance.\n\nBorrowed Willow Theatre props must retain their removable lender tag between rehearsals.\n\n## Working record\n\nAt the first rehearsal, the assistant checks the item against the lender description and notes which visible features distinguish it from similar pieces. The director can change how an item is used on stage without changing its ownership record. If a substitute is used temporarily, the prop table displays the substitute under its own description. The original remains on the returns sheet even while it is out of the scene. This prevents a missing stage cue from becoming a missing loan. The assistant reviews the prop table with the stage manager before each rehearsal begins.\n\nAfter rehearsal, volunteers compare the table layout with the scene list. A cup used in two scenes is one physical object with two appearances, not two separate loans. The table label names the object and its next scene so that it can be found without removing its lender tag. Personal belongings are not placed in the borrowed-props area because they have no matching loan reference. Changes to the table arrangement are recorded when a scene order changes. An old photograph of the table is useful context but does not override the current layout note.\n\nDuring the final week, the assistant starts assembling the returns list while the stage manager continues to track performance use. Those jobs overlap in time but remain separate records. An item is marked packed when it is placed in its return container, then marked returned only when the lender accepts it. If a lender cannot collect immediately, the assistant records a holding location rather than closing the loan. The inventory review accounts for tags, containers and any separate accessories that travelled with the prop. A signed acceptance entry finishes the return history.\n\n## Closing and handover\n\nPacked Willow Theatre borrowed props wait in cupboard P until the lender signs the return sheet.\n\nBorrowed-prop returns are coordinated by the production assistant.\n"
+    },
+    {
+      "id": "stage-costumes",
+      "format": "md",
+      "text": "# Willow Theatre costume returns\n\nCostume loans use garment bags and a wardrobe register. This process is separate from the props cupboard.\n\nCostume bundle WT-C22 contains three blue coats.\n\nWillow costume labels are attached to garment bags rather than worn on stage.\n\nCostume returns are coordinated by the wardrobe lead.\n"
+    },
+    {
+      "id": "stage-old",
+      "format": "md",
+      "text": "# Willow Theatre previous props store\n\nThis archived note describes the old rehearsal building and is not the current holding location.\n\nBorrowed props used to wait in the upstairs music room.\n"
+    },
+    {
+      "id": "stage-scenery",
+      "format": "md",
+      "text": "# Willow Theatre scenery build list\n\nVolunteer-built scenery is owned by the theatre and has no external lender return sheet.\n\nReusable scenery panels are stacked in the rear workshop after the run.\n"
+    },
+    {
+      "id": "stage-budget",
+      "format": "md",
+      "text": "# Willow Theatre programme printing note\n\nThe programme note lists paper sizes, proofing deadlines and the number of copies to print. It contains neither actor salaries nor the replacement value of borrowed props.\n\n\n"
+    },
+    {
+      "id": "seed-beans",
+      "format": "md",
+      "text": "# Orchard seed library climbing-bean guide\n\nOrchard seed library maintains separate records for climbing beans, bush beans and flower seeds. The packet name identifies the seed lot rather than guaranteeing how it will grow in every garden. This guide describes the library’s lending and recordkeeping process. It is not an instruction to treat every crop in the same way. A volunteer checks the lot reference before shelving a returned packet. Growing observations are stored with that lot so that a future borrower can distinguish a gardener’s experience from the original packet description.\n\nOrchard climbing-bean packets include a support-height note for the borrower.\n\n## Working record\n\nWhen a packet is borrowed, the volunteer records the lot reference and the number of seeds taken. A gardener can borrow part of a packet without taking ownership of the remaining seeds. The packet stays associated with its lot when it is returned to the shelf. If a handwritten label is unclear, the volunteer sets the packet aside rather than merging it into another lot with a similar name. The library keeps a separate record of packets that are awaiting clarification. This makes the available-seed count more useful than simply counting every envelope in the cabinet.\n\nGarden observations include the planting date, location description and what the gardener actually saw. A note that one plant climbed a particular support does not prove that every seed in the lot will behave identically. The library presents those observations as experiences linked to a lot, not guarantees. Volunteers copy a submitted note without silently converting its units or shortening away its conditions. If a gardener sends a correction, the new note identifies the earlier entry so that the history remains understandable. The packet label itself stays short enough to read on the shelf.\n\nReturned seeds are assessed separately from unused borrowed seeds. A gardener returning part of an original packet should not label it as a new harvest. A gardener contributing newly collected seeds provides the relevant growing notes and a proposed lot description. The volunteer records that contribution as a separate intake while it is reviewed. Keeping the two situations distinct prevents a packet of uncertain origin from being treated as an unchanged remainder of a known lot. The library’s end-of-season review compares packet movements with the observation folder before printing next season’s inventory.\n\n## Closing and handover\n\nOrchard climbing-bean growing notes are filed in the tall green binder after the season.\n\nUnused climbing-bean seeds return to cabinet shelf C.\n"
+    },
+    {
+      "id": "seed-bush",
+      "format": "md",
+      "text": "# Orchard bush-bean packet record\n\nBush beans have a separate cabinet label and a separate observation folder. Similar variety names are not a reason to combine lots.\n\nBush-bean lot OS-B14 contains forty remaining seeds.\n\nOrchard bush-bean packets carry a spacing note rather than a support-height note.\n\nUnused bush-bean seeds return to cabinet shelf B.\n"
+    },
+    {
+      "id": "seed-old",
+      "format": "md",
+      "text": "# Archived Orchard growing-note system\n\nThis note describes the former recordkeeping system, before binders were introduced.\n\nClimbing-bean observations were previously kept on loose cards in a wooden box.\n"
+    },
+    {
+      "id": "seed-flowers",
+      "format": "md",
+      "text": "# Orchard flower seed intake\n\nFlower contributions use an intake tray separate from the bean cabinet.\n\nNew flower seed donations are placed in the white review tray.\n"
+    },
+    {
+      "id": "seed-funding",
+      "format": "md",
+      "text": "# Orchard seed library volunteer rota\n\nThe rota lists opening shifts and cabinet-cleaning duties. It gives no seed purchase prices, annual funding total or bank-account details.\n\n\n"
+    }
+  ],
+  "queries": [
+    {
+      "id": "museum-01",
+      "category": "paraphrase",
+      "text": "Who has to stay with the borrowed pottery while it comes out of its packaging?",
+      "expected": [
+        {
+          "document_id": "museum-loan",
+          "quote": "A ceramic loan must be accompanied by a trained courier throughout unpacking."
+        }
+      ]
+    },
+    {
+      "id": "museum-02",
+      "category": "exact",
+      "text": "What is in paper batch TM-P17?",
+      "expected": [
+        {
+          "document_id": "museum-paper",
+          "quote": "Paper loan batch TM-P17 contains eleven framed prints."
+        }
+      ]
+    },
+    {
+      "id": "museum-03",
+      "category": "confusable",
+      "text": "Can Tidal paper-loan staff open the frames without the travelling escort?",
+      "expected": [
+        {
+          "document_id": "museum-paper",
+          "quote": "Paper loans may be unpacked by the registrar without a visiting courier."
+        }
+      ]
+    },
+    {
+      "id": "museum-04",
+      "category": "late_document",
+      "text": "Where do Tidal ceramic crates spend the night before the return trip?",
+      "expected": [
+        {
+          "document_id": "museum-loan",
+          "quote": "Tidal Museum ceramic return crates must be stored in the east loading alcove overnight."
+        }
+      ]
+    },
+    {
+      "id": "museum-05",
+      "category": "multiple_sources",
+      "text": "Find the return paperwork rules for both Tidal ceramics and paper loans.",
+      "expected": [
+        {
+          "document_id": "museum-loan",
+          "quote": "Ceramic loan returns require the blue handover form signed by the courier."
+        },
+        {
+          "document_id": "museum-paper",
+          "quote": "Paper loan returns require the green receipt signed by the registrar."
+        }
+      ]
+    },
+    {
+      "id": "museum-06",
+      "category": "paraphrase",
+      "text": "Where were pottery crates kept before the museum building grew?",
+      "expected": [
+        {
+          "document_id": "museum-old",
+          "quote": "Before the extension, ceramic crates were left in the west stairwell."
+        }
+      ]
+    },
+    {
+      "id": "museum-07",
+      "category": "confusable",
+      "text": "Which entrance receives the posters sold in the museum store?",
+      "expected": [
+        {
+          "document_id": "museum-shop",
+          "quote": "Museum shop poster deliveries are accepted at the south staff door."
+        }
+      ]
+    },
+    {
+      "id": "museum-08",
+      "category": "absent",
+      "text": "What is the insured value in rupees of the Tidal loan vessels?",
+      "expected": [],
+      "reason": "The related records omit the requested value; names, schedules and inventory counts do not establish it."
+    },
+    {
+      "id": "maker-01",
+      "category": "paraphrase",
+      "text": "Does someone supervise me while I use the liquid-material printer at Beacon?",
+      "expected": [
+        {
+          "document_id": "maker-resin",
+          "quote": "Beacon resin printing sessions require a room coordinator to be present."
+        }
+      ]
+    },
+    {
+      "id": "maker-02",
+      "category": "exact",
+      "text": "Which machine is assigned BF-204?",
+      "expected": [
+        {
+          "document_id": "maker-filament",
+          "quote": "Filament job BF-204 is assigned to printer Cedar."
+        }
+      ]
+    },
+    {
+      "id": "maker-03",
+      "category": "confusable",
+      "text": "May an inducted Beacon filament user print without the room supervisor?",
+      "expected": [
+        {
+          "document_id": "maker-filament",
+          "quote": "Inducted members may run Beacon filament sessions without a room coordinator."
+        }
+      ]
+    },
+    {
+      "id": "maker-04",
+      "category": "late_document",
+      "text": "Where will my Beacon resin model be if I leave it uncollected for a week?",
+      "expected": [
+        {
+          "document_id": "maker-resin",
+          "quote": "Uncollected Beacon resin models move to collection drawer R after seven days."
+        }
+      ]
+    },
+    {
+      "id": "maker-05",
+      "category": "multiple_sources",
+      "text": "Show the rescheduling cutoffs for both Beacon resin and filament sessions.",
+      "expected": [
+        {
+          "document_id": "maker-resin",
+          "quote": "Resin-room booking changes close at noon on the preceding day."
+        },
+        {
+          "document_id": "maker-filament",
+          "quote": "Filament booking changes close two hours before the session."
+        }
+      ]
+    },
+    {
+      "id": "maker-06",
+      "category": "paraphrase",
+      "text": "Where did people collect resin prints before Beacon installed drawers?",
+      "expected": [
+        {
+          "document_id": "maker-old",
+          "quote": "The retired resin collection process used the open shelf beside the sink."
+        }
+      ]
+    },
+    {
+      "id": "maker-07",
+      "category": "confusable",
+      "text": "What sheet measurement must I supply for a Beacon laser booking?",
+      "expected": [
+        {
+          "document_id": "maker-laser",
+          "quote": "Laser cutter reservations require the sheet thickness in millimetres."
+        }
+      ]
+    },
+    {
+      "id": "maker-08",
+      "category": "absent",
+      "text": "How many rupees per hour does Beacon charge for resin printing?",
+      "expected": [],
+      "reason": "The related records omit the requested value; names, schedules and inventory counts do not establish it."
+    },
+    {
+      "id": "festival-01",
+      "category": "paraphrase",
+      "text": "Where should Lantern park audiences go if bad weather closes the outdoor venue?",
+      "expected": [
+        {
+          "document_id": "festival-outdoor",
+          "quote": "Lantern outdoor screenings move to the civic hall when the park is closed for weather."
+        }
+      ]
+    },
+    {
+      "id": "festival-02",
+      "category": "exact",
+      "text": "What programme is LF-H08?",
+      "expected": [
+        {
+          "document_id": "festival-hall",
+          "quote": "Indoor screening LF-H08 is the short-film programme."
+        }
+      ]
+    },
+    {
+      "id": "festival-03",
+      "category": "confusable",
+      "text": "How early must the Lantern indoor welcome volunteers arrive?",
+      "expected": [
+        {
+          "document_id": "festival-hall",
+          "quote": "The hall welcome team checks in forty minutes before the film."
+        }
+      ]
+    },
+    {
+      "id": "festival-04",
+      "category": "late_document",
+      "text": "Where can I look the next day for something I lost at a Lantern park film?",
+      "expected": [
+        {
+          "document_id": "festival-outdoor",
+          "quote": "Found items from Lantern park screenings go to the civic hall cloakroom the following morning."
+        }
+      ]
+    },
+    {
+      "id": "festival-05",
+      "category": "multiple_sources",
+      "text": "Find the reporting locations for Lantern park and indoor volunteer teams.",
+      "expected": [
+        {
+          "document_id": "festival-outdoor",
+          "quote": "The park team checks in at the north gate ninety minutes before the film."
+        },
+        {
+          "document_id": "festival-hall",
+          "quote": "Indoor volunteers report to the foyer desk rather than the park gate."
+        }
+      ]
+    },
+    {
+      "id": "festival-06",
+      "category": "paraphrase",
+      "text": "What was Lantern’s old backup venue for a washed-out park screening?",
+      "expected": [
+        {
+          "document_id": "festival-old",
+          "quote": "Last year, weather cancellations at the park were moved to the bus depot."
+        }
+      ]
+    },
+    {
+      "id": "festival-07",
+      "category": "confusable",
+      "text": "Where do Lantern animation attendees pick up supplies?",
+      "expected": [
+        {
+          "document_id": "festival-workshop",
+          "quote": "Animation workshop participants collect materials from the library annex."
+        }
+      ]
+    },
+    {
+      "id": "festival-08",
+      "category": "absent",
+      "text": "What profit did Lantern make from ticket sales?",
+      "expected": [],
+      "reason": "The related records omit the requested value; names, schedules and inventory counts do not establish it."
+    },
+    {
+      "id": "game-01",
+      "category": "paraphrase",
+      "text": "Can a Harbor Cup squad put a reserve player on its list before entries close?",
+      "expected": [
+        {
+          "document_id": "game-team",
+          "quote": "Harbor Cup teams may register one substitute before the roster lock."
+        }
+      ]
+    },
+    {
+      "id": "game-02",
+      "category": "exact",
+      "text": "Where is HC-S31 played?",
+      "expected": [
+        {
+          "document_id": "game-solo",
+          "quote": "Solo match HC-S31 is assigned to station 6."
+        }
+      ]
+    },
+    {
+      "id": "game-03",
+      "category": "confusable",
+      "text": "Can a Harbor Cup solo player appoint someone to play in their place?",
+      "expected": [
+        {
+          "document_id": "game-solo",
+          "quote": "Solo entrants cannot nominate a substitute after registration."
+        }
+      ]
+    },
+    {
+      "id": "game-04",
+      "category": "late_document",
+      "text": "How quickly must a team challenge its Harbor Cup result, and where?",
+      "expected": [
+        {
+          "document_id": "game-team",
+          "quote": "Harbor Cup team appeals must be filed at the referee desk within ten minutes of the result."
+        }
+      ]
+    },
+    {
+      "id": "game-05",
+      "category": "multiple_sources",
+      "text": "Show the Harbor Cup equipment-check times and rooms for teams and solo players.",
+      "expected": [
+        {
+          "document_id": "game-team",
+          "quote": "Team equipment checks begin at 09:20 in room Anchor."
+        },
+        {
+          "document_id": "game-solo",
+          "quote": "Solo equipment checks begin at 10:10 in room Buoy."
+        }
+      ]
+    },
+    {
+      "id": "game-06",
+      "category": "paraphrase",
+      "text": "How long did Harbor Cup teams previously have to dispute a score?",
+      "expected": [
+        {
+          "document_id": "game-old",
+          "quote": "The previous team appeal deadline was thirty minutes after the result."
+        }
+      ]
+    },
+    {
+      "id": "game-07",
+      "category": "confusable",
+      "text": "Where do I borrow a controller for a noncompetitive Harbor Cup game?",
+      "expected": [
+        {
+          "document_id": "game-casual",
+          "quote": "Casual lounge controllers are borrowed from the welcome counter."
+        }
+      ]
+    },
+    {
+      "id": "game-08",
+      "category": "absent",
+      "text": "How much cash does the Harbor Cup winner receive?",
+      "expected": [],
+      "reason": "The related records omit the requested value; names, schedules and inventory counts do not establish it."
+    },
+    {
+      "id": "bike-01",
+      "category": "paraphrase",
+      "text": "Where should Juniper put a delivery bicycle for servicing instead of lifting it onto a stand?",
+      "expected": [
+        {
+          "document_id": "bike-cargo",
+          "quote": "Juniper cargo bicycles must be booked into a floor-level service bay."
+        }
+      ]
+    },
+    {
+      "id": "bike-02",
+      "category": "exact",
+      "text": "What part is holding up JC-118?",
+      "expected": [
+        {
+          "document_id": "bike-commuter",
+          "quote": "Commuter job JC-118 is waiting for a rear mudguard."
+        }
+      ]
+    },
+    {
+      "id": "bike-03",
+      "category": "confusable",
+      "text": "Which stands does Juniper use for ordinary commuter bikes?",
+      "expected": [
+        {
+          "document_id": "bike-commuter",
+          "quote": "Commuter bicycles use the elevated stands in the indoor workshop."
+        }
+      ]
+    },
+    {
+      "id": "bike-04",
+      "category": "late_document",
+      "text": "When and where can I pick up a repaired Juniper cargo bike?",
+      "expected": [
+        {
+          "document_id": "bike-cargo",
+          "quote": "Completed Juniper cargo bicycles are collected from the courtyard gate on Saturdays."
+        }
+      ]
+    },
+    {
+      "id": "bike-05",
+      "category": "multiple_sources",
+      "text": "Find when Juniper gives cargo repair estimates versus commuter puncture estimates.",
+      "expected": [
+        {
+          "document_id": "bike-cargo",
+          "quote": "Cargo repair estimates are sent only after the mechanic completes the intake inspection."
+        },
+        {
+          "document_id": "bike-commuter",
+          "quote": "Commuter puncture estimates are given at the service desk before intake."
+        }
+      ]
+    },
+    {
+      "id": "bike-06",
+      "category": "paraphrase",
+      "text": "How did owners retrieve cargo bicycles before Juniper opened the courtyard?",
+      "expected": [
+        {
+          "document_id": "bike-old",
+          "quote": "Cargo bicycles were formerly collected through the narrow front shop entrance."
+        }
+      ]
+    },
+    {
+      "id": "bike-07",
+      "category": "confusable",
+      "text": "Where does a borrowed Juniper helmet go when I bring it back?",
+      "expected": [
+        {
+          "document_id": "bike-hire",
+          "quote": "Hired helmets are returned to the yellow locker beside reception."
+        }
+      ]
+    },
+    {
+      "id": "bike-08",
+      "category": "absent",
+      "text": "How many months is Juniper’s repair warranty?",
+      "expected": [],
+      "reason": "The related records omit the requested value; names, schedules and inventory counts do not establish it."
+    },
+    {
+      "id": "field-01",
+      "category": "paraphrase",
+      "text": "What identifying details belong on an Estuary Watch bottle besides where it was filled?",
+      "expected": [
+        {
+          "document_id": "field-water",
+          "quote": "Estuary Watch water samples need both the site code and collection time on the bottle label."
+        }
+      ]
+    },
+    {
+      "id": "field-02",
+      "category": "exact",
+      "text": "What does EW-P09 look towards?",
+      "expected": [
+        {
+          "document_id": "field-photo",
+          "quote": "Photograph station EW-P09 faces the old footbridge."
+        }
+      ]
+    },
+    {
+      "id": "field-03",
+      "category": "confusable",
+      "text": "What belongs in the caption of an Estuary Watch shore image?",
+      "expected": [
+        {
+          "document_id": "field-photo",
+          "quote": "Shore photographs use a station code and view direction in the image caption."
+        }
+      ]
+    },
+    {
+      "id": "field-04",
+      "category": "late_document",
+      "text": "Where and by what time must Estuary Watch water collections be handed in?",
+      "expected": [
+        {
+          "document_id": "field-water",
+          "quote": "Estuary Watch water bottles are handed to the coordinator at the pier kiosk by 14:00."
+        }
+      ]
+    },
+    {
+      "id": "field-05",
+      "category": "multiple_sources",
+      "text": "Find the missing-visit status wording for Estuary Watch water and photo teams.",
+      "expected": [
+        {
+          "document_id": "field-water",
+          "quote": "Water teams record a missed sampling visit with the status not collected."
+        },
+        {
+          "document_id": "field-photo",
+          "quote": "Photo teams record a missed station with the status no photograph."
+        }
+      ]
+    },
+    {
+      "id": "field-06",
+      "category": "paraphrase",
+      "text": "Where did Estuary Watch volunteers deliver bottles before the footpath closed?",
+      "expected": [
+        {
+          "document_id": "field-old",
+          "quote": "Water samples were previously handed over at the bus shelter."
+        }
+      ]
+    },
+    {
+      "id": "field-07",
+      "category": "confusable",
+      "text": "How long is each Estuary Watch bird-count reporting interval?",
+      "expected": [
+        {
+          "document_id": "field-birds",
+          "quote": "Bird-count volunteers submit one tally for each fifteen-minute observation interval."
+        }
+      ]
+    },
+    {
+      "id": "field-08",
+      "category": "absent",
+      "text": "What nitrate concentration did the Estuary Watch laboratory measure at EW-P09?",
+      "expected": [],
+      "reason": "The related records omit the requested value; names, schedules and inventory counts do not establish it."
+    },
+    {
+      "id": "stage-01",
+      "category": "paraphrase",
+      "text": "How does Willow keep track of who owns an object when it is not being used in rehearsal?",
+      "expected": [
+        {
+          "document_id": "stage-props",
+          "quote": "Borrowed Willow Theatre props must retain their removable lender tag between rehearsals."
+        }
+      ]
+    },
+    {
+      "id": "stage-02",
+      "category": "exact",
+      "text": "What is in WT-C22?",
+      "expected": [
+        {
+          "document_id": "stage-costumes",
+          "quote": "Costume bundle WT-C22 contains three blue coats."
+        }
+      ]
+    },
+    {
+      "id": "stage-03",
+      "category": "confusable",
+      "text": "Are Willow costume identification labels worn on the clothes during the show?",
+      "expected": [
+        {
+          "document_id": "stage-costumes",
+          "quote": "Willow costume labels are attached to garment bags rather than worn on stage."
+        }
+      ]
+    },
+    {
+      "id": "stage-04",
+      "category": "late_document",
+      "text": "Where do packed Willow loan props stay while waiting for the owner to accept them?",
+      "expected": [
+        {
+          "document_id": "stage-props",
+          "quote": "Packed Willow Theatre borrowed props wait in cupboard P until the lender signs the return sheet."
+        }
+      ]
+    },
+    {
+      "id": "stage-05",
+      "category": "multiple_sources",
+      "text": "Find who handles Willow borrowed-prop returns and who handles costume returns.",
+      "expected": [
+        {
+          "document_id": "stage-props",
+          "quote": "Borrowed-prop returns are coordinated by the production assistant."
+        },
+        {
+          "document_id": "stage-costumes",
+          "quote": "Costume returns are coordinated by the wardrobe lead."
+        }
+      ]
+    },
+    {
+      "id": "stage-06",
+      "category": "paraphrase",
+      "text": "Where did Willow store borrowed props in the former rehearsal building?",
+      "expected": [
+        {
+          "document_id": "stage-old",
+          "quote": "Borrowed props used to wait in the upstairs music room."
+        }
+      ]
+    },
+    {
+      "id": "stage-07",
+      "category": "confusable",
+      "text": "Where are the theatre’s own reusable scenery boards stored after a show?",
+      "expected": [
+        {
+          "document_id": "stage-scenery",
+          "quote": "Reusable scenery panels are stacked in the rear workshop after the run."
+        }
+      ]
+    },
+    {
+      "id": "stage-08",
+      "category": "absent",
+      "text": "What is the replacement value of Willow’s borrowed props?",
+      "expected": [],
+      "reason": "The related records omit the requested value; names, schedules and inventory counts do not establish it."
+    },
+    {
+      "id": "seed-01",
+      "category": "paraphrase",
+      "text": "What information on an Orchard climbing-bean packet helps me choose a tall enough structure?",
+      "expected": [
+        {
+          "document_id": "seed-beans",
+          "quote": "Orchard climbing-bean packets include a support-height note for the borrower."
+        }
+      ]
+    },
+    {
+      "id": "seed-02",
+      "category": "exact",
+      "text": "How many seeds remain in OS-B14?",
+      "expected": [
+        {
+          "document_id": "seed-bush",
+          "quote": "Bush-bean lot OS-B14 contains forty remaining seeds."
+        }
+      ]
+    },
+    {
+      "id": "seed-03",
+      "category": "confusable",
+      "text": "Which planting detail is printed on Orchard bush-bean packets instead of the climbing support height?",
+      "expected": [
+        {
+          "document_id": "seed-bush",
+          "quote": "Orchard bush-bean packets carry a spacing note rather than a support-height note."
+        }
+      ]
+    },
+    {
+      "id": "seed-04",
+      "category": "late_document",
+      "text": "Where will Orchard file my climbing-bean observations once the growing season is over?",
+      "expected": [
+        {
+          "document_id": "seed-beans",
+          "quote": "Orchard climbing-bean growing notes are filed in the tall green binder after the season."
+        }
+      ]
+    },
+    {
+      "id": "seed-05",
+      "category": "multiple_sources",
+      "text": "Find the return shelves for unused Orchard climbing-bean and bush-bean seeds.",
+      "expected": [
+        {
+          "document_id": "seed-beans",
+          "quote": "Unused climbing-bean seeds return to cabinet shelf C."
+        },
+        {
+          "document_id": "seed-bush",
+          "quote": "Unused bush-bean seeds return to cabinet shelf B."
+        }
+      ]
+    },
+    {
+      "id": "seed-06",
+      "category": "paraphrase",
+      "text": "How were Orchard climbing-bean experiences stored before the binder system?",
+      "expected": [
+        {
+          "document_id": "seed-old",
+          "quote": "Climbing-bean observations were previously kept on loose cards in a wooden box."
+        }
+      ]
+    },
+    {
+      "id": "seed-07",
+      "category": "confusable",
+      "text": "Where should a new flower-seed donation be left at Orchard?",
+      "expected": [
+        {
+          "document_id": "seed-flowers",
+          "quote": "New flower seed donations are placed in the white review tray."
+        }
+      ]
+    },
+    {
+      "id": "seed-08",
+      "category": "absent",
+      "text": "How much annual funding does Orchard seed library receive?",
+      "expected": [],
+      "reason": "The related records omit the requested value; names, schedules and inventory counts do not establish it."
+    }
+  ]
+}

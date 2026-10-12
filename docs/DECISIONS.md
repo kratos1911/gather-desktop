@@ -1,5 +1,26 @@
 # Architecture decisions
 
+## ADR-039: freeze fresh cases and preserve retrieval failures (12 October)
+
+Advance TASK-005 with text-v2 rather than tune v1. Author 40 fictional sources
+and 64 questions across eight new domains, including archived/current and related
+records, eight late passages and eight absent cases. Freeze sources and relevance
+quotes with a canonical hash before inference. Validate changes and reject mixed
+corpus outputs. Keep v1 locations and twelve recorded artifact hashes intact.
+
+Use unchanged Qwen revision, prompt, chunker, float32, exact cosine and RRF k=60.
+512 dimensions was the primary candidate before results, with >=0.90 thresholds
+for document/evidence Recall@5 and MRR. It passes (1.0/0.9911/0.9613). Advance it
+to a bounded CPU serving-container experiment, not a final production selection.
+1,024 has higher MRR and 512 better evidence recall; small samples do not prove
+a universal optimum. RRF lowers overall MRR, so it remains a comparator.
+
+Preserve the five nonperfect 512-dense cases and absent-neighbor behavior. Do not
+edit labels or tune prompts to erase them. Exact identifiers, temporal distinctions
+and multi-part evidence coverage need separate retrieval work. These examples
+were authored by the assistant after v1, not independently labelled/blind. No
+Cloud Run deployment, cost inference, additional model download or push occurred.
+
 ## ADR-038: measure self-hosted CPU embeddings on D: before deployment (10 October)
 
 Latest user choices supersede provider-deferred notes: Google Cloud Run,

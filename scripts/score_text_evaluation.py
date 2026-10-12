@@ -8,7 +8,7 @@ import math
 from pathlib import Path
 import re
 
-from scripts.prepare_text_evaluation import CORPUS, prepare
+from scripts.prepare_text_evaluation import CORPORA, load_corpus, prepare
 
 
 def index_hash(index: dict) -> str:
@@ -140,10 +140,12 @@ def _score_run(index, labels, run):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--corpus", choices=CORPORA, default="text-v1")
     parser.add_argument("--run", type=Path, help="Score existing rankings instead of running the lexical baseline")
-    parser.add_argument("--output", type=Path, default=Path("output/evaluation/text-v1/baseline"))
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    prepared = prepare(json.loads(CORPUS.read_text(encoding="utf-8")))
+    prepared = prepare(load_corpus(args.corpus))
+    args.output = args.output or Path("output/evaluation") / args.corpus / "baseline"
     run = (json.loads(args.run.read_text(encoding="utf-8")) if args.run else
            lexical_run(prepared["index"], prepared["queries"]))
     report = score_run(prepared["index"], prepared["labels"], run)

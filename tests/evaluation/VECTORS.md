@@ -1,5 +1,9 @@
 # Vector evaluation adapter
 
+Use `--corpus text-v2` for the frozen challenge, or omit it for the original v1.
+Corpus/index fingerprints reject vectors from the wrong fixture. The matching
+default output directory is `output/evaluation/<corpus>/vectors`.
+
 This offline adapter consumes saved embeddings. It does not generate embeddings,
 download weights, contact an API, select a provider or enable semantic search in
 the desktop. Unit tests use synthetic math fixtures. The separate

@@ -1,6 +1,7 @@
 param(
     [ValidateSet('install', 'download', 'run')][string]$Action = 'run',
     [ValidateSet(2, 4, 8)][int]$Threads = 2,
+    [ValidateSet('text-v1', 'text-v2')][string]$Corpus = 'text-v1',
     [string]$Python = 'python'
 )
 $ErrorActionPreference = 'Stop'
@@ -38,13 +39,15 @@ try {
         & $benchPython -m scripts.benchmark_cpu --download
         if ($LASTEXITCODE -ne 0) { throw 'Model download failed' }
     } else {
-        & $benchPython -m scripts.prepare_text_evaluation --output (Join-Path $benchRoot 'inputs')
+        $runRoot = $benchRoot
+        if ($Corpus -ne 'text-v1') { $runRoot = Join-Path $benchRoot $Corpus }
+        & $benchPython -m scripts.prepare_text_evaluation --corpus $Corpus --output (Join-Path $runRoot 'inputs')
         if ($LASTEXITCODE -ne 0) { throw 'Corpus preparation failed' }
-        & $benchPython -m scripts.benchmark_cpu --threads $Threads
+        & $benchPython -m scripts.benchmark_cpu --threads $Threads --corpus $Corpus
         if ($LASTEXITCODE -ne 0) { throw 'Model benchmark failed' }
         foreach ($dimension in @(256, 512, 1024)) {
-            $runPath = Join-Path $benchRoot "qwen-${Threads}threads"
-            & $benchPython -m scripts.evaluate_vectors --vectors "$runPath/vectors-$dimension.json" --output "$runPath/scores-$dimension"
+            $runPath = Join-Path $runRoot "qwen-${Threads}threads"
+            & $benchPython -m scripts.evaluate_vectors --corpus $Corpus --vectors "$runPath/vectors-$dimension.json" --output "$runPath/scores-$dimension"
             if ($LASTEXITCODE -ne 0) { throw 'Model scoring failed' }
         }
     }

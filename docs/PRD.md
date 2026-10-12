@@ -45,4 +45,4 @@ Mobile, payments, public sharing, collaboration, agents that modify files, cross
 
 Provisional quality targets: text Recall@5 >=90% on a versioned answerable-query set; visual/OCR quality reported separately; warm search p95 <2 seconds on a documented 10,000-chunk corpus/connection. These are targets, not observed performance. Chat latency and RAM/VRAM limits are set after hardware benchmarking.
 
-Hosting decision, 27 September: AI runs in the cloud. Provider and operating budget are deferred; no spending or provisioning is authorized yet. Supabase Free remains planned with finite capacity. See ADR-009 and MODEL_STRATEGY.md.
+Hosting direction: AI runs in the cloud. Later user choices select Google Cloud Run with self-hosted CPU inference, R2 originals and Supabase Free vectors. Local D: benchmarks are authorized; application deployment/spending remains a separate gate. See ADR-009, ADR-038 and MODEL_STRATEGY.md.

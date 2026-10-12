@@ -4,6 +4,12 @@ Status: researched shortlist, not measured winners. The original 26 September
 research did not download models. See [CPU_BENCHMARK.md](CPU_BENCHMARK.md) for
 the separate 10 October measurement task and its current evidence.
 
+12 October: [fresh text challenge](TEXT_V2_RESULTS.md) passes the predeclared gate
+for the 512-dimensional Qwen candidate. Carry it into bounded serving-container
+measurement; no final model/dimension/fusion choice is made. The 1,024-dimensional
+variant has higher MRR on v2, while 512 retrieves more labelled passage evidence.
+Fixed RRF lowers MRR. Exact-code, temporal and multi-part retrieval issues remain.
+
 27 September update: ADR-009 changes the deployment target to cloud-hosted AI.
 The hardware/on-device sections below document the previous selection rationale,
 not the current distribution plan. Re-evaluate candidates for cloud cost,

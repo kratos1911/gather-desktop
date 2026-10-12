@@ -21,6 +21,7 @@ import threading
 import time
 
 from scripts.score_text_evaluation import index_hash
+from scripts.prepare_text_evaluation import CORPORA, corpus_run_root
 
 MODEL = "Qwen/Qwen3-Embedding-0.6B"
 REVISION = "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3"
@@ -142,7 +143,7 @@ def memory_peak(process):
         peak["sampled_peak_rss_bytes"] = max(peak["sampled_peak_rss_bytes"], process.memory_info().rss)
 
 
-def run(root, threads):
+def run(root, threads, corpus="text-v1"):
     # These flags precede third-party imports; network is unnecessary after download.
     os.environ.update(HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
     import psutil
@@ -162,8 +163,11 @@ def run(root, threads):
             raise ValueError("Model snapshot changed after download")
     if psutil.virtual_memory().available < 4 * 1024**3:
         raise ValueError("At least 4 GiB of available RAM is required before loading Qwen")
-    index = json.loads((root / "inputs/index.json").read_text(encoding="utf-8"))
-    queries = json.loads((root / "inputs/queries.json").read_text(encoding="utf-8"))
+    run_root = corpus_run_root(root, corpus)
+    index = json.loads((run_root / "inputs/index.json").read_text(encoding="utf-8"))
+    queries = json.loads((run_root / "inputs/queries.json").read_text(encoding="utf-8"))
+    if index["corpus_version"] != f"gather-{corpus}":
+        raise ValueError("Prepared inputs do not match selected corpus")
     for field in ("corpus_version", "corpus_sha256"):
         if index[field] != queries[field]:
             raise ValueError("Input fingerprints differ")
@@ -175,6 +179,8 @@ def run(root, threads):
     torch.set_num_interop_threads(1)
     process = psutil.Process()
     report = {"measured_at_utc": datetime.now(timezone.utc).isoformat(), "model": MODEL,
+              "corpus_version": index["corpus_version"], "corpus_sha256": index["corpus_sha256"],
+              "index_sha256": index_hash(index),
               "revision": manifest["revision"], "device": "cpu", "dtype": "float32",
               "threads": threads, "batch_size": 1, "token_limit": TOKEN_LIMIT,
               "platform": platform.platform(), "cpu": platform.processor() or os.environ.get("PROCESSOR_IDENTIFIER", "unknown"),
@@ -204,7 +210,11 @@ def run(root, threads):
         encode(query_texts[0])
         report["first_inference_seconds"] = time.perf_counter() - start
         start = time.perf_counter()
-        document_vectors = [encode(text) for text in document_texts]
+        document_vectors = []
+        for number, text in enumerate(document_texts, 1):
+            document_vectors.append(encode(text))
+            if number % 20 == 0:
+                print(f"Embedded {number}/{len(document_texts)} passages", flush=True)
         report["document_index_seconds"] = time.perf_counter() - start
         vectors, latencies = [], []
         for number, text in enumerate(query_texts, 1):
@@ -219,7 +229,7 @@ def run(root, threads):
     report.update(memory)
     if hasattr(process.memory_info(), "peak_wset"):
         report["process_peak_working_set_bytes"] = process.memory_info().peak_wset
-    destination = root / f"qwen-{threads}threads"
+    destination = run_root / f"qwen-{threads}threads"
     for dimensions in (256, 512, 1024):
         space = {"provider": "self-hosted-cpu", "model": MODEL, "revision": manifest["revision"],
                  "dimensions": dimensions, "query_template": QUERY_TEMPLATE,
@@ -244,12 +254,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--download", action="store_true", help="Explicitly permit downloading only the Qwen snapshot")
     parser.add_argument("--threads", type=int, choices=(2, 4, 8), default=2)
+    parser.add_argument("--corpus", choices=CORPORA, default="text-v1")
     args = parser.parse_args()
     root = configure_storage(ROOT)
     if args.download:
         download(root)
     else:
-        run(root, args.threads)
+        run(root, args.threads, args.corpus)
 
 
 if __name__ == "__main__":
