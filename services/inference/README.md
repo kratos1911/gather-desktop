@@ -1,7 +1,10 @@
 # CPU serving prerequisite
 
-TASK-005 remains partial. `runtime.py` is a private Python process boundary,
-not an HTTP service or deployed container. No desktop search is connected.
+TASK-005 remains partial. `runtime.py` is a private Python process boundary.
+The isolated Linux image now builds and passes 18 synthetic control tests;
+real container-model measurements remain pending RAM availability. It is not
+an HTTP service or cloud deployment. No desktop search is connected.
+See [CONTAINER.md](CONTAINER.md) for reproducible checks and limits.
 
 The parent loads a trusted engine in a spawned child once, waits for readiness,
 then serves sequential requests through an internal pipe. Concurrent calls fail
@@ -65,10 +68,11 @@ Docker's data disk was migrated and verified on 13 October at
 `D:\DockerDesktop\DockerDesktopWSL\disk\docker_data.vhdx`. The stopped source and
 destination matched SHA-256; Docker restarted with the original inventory intact.
 The old C: data disk was removed after verification. D: image storage is now ready.
-Next: separately locked Linux CPU image, read-only/non-root runtime, no network,
-read-only verified model mount, explicit CPU/memory/PID limits, and measured
-container startup, warm requests, readiness, hard timeout and cleanup. OS resource
-limits and HTTP body limits are not supplied by this Python primitive.
+The Linux CPU image is separately hash-locked and built. Its launcher verifies
+read-only/non-root configuration, disabled network and explicit CPU/memory/PID
+limits. Eighteen synthetic tests pass inside it, including deadlines and recovery.
+Next: measure real container startup, warm requests and peak memory once at least
+4 GiB host RAM is free. HTTP ingress controls remain unimplemented.
 
 EmbeddingGemma terms are accepted per the user. Local Hugging Face login was
 verified on 13 October with credentials stored on D:, but the token's account

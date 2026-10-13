@@ -6,7 +6,11 @@ The private inference runtime accepts only trusted engine factories/configuratio
 and uses an internal Python-serialized pipe. Never expose that pipe or factory
 selection to clients. Its request limits and process deadlines do not replace OS
 CPU/RAM/PID limits, authenticated ingress, body limits or per-owner quotas. Those
-container/API controls remain pending. The host smoke verifies model hashes,
+API controls remain pending. The isolated local launcher now verifies Docker CPU,
+memory/swap, PID, non-root, read-only and no-network configuration; 18 synthetic
+tests pass in the image. It is private stdin/stdout, not authenticated ingress.
+Image vulnerability/licence review and worst-case memory testing remain open.
+The host/container launchers verify model hashes,
 loads local safetensors without remote model code and uses fictional inputs only.
 
 Treat uploaded content, filenames, model output, desktop clients and IPC messages as untrusted. Protect account tokens, originals, extracted text, vectors, conversations and logs. See PRIVACY_RELEASE_AUDIT.md for concrete findings and release owner inputs.

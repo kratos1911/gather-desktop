@@ -1,5 +1,29 @@
 # Rebuild progress
 
+## 2026-10-13 — isolated Linux inference image and protocol controls
+
+Added private JSONL serving with 64 KiB frame limit, recoverable malformed JSON,
+fatal timeout session closure and guaranteed runtime cleanup. Added minimal D:
+build/model staging, 25-distribution Linux wheel hash lock, offline install,
+non-root image and a unique-container smoke launcher with resource/configuration
+assertions. The model export copies only verified artifacts and retains licensing;
+no HF credentials or personal files enter the context or model mount.
+
+The initial PyTorch download timed out; retry succeeded from its official CPU
+index. Other wheels came from PyPI. Fixed wheel metadata selection to ignore
+vendored nested distribution metadata. Image build and pip consistency pass.
+Docker emits a heuristic ENV-name warning for HF_HUB_DISABLE_IMPLICIT_TOKEN;
+its value is the literal switch 1, not a secret. Runtime pip/ensurepip removed.
+
+Verified 18 synthetic inference tests on Windows and the limited Linux container,
+including failures/deadlines/recovery, plus frontend production build. Reviewed
+control evidence: tests/inference/results/container-controls-20261013.json.
+Real Qwen smoke stopped safely at the 4 GiB RAM guard; free RAM fell from 4.55
+GiB before build to about 2.4 GiB afterward. No real container measurements are
+claimed. Container security scan/licence review, maximum-input profiling and
+HTTP integration remain open. No existing API containers changed, no Docker
+restart/settings changes, no cloud provisioning and no GitHub push.
+
 ## 2026-10-13 — Docker disk migration completed
 
 Manual attempts produced the decisive log: Robocopy returned 1 (successful copy),

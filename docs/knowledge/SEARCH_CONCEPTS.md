@@ -188,3 +188,14 @@ real Auth-issued JWTs. Storage metadata is never deleted directly by SQL. A
 remaining metadata record blocks finalization; preventing a late upload after
 that check still needs future upload leases/fencing and orphan reconciliation.
 There is no deployed background cleanup worker or desktop connection yet.
+
+## CPU container checkpoint (13 October)
+
+The model stays loaded in a separate process so each search avoids reloading
+weights. A hard deadline stops that process if inference hangs. Docker places
+another boundary around it: CPU, RAM and process limits, read-only files and no
+network. These controls reduce resource use and access; they do not authenticate
+users or make the image production-ready. The new private stream has bounded
+frames and handles one request at a time. Eighteen synthetic tests pass inside
+Linux; real model timing there is still waiting for sufficient free RAM.
+See [[services/inference/CONTAINER|Container checks and limits]].

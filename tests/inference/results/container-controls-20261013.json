@@ -1,0 +1,12 @@
+{
+  "scope": "synthetic control tests",
+  "image_id": "sha256:b04ad84cd1474204823070015a7f87537243714cffcb5c044789824b80b54f50",
+  "wall_seconds": 6.185945199998969,
+  "cpu_limit": 2,
+  "memory_limit_bytes": 536870912,
+  "swap_extra_bytes": 0,
+  "network": "none",
+  "nonroot": true,
+  "readonly": true,
+  "exit_code": 0
+}

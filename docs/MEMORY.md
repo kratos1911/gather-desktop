@@ -3,14 +3,24 @@
 Updated: 13 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
 choices there are proposed, not implemented. PROGRESS.md records history.
 
+Latest TASK-005 checkpoint: isolated Linux CPU image built on D: with 25
+hash-locked dependencies; 18 inference/protocol tests pass on Windows and inside
+the container. The launcher verifies resource limits, non-root/read-only and
+offline configuration and cleans only its uniquely named test container. The
+frontend build passes. See services/inference/CONTAINER.md and recorded control
+evidence. Real container inference is still pending: the 4 GiB host RAM guard
+stopped the attempt before model loading (about 2.4 GiB available). Next: recheck
+RAM, run the prepared ten-request fictional Qwen smoke, then review maximum-input
+performance and image security. Existing API containers were not changed. No push.
+
 Latest setup result (13 October): Docker disk migration is complete and verified.
 The failed UI move treated Robocopy success code 1 as failure. After stopping
 Docker/WSL, the stale D: copy was refreshed from C: and matched its full SHA-256.
 Settings were backed up and CustomWslDistroDir set to D:\DockerDesktop\DockerDesktopWSL.
 Docker restarted with identical 9-container/64-image/1-volume inventory. D: disk
 is in use; the old C: disk was detached/unlocked and then removed with approval.
-C: now has about 36.3 GiB free; D: about 32.74 GiB. Next: bounded inference image
-build/measurement on D:. No new inference image or deployment is verified yet.
+C: had about 36.3 GiB free; D: about 32.74 GiB at migration completion. The image
+build is now verified as recorded above; real container measurement is pending.
 
 HF login is now saved in the ignored D:
 benchmark HF home and authenticated successfully. The fine-grained token's account

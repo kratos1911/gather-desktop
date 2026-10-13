@@ -5,6 +5,13 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 13 October 2026.
 
+Latest: [[services/inference/CONTAINER|Isolated Linux CPU container]] builds on D:
+and passes 18 synthetic control tests. Limits: 2 CPUs, non-root/read-only,
+network disabled; real-model memory ceiling 5 GiB. The real Qwen container run
+is pending the 4 GiB host free-RAM guard, so no new model timing is claimed.
+Next: real container smoke, maximum-input measurement and image security review.
+Existing API containers are outside this work. See [[docs/MEMORY|Current state]].
+
 Setup update: Docker's disk now runs from D:, verified by full pre-start SHA-256,
 active file locking and unchanged 9-container/64-image/1-volume inventory.
 Old C: data disk removed after verification; about 36.3 GiB is now free on C:.

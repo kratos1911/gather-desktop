@@ -1,5 +1,24 @@
 # Architecture decisions
 
+## ADR-041: prove the CPU container before adding network ingress (13 October)
+
+Use a private bounded JSONL adapter for the next TASK-005 slice. This tests Linux
+model serving without prematurely exposing an unauthenticated API. Hash-lock
+the 25 Linux CPU dependencies separately from Windows, stage a minimal build
+context on D:, and mount only a materialized/hash-verified model directory.
+Never mount the Hugging Face home or token. Install offline; retain package and
+model licence metadata. Remove pip and its bootstrap from the runtime image.
+
+Run as non-root with read-only root/model, no network/ports, no capabilities,
+no-new-privileges, 2 CPUs, 5 GiB RAM with no extra swap, 128 PIDs and 64 MiB tmpfs.
+Use a unique container identity and remove only that test container. Existing
+API workloads and shared Docker settings are explicitly out of scope. Keep the
+4 GiB host free-memory guard; do not weaken it to obtain a benchmark result.
+
+Build/dependency consistency and 18 synthetic Linux tests pass. Real container
+measurements remain pending memory availability. No cloud deployment, production
+security claim or public ingress is authorized by these local tests.
+
 ## ADR-040: persistent inference behind a killable process (12 October)
 
 Keep the loaded model in a separate reusable process. A timed-out thread cannot

@@ -2,13 +2,16 @@
 
 ## Current executable checks
 
-`python -m unittest discover -s tests/inference -v` runs 14 synthetic process
+`python -m unittest discover -s tests/inference -v` runs 18 synthetic process/protocol
 boundary tests: reuse/readiness, input and aggregate token limits, normalization,
 busy rejection, startup/request deadlines, crash redaction, cleanup and explicit
 restart. Included in scripts/check.ps1. These do not verify real model quality.
 `python -m scripts.check_inference_runtime` separately verifies a pinned D: model
 and measures host startup/three fictional requests; passed on 13 October after
-RAM became available. Container limits and HTTP ingress tests remain future gates.
+RAM became available. The same 18 tests now also pass in the isolated Linux
+image via `python -m scripts.check_inference_container --controls`. Container
+configuration assertions pass; real Qwen container timing remains RAM-blocked.
+HTTP ingress, maximum-input profiling and image security review remain future gates.
 
 `python scripts/check_database.py` separately runs 45 SQL assertions and four
 concurrent scenarios against a

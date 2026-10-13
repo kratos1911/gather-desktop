@@ -1,5 +1,22 @@
 # Delivery tasks
 
+## 13 October isolated inference container checkpoint
+
+TASK-005 remains partial. Built gather-inference:cpu-local on D: from a pinned
+Python base and 25 hash-locked Linux CPU wheels. Private bounded JSONL adapter,
+verified model export and isolated test launcher implemented. Eighteen synthetic
+tests pass both on Windows and inside the Linux container, including malformed
+frames, oversized-frame closure, deadlines, child cleanup and explicit recovery.
+Actual Docker configuration assertions pass for CPU/RAM/swap/PID limits, non-root,
+read-only mounts/root and disabled network. Frontend production build passes.
+Evidence: tests/inference/results/container-controls-20261013.json.
+
+Real Qwen container smoke stopped before creating a container at the 4 GiB host
+RAM guard; measured free memory then about 2.4 GiB. No real container latency or
+peak-memory result yet. Next: rerun the prepared real smoke after memory is free,
+then maximum-input profiling and image vulnerability/licence review before API
+integration. Existing API containers/settings untouched. No cloud deploy or push.
+
 ## 13 October Docker migration verified
 
 Storage prerequisite complete: D:\DockerDesktop\DockerDesktopWSL\disk\docker_data.vhdx
