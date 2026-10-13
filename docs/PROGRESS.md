@@ -1,5 +1,32 @@
 # Rebuild progress
 
+## 2026-10-13 — Docker disk migration completed
+
+Manual attempts produced the decisive log: Robocopy returned 1 (successful copy),
+but Docker 4.90.0 treated it as failure and retained C:. A same-sized destination
+file existed, but full offline SHA-256 comparison showed it stale after continued
+source activity. Saved private inventory, stopped Desktop/WSL, copied the 32.83 GB
+source under an exclusive read lock, then verified destination SHA-256 against
+the stopped source. Both matched before restart.
+
+Backed up settings, set CustomWslDistroDir to D:\DockerDesktop\DockerDesktopWSL
+through a hidden Windows process outside AppData virtualization, then started
+Docker through Explorer. Engine 29.7.2 responds; 9 container IDs, 64 unique image
+IDs and 1 named volume match exactly. All nine containers restarted. D: file
+locked/in use and its modification time advanced; C: remained unlocked/unchanged.
+Windows Get-DiskImage returned Attached=false for both, so that query alone did
+not establish the WSL mount. Settings, lock and write evidence establish D: use.
+
+After specific cleanup approval, removed only the obsolete C: docker_data.vhdx.
+C: free space increased to 36.3 GiB; D: 32.74 GiB. Settings backup, inventories,
+hashes and completion evidence remain ignored under output/docker-migration.
+No factory reset, distro unregister, application code change or model download.
+Unrelated application behavior was not tested; no frontend rebuild needed.
+Gemma gated access remains denied. Nothing pushed to GitHub.
+
+References: https://github.com/docker/desktop-feedback/issues/550 and
+https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/robocopy/#exit-return-codes.
+
 ## 2026-10-13 — Docker and Hugging Face setup attempt
 
 User explicitly authorized both the Docker move and local HF login setup.

@@ -61,8 +61,10 @@ worst-case input latency or Cloud Run cost. Recorded evidence is in
 
 ## Next gate
 
-Docker's data disk was still observed on C: on 13 October. The user plans to move it to D:.
-Do not build/download large images until the actual new location is verified.
+Docker's data disk was migrated and verified on 13 October at
+`D:\DockerDesktop\DockerDesktopWSL\disk\docker_data.vhdx`. The stopped source and
+destination matched SHA-256; Docker restarted with the original inventory intact.
+The old C: data disk was removed after verification. D: image storage is now ready.
 Next: separately locked Linux CPU image, read-only/non-root runtime, no network,
 read-only verified model mount, explicit CPU/memory/PID limits, and measured
 container startup, warm requests, readiness, hard timeout and cleanup. OS resource

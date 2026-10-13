@@ -3,15 +3,22 @@
 Updated: 13 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
 choices there are proposed, not implemented. PROGRESS.md records history.
 
-Latest setup attempt (13 October): HF login is now saved in the ignored D:
+Latest setup result (13 October): Docker disk migration is complete and verified.
+The failed UI move treated Robocopy success code 1 as failure. After stopping
+Docker/WSL, the stale D: copy was refreshed from C: and matched its full SHA-256.
+Settings were backed up and CustomWslDistroDir set to D:\DockerDesktop\DockerDesktopWSL.
+Docker restarted with identical 9-container/64-image/1-volume inventory. D: disk
+is in use; the old C: disk was detached/unlocked and then removed with approval.
+C: now has about 36.3 GiB free; D: about 32.74 GiB. Next: bounded inference image
+build/measurement on D:. No new inference image or deployment is verified yet.
+
+HF login is now saved in the ignored D:
 benchmark HF home and authenticated successfully. The fine-grained token's account
 still receives HTTP 403 for EmbeddingGemma; the response indicates account-level
 model access is not approved. Check acceptance/access using the same account.
-Docker startup socket failure recovered by force-closing the failed Desktop and
-launching via Windows Explorer. Engine 29.7.2 responds. Two UI disk-move attempts
-to D:\DockerDesktop\DockerDesktopWSL reverted to C:; no destination VHDX exists.
-Do not claim the disk move complete or build large images yet. No factory reset,
-manual disk deletion, token disclosure or model download performed.
+Docker startup socket failure recovered by closing the failed Desktop and
+launching via Windows Explorer. Engine 29.7.2 responds. No factory reset, token
+disclosure or model download performed during the migration.
 
 Extractor checkpoint: TASK-019A hash-locked image rebuilt after Docker recovery.
 Exact installed versions, pip consistency, bad-hash rejection, offline restrictions
@@ -40,19 +47,19 @@ Gather is a provisional name for a Windows desktop content library with semantic
   14.239 s startup, three requests 0.505/0.669/0.709 s, two CPU threads, 512 dimensions.
   Same process reused and reaped after completion. RSS after requests 2.54 GiB
   (not peak memory). This supersedes the 12 October RAM blocker below; only three
-  fictional inputs were used, not a load test. Docker disk remains on C: and
-  no HF credential was found in environment or the two checked token locations.
-  Container build and Gemma remain pending. No new cloud work or GitHub push.
+  fictional inputs were used, not a load test. Docker disk is now verified on D:
+  and HF login works, but Gemma account access is denied. Container build and
+  Gemma remain pending. No new cloud work or GitHub push.
 
 - TASK-005 persistent CPU process prerequisite added in services/inference.
   Fourteen synthetic tests verify bounds, readiness, process reuse, busy rejection,
   token preflight, deadline termination/reaping and explicit recovery. Full checks
   pass: 112 worker + 39 evaluation + 14 inference + 4 UI = 169 tests, lint/types/
   formatting/frontend build. Real Qwen host smoke stopped at the 4 GiB RAM guard.
-  Docker disk is still observed on C:; user will move it to D:. Container build,
+  The later host smoke and D: Docker migration are now verified. Container build,
   limits and measurements remain unverified. No HTTP endpoint or cloud deployment.
-  See ../services/inference/README.md. Next: verify disk move/login/free RAM,
-  run host smoke, then implement and measure the bounded Linux serving container.
+  See ../services/inference/README.md. Next: implement and measure the bounded
+  Linux serving container; resolve Gemma account access separately.
 
 - TASK-005 fresh challenge: 40 new fictional documents, 64 chunks, 64 questions
   frozen before inference. Qwen 512 dense passes the declared development gate:

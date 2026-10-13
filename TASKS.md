@@ -1,6 +1,17 @@
 # Delivery tasks
 
-## 13 October setup follow-up
+## 13 October Docker migration verified
+
+Storage prerequisite complete: D:\DockerDesktop\DockerDesktopWSL\disk\docker_data.vhdx
+is active after a stopped-source refresh and full SHA-256 verification. Before/
+after inventory identical: 9 containers, 64 images, 1 volume. All nine containers
+restarted; unrelated application behavior was not tested. Old C: data disk removed
+with approval after verification; C: free space about 36.3 GiB. Settings backup and
+private inventory/hash evidence live in ignored output/docker-migration.
+Next TASK-005: build/measure bounded Linux CPU serving image. Gemma account-level
+access remains denied despite valid local login. No model/container build this turn.
+
+## Earlier 13 October setup follow-up (disk blocker superseded above)
 
 HF login saved on D: and API authentication verified; EmbeddingGemma still returns
 403 with account-level model-access denial. Same-account access approval needs
@@ -76,7 +87,7 @@ Current checkpoint: local quality checks pass; remote CI execution pending. Link
 | TASK-002 | Validate audience and comparable products | Ready | Record user interviews/feedback or explicitly unvalidated hypotheses; compare primary-source alternatives; decide initial audience/regions |
 | TASK-003 | Desktop shell and design verification | Partial | Frontend/native build and four component tests pass; actual visual, keyboard, zoom and motion checks still pending after browser permission denial |
 | TASK-004 | Transport-independent text processing contract | Done | 12 standard-library tests pass; strict JSON/base64/UTF-8 and 64 KiB source limit; source offsets, hashes/versioned IDs, overlap and retry determinism verified; no personal imports or cloud writes; see services/worker/README.md |
-| TASK-005 | Cloud-oriented embedding evaluation | Partial: real host serving smoke passes | v1/v2 real benchmarks retained. Persistent CPU process has 14 synthetic boundary tests; real host smoke passed 13 October. Docker disk move to D: and HF login pending; Gemma terms accepted. No container or HTTP serving verified. See services/inference/README.md and docs/TEXT_V2_RESULTS.md. Independent review, Gemma/visual comparison, cloud latency/cost and production runtime remain pending |
+| TASK-005 | Cloud-oriented embedding evaluation | Partial: host smoke and D: Docker storage verified | v1/v2 real benchmarks retained. Persistent CPU process has 14 synthetic boundary tests; real host smoke passed 13 October. Docker disk on D: verified; HF login valid but Gemma account access denied. No inference container or HTTP serving verified. See services/inference/README.md and docs/TEXT_V2_RESULTS.md. Independent review, Gemma/visual comparison, cloud latency/cost and production runtime remain pending |
 | TASK-006 | Supabase identity and private schema | Needs project configuration | Versioned migrations; supported signup/session/logout flow; enforce audience decision; RLS and two-user isolation tests; secure session storage; quota policy |
 | TASK-007 | Text import-to-search vertical slice | Depends on 005/006 | Import TXT/MD -> durable processing -> all passages -> real search -> reader -> deletion; retry/restart/dedup/isolation tests; user-readable errors |
 | TASK-008 | Native document formats | Depends on 007 | PDF/DOCX/PPTX parsers; preserved page/slide/section references; long-document and malformed-file cases; scanned pages correctly identified |
