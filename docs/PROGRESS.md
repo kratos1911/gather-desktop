@@ -1,5 +1,21 @@
 # Rebuild progress
 
+## 2026-10-13 — real persistent Qwen host smoke
+
+Rechecked prerequisites: 5.81 GiB available RAM allowed the existing smoke to
+run. It verified the D: model manifest/hashes and loaded real Qwen on two CPU
+threads. Startup 14.2385 s; three fictional requests 0.5050/0.6686/0.7090 s.
+512-dimensional vectors returned, same process reused and cleanup passed.
+Post-request RSS 2,725,130,240 bytes is not a peak measurement. Raw measurement
+copied to tests/inference/results/qwen-host-20261013.json with scope/date.
+
+Docker data disk still exists in its C: directory; no configured alternate
+location found. No token file found in D: benchmark HF home or normal user HF
+home, and no HF credential environment variable is configured. No credentials
+read or printed. Container builds/Gemma remain pending these prerequisites.
+No runtime/frontend changes; prior 169-test/frontend checkpoint not rerun.
+No model download, paid provision, native rebuild or GitHub push.
+
 ## 2026-10-12 — persistent CPU serving prerequisite
 
 Selected TASK-005 scope: reusable model process with input/token limits,

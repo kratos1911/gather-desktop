@@ -48,7 +48,7 @@
     {
       "id": "vector",
       "type": "text",
-      "text": "Qwen v1 + frozen v2 tested on D:\nPersistent process: synthetic controls pass\nNEXT: RAM/disk/login, real serving + container\nConnected desktop/index still pending",
+      "text": "Qwen v1 + frozen v2 tested on D:\nReal persistent host smoke passes (13 Oct)\nNEXT: Docker to D:, HF login, container/Gemma\nConnected desktop/index still pending",
       "x": 800,
       "y": 220,
       "width": 330,

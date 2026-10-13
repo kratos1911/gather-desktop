@@ -3,12 +3,17 @@ tags: [gather, project]
 ---
 # Gather project hub
 
-Start here in Obsidian. Updated 12 October 2026.
+Start here in Obsidian. Updated 13 October 2026.
+
+Newest verification: real persistent Qwen host smoke now passes. Startup 14.24 s,
+three requests 0.51–0.71 s; same process reused and cleanly stopped. Post-request
+RSS 2.54 GiB, not peak. Docker disk remains on C: and HF login is still unavailable.
+See [[services/inference/README|Serving evidence and remaining gates]].
 
 Newest: [[services/inference/README|Persistent CPU serving prerequisite]].
 Process reuse, input/token limits and actual timeout cleanup have 14 synthetic
-checks; 169 total tests and frontend quality/build checks pass. Real serving smoke
-paused for RAM. User will move Docker storage from C: to D: and sign in locally
+checks; 169 total tests and frontend quality/build checks passed on 12 October.
+User will move Docker storage from C: to D: and sign in locally
 to Hugging Face; Gemma terms are accepted. Container runtime remains unverified.
 
 Latest: [[docs/TEXT_V2_RESULTS|Fresh text challenge and failure review]]. Forty

@@ -52,11 +52,16 @@ From the project folder, the real-model host check is:
 
 It requires 4 GiB free RAM, verifies the D: snapshot, uses three fictional inputs,
 and writes timing/process evidence to ignored `output/model-benchmark/serving`.
-On 12 October this check stopped at the RAM guard; no serving timing is claimed.
+On 12 October this check stopped at the RAM guard. On 13 October it passed:
+startup 14.239 s; three sequential requests 0.505/0.669/0.709 s; process reused
+and cleanly reaped. Post-request RSS was 2,725,130,240 bytes (2.54 GiB), not peak.
+This small Windows host check does not establish throughput, container limits,
+worst-case input latency or Cloud Run cost. Recorded evidence is in
+`tests/inference/results/qwen-host-20261013.json`.
 
 ## Next gate
 
-Docker's data disk was observed on C: on 12 October. The user is moving it to D:.
+Docker's data disk was still observed on C: on 13 October. The user plans to move it to D:.
 Do not build/download large images until the actual new location is verified.
 Next: separately locked Linux CPU image, read-only/non-root runtime, no network,
 read-only verified model mount, explicit CPU/memory/PID limits, and measured

@@ -9,8 +9,8 @@ an explicit restart after failure. This is a private serving primitive, not an
 HTTP API, OS resource sandbox or Cloud Run deployment. Use the frozen Qwen prompt,
 revision and 512-dimensional space; do not replace the benchmark protocol.
 
-Fourteen synthetic tests pass. Real-model serving measurements wait for memory;
-container packaging waits for verified Docker storage on D:. User confirmed
+Fourteen synthetic tests pass. The real host smoke passed on 13 October after
+RAM became available; container packaging waits for verified Docker storage on D:. User confirmed
 Gemma terms accepted and will authenticate locally; no token requested in chat.
 
 ## ADR-039: freeze fresh cases and preserve retrieval failures (12 October)

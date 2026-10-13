@@ -7,8 +7,8 @@ boundary tests: reuse/readiness, input and aggregate token limits, normalization
 busy rejection, startup/request deadlines, crash redaction, cleanup and explicit
 restart. Included in scripts/check.ps1. These do not verify real model quality.
 `python -m scripts.check_inference_runtime` separately verifies a pinned D: model
-and measures host startup/three fictional requests; currently paused at its
-4 GiB RAM guard. Container limits and HTTP ingress tests remain future gates.
+and measures host startup/three fictional requests; passed on 13 October after
+RAM became available. Container limits and HTTP ingress tests remain future gates.
 
 `python scripts/check_database.py` separately runs 45 SQL assertions and four
 concurrent scenarios against a

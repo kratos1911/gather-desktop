@@ -1,5 +1,15 @@
 # Delivery tasks
 
+## 13 October real serving smoke
+
+TASK-005: pinned Qwen persistent host process passed with three fictional inputs,
+two CPU threads and 512-dimensional vectors. Startup 14.239 s; requests
+0.505/0.669/0.709 s; process reuse and cleanup verified. Post-request RSS 2.54 GiB,
+not peak. Evidence: tests/inference/results/qwen-host-20261013.json.
+Docker data disk remains on C:; HF login unavailable at checked locations.
+Container limits/performance and Gemma comparison remain pending. No runtime
+code changed; prior 169-test checkpoint retained, not rerun for documentation.
+
 ## 12 October fresh text challenge
 
 TASK-005 second local slice complete: 40 new fictional documents, 64 passages,
@@ -58,7 +68,7 @@ Current checkpoint: local quality checks pass; remote CI execution pending. Link
 | TASK-002 | Validate audience and comparable products | Ready | Record user interviews/feedback or explicitly unvalidated hypotheses; compare primary-source alternatives; decide initial audience/regions |
 | TASK-003 | Desktop shell and design verification | Partial | Frontend/native build and four component tests pass; actual visual, keyboard, zoom and motion checks still pending after browser permission denial |
 | TASK-004 | Transport-independent text processing contract | Done | 12 standard-library tests pass; strict JSON/base64/UTF-8 and 64 KiB source limit; source offsets, hashes/versioned IDs, overlap and retry determinism verified; no personal imports or cloud writes; see services/worker/README.md |
-| TASK-005 | Cloud-oriented embedding evaluation | Partial: process serving prerequisite tested | v1/v2 real benchmarks retained. Persistent CPU process has 14 synthetic boundary tests; real serving smoke paused for RAM. Docker disk move to D: and HF login pending; Gemma terms accepted. No container or HTTP serving verified. See services/inference/README.md and docs/TEXT_V2_RESULTS.md. Independent review, Gemma/visual comparison, cloud latency/cost and production runtime remain pending |
+| TASK-005 | Cloud-oriented embedding evaluation | Partial: real host serving smoke passes | v1/v2 real benchmarks retained. Persistent CPU process has 14 synthetic boundary tests; real host smoke passed 13 October. Docker disk move to D: and HF login pending; Gemma terms accepted. No container or HTTP serving verified. See services/inference/README.md and docs/TEXT_V2_RESULTS.md. Independent review, Gemma/visual comparison, cloud latency/cost and production runtime remain pending |
 | TASK-006 | Supabase identity and private schema | Needs project configuration | Versioned migrations; supported signup/session/logout flow; enforce audience decision; RLS and two-user isolation tests; secure session storage; quota policy |
 | TASK-007 | Text import-to-search vertical slice | Depends on 005/006 | Import TXT/MD -> durable processing -> all passages -> real search -> reader -> deletion; retry/restart/dedup/isolation tests; user-readable errors |
 | TASK-008 | Native document formats | Depends on 007 | PDF/DOCX/PPTX parsers; preserved page/slide/section references; long-document and malformed-file cases; scanned pages correctly identified |

@@ -1,6 +1,6 @@
 # Current project state
 
-Updated: 12 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
+Updated: 13 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
 choices there are proposed, not implemented. PROGRESS.md records history.
 
 Extractor checkpoint: TASK-019A hash-locked image rebuilt after Docker recovery.
@@ -25,6 +25,14 @@ locally; push only on an explicit request to push.
 Gather is a provisional name for a Windows desktop content library with semantic text/photo search and selected-source chat. Tauri/React/TypeScript and Supabase Free remain. User chose cloud AI on 27 September (ADR-009); later CPU/Cloud Run choices are in ADR-038. No end-user model downloads planned. Design avoid-list applies. No agentic file modification, payment feature or mobile app in MVP. Chat remains deferred until search works.
 
 ## Implemented
+
+- 13 October real persistent Qwen host smoke passed using the verified D: model:
+  14.239 s startup, three requests 0.505/0.669/0.709 s, two CPU threads, 512 dimensions.
+  Same process reused and reaped after completion. RSS after requests 2.54 GiB
+  (not peak memory). This supersedes the 12 October RAM blocker below; only three
+  fictional inputs were used, not a load test. Docker disk remains on C: and
+  no HF credential was found in environment or the two checked token locations.
+  Container build and Gemma remain pending. No new cloud work or GitHub push.
 
 - TASK-005 persistent CPU process prerequisite added in services/inference.
   Fourteen synthetic tests verify bounds, readiness, process reuse, busy rejection,

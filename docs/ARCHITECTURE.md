@@ -9,7 +9,7 @@ security checks and delivery gates. Proposed mechanisms are not implemented yet.
 12 October: services/inference adds a private persistent CPU process boundary.
 Requests are single-flight, validated and token-budgeted; deadlines stop/reap the
 child. A local Qwen adapter and hash-verifying host smoke launcher are prepared.
-Synthetic control tests pass; real serving smoke is RAM-blocked. No serving
+Synthetic control tests pass; real host serving smoke passed on 13 October. No serving
 container, HTTP endpoint or desktop connection is verified. See its README.
 
 8 October: `supabase/migrations` now defines sources and source_versions with

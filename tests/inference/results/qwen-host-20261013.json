@@ -1,0 +1,17 @@
+{
+  "scope": "Windows host smoke; not container or retrieval evaluation",
+  "model": "Qwen/Qwen3-Embedding-0.6B",
+  "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "threads": 2,
+  "dimensions": 512,
+  "startup_seconds": 14.238548199999968,
+  "request_seconds": [
+    0.5050342000004093,
+    0.6685563000000911,
+    0.7090400999995836
+  ],
+  "process_reused": true,
+  "rss_after_requests_bytes": 2725130240,
+  "process_reaped": true,
+  "recorded_date": "2026-10-13"
+}
