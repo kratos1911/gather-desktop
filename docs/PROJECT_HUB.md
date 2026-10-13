@@ -5,16 +5,21 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 13 October 2026.
 
+Setup update: local Hugging Face login now works from D:, but that token's account
+has not been granted EmbeddingGemma access (403). Docker's startup was recovered;
+its UI disk-move attempts reverted to C:, so the migration remains unfinished.
+See [[docs/MEMORY|Current state]] before model/container work.
+
 Newest verification: real persistent Qwen host smoke now passes. Startup 14.24 s,
 three requests 0.51–0.71 s; same process reused and cleanly stopped. Post-request
-RSS 2.54 GiB, not peak. Docker disk remains on C: and HF login is still unavailable.
+RSS 2.54 GiB, not peak. Docker disk remains on C:; HF login now works but Gemma access is denied.
 See [[services/inference/README|Serving evidence and remaining gates]].
 
 Newest: [[services/inference/README|Persistent CPU serving prerequisite]].
 Process reuse, input/token limits and actual timeout cleanup have 14 synthetic
 checks; 169 total tests and frontend quality/build checks passed on 12 October.
-User will move Docker storage from C: to D: and sign in locally
-to Hugging Face; Gemma terms are accepted. Container runtime remains unverified.
+Docker storage migration from C: to D: remains unfinished. Hugging Face login
+works; Gemma terms acceptance/access must match the token's account. Container runtime remains unverified.
 
 Latest: [[docs/TEXT_V2_RESULTS|Fresh text challenge and failure review]]. Forty
 new sources and 64 questions are frozen; real Qwen 512 passes the development

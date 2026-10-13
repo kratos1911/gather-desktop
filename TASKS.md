@@ -1,5 +1,13 @@
 # Delivery tasks
 
+## 13 October setup follow-up
+
+HF login saved on D: and API authentication verified; EmbeddingGemma still returns
+403 with account-level model-access denial. Same-account access approval needs
+checking. Docker engine recovered from startup socket error and responds as
+29.7.2. Two settings-based disk moves reverted to C:; D:\DockerDesktop exists but
+contains no migrated VHDX. Container builds remain paused. No reset/data deletion.
+
 ## 13 October real serving smoke
 
 TASK-005: pinned Qwen persistent host process passed with three fictional inputs,

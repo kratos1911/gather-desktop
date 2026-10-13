@@ -1,5 +1,27 @@
 # Rebuild progress
 
+## 2026-10-13 — Docker and Hugging Face setup attempt
+
+User explicitly authorized both the Docker move and local HF login setup.
+Opened an interactive login window pointing HF_HOME to the ignored D: benchmark
+directory. User entered the credential locally. whoami authentication succeeds;
+token role is fine-grained. A gated config metadata request returns HTTP 403.
+Sanitized error classification indicates account-level model approval absent,
+so initial token-scope suspicion is not established. No credential printed.
+
+Docker first showed sailor-ingest.sock access/rename startup failure. Normal stop
+failed; supported force-stop succeeded. Launch via Windows Explorer recovered
+the GUI and engine (29.7.2). Used Resources > Advanced > Browse to select the
+created D:\DockerDesktop folder; Docker proposed D:\DockerDesktop\DockerDesktopWSL.
+Apply/restart and move confirmation did not persist the location. A second
+selection also reverted to C:. Read-only destination/setting checks find no VHDX
+on D:. Backend log shows restart-needed checks for the intended destination,
+but no completed migration was established. Docker data was not manually moved,
+deleted or reset. Existing containers remain visible; unrelated app functionality
+was not tested. Disk relocation and gated model access remain unfinished.
+
+No app code changed, model downloaded, cloud provisioned or GitHub push performed.
+
 ## 2026-10-13 — real persistent Qwen host smoke
 
 Rechecked prerequisites: 5.81 GiB available RAM allowed the existing smoke to

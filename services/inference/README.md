@@ -68,6 +68,8 @@ read-only verified model mount, explicit CPU/memory/PID limits, and measured
 container startup, warm requests, readiness, hard timeout and cleanup. OS resource
 limits and HTTP body limits are not supplied by this Python primitive.
 
-EmbeddingGemma terms are accepted per the user. Local Hugging Face login remains
-unverified. Keep that download/evaluation separate; its pooling/runtime must be
+EmbeddingGemma terms are accepted per the user. Local Hugging Face login was
+verified on 13 October with credentials stored on D:, but the token's account
+receives HTTP 403 indicating model access is not approved. Check same-account
+access before downloading. Keep that download/evaluation separate; its pooling/runtime must be
 implemented from its own model configuration, not assumed to match Qwen.

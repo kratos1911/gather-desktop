@@ -3,6 +3,16 @@
 Updated: 13 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
 choices there are proposed, not implemented. PROGRESS.md records history.
 
+Latest setup attempt (13 October): HF login is now saved in the ignored D:
+benchmark HF home and authenticated successfully. The fine-grained token's account
+still receives HTTP 403 for EmbeddingGemma; the response indicates account-level
+model access is not approved. Check acceptance/access using the same account.
+Docker startup socket failure recovered by force-closing the failed Desktop and
+launching via Windows Explorer. Engine 29.7.2 responds. Two UI disk-move attempts
+to D:\DockerDesktop\DockerDesktopWSL reverted to C:; no destination VHDX exists.
+Do not claim the disk move complete or build large images yet. No factory reset,
+manual disk deletion, token disclosure or model download performed.
+
 Extractor checkpoint: TASK-019A hash-locked image rebuilt after Docker recovery.
 Exact installed versions, pip consistency, bad-hash rejection, offline restrictions
 and prompt timeout cleanup pass. TASK-023 patched OpenSSL/PCRE2 and removed
@@ -19,7 +29,7 @@ Free Auth/Postgres/pgvector. User has created the Google Cloud account. Applicat
 deployment remains unverified; do not provision paid resources from benchmark
 permission. On 10 October the user authorized D:-only local model tests, and
 chose Qwen first. On 12 October the user confirmed EmbeddingGemma terms accepted;
-local Hugging Face authentication is still unverified. Commit
+local Hugging Face authentication now works, but that account's Gemma access is denied. Commit
 locally; push only on an explicit request to push.
 
 Gather is a provisional name for a Windows desktop content library with semantic text/photo search and selected-source chat. Tauri/React/TypeScript and Supabase Free remain. User chose cloud AI on 27 September (ADR-009); later CPU/Cloud Run choices are in ADR-038. No end-user model downloads planned. Design avoid-list applies. No agentic file modification, payment feature or mobile app in MVP. Chat remains deferred until search works.
