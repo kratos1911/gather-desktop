@@ -2,7 +2,7 @@
 
 ## Current executable checks
 
-`python -m unittest discover -s tests/inference -v` runs 18 synthetic process/protocol
+`python -m unittest discover -s tests/inference -v` runs 21 synthetic process/protocol/reporting
 boundary tests: reuse/readiness, input and aggregate token limits, normalization,
 busy rejection, startup/request deadlines, crash redaction, cleanup and explicit
 restart. Included in scripts/check.ps1. These do not verify real model quality.
@@ -13,7 +13,9 @@ image via `python -m scripts.check_inference_container --controls`. Container
 configuration assertions pass; real Qwen container smoke passed on 14 October
 with ten short fictional requests, model/vector checks and no OOM. Evidence:
 tests/inference/results/qwen-container-20261014.json.
-HTTP ingress, maximum-input profiling and image security review remain future gates.
+Extended profiles and image review are recorded in services/inference/PROFILE_RESULTS.md
+and IMAGE_SCAN_REVIEW.md. Long inputs exposed deadline failures; scan findings
+remain open. HTTP ingress, remediation/rescan and revised chunk-policy tests remain gates.
 
 `python scripts/check_database.py` separately runs 45 SQL assertions and four
 concurrent scenarios against a

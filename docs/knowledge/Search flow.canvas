@@ -48,7 +48,7 @@
     {
       "id": "vector",
       "type": "text",
-      "text": "Qwen v1 + frozen v2 tested on D:\nLinux real smoke passed: 0.59–0.74 s/request\nNEXT: long-input/load + image security checks\nConnected desktop/index still pending",
+      "text": "50 short queries pass; 2,048 tokens time out\nScan: 56 records / 12 high; deployment gated\nNEXT: dependency fixes + smaller-chunk evaluation\nConnected desktop/index still pending",
       "x": 800,
       "y": 220,
       "width": 330,

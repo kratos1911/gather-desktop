@@ -9,7 +9,10 @@ CPU/RAM/PID limits, authenticated ingress, body limits or per-owner quotas. Thos
 API controls remain pending. The isolated local launcher now verifies Docker CPU,
 memory/swap, PID, non-root, read-only and no-network configuration; 18 synthetic
 tests pass in the image. It is private stdin/stdout, not authenticated ingress.
-Image vulnerability/licence review and worst-case memory testing remain open.
+Image scan now reports 56 open records, including 12 high; see
+services/inference/IMAGE_SCAN_REVIEW.md. Deployment remains gated on remediation
+and rescan. Licence review remains open. Long requests timed out without OOM;
+this does not establish their full-run memory requirements.
 The host/container launchers verify model hashes,
 loads local safetensors without remote model code and uses fictional inputs only.
 

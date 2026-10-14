@@ -191,6 +191,13 @@ There is no deployed background cleanup worker or desktop connection yet.
 
 ## CPU container checkpoint (13 October)
 
+14 October follow-up: short queries and long document chunks have different
+compute costs. Fifty short queries passed, but a 2,048-token chunk hit the 15 s
+deadline. A maximum accepted token count is not a latency promise. Smaller chunks
+may help, but must preserve useful context and be evaluated for retrieval quality.
+An image scan also found 56 dependency vulnerability records, including 12 high.
+Isolation reduces exposure; dependency fixes and regression tests are still needed.
+
 The model stays loaded in a separate process so each search avoids reloading
 weights. A hard deadline stops that process if inference hangs. Docker places
 another boundary around it: CPU, RAM and process limits, read-only files and no

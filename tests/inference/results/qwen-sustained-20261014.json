@@ -1,0 +1,373 @@
+{
+  "scope": "real Qwen Linux CPU smoke; fictional inputs",
+  "image_id": "sha256:b04ad84cd1474204823070015a7f87537243714cffcb5c044789824b80b54f50",
+  "wall_seconds": 50.26845030000004,
+  "cpu_limit": 2,
+  "memory_limit_bytes": 5368709120,
+  "swap_extra_bytes": 0,
+  "network": "none",
+  "nonroot": true,
+  "readonly": true,
+  "exit_code": 0,
+  "oom_killed": false,
+  "passed": true,
+  "model": "Qwen/Qwen3-Embedding-0.6B",
+  "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "profile": "sustained",
+  "outcomes": [
+    {
+      "index": 0,
+      "passed": true,
+      "seconds": 0.7397697320000134,
+      "prompt_tokens": 29
+    },
+    {
+      "index": 1,
+      "passed": true,
+      "seconds": 0.6406917760000397,
+      "prompt_tokens": 29
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "seconds": 0.6833290939998733,
+      "prompt_tokens": 29
+    },
+    {
+      "index": 3,
+      "passed": true,
+      "seconds": 0.753517759000033,
+      "prompt_tokens": 29
+    },
+    {
+      "index": 4,
+      "passed": true,
+      "seconds": 0.7337806660000297,
+      "prompt_tokens": 29
+    },
+    {
+      "index": 5,
+      "passed": true,
+      "seconds": 0.7049571269999433,
+      "prompt_tokens": 29
+    },
+    {
+      "index": 6,
+      "passed": true,
+      "seconds": 0.6947102710000763,
+      "prompt_tokens": 29
+    },
+    {
+      "index": 7,
+      "passed": true,
+      "seconds": 0.6465559830000984,
+      "prompt_tokens": 29
+    },
+    {
+      "index": 8,
+      "passed": true,
+      "seconds": 0.6381188410000505,
+      "prompt_tokens": 29
+    },
+    {
+      "index": 9,
+      "passed": true,
+      "seconds": 0.6366044000001239,
+      "prompt_tokens": 29
+    },
+    {
+      "index": 10,
+      "passed": true,
+      "seconds": 0.6939798660000633,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 11,
+      "passed": true,
+      "seconds": 0.6742231350001475,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 12,
+      "passed": true,
+      "seconds": 0.6473321749999741,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 13,
+      "passed": true,
+      "seconds": 0.6482265910001388,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 14,
+      "passed": true,
+      "seconds": 0.6912543460000506,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 15,
+      "passed": true,
+      "seconds": 0.6431995579998784,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 16,
+      "passed": true,
+      "seconds": 0.6710172139999031,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 17,
+      "passed": true,
+      "seconds": 0.7155012440000519,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 18,
+      "passed": true,
+      "seconds": 0.7491364640000029,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 19,
+      "passed": true,
+      "seconds": 0.8234618409999257,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 20,
+      "passed": true,
+      "seconds": 0.7891107479999846,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 21,
+      "passed": true,
+      "seconds": 0.9671233149999807,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 22,
+      "passed": true,
+      "seconds": 0.9351891989999785,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 23,
+      "passed": true,
+      "seconds": 1.0415025370000421,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 24,
+      "passed": true,
+      "seconds": 0.7772125959997993,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 25,
+      "passed": true,
+      "seconds": 0.7707465930000126,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 26,
+      "passed": true,
+      "seconds": 0.8672389129999374,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 27,
+      "passed": true,
+      "seconds": 0.8437506139998732,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 28,
+      "passed": true,
+      "seconds": 0.8665110120000463,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 29,
+      "passed": true,
+      "seconds": 0.8186002200000075,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 30,
+      "passed": true,
+      "seconds": 0.8970311619998483,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 31,
+      "passed": true,
+      "seconds": 0.927943022999898,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 32,
+      "passed": true,
+      "seconds": 0.7316911809998601,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 33,
+      "passed": true,
+      "seconds": 0.8618433959998129,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 34,
+      "passed": true,
+      "seconds": 0.6813142450000669,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 35,
+      "passed": true,
+      "seconds": 0.7022457850000592,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 36,
+      "passed": true,
+      "seconds": 0.6839215359998434,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 37,
+      "passed": true,
+      "seconds": 0.655174463000094,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 38,
+      "passed": true,
+      "seconds": 0.6835712380000132,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 39,
+      "passed": true,
+      "seconds": 0.6846507539999038,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 40,
+      "passed": true,
+      "seconds": 0.6826466809998237,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 41,
+      "passed": true,
+      "seconds": 0.6602443919998677,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 42,
+      "passed": true,
+      "seconds": 0.6656771810000919,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 43,
+      "passed": true,
+      "seconds": 0.774494150999999,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 44,
+      "passed": true,
+      "seconds": 0.814231603999815,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 45,
+      "passed": true,
+      "seconds": 0.7907521110000744,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 46,
+      "passed": true,
+      "seconds": 0.7742531559999861,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 47,
+      "passed": true,
+      "seconds": 0.7075712109999586,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 48,
+      "passed": true,
+      "seconds": 0.7034027979998427,
+      "prompt_tokens": 30
+    },
+    {
+      "index": 49,
+      "passed": true,
+      "seconds": 0.7127151239999421,
+      "prompt_tokens": 30
+    }
+  ],
+  "startup_seconds": 11.941925840000067,
+  "request_seconds": [
+    0.7397697320000134,
+    0.6406917760000397,
+    0.6833290939998733,
+    0.753517759000033,
+    0.7337806660000297,
+    0.7049571269999433,
+    0.6947102710000763,
+    0.6465559830000984,
+    0.6381188410000505,
+    0.6366044000001239,
+    0.6939798660000633,
+    0.6742231350001475,
+    0.6473321749999741,
+    0.6482265910001388,
+    0.6912543460000506,
+    0.6431995579998784,
+    0.6710172139999031,
+    0.7155012440000519,
+    0.7491364640000029,
+    0.8234618409999257,
+    0.7891107479999846,
+    0.9671233149999807,
+    0.9351891989999785,
+    1.0415025370000421,
+    0.7772125959997993,
+    0.7707465930000126,
+    0.8672389129999374,
+    0.8437506139998732,
+    0.8665110120000463,
+    0.8186002200000075,
+    0.8970311619998483,
+    0.927943022999898,
+    0.7316911809998601,
+    0.8618433959998129,
+    0.6813142450000669,
+    0.7022457850000592,
+    0.6839215359998434,
+    0.655174463000094,
+    0.6835712380000132,
+    0.6846507539999038,
+    0.6826466809998237,
+    0.6602443919998677,
+    0.6656771810000919,
+    0.774494150999999,
+    0.814231603999815,
+    0.7907521110000744,
+    0.7742531559999861,
+    0.7075712109999586,
+    0.7034027979998427,
+    0.7127151239999421
+  ],
+  "container_peak_bytes": 3910660096
+}

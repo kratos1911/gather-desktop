@@ -6,6 +6,12 @@ security checks and delivery gates. Proposed mechanisms are not implemented yet.
 
 ## Current implementation
 
+14 October extended profiles: 50 short sequential queries passed; 2,048-token
+single and max-batch requests exceed the 15 s deadline on this shared machine.
+No runtime limits changed. Image scan has 56 open records, including 12 high.
+Remediation/rescan and smaller-chunk evaluation precede API integration. See
+services/inference/PROFILE_RESULTS.md and IMAGE_SCAN_REVIEW.md.
+
 12 October: services/inference adds a private persistent CPU process boundary.
 Requests are single-flight, validated and token-budgeted; deadlines stop/reap the
 child. A local Qwen adapter and hash-verifying host smoke launcher are prepared.

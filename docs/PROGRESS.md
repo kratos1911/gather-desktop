@@ -1,5 +1,30 @@
 # Rebuild progress
 
+## 2026-10-14 — sustained/long-input profiles and image security review
+
+Extended the trusted launcher with long, batch, limits and sustained profiles;
+it now retains failures/unexecuted cases and exits nonzero for failed profiles.
+Added three reporting regression tests and a read-only scripts mount for the
+control suite. 21 tests passed on Windows and inside Linux; frontend build passed.
+No runtime/image changes, so no image or native desktop rebuild was needed.
+
+Pinned AutoTokenizer confirmed the stress text's extra special token; corrected
+input construction before running. Real 512/1,024-token requests took 5.645/13.632 s.
+The 2,048-token item and two-item maximum batch timed out at the existing 15 s
+deadline; no OOM and cleanup succeeded. Token-overflow rejection/recovery passed.
+50 sequential short queries passed: median 0.710 s, nearest-rank p95 0.935 s,
+range 0.637–1.042 s, cgroup peak 3.64 GiB. Shared-machine, artificial input evidence,
+not multi-user capacity or retrieval evaluation. Temporary RAM guard stops were
+respected; subsequent attempts ran once memory cleared. All owned containers removed.
+
+Scout 1.24.0 indexed 163 packages: 56 records (12 high/7 medium/37 low) across
+16 vulnerable packages. Raw SARIF hashed; curated inventory and triage recorded.
+Cache/temp stayed on D:. Scanner reported a locked temporary archive on cleanup;
+no deletion/restart workaround. Primary PyTorch advisory and Transformers fix
+reviewed. Safetensors/offline/pinned-config restrictions reduce exposure but do
+not clear package vulnerabilities. Dependencies unchanged; remediation/rescan is
+the next gate. No deployment, unrelated API changes or GitHub push.
+
 ## 2026-10-14 — real Linux CPU inference smoke verified
 
 After Docker was opened and host RAM reached 4.20 GiB, the prepared isolated

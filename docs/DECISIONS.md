@@ -1,5 +1,20 @@
 # Architecture decisions
 
+## ADR-042: preserve failed CPU profiles and gate integration on remediation
+
+14 October: retain the 15-second request deadline and 5 GiB memory ceiling.
+2,048-token single and 4,096-token batch requests timed out; do not raise limits
+or claim that accepted token budgets guarantee completion. Smaller chunks/batches
+are the next candidate, requiring diverse-text and retrieval validation before
+changing production policy. Fifty short sequential queries passed; concurrency
+and long-duration memory behavior remain unverified.
+
+Keep the exact benchmark image unchanged for comparison. Its scan has 56 open
+records, including 12 high. Before API integration, patch OS packages and
+compatibility-test a maintained CPU Torch/Transformers stack, regenerate locks,
+remeasure and rescan. Avoid silently crossing a major library version during a
+measurement task. No security finding is dismissed solely by sandboxing.
+
 ## ADR-041: prove the CPU container before adding network ingress (13 October)
 
 Use a private bounded JSONL adapter for the next TASK-005 slice. This tests Linux

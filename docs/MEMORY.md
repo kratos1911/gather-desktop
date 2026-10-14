@@ -3,6 +3,16 @@
 Updated: 14 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
 choices there are proposed, not implemented. PROGRESS.md records history.
 
+Latest extended checkpoint: all four real CPU profiles attempted and recorded.
+512/1,024-token documents took 5.645/13.632 s; 2,048-token item and max batch
+hit the 15 s deadline (no OOM, clean termination). Over-limit rejection/recovery
+passed. Fifty short queries passed, median 0.710 s, p95 0.935 s, peak 3.64 GiB.
+21 control/reporting tests pass on Windows/Linux; frontend build passes. Image
+unchanged. Security scan: 56 records, including 12 high; image NOT deployment-ready.
+See services/inference/PROFILE_RESULTS.md and IMAGE_SCAN_REVIEW.md. Next: OS/AI
+dependency remediation with compatibility tests/rescan, then smaller-chunk policy
+evaluation. No limits relaxed, no existing API changes or push. TASK-005 partial.
+
 Latest TASK-005 checkpoint: isolated Linux CPU image built on D: with 25
 hash-locked dependencies; 18 inference/protocol tests pass on Windows and inside
 the container. The launcher verifies resource limits, non-root/read-only and

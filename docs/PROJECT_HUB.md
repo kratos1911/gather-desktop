@@ -5,6 +5,12 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 14 October 2026.
 
+Newest: [[services/inference/PROFILE_RESULTS|Extended CPU results]] and
+[[services/inference/IMAGE_SCAN_REVIEW|Security review]]. Fifty short requests
+passed (median 0.71 s); 2,048-token/max-batch requests timed out. Scan found 56
+records, 12 high. Next: dependency remediation/rescan and smaller-chunk evaluation
+before connecting inference to the app. Limits unchanged; 21 control tests pass.
+
 Latest: [[services/inference/CONTAINER|Isolated Linux CPU container]] builds on D:
 and passes 18 synthetic control tests. Limits: 2 CPUs, non-root/read-only,
 network disabled; real-model memory ceiling 5 GiB. Real Qwen container smoke

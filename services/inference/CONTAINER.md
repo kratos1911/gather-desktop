@@ -74,3 +74,21 @@ Results go to ignored `output/inference-results`. Reviewed summaries belong in
 `tests/inference/results`. Synthetic control tests cannot establish real-model
 quality. Image vulnerability scanning, maximum-input profiling, HTTP integration,
 Gemma comparison and connected desktop search remain separate gates.
+
+## Extended profiles
+
+Run the same launcher with `--profile long`, `--profile batch`, `--profile limits`
+or `--profile sustained`. Keep them sequential; each rechecks free RAM and starts
+a fresh isolated container. The long profile uses 512/1,024/2,048 exact tokens;
+the batch requests two 2,048-token items. The pinned tokenizer adds one special
+token to the repeated-word stress input; actual successful token counts are
+recorded. This artificial text tests compute limits, not semantic quality.
+The limits profile requests 2,049 tokens and a 4,200-token aggregate, then a valid
+16-token request. Sustained runs 50 distinct short fictional queries sequentially.
+These profiles do not test multiple users, concurrent throughput or memory leaks.
+
+Failures and unexecuted cases are retained in the report, and the launcher exits
+nonzero when a requested success times out. Limits are not relaxed to make a run
+pass. The image itself is unchanged; test-only scripts are mounted read-only for
+the expanded 21-test control suite. See PROFILE_RESULTS.md and IMAGE_SCAN_REVIEW.md
+for the measured performance limitations and open security findings.

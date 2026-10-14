@@ -1,5 +1,10 @@
 # CPU serving prerequisite
 
+14 October follow-up: extended profiles and security review are complete, with
+open findings. Fifty short requests passed; long/max-batch requests timed out.
+The image scan reports 56 records, including 12 high. See PROFILE_RESULTS.md
+and IMAGE_SCAN_REVIEW.md. Deployment/API integration remains gated on remediation.
+
 TASK-005 remains partial. `runtime.py` is a private Python process boundary.
 The isolated Linux image now builds and passes 18 synthetic control tests;
 real container-model smoke passed on 14 October (see CONTAINER.md). It is not

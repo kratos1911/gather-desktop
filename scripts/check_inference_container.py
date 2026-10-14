@@ -11,6 +11,50 @@ from scripts.prepare_inference_image import ROOT, digest
 from services.inference.runtime import MODEL, REVISION
 
 
+def profile_requests(profile):
+    def document(tokens):
+        # Verified with the pinned AutoTokenizer: one special token is appended.
+        return {'role': 'document', 'texts': ['x' + ' x' * (tokens - 2)]}
+    if profile == 'long':
+        return [document(n) for n in (512, 1024, 2048)], [None] * 3
+    if profile == 'batch':
+        return [{'role': 'document', 'texts': document(2048)['texts'] * 2}], [None]
+    if profile == 'limits':
+        return [document(2049), {'role': 'document', 'texts': document(1400)['texts'] * 3},
+                document(16)], ['token_limit', 'token_limit', None]
+    if profile == 'sustained':
+        return [{'role': 'query', 'texts': [f'Find the fictional museum record number {i}.']}
+                for i in range(50)], [None] * 50
+    requests = [('document', 'The fictional museum opens at nine on Tuesday.'),
+                ('query', 'When does the museum open?')] + [('query', 'When does the museum open?')] * 8
+    return [{'role': role, 'texts': [text]} for role, text in requests], [None] * len(requests)
+
+
+def review_rows(rows, requests, expected):
+    outcomes = []
+    replies = [row for row in rows if 'result' in row or 'error' in row]
+    for index, (request, error) in enumerate(zip(requests, expected)):
+        if index >= len(replies):
+            outcomes.append({'index': index, 'passed': False, 'error': 'not_executed'})
+            continue
+        row = replies[index]
+        if 'error' in row:
+            outcomes.append({'index': index, 'passed': row['error'] == error, 'error': row['error']})
+            continue
+        result = row['result']
+        valid = error is None and (result.get('model'), result.get('revision'), result.get('dimensions')) == (MODEL, REVISION, 512)
+        vectors = result.get('data', [])
+        valid = valid and len(vectors) == len(request['texts'])
+        for position, item in enumerate(vectors):
+            vector = item.get('embedding', [])
+            valid = valid and item.get('index') == position and len(vector) == 512
+            valid = valid and all(type(v) in (float, int) and math.isfinite(v) for v in vector)
+            valid = valid and abs(math.hypot(*vector) - 1) < 1e-6
+        outcomes.append({'index': index, 'passed': bool(valid), 'seconds': row['seconds'],
+                         'prompt_tokens': result.get('prompt_tokens')})
+    return outcomes, len(replies) == len(requests) and all(item['passed'] for item in outcomes)
+
+
 def command(*args):
     return subprocess.run(['docker', *args], check=True, capture_output=True, text=True, timeout=30).stdout
 
@@ -18,6 +62,7 @@ def command(*args):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--controls', action='store_true')
+    parser.add_argument('--profile', choices=['smoke', 'long', 'batch', 'limits', 'sustained'], default='smoke')
     args = parser.parse_args()
     memory = 512 * 1024**2 if args.controls else 5 * 1024**3
     model = ROOT / 'output/inference-model'
@@ -44,14 +89,14 @@ def main():
                '--tmpfs', '/tmp:rw,noexec,nosuid,size=67108864', '--log-driver', 'none', '-i']
     if args.controls:
         options += ['--mount', f'type=bind,source={ROOT / "tests/inference"},target=/tests,readonly',
+                    '--mount', f'type=bind,source={ROOT / "scripts"},target=/app/scripts,readonly',
                     '--entrypoint', 'python', 'gather-inference:cpu-local',
                     '-m', 'unittest', 'discover', '-s', '/tests', '-v']
         payload = ''
     else:
         options += ['--mount', f'type=bind,source={model},target=/model,readonly', 'gather-inference:cpu-local']
-        requests = [('document', 'The fictional museum opens at nine on Tuesday.'),
-                    ('query', 'When does the museum open?')] + [('query', 'When does the museum open?')] * 8
-        payload = ''.join(json.dumps({'role': role, 'texts': [text]}) + '\n' for role, text in requests)
+        requests, expected = profile_requests(args.profile)
+        payload = ''.join(json.dumps(request) + '\n' for request in requests)
     identifier = command(*options).strip()
     try:
         config = json.loads(command('inspect', identifier))[0]
@@ -73,32 +118,32 @@ def main():
             process.communicate(timeout=10)
             raise RuntimeError('Container smoke deadline exceeded') from None
         state = json.loads(command('inspect', identifier))[0]['State']
-        if process.returncode or state['ExitCode'] or state['OOMKilled']:
-            raise RuntimeError(f"Container check failed: exit={state['ExitCode']}, OOM={state['OOMKilled']}")
         report = {'scope': 'synthetic control tests' if args.controls else 'real Qwen Linux CPU smoke; fictional inputs',
                   'image_id': config['Image'], 'wall_seconds': time.perf_counter() - started,
                   'cpu_limit': 2, 'memory_limit_bytes': memory, 'swap_extra_bytes': 0,
-                  'network': 'none', 'nonroot': True, 'readonly': True, 'exit_code': state['ExitCode']}
+                  'network': 'none', 'nonroot': True, 'readonly': True, 'exit_code': state['ExitCode'],
+                  'oom_killed': state['OOMKilled'], 'passed': not (process.returncode or state['ExitCode'] or state['OOMKilled'])}
         if args.controls:
             print(stderr)
         else:
             rows = [json.loads(line) for line in stdout.splitlines()]
-            assert rows[0]['status'] == 'ready'
+            report['passed'] = report['passed'] and bool(rows) and rows[0].get('status') == 'ready'
             results = [row for row in rows if 'result' in row]
-            assert len(results) == len(requests)
-            for row in results:
-                result = row['result']
-                assert (result['model'], result['revision'], result['dimensions']) == (MODEL, REVISION, 512)
-                vector = result['data'][0]['embedding']
-                assert len(vector) == 512 and abs(math.hypot(*vector) - 1) < 1e-6
-            assert results[1]['result'] == results[-1]['result']
-            report.update(model=MODEL, revision=REVISION, startup_seconds=rows[0]['startup_seconds'],
+            outcomes, valid = review_rows(rows, requests, expected)
+            report['passed'] = report['passed'] and valid
+            if args.profile == 'smoke' and len(results) == len(requests):
+                report['passed'] = report['passed'] and results[1]['result'] == results[-1]['result']
+            report.update(model=MODEL, revision=REVISION, profile=args.profile, outcomes=outcomes,
+                          startup_seconds=rows[0].get('startup_seconds') if rows else None,
                           request_seconds=[row['seconds'] for row in results],
-                          container_peak_bytes=rows[-1]['container_peak_bytes'])
+                          container_peak_bytes=next((row['container_peak_bytes'] for row in rows if 'container_peak_bytes' in row), None))
         destination = ROOT / 'output/inference-results'
         destination.mkdir(exist_ok=True)
-        (destination / ('controls.json' if args.controls else 'qwen.json')).write_text(json.dumps(report, indent=2))
+        filename = 'controls.json' if args.controls else ('qwen.json' if args.profile == 'smoke' else f'qwen-{args.profile}.json')
+        (destination / filename).write_text(json.dumps(report, indent=2))
         print(json.dumps(report, indent=2))
+        if not report['passed']:
+            raise SystemExit('Profile did not pass; retained failure evidence. Limits were not relaxed.')
     finally:
         command('rm', '-f', identifier)
 

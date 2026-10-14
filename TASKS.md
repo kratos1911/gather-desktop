@@ -1,5 +1,21 @@
 # Delivery tasks
 
+## 14 October extended CPU profiles and security review
+
+TASK-005 measured: 512 tokens 5.645 s, 1,024 tokens 13.632 s; 2,048-token item
+and 4,096-token batch failed the unchanged 15 s deadline with clean termination,
+no OOM. Over-limit rejection plus valid-request recovery passed. Fifty sequential
+short queries passed: median 0.710 s, p95 0.935 s, cgroup peak 3.64 GiB.
+Evidence: tests/inference/results/qwen-{long,batch,limits,sustained}-20261014.json.
+No failures discarded. 21 control/reporting tests pass on Windows and Linux;
+frontend build passes. Runtime image unchanged. TASK-005 remains partial.
+
+Scout reviewed that exact image: 56 records (12 high, 7 medium, 37 low), no
+suppression. See services/inference/IMAGE_SCAN_REVIEW.md and PROFILE_RESULTS.md.
+Next: patch OS packages, compatibility-test a maintained CPU AI stack, rescan,
+and evaluate smaller chunks/batches before API integration. No deployment,
+existing API changes, Docker restart or GitHub push.
+
 ## 14 October real Linux Qwen smoke passed
 
 TASK-005 container smoke slice verified: 2 CPUs, 5 GiB RAM ceiling, no extra swap,
