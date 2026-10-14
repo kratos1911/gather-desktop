@@ -1,7 +1,17 @@
 # Current project state
 
-Updated: 14 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
+Updated: 15 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
 choices there are proposed, not implemented. PROGRESS.md records history.
+
+Newest checkpoint: separate patched CPU image built; 25 focused tests and frontend
+build passed on 14 October. Torch 2.14.1+cpu / Transformers 5.19.0 and exact Debian
+OpenSSL/PCRE2 fixes reduced scan records from 56 (12 high) to 28 (1 high). Remaining
+zlib high and tar medium findings have no fixes listed and remain open. New
+512-token source-slice preparer preserves offsets/coverage but is not integrated
+into desktop ingestion. Baseline compatibility vectors captured; candidate real
+comparison and five-chunk profile await 4 GiB free RAM (2.1 GiB on 15 October).
+Docker is running and required. No candidate promotion, existing API changes or
+push. See services/inference/UPGRADE.md for reproducible steps and evidence.
 
 Latest extended checkpoint: all four real CPU profiles attempted and recorded.
 512/1,024-token documents took 5.645/13.632 s; 2,048-token item and max batch

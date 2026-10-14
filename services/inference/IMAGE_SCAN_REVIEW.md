@@ -1,5 +1,22 @@
 # Inference image security review
 
+## Patched candidate scan — 14 October 2026
+
+Image `sha256:5d84bdf24729cacb20389734baee56fd49293eeb1bd2053d5eac1d0259c04f95`
+updates Torch to 2.14.1+cpu, Transformers to 5.19.0 and the four pinned Debian
+OpenSSL/PCRE2 packages. Scout 1.24.0 indexed 172 packages: **28 records, 1 high,
+1 medium, 26 low**, versus 56/12 high before. No Python-package findings remain.
+High zlib CVE-2026-85091 and medium tar CVE-2025-45582 have no fix listed and stay
+open. No findings suppressed; the image is not deployment-approved.
+
+Raw report: output/inference-audit/patched-20261014.sarif.json (ignored). SHA-256:
+`9129cb66cdf7a36f87c81d63e93aad059d5a963db859902abebce6b07281b0fe`.
+Reviewed inventory: ../../tests/inference/results/patched-image-scan-20261014.json.
+Report completed despite a locked temporary-archive cleanup warning. See UPGRADE.md
+for implemented changes and pending real-model compatibility checks.
+
+## Original image scan (historical)
+
 14 October 2026. Status: **open findings; not approved for deployment**.
 
 Docker Scout 1.24.0 indexed 163 packages in image

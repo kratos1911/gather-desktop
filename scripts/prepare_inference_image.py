@@ -1,5 +1,6 @@
 """Stage only reviewed inference code/wheels and materialize a verified model on D:."""
 
+import argparse
 import email
 import hashlib
 import json
@@ -10,7 +11,7 @@ import zipfile
 from services.inference.runtime import MODEL, REVISION
 
 ROOT = Path(__file__).resolve().parents[1]
-BUILD = ROOT / "output/inference-build"
+BUILD = ROOT / "output/inference-patched"
 
 
 def digest(path):
@@ -18,10 +19,13 @@ def digest(path):
         return hashlib.file_digest(source, "sha256").hexdigest()
 
 
-def prepare():
+def prepare(build=BUILD, update_lock=False):
     if ROOT.drive.upper() != "D:":
         raise SystemExit("Build/model staging must be on D:.")
-    wheels = sorted((BUILD / "wheels").glob("*.whl"))
+    build = build.resolve()
+    if not build.is_relative_to(ROOT / 'output'):
+        raise ValueError('Build context must stay in the D: output directory')
+    wheels = sorted((build / "wheels").glob("*.whl"))
     if not wheels:
         raise SystemExit("Download the locked Linux CPU wheels first.")
     records = {}
@@ -39,17 +43,17 @@ def prepare():
     lock = ROOT / "services/inference/requirements.lock"
     content = "# Linux x86_64 CPython 3.12; torch from official CPU index, others PyPI.\n" + '\n'.join(records[name] for name in sorted(records)) + '\n'
     # Regeneration must be deliberate: a changed wheelhouse cannot silently rewrite a lock.
-    if lock.exists() and lock.read_text() != content:
+    if lock.exists() and lock.read_text() != content and not update_lock:
         raise ValueError("Wheelhouse differs from reviewed lock")
     lock.write_text(content, encoding="utf-8")
-    shutil.copyfile(lock, BUILD / "requirements.lock")
-    shutil.copyfile(ROOT / "services/inference/Dockerfile", BUILD / "Dockerfile")
-    target = BUILD / "services/inference"
+    shutil.copyfile(lock, build / "requirements.lock")
+    shutil.copyfile(ROOT / "services/inference/Dockerfile", build / "Dockerfile")
+    target = build / "services/inference"
     target.mkdir(parents=True, exist_ok=True)
-    for name in ("runtime.py", "qwen.py", "stream.py"):
+    for name in ("runtime.py", "qwen.py", "stream.py", "chunking.py"):
         shutil.copyfile(ROOT / "services/inference" / name, target / name)
     # BuildKit sees only this allowlist even if output contains older artifacts.
-    (BUILD / '.dockerignore').write_text('**\n!Dockerfile\n!requirements.lock\n!wheels/\n!wheels/*.whl\n!services/\n!services/inference/\n!services/inference/*.py\n')
+    (build / '.dockerignore').write_text('**\n!Dockerfile\n!requirements.lock\n!wheels/\n!wheels/*.whl\n!services/\n!services/inference/\n!services/inference/*.py\n')
     manifest = json.loads((ROOT / "output/model-benchmark/qwen-download.json").read_text())
     if (manifest['model'], manifest['revision'], manifest['status']) != (MODEL, REVISION, 'verified'):
         raise ValueError("Pinned verified model required")
@@ -73,4 +77,8 @@ def prepare():
 
 
 if __name__ == '__main__':
-    prepare()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--build-dir', type=Path, default=BUILD)
+    parser.add_argument('--update-lock', action='store_true')
+    options = parser.parse_args()
+    prepare(options.build_dir, options.update_lock)

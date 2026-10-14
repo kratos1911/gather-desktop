@@ -17,11 +17,11 @@ containers are outside this workflow and must never be stopped or modified.
 
 All paths below are relative to the repository on D:. Docker's active data disk
 must also remain on D:. Build inputs are staged under ignored
-`output/inference-build`, with an explicit context allowlist. Model weights and
+`output/inference-patched`, with an explicit context allowlist. Model weights and
 Hugging Face credentials are excluded from the build context.
 
-The Linux CPython 3.12 x86_64 lock contains all 25 resolved distributions.
-PyTorch 2.8.0+cpu came from the official `https://download.pytorch.org/whl/cpu`
+The patched Linux CPython 3.12 x86_64 lock contains all 34 resolved distributions.
+PyTorch 2.14.1+cpu came from the official `https://download.pytorch.org/whl/cpu`
 index; the other wheels came from `https://pypi.org/simple`. The pinned Python
 base digest is in Dockerfile. Wheels retain installed package licence metadata;
 the model export retains its model card and Apache-2.0 licence. A full dependency
@@ -37,12 +37,22 @@ With those wheels and the previously verified Qwen snapshot available:
 
 ```powershell
 .\output\model-benchmark\venv\Scripts\python.exe -m scripts.prepare_inference_image
-docker build --network=none --tag gather-inference:cpu-local output/inference-build
-.\output\model-benchmark\venv\Scripts\python.exe -m scripts.check_inference_container --controls
-.\output\model-benchmark\venv\Scripts\python.exe -m scripts.check_inference_container
+docker build --tag gather-inference:cpu-patched output/inference-patched
+.\output\model-benchmark\venv\Scripts\python.exe -m scripts.check_inference_container --candidate --controls
+.\output\model-benchmark\venv\Scripts\python.exe -m scripts.check_inference_container --candidate --profile compatibility
+.\output\model-benchmark\venv\Scripts\python.exe -m scripts.check_inference_container --candidate --profile chunks
 ```
 
+OS patch installation uses signed Debian repositories; Python wheel installation
+remains offline and hash-locked. Model runtime remains network-disabled. The old
+cpu-local image is preserved; `--candidate` selects cpu-patched and a separate
+results folder. Compare six synthetic cases with both image variants, then run
+`python -m scripts.compare_inference_upgrade`. This checks token counts, vector
+tolerances and three small rankings; it is not a full retrieval evaluation.
+
 The preparation script refuses a wheelhouse differing from the committed lock.
+Only a deliberate reviewed upgrade uses `--update-lock`; do not use it for routine
+builds. `--build-dir` must resolve under this repository's D: output directory.
 It materializes and hash-verifies model files into `output/inference-model`,
 without mounting the HF home or its token. The test launcher verifies hashes
 again and rejects extra files. Manifest and launcher are trusted operator inputs;

@@ -48,7 +48,7 @@
     {
       "id": "vector",
       "type": "text",
-      "text": "50 short queries pass; 2,048 tokens time out\nScan: 56 records / 12 high; deployment gated\nNEXT: dependency fixes + smaller-chunk evaluation\nConnected desktop/index still pending",
+      "text": "Patched CPU candidate + 512-token helper built\nScan: 28 findings / 1 high; deployment gated\nNEXT: real compatibility/chunk check (RAM)\nConnected desktop/index still pending",
       "x": 800,
       "y": 220,
       "width": 330,

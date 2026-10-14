@@ -1,5 +1,18 @@
 # Architecture decisions
 
+## ADR-043: separate patched candidate and token-aware source preparation
+
+14–15 October: use maintained CPU Torch 2.14.1+cpu / Transformers 5.19.0 releases,
+exact Linux wheel hashes and pinned Debian security updates in a separate image.
+Retain the baseline and compare six synthetic token/vector/rank cases before
+promotion. Fewer scan findings are not a production-security approval.
+
+Prepare document slices with a trusted server-side tokenizer callback, <=512
+tokens and 8 KiB, one slice per request, exact Unicode offsets and bounded overlap.
+Keep existing index/parser versions unchanged until explicit integration/reindexing
+and retrieval validation. Real candidate checks remain RAM-blocked; do not bypass
+the guard or shut down existing APIs. End users still do not download models.
+
 ## ADR-042: preserve failed CPU profiles and gate integration on remediation
 
 14 October: retain the 15-second request deadline and 5 GiB memory ceiling.

@@ -191,6 +191,12 @@ There is no deployed background cleanup worker or desktop connection yet.
 
 ## CPU container checkpoint (13 October)
 
+15 October checkpoint: dependencies patched; scan down to 28 findings/1 high.
+The new helper counts actual model tokens, splits at readable boundaries and
+preserves source offsets plus overlap. It targets <=512 tokens per request;
+candidate real-model/chunk checks remain RAM-blocked. It is not wired into the
+desktop yet, and new boundaries still need retrieval-quality evaluation.
+
 14 October follow-up: short queries and long document chunks have different
 compute costs. Fifty short queries passed, but a 2,048-token chunk hit the 15 s
 deadline. A maximum accepted token count is not a latency promise. Smaller chunks

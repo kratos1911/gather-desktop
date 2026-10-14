@@ -2,7 +2,7 @@
 
 ## Current executable checks
 
-`python -m unittest discover -s tests/inference -v` runs 21 synthetic process/protocol/reporting
+`python -m unittest discover -s tests/inference -v` runs 25 synthetic process/protocol/reporting/chunking
 boundary tests: reuse/readiness, input and aggregate token limits, normalization,
 busy rejection, startup/request deadlines, crash redaction, cleanup and explicit
 restart. Included in scripts/check.ps1. These do not verify real model quality.

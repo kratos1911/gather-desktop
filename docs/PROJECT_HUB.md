@@ -3,7 +3,11 @@ tags: [gather, project]
 ---
 # Gather project hub
 
-Start here in Obsidian. Updated 14 October 2026.
+Start here in Obsidian. Updated 15 October 2026.
+
+Latest: [[services/inference/UPGRADE|Patched CPU candidate and 512-token slices]].
+25 focused checks pass; scan improved from 56/12 high to 28/1 high. Candidate
+model comparison/chunk timing await free RAM. No deployment or desktop wiring.
 
 Newest: [[services/inference/PROFILE_RESULTS|Extended CPU results]] and
 [[services/inference/IMAGE_SCAN_REVIEW|Security review]]. Fifty short requests

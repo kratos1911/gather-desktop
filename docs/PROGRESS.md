@@ -1,5 +1,26 @@
 # Rebuild progress
 
+## 2026-10-15 — save patched candidate; real checks still RAM-blocked
+
+Recorded the 14 October upgrade work: separate cpu-patched image, Torch 2.14.1+cpu,
+Transformers 5.19.0, 34 hash-locked Linux wheels and exact OpenSSL/PCRE2 fixes.
+Transformers wheel matched its PyPI checksum; installed dependency consistency
+passed. Added deterministic <=512-token/8-KiB source slicing with bounded overlap,
+exact offsets, versioned IDs and explicit failures. Existing parser/index formats
+and runtime budgets unchanged. 25 focused tests passed on Windows and candidate
+Linux; frontend build passed. Baseline six-case vector export succeeded; candidate
+comparison and chunk timing have not run due to the RAM guard.
+
+Completed rescan: 172 packages, 28 findings (1 high/1 medium/26 low), down from
+56/12 high. No Python records remain. Unfixed zlib/tar findings stay open. Raw
+SARIF hashed and curated inventory saved; locked temporary-archive warning
+retained without deletion/restart workaround. Candidate is not deployment-approved.
+
+15 October recheck: Docker 29.7.2 available, free RAM 2.1 GiB. Kept the 4 GiB
+guard. Closing Docker would prevent these tests and affect existing APIs, so it
+was not closed. All storage remains on D:, baseline image retained, no unrelated
+API/container changes or cloud provisioning. No GitHub push.
+
 ## 2026-10-14 — sustained/long-input profiles and image security review
 
 Extended the trusted launcher with long, batch, limits and sustained profiles;

@@ -1,5 +1,10 @@
 # CPU serving prerequisite
 
+15 October: cpu-patched contains updated AI/OS dependencies and a token-aware
+512-token source-slice helper. 25 focused checks pass; rescan is 28 findings/1 high.
+Candidate real-model comparison and chunk timings are RAM-blocked. See UPGRADE.md;
+the helper is not yet connected to desktop ingestion. Deployment remains gated.
+
 14 October follow-up: extended profiles and security review are complete, with
 open findings. Fifty short requests passed; long/max-batch requests timed out.
 The image scan reports 56 records, including 12 high. See PROFILE_RESULTS.md

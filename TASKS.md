@@ -1,5 +1,21 @@
 # Delivery tasks
 
+## 15 October patched-image checkpoint
+
+Built separate cpu-patched image with Torch 2.14.1+cpu, Transformers 5.19.0,
+34 hash-locked wheels and exact OpenSSL/PCRE2 fixes. Rescan completed on 14 October:
+28 records (1 high/1 medium/26 low), down from 56/12 high. Remaining zlib/tar
+findings are open. Added a 512-token/8-KiB source-slice preparer preserving Unicode
+offsets, overlap and stable IDs; existing parser/index and runtime budgets unchanged.
+Not yet wired into desktop ingestion. 25 focused tests passed on Windows/candidate
+Linux and frontend build passed on 14 October. Baseline six-case export captured.
+
+Candidate real-model comparison and five-chunk profile remain unverified: Docker
+is running but only 2.1 GiB host RAM is free on the 15 October recheck; 4 required.
+See services/inference/UPGRADE.md. Next: finish those checks before promotion,
+then retrieval/integration work and remaining finding review. Existing APIs untouched;
+no Docker restart, deployment or push. TASK-005 partial.
+
 ## 14 October extended CPU profiles and security review
 
 TASK-005 measured: 512 tokens 5.645 s, 1,024 tokens 13.632 s; 2,048-token item

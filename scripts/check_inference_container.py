@@ -25,6 +25,22 @@ def profile_requests(profile):
     if profile == 'sustained':
         return [{'role': 'query', 'texts': [f'Find the fictional museum record number {i}.']}
                 for i in range(50)], [None] * 50
+    if profile == 'compatibility':
+        pairs = [('document', 'The fictional museum opens at nine on Tuesday.'),
+                 ('query', 'When does the museum open?'),
+                 ('document', 'Archive code AX-170: the blue folder contains lunar maps.'),
+                 ('query', 'Where are the lunar maps?'),
+                 ('document', 'संग्रहालय मंगलवार को खुलता है। Photos: café, 東京, 🙂.'),
+                 ('query', 'Find multilingual museum notes.')]
+        return [{'role': role, 'texts': [text]} for role, text in pairs], [None] * len(pairs)
+    if profile == 'chunks':
+        from tokenizers import Tokenizer
+        from services.inference.chunking import chunk_document
+        tokenizer = Tokenizer.from_file(str(ROOT / 'output/inference-model/tokenizer.json'))
+        text = ('Museum entry: the blue room keeps lunar maps. Archive code AX-170.\n\n' * 70
+                + 'संग्रहालय मंगलवार को खुलता है। Photos: café, 東京, 🙂.\n' * 20)
+        chunks = chunk_document(text, lambda value: len(tokenizer.encode(value).ids))
+        return [{'role': 'document', 'texts': [chunk['text']]} for chunk in chunks], [None] * len(chunks)
     requests = [('document', 'The fictional museum opens at nine on Tuesday.'),
                 ('query', 'When does the museum open?')] + [('query', 'When does the museum open?')] * 8
     return [{'role': role, 'texts': [text]} for role, text in requests], [None] * len(requests)
@@ -62,8 +78,10 @@ def command(*args):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--controls', action='store_true')
-    parser.add_argument('--profile', choices=['smoke', 'long', 'batch', 'limits', 'sustained'], default='smoke')
+    parser.add_argument('--profile', choices=['smoke', 'long', 'batch', 'limits', 'sustained', 'compatibility', 'chunks'], default='smoke')
+    parser.add_argument('--candidate', action='store_true', help='Use the separate patched image and output directory')
     args = parser.parse_args()
+    image_name = 'gather-inference:cpu-patched' if args.candidate else 'gather-inference:cpu-local'
     memory = 512 * 1024**2 if args.controls else 5 * 1024**3
     model = ROOT / 'output/inference-model'
     if not args.controls:
@@ -90,11 +108,11 @@ def main():
     if args.controls:
         options += ['--mount', f'type=bind,source={ROOT / "tests/inference"},target=/tests,readonly',
                     '--mount', f'type=bind,source={ROOT / "scripts"},target=/app/scripts,readonly',
-                    '--entrypoint', 'python', 'gather-inference:cpu-local',
+                    '--entrypoint', 'python', image_name,
                     '-m', 'unittest', 'discover', '-s', '/tests', '-v']
         payload = ''
     else:
-        options += ['--mount', f'type=bind,source={model},target=/model,readonly', 'gather-inference:cpu-local']
+        options += ['--mount', f'type=bind,source={model},target=/model,readonly', image_name]
         requests, expected = profile_requests(args.profile)
         payload = ''.join(json.dumps(request) + '\n' for request in requests)
     identifier = command(*options).strip()
@@ -138,7 +156,14 @@ def main():
                           request_seconds=[row['seconds'] for row in results],
                           container_peak_bytes=next((row['container_peak_bytes'] for row in rows if 'container_peak_bytes' in row), None))
         destination = ROOT / 'output/inference-results'
-        destination.mkdir(exist_ok=True)
+        if args.candidate:
+            destination = destination / 'patched'
+        destination.mkdir(parents=True, exist_ok=True)
+        if not args.controls and args.profile == 'compatibility':
+            # Synthetic-only diagnostic vectors stay ignored; never export user text.
+            (destination / 'compatibility-vectors.json').write_text(json.dumps([r['result'] for r in results]))
+        if not args.controls and args.profile == 'chunks':
+            report['passed'] = report['passed'] and all(0 < row.get('prompt_tokens', 0) <= 512 for row in outcomes)
         filename = 'controls.json' if args.controls else ('qwen.json' if args.profile == 'smoke' else f'qwen-{args.profile}.json')
         (destination / filename).write_text(json.dumps(report, indent=2))
         print(json.dumps(report, indent=2))

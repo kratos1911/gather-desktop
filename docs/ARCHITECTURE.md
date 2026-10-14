@@ -6,6 +6,12 @@ security checks and delivery gates. Proposed mechanisms are not implemented yet.
 
 ## Current implementation
 
+15 October: separate patched CPU image built and scanned (28 findings/1 high).
+Added token-aware <=512-token source preparation, preserving offsets and overlap.
+Existing index/parser versions and request budgets unchanged. Candidate real-model
+checks remain RAM-blocked; helper not yet connected to ingestion. See
+services/inference/UPGRADE.md. Deployment/promotion remains gated.
+
 14 October extended profiles: 50 short sequential queries passed; 2,048-token
 single and max-batch requests exceed the 15 s deadline on this shared machine.
 No runtime limits changed. Image scan has 56 open records, including 12 high.
