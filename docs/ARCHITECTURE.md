@@ -12,7 +12,8 @@ child. A local Qwen adapter and hash-verifying host smoke launcher are prepared.
 Synthetic control tests pass; real host serving smoke passed on 13 October.
 The Linux CPU container now builds with 25 hash-locked dependencies and passes
 18 synthetic tests with offline/non-root/read-only resource restrictions. Real
-container inference remains paused by the RAM guard. No HTTP endpoint or desktop
+container inference passed on 14 October: ten short fictional inputs, 15.781 s
+startup, 0.593–0.742 s requests and 3.87 GiB cgroup peak. No HTTP endpoint or desktop
 connection is verified. See its README and CONTAINER.md.
 
 8 October: `supabase/migrations` now defines sources and source_versions with

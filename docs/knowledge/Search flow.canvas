@@ -48,7 +48,7 @@
     {
       "id": "vector",
       "type": "text",
-      "text": "Qwen v1 + frozen v2 tested on D:\nLinux CPU image built; 18 control tests pass\nNEXT: real container smoke (RAM guard)\nConnected desktop/index still pending",
+      "text": "Qwen v1 + frozen v2 tested on D:\nLinux real smoke passed: 0.59–0.74 s/request\nNEXT: long-input/load + image security checks\nConnected desktop/index still pending",
       "x": 800,
       "y": 220,
       "width": 330,

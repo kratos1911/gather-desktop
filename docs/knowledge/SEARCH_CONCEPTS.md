@@ -197,5 +197,7 @@ another boundary around it: CPU, RAM and process limits, read-only files and no
 network. These controls reduce resource use and access; they do not authenticate
 users or make the image production-ready. The new private stream has bounded
 frames and handles one request at a time. Eighteen synthetic tests pass inside
-Linux; real model timing there is still waiting for sufficient free RAM.
+Linux. On 14 October the real model also passed ten short fictional requests:
+15.78 s startup, 0.59–0.74 s per request and 3.87 GiB peak container memory. This
+does not yet establish performance for long documents or concurrent users.
 See [[services/inference/CONTAINER|Container checks and limits]].

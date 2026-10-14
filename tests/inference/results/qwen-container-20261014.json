@@ -1,0 +1,28 @@
+{
+  "scope": "real Qwen Linux CPU smoke; fictional inputs",
+  "image_id": "sha256:b04ad84cd1474204823070015a7f87537243714cffcb5c044789824b80b54f50",
+  "wall_seconds": 23.76990960000012,
+  "cpu_limit": 2,
+  "memory_limit_bytes": 5368709120,
+  "swap_extra_bytes": 0,
+  "network": "none",
+  "nonroot": true,
+  "readonly": true,
+  "exit_code": 0,
+  "model": "Qwen/Qwen3-Embedding-0.6B",
+  "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "startup_seconds": 15.780722954999987,
+  "request_seconds": [
+    0.5934107269999913,
+    0.6681059840000216,
+    0.6734003770000072,
+    0.6529854489999707,
+    0.6623713289999955,
+    0.6630185239999946,
+    0.6875240929999791,
+    0.7094378840000104,
+    0.6827832060000105,
+    0.7419355959999621
+  ],
+  "container_peak_bytes": 4155457536
+}

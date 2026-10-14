@@ -1,5 +1,20 @@
 # Rebuild progress
 
+## 2026-10-14 — real Linux CPU inference smoke verified
+
+After Docker was opened and host RAM reached 4.20 GiB, the prepared isolated
+container completed ten fictional requests. Startup 15.7807 s; request range
+0.5934–0.7419 s; whole launch/run/inspect interval 23.7699 s. Cgroup peak
+4,155,457,536 bytes (3.87 GiB) includes container-accounted memory, not just model
+process RSS. The 2-CPU/5-GiB/no-extra-swap, offline, read-only, non-root settings
+passed assertions. Pinned model identity, normalized 512-dimensional vectors
+and repeated-query consistency passed. Exit zero, no OOM, test container removed.
+Evidence: tests/inference/results/qwen-container-20261014.json. No runtime changes;
+prior synthetic tests/frontend build retained rather than rerun for documentation.
+This is a short-input smoke, not a throughput, maximum-input or cloud cost result.
+Next: maximum-input/load profiling and image security/licence review before API
+integration. Existing API containers untouched; no cloud work or push.
+
 ## 2026-10-13 — isolated Linux inference image and protocol controls
 
 Added private JSONL serving with 64 KiB frame limit, recoverable malformed JSON,

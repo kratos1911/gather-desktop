@@ -2,7 +2,7 @@
 
 TASK-005 remains partial. `runtime.py` is a private Python process boundary.
 The isolated Linux image now builds and passes 18 synthetic control tests;
-real container-model measurements remain pending RAM availability. It is not
+real container-model smoke passed on 14 October (see CONTAINER.md). It is not
 an HTTP service or cloud deployment. No desktop search is connected.
 See [CONTAINER.md](CONTAINER.md) for reproducible checks and limits.
 
@@ -71,8 +71,9 @@ The old C: data disk was removed after verification. D: image storage is now rea
 The Linux CPU image is separately hash-locked and built. Its launcher verifies
 read-only/non-root configuration, disabled network and explicit CPU/memory/PID
 limits. Eighteen synthetic tests pass inside it, including deadlines and recovery.
-Next: measure real container startup, warm requests and peak memory once at least
-4 GiB host RAM is free. HTTP ingress controls remain unimplemented.
+Real container smoke now passes: 15.781 s startup, ten short fictional requests
+0.593–0.742 s, 3.87 GiB cgroup peak within a 5 GiB ceiling. Next: maximum-input
+and load profiling plus image security review. HTTP ingress remains unimplemented.
 
 EmbeddingGemma terms are accepted per the user. Local Hugging Face login was
 verified on 13 October with credentials stored on D:, but the token's account

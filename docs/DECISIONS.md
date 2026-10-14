@@ -16,7 +16,9 @@ API workloads and shared Docker settings are explicitly out of scope. Keep the
 4 GiB host free-memory guard; do not weaken it to obtain a benchmark result.
 
 Build/dependency consistency and 18 synthetic Linux tests pass. Real container
-measurements remain pending memory availability. No cloud deployment, production
+smoke passed on 14 October after RAM became available: short requests at
+0.593–0.742 s with a 3.87 GiB cgroup peak. Keep the 5 GiB test ceiling; these short
+inputs do not establish worst-case sizing. No cloud deployment, production
 security claim or public ingress is authorized by these local tests.
 
 ## ADR-040: persistent inference behind a killable process (12 October)

@@ -10,7 +10,9 @@ restart. Included in scripts/check.ps1. These do not verify real model quality.
 and measures host startup/three fictional requests; passed on 13 October after
 RAM became available. The same 18 tests now also pass in the isolated Linux
 image via `python -m scripts.check_inference_container --controls`. Container
-configuration assertions pass; real Qwen container timing remains RAM-blocked.
+configuration assertions pass; real Qwen container smoke passed on 14 October
+with ten short fictional requests, model/vector checks and no OOM. Evidence:
+tests/inference/results/qwen-container-20261014.json.
 HTTP ingress, maximum-input profiling and image security review remain future gates.
 
 `python scripts/check_database.py` separately runs 45 SQL assertions and four

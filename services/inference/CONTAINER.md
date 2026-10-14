@@ -1,5 +1,13 @@
 # Local CPU container verification
 
+Verified 14 October 2026: real Qwen smoke passed after the RAM guard cleared.
+Startup 15.781 s; ten short fictional requests 0.593–0.742 s; cgroup peak
+4,155,457,536 bytes (3.87 GiB). Exit zero, no OOM, container removed. Model identity,
+normalized 512-dimensional vectors and repeated-query consistency passed.
+Evidence: ../../tests/inference/results/qwen-container-20261014.json.
+The cgroup peak includes container-accounted memory such as file cache and cannot
+be compared directly with the earlier Windows process RSS measurement.
+
 This is a private test boundary for TASK-005, not a deployed or authenticated API.
 The image runs Qwen through a bounded JSONL input stream. No port is published.
 Only fictional text is used by the smoke launcher. Existing application/API

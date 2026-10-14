@@ -1,6 +1,6 @@
 # Current project state
 
-Updated: 13 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
+Updated: 14 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
 choices there are proposed, not implemented. PROGRESS.md records history.
 
 Latest TASK-005 checkpoint: isolated Linux CPU image built on D: with 25
@@ -8,10 +8,14 @@ hash-locked dependencies; 18 inference/protocol tests pass on Windows and inside
 the container. The launcher verifies resource limits, non-root/read-only and
 offline configuration and cleans only its uniquely named test container. The
 frontend build passes. See services/inference/CONTAINER.md and recorded control
-evidence. Real container inference is still pending: the 4 GiB host RAM guard
-stopped the attempt before model loading (about 2.4 GiB available). Next: recheck
-RAM, run the prepared ten-request fictional Qwen smoke, then review maximum-input
-performance and image security. Existing API containers were not changed. No push.
+evidence. Real container inference passed on 14 October after 4.20 GiB host RAM
+became available: 15.781 s startup, ten fictional requests at 0.593–0.742 s,
+4,155,457,536-byte cgroup peak (3.87 GiB) within the 5 GiB ceiling. Model identity,
+normalized 512-dimensional vectors and repeated-query consistency passed; the
+test container exited successfully and was removed. Evidence:
+tests/inference/results/qwen-container-20261014.json. Next: maximum-input/load
+profiling and image security review. TASK-005 remains partial; no connected
+desktop search or cloud deployment. Existing API containers unchanged. No push.
 
 Latest setup result (13 October): Docker disk migration is complete and verified.
 The failed UI move treated Robocopy success code 1 as failure. After stopping

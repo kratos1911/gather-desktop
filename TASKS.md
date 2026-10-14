@@ -1,5 +1,18 @@
 # Delivery tasks
 
+## 14 October real Linux Qwen smoke passed
+
+TASK-005 container smoke slice verified: 2 CPUs, 5 GiB RAM ceiling, no extra swap,
+network disabled, non-root and read-only configuration assertions passed. Startup
+15.781 s; ten short fictional requests 0.593–0.742 s; cgroup peak 3.87 GiB.
+Pinned identity, 512-dimensional normalized vectors and repeated-query consistency
+passed. Container exited zero and was removed. Evidence:
+tests/inference/results/qwen-container-20261014.json. This supersedes the RAM
+blocker below. No runtime code changed; previous 18 control tests/frontend build
+were not rerun for this evidence-only update. Next: maximum-input/load profiling
+and image security/licence review. Whole TASK-005 remains partial. No API changes,
+cloud deployment or GitHub push.
+
 ## 13 October isolated inference container checkpoint
 
 TASK-005 remains partial. Built gather-inference:cpu-local on D: from a pinned
