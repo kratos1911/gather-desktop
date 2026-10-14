@@ -10,8 +10,11 @@ promotion. Fewer scan findings are not a production-security approval.
 Prepare document slices with a trusted server-side tokenizer callback, <=512
 tokens and 8 KiB, one slice per request, exact Unicode offsets and bounded overlap.
 Keep existing index/parser versions unchanged until explicit integration/reindexing
-and retrieval validation. Real candidate checks remain RAM-blocked; do not bypass
-the guard or shut down existing APIs. End users still do not download models.
+and retrieval validation. On 15 October, real six-case compatibility and five-chunk
+timing checks passed after approved transient clean-cache release. The RAM guard
+was not bypassed and existing APIs were not stopped by this work. Keep candidate
+promotion gated on remaining retrieval/security/licence review. End users still
+do not download models.
 
 ## ADR-042: preserve failed CPU profiles and gate integration on remediation
 

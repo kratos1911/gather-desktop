@@ -48,7 +48,7 @@
     {
       "id": "vector",
       "type": "text",
-      "text": "Patched CPU candidate + 512-token helper built\nScan: 28 findings / 1 high; deployment gated\nNEXT: real compatibility/chunk check (RAM)\nConnected desktop/index still pending",
+      "text": "Patched CPU: 6 compatibility cases pass\n5 chunks: 3.05–5.88 s; peak 3.95 GiB\nNEXT: chunk retrieval-quality evaluation\n28 scan findings / 1 high; deployment gated",
       "x": 800,
       "y": 220,
       "width": 330,

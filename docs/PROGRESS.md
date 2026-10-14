@@ -1,5 +1,36 @@
 # Rebuild progress
 
+## 2026-10-15 — real patched-model compatibility and chunk timing passed
+
+User authorized clearing unnecessary background apps and running the remaining
+checks. Requested graceful window closure for Task Manager and Settings; both
+accepted the request but their processes were later still present, so full app
+exit is not claimed. Preserved the session, Docker and unrelated API containers.
+The significant memory relief came from two explicitly approved, transient
+clean-page-cache releases inside Docker's Linux environment. Host free RAM reached
+4.81 GiB before compatibility and 5.08 GiB before chunks. Two intermediate chunk
+attempts stopped at the unchanged 4 GiB guard; no test container was created for
+those attempts. Windows reclaimed Linux memory with a delay. No persistent setting
+changes, forced app termination or Docker restart.
+
+Candidate image 5d84bdf24729 passed six real Qwen compatibility cases: exact token
+counts, minimum paired cosine 0.999999999996, maximum coordinate difference
+4.33e-7, unchanged three tested rankings. Five chunks (495/494/380/500/306 tokens)
+passed in 5.883/4.569/4.127/4.591/3.053 seconds, below the 15 s deadline. Both
+profiles exited zero without OOM; peak cgroup memory about 3.95 GiB under the
+unchanged 5 GiB ceiling. Both owned test containers were removed. Curated reports:
+tests/inference/results/patched-{compatibility,comparison,chunks}-20261015.json.
+No private document inputs. No changes to runtime, models, dependencies or desktop
+assets; prior 25 control tests/frontend build were not repeated for evidence/docs.
+
+All nine unrelated API containers were listed running during the check; two had
+recent start times, so uninterrupted service or health is not claimed. This work
+did not issue stop/restart/update commands against them or inspect their APIs.
+Next: retrieval-quality evaluation with new chunk boundaries before ingestion
+integration; unresolved image findings and licence review still gate promotion.
+TASK-005 remains partial. Updated canonical notes, Obsidian concepts and flow map.
+No cloud resources or GitHub push.
+
 ## 2026-10-15 — save patched candidate; real checks still RAM-blocked
 
 Recorded the 14 October upgrade work: separate cpu-patched image, Torch 2.14.1+cpu,

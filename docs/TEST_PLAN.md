@@ -15,7 +15,11 @@ with ten short fictional requests, model/vector checks and no OOM. Evidence:
 tests/inference/results/qwen-container-20261014.json.
 Extended profiles and image review are recorded in services/inference/PROFILE_RESULTS.md
 and IMAGE_SCAN_REVIEW.md. Long inputs exposed deadline failures; scan findings
-remain open. HTTP ingress, remediation/rescan and revised chunk-policy tests remain gates.
+remain open. On 15 October the patched image passed six-case vector/token/rank
+compatibility and five real 306–500-token chunks under the 15 s deadline. Evidence:
+tests/inference/results/patched-{compatibility,comparison,chunks}-20261015.json.
+HTTP ingress, remaining security/licence review and retrieval evaluation with the
+new chunk boundaries remain gates. These fixtures are not full quality regression.
 
 `python scripts/check_database.py` separately runs 45 SQL assertions and four
 concurrent scenarios against a

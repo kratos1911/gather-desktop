@@ -49,10 +49,23 @@ The chunk profile embeds five source slices individually and verifies their
 actual model token counts remain <=512. These are synthetic compatibility and
 latency checks, not full retrieval benchmarks or public deployment approval.
 
-15 October checkpoint: candidate real-model checks remain blocked by the
-unchanged 4 GiB free-RAM guard (2.1 GiB available). Docker is running and required
-for these checks. Candidate vector compatibility and chunk latency are unverified;
-do not promote the image based on synthetic tests alone.
+15 October real-model checkpoint: both profiles pass on the exact candidate image.
+Six compatibility cases retain identical token counts and all three tested ranks;
+minimum paired cosine 0.999999999996, maximum coordinate difference 4.33e-7.
+Requests took 0.613–0.791 s; startup 18.348 s. Five chunks contain 495, 494, 380,
+500 and 306 tokens, completing in 5.883, 4.569, 4.127, 4.591 and 3.053 s;
+startup 14.374 s. Peak cgroup memory was 4,241,444,864 bytes for compatibility and
+4,240,633,856 bytes for chunks (both about 3.95 GiB). Both exited zero without OOM.
+All vectors passed finite, normalized, 512-dimensional checks. Test containers
+were removed. Evidence: tests/inference/results/patched-{compatibility,comparison,
+chunks}-20261015.json; raw synthetic vectors stay ignored.
+
+The 4 GiB host guard, 15 s deadline and 5 GiB container ceiling were unchanged.
+Approved one-time Linux clean-page-cache release was needed before each profile;
+Windows reclaimed memory with a delay. No persistent Docker setting changes or
+API stops. These shared-machine fixtures do not establish production capacity or
+retrieval quality with new chunk boundaries. Next: evaluate that retrieval quality
+before ingestion integration; keep promotion/security/licence gates open.
 
 The 14 October rescan completed: 172 packages indexed; 28 findings across 13
 vulnerable packages (1 high, 1 medium, 26 low), down from 56 (12 high). No Python

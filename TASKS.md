@@ -10,11 +10,14 @@ offsets, overlap and stable IDs; existing parser/index and runtime budgets uncha
 Not yet wired into desktop ingestion. 25 focused tests passed on Windows/candidate
 Linux and frontend build passed on 14 October. Baseline six-case export captured.
 
-Candidate real-model comparison and five-chunk profile remain unverified: Docker
-is running but only 2.1 GiB host RAM is free on the 15 October recheck; 4 required.
-See services/inference/UPGRADE.md. Next: finish those checks before promotion,
-then retrieval/integration work and remaining finding review. Existing APIs untouched;
-no Docker restart, deployment or push. TASK-005 partial.
+15 October real checks now pass: six candidate vectors match the baseline within
+tolerance, token counts and three tested rankings unchanged. Five chunks (306–500
+tokens) return valid embeddings in 3.053–5.883 s, under the unchanged 15 s deadline;
+peak 3.95 GiB under the 5 GiB ceiling. Evidence: tests/inference/results/
+patched-{compatibility,comparison,chunks}-20261015.json. Memory was freed through
+approved transient Linux clean-cache release; no API stop or Docker restart.
+Next: retrieval-quality evaluation with new boundaries before ingestion integration,
+plus remaining security/licence review. No deployment or push. TASK-005 partial.
 
 ## 14 October extended CPU profiles and security review
 
@@ -149,7 +152,7 @@ Current checkpoint: local quality checks pass; remote CI execution pending. Link
 | TASK-002 | Validate audience and comparable products | Ready | Record user interviews/feedback or explicitly unvalidated hypotheses; compare primary-source alternatives; decide initial audience/regions |
 | TASK-003 | Desktop shell and design verification | Partial | Frontend/native build and four component tests pass; actual visual, keyboard, zoom and motion checks still pending after browser permission denial |
 | TASK-004 | Transport-independent text processing contract | Done | 12 standard-library tests pass; strict JSON/base64/UTF-8 and 64 KiB source limit; source offsets, hashes/versioned IDs, overlap and retry determinism verified; no personal imports or cloud writes; see services/worker/README.md |
-| TASK-005 | Cloud-oriented embedding evaluation | Partial: host smoke and D: Docker storage verified | v1/v2 real benchmarks retained. Persistent CPU process has 14 synthetic boundary tests; real host smoke passed 13 October. Docker disk on D: verified; HF login valid but Gemma account access denied. No inference container or HTTP serving verified. See services/inference/README.md and docs/TEXT_V2_RESULTS.md. Independent review, Gemma/visual comparison, cloud latency/cost and production runtime remain pending |
+| TASK-005 | Cloud-oriented embedding evaluation | Partial: patched CPU compatibility/chunk timing verified | v1/v2 benchmarks retained. 25 control/chunking tests; isolated Linux inference verified. Six-case patched-image compatibility and five smaller chunks pass on 15 October. D: storage verified; Gemma account access denied. HTTP/desktop integration, new-boundary retrieval quality, remaining security/licence review, Gemma/visual comparison and cloud measurement remain pending. See services/inference/UPGRADE.md |
 | TASK-006 | Supabase identity and private schema | Needs project configuration | Versioned migrations; supported signup/session/logout flow; enforce audience decision; RLS and two-user isolation tests; secure session storage; quota policy |
 | TASK-007 | Text import-to-search vertical slice | Depends on 005/006 | Import TXT/MD -> durable processing -> all passages -> real search -> reader -> deletion; retry/restart/dedup/isolation tests; user-readable errors |
 | TASK-008 | Native document formats | Depends on 007 | PDF/DOCX/PPTX parsers; preserved page/slide/section references; long-document and malformed-file cases; scanned pages correctly identified |

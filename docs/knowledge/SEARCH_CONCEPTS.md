@@ -194,8 +194,13 @@ There is no deployed background cleanup worker or desktop connection yet.
 15 October checkpoint: dependencies patched; scan down to 28 findings/1 high.
 The new helper counts actual model tokens, splits at readable boundaries and
 preserves source offsets plus overlap. It targets <=512 tokens per request;
-candidate real-model/chunk checks remain RAM-blocked. It is not wired into the
-desktop yet, and new boundaries still need retrieval-quality evaluation.
+real candidate checks now pass on six compatibility cases and five chunks
+(306–500 tokens, 3.05–5.88 s each). This verifies numerical compatibility and
+bounded processing on these fixtures, not search relevance on real documents.
+It is not wired into the desktop yet; new boundaries still need retrieval-quality
+evaluation. Linux file cache can occupy host RAM even after a model exits;
+approved one-time clean-cache release cleared the memory guard without stopping
+APIs. It is not a permanent memory setting or a production performance fix.
 
 14 October follow-up: short queries and long document chunks have different
 compute costs. Fifty short queries passed, but a 2,048-token chunk hit the 15 s

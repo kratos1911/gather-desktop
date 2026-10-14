@@ -1,0 +1,65 @@
+{
+  "scope": "real Qwen Linux CPU smoke; fictional inputs",
+  "image_id": "sha256:5d84bdf24729cacb20389734baee56fd49293eeb1bd2053d5eac1d0259c04f95",
+  "wall_seconds": 24.067291500003194,
+  "cpu_limit": 2,
+  "memory_limit_bytes": 5368709120,
+  "swap_extra_bytes": 0,
+  "network": "none",
+  "nonroot": true,
+  "readonly": true,
+  "exit_code": 0,
+  "oom_killed": false,
+  "passed": true,
+  "model": "Qwen/Qwen3-Embedding-0.6B",
+  "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "profile": "compatibility",
+  "outcomes": [
+    {
+      "index": 0,
+      "passed": true,
+      "seconds": 0.7309802979980304,
+      "prompt_tokens": 10
+    },
+    {
+      "index": 1,
+      "passed": true,
+      "seconds": 0.7272638460017333,
+      "prompt_tokens": 26
+    },
+    {
+      "index": 2,
+      "passed": true,
+      "seconds": 0.6125825429990073,
+      "prompt_tokens": 16
+    },
+    {
+      "index": 3,
+      "passed": true,
+      "seconds": 0.7908518009971885,
+      "prompt_tokens": 26
+    },
+    {
+      "index": 4,
+      "passed": true,
+      "seconds": 0.7800220760000229,
+      "prompt_tokens": 38
+    },
+    {
+      "index": 5,
+      "passed": true,
+      "seconds": 0.6891294510023727,
+      "prompt_tokens": 26
+    }
+  ],
+  "startup_seconds": 18.3481099060009,
+  "request_seconds": [
+    0.7309802979980304,
+    0.7272638460017333,
+    0.6125825429990073,
+    0.7908518009971885,
+    0.7800220760000229,
+    0.6891294510023727
+  ],
+  "container_peak_bytes": 4241444864
+}

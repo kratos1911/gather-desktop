@@ -9,8 +9,10 @@ security checks and delivery gates. Proposed mechanisms are not implemented yet.
 15 October: separate patched CPU image built and scanned (28 findings/1 high).
 Added token-aware <=512-token source preparation, preserving offsets and overlap.
 Existing index/parser versions and request budgets unchanged. Candidate real-model
-checks remain RAM-blocked; helper not yet connected to ingestion. See
-services/inference/UPGRADE.md. Deployment/promotion remains gated.
+compatibility passes on six cases; five 306–500-token chunks complete in
+3.053–5.883 s. Helper not yet connected to ingestion; retrieval quality with the
+new boundaries remains unverified. See services/inference/UPGRADE.md.
+Deployment/promotion remains gated.
 
 14 October extended profiles: 50 short sequential queries passed; 2,048-token
 single and max-batch requests exceed the 15 s deadline on this shared machine.

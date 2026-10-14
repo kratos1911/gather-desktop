@@ -6,8 +6,10 @@ tags: [gather, project]
 Start here in Obsidian. Updated 15 October 2026.
 
 Latest: [[services/inference/UPGRADE|Patched CPU candidate and 512-token slices]].
-25 focused checks pass; scan improved from 56/12 high to 28/1 high. Candidate
-model comparison/chunk timing await free RAM. No deployment or desktop wiring.
+25 focused checks pass; scan improved from 56/12 high to 28/1 high. Real candidate
+comparison now passes (six cases, unchanged tested rankings); five chunks take
+3.05–5.88 s, peak 3.95 GiB. Next: retrieval quality with new chunk boundaries,
+then ingestion integration. Security/licence gates remain; no desktop wiring yet.
 
 Newest: [[services/inference/PROFILE_RESULTS|Extended CPU results]] and
 [[services/inference/IMAGE_SCAN_REVIEW|Security review]]. Fifty short requests

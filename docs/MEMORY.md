@@ -8,10 +8,13 @@ build passed on 14 October. Torch 2.14.1+cpu / Transformers 5.19.0 and exact Deb
 OpenSSL/PCRE2 fixes reduced scan records from 56 (12 high) to 28 (1 high). Remaining
 zlib high and tar medium findings have no fixes listed and remain open. New
 512-token source-slice preparer preserves offsets/coverage but is not integrated
-into desktop ingestion. Baseline compatibility vectors captured; candidate real
-comparison and five-chunk profile await 4 GiB free RAM (2.1 GiB on 15 October).
-Docker is running and required. No candidate promotion, existing API changes or
-push. See services/inference/UPGRADE.md for reproducible steps and evidence.
+into desktop ingestion. Candidate real checks passed on 15 October: six vectors
+match baseline tolerance, token counts/rankings unchanged; five 306–500-token
+chunks took 3.053–5.883 s, peak 3.95 GiB. Approved transient Linux clean-cache
+release cleared the unchanged 4 GiB host guard. No API stop, Docker restart,
+candidate promotion or push. Next: retrieval-quality evaluation of new boundaries,
+then ingestion integration; security/licence gates remain open. See
+services/inference/UPGRADE.md for reproducible steps and evidence.
 
 Latest extended checkpoint: all four real CPU profiles attempted and recorded.
 512/1,024-token documents took 5.645/13.632 s; 2,048-token item and max batch
