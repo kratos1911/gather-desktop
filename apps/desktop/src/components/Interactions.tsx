@@ -78,18 +78,27 @@ export function ReadingPane({ children }: { children: ReactNode }) {
 
 export function OrbPreview() {
   const [play, setPlay] = useState(false);
+  const reduced = useReducedMotion();
   return (
     <section className="orb-preview" aria-label="Processing indicator preview">
       <ThinkingOrb
         state="searching"
         size={20}
         theme="light"
-        paused={!play}
+        paused={!play || !!reduced}
         aria-label="Sample processing indicator, not an active job"
       />
       <p>Processing indicator sample. No model is running.</p>
-      <button className="back" onClick={() => setPlay(!play)}>
-        {play ? "Pause sample" : "Preview motion"}
+      <button
+        className="back"
+        disabled={!!reduced}
+        onClick={() => setPlay(!play)}
+      >
+        {reduced
+          ? "Reduced motion enabled"
+          : play
+            ? "Pause sample"
+            : "Preview motion"}
       </button>
     </section>
   );

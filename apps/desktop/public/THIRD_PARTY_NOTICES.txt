@@ -442,3 +442,9 @@ INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
 LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
+Manrope variable font (unmodified), added 15 October 2026
+Copyright 2018 The Manrope Project Authors (https://github.com/googlefonts/manrope)
+License: SIL Open Font License 1.1. Full license: fonts/Manrope-OFL.txt.
+Source: https://github.com/google/fonts/tree/main/ofl/manrope
+SHA256: 3ae11c49db0455a3cc33e37d380f20fdb8c7f8b41dc07625c177e3d87a9d6ae6
+Bundled locally; no runtime requests to a font CDN.

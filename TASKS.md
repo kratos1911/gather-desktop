@@ -1,5 +1,14 @@
 # Delivery tasks
 
+## 15 October desktop redesign
+
+TASK-003 visual slice implemented: forest/citron/coral theme, local OFL Manrope,
+responsive library/reader/setup/policies, focus restoration and reduced-motion
+controls. Five UI tests, lint, frontend and native debug builds pass. Browser
+inspection/contrast/reflow evidence: docs/DESIGN_REVIEW_20261015.md. Overall task
+remains partial for native/accessibility QA. No push; backend plan unchanged.
+
+
 ## Current three-milestone path (15 October)
 
 | Order | Outcome | Prerequisites | Completion criteria / status |

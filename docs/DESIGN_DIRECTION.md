@@ -1,6 +1,7 @@
 # Interface and motion direction
 
-Working concept: a quiet, precise workspace for rediscovering information. Product name remains open.
+Working concept: an expressive, precise workspace for rediscovering information.
+15 October: user requested stronger color and typography inspired by GSAP sites.
 
 ## Layout
 
@@ -12,9 +13,30 @@ Import has drag-and-drop and a normal file-picker button. Show per-file progress
 
 ## Visual system
 
-Proposed palette: warm off-white canvas (#F7F8FA), white surfaces, dark ink (#18212B), muted slate (#526171), and restrained teal (#087F73) accents. These are starting tokens; verify contrast for each actual foreground/background pair before shipping. Offer dark mode after the core system is stable.
+Implemented tokens: canvas #F4F6F0, white surfaces, ink #182C29, muted text
+#52635E, forest #173D35 navigation/actions, citron #DCF879 selections, coral
+#FFB19B secondary artwork and #703426 text on #FFE4D9 preview labels.
+The forest sidebar has light text; document surfaces remain light. This is not
+a full dark mode. File artwork is fictional and does not imply parsed content.
 
-Use a locally available system sans-serif initially, generous text spacing, an 8px spacing rhythm, 12–16px surface corners and subtle borders. Document content gets the largest readable area. Keep file type icons and status colors consistent, with text labels so color is never the only signal.
+Self-hosted Manrope (200–800 variable weights, SIL OFL 1.1) provides rounded,
+confident UI headings; Segoe UI remains the document reading face. Use the
+4/8/12/16/24/32/48px spacing scale, 8px controls, 16px surfaces and 4px labels.
+Library uses two columns at laptop widths, three on wide displays, one below
+760px. Navigation reflows above content below 480px for zoomed/narrow views.
+
+References visually inspected 15 October: https://gsap.com/ (bold sans scale,
+high-contrast green and dark surfaces); https://www.mike-fernandez.dev/ (showcase
+entry screen only: expressive color and organic composition); https://guillaumecolombel.fr/
+(coral focal color and heavy sans typography). The latter two were discovered
+through https://gsap.com/showcase/. No source, fonts or artwork copied from them;
+no claim to use their exact font. No GSAP dependency needed for these interactions.
+
+Font source: https://github.com/google/fonts/tree/main/ofl/manrope.
+Unmodified TTF and full OFL included in apps/desktop/public/fonts; SHA-256
+3ae11c49db0455a3cc33e37d380f20fdb8c7f8b41dc07625c177e3d87a9d6ae6.
+Fonts load locally without a runtime font CDN. The search mark is original CSS
+geometry; existing fictional file covers were restyled, not downloaded assets.
 
 ## Motion policy (updated)
 

@@ -4,7 +4,11 @@
 
 The governing rules are [DESIGN_AVOID_LIST.md](DESIGN_AVOID_LIST.md); implementation guidance is [DESIGN_DIRECTION.md](DESIGN_DIRECTION.md). Keep those as the single source for detailed design rather than maintaining competing copies.
 
-Current system: local Segoe UI/system sans-serif, warm light surfaces, dark ink, restrained green accent, named spacing tokens, explicit focus feedback and solid controls. No Inter/purple-gradient/template reset from generic guides.
+Current system (15 October redesign): locally bundled Manrope variable sans-serif,
+Segoe UI document text, forest navigation, citron selections, coral secondary
+highlights and light reading surfaces. Named color/spacing/radius tokens, solid
+controls and explicit focus feedback. See DESIGN_DIRECTION.md for provenance
+and DESIGN_REVIEW_20261015.md for verified checks and remaining native QA.
 
 Required screens/states: library, processing queue, search results, reader, selected-source chat, model setup, account/settings and policies. Empty/loading/error/offline/permission/quota states need recovery actions. Only the fixture library, reader, model/policy screens exist today.
 

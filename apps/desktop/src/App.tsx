@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FilterControl,
   ReadingPane,
@@ -17,6 +17,15 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Sample | null>(null);
   const [notice, setNotice] = useState("");
+  const readerTitle = useRef<HTMLHeadingElement>(null);
+  const sourceButton = useRef<HTMLButtonElement | null>(null);
+  const sourceId = useRef<string | null>(null);
+  const wasReading = useRef(false);
+  useEffect(() => {
+    if (selected) readerTitle.current?.focus();
+    else if (wasReading.current) sourceButton.current?.focus();
+    wasReading.current = !!selected;
+  }, [selected]);
   const visible = samples.filter(
     (file) =>
       (filter === "All files" || file.category === filter) &&
@@ -42,12 +51,14 @@ export default function App() {
         <nav aria-label="Main navigation">
           <button
             className={screen === "library" ? "nav active" : "nav"}
+            aria-current={screen === "library" ? "page" : undefined}
             onClick={() => navigate("library")}
           >
             Library <span className="count">{samples.length}</span>
           </button>
           <button
             className={screen === "models" ? "nav active" : "nav"}
+            aria-current={screen === "models" ? "page" : undefined}
             onClick={() => navigate("models")}
           >
             Models & setup
@@ -99,8 +110,8 @@ export default function App() {
             <div className="screen-heading">
               <h1>Models & setup</h1>
               <p className="subtitle">
-                Candidates for cloud processing. Hosting and benchmarking are
-                still pending.
+                Cloud processing candidates. Local text benchmarks are complete;
+                these services are not connected to this preview.
               </p>
             </div>
             <div className="model-list">
@@ -134,7 +145,9 @@ export default function App() {
               </button>
               <div className="reader-heading">
                 <span className="tag">{selected.extension} · SAMPLE</span>
-                <h1>{selected.title}</h1>
+                <h1 ref={readerTitle} tabIndex={-1}>
+                  {selected.title}
+                </h1>
                 <button className="back" onClick={() => navigate("copyright")}>
                   Copyright information
                 </button>
@@ -191,6 +204,7 @@ export default function App() {
               </button>
             </div>
             <div className="search-box">
+              <span className="search-symbol" aria-hidden="true" />
               <input
                 aria-label="Filter sample files"
                 placeholder="Find a document, a photo, a half-remembered idea…"
@@ -233,7 +247,15 @@ export default function App() {
                 <button
                   className="file-card"
                   key={file.id}
-                  onClick={() => setSelected(file)}
+                  ref={(element) => {
+                    if (file.id === sourceId.current)
+                      sourceButton.current = element;
+                  }}
+                  onClick={(event) => {
+                    sourceId.current = file.id;
+                    sourceButton.current = event.currentTarget;
+                    setSelected(file);
+                  }}
                 >
                   <div className={`thumbnail ${file.art}`} aria-hidden="true">
                     <div className="mock-page">
@@ -251,6 +273,9 @@ export default function App() {
                     <p>{file.description}</p>
                     <div className="card-footer">
                       <span>{file.location}</span>
+                      <span className="open-cue" aria-hidden="true">
+                        Open sample ↗
+                      </span>
                     </div>
                   </div>
                 </button>

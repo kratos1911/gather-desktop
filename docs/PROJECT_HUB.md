@@ -5,6 +5,10 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 15 October 2026.
 
+UI update: [[docs/DESIGN_REVIEW_20261015|Expressive preview redesign and checks]].
+See [[docs/DESIGN_DIRECTION|Color, typography, motion and provenance]]. The visible
+app is still a sample workspace; native/accessibility QA remains open.
+
 Current: [[docs/SEARCH_CONTEXT|Bounded context and cached-vector replay]]. Known
 split/multi-part evidence recovered without new model calls. See [[TASKS]] for
 the three-milestone path; backend coordination is next. Context is not connected

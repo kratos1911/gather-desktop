@@ -464,3 +464,12 @@ resource limits, no host mounts and network_mode none for supplied-output jobs.
 Do not enable networking until controlled egress and redirected/subresource
 connections are enforced. Docker base tag and transitive pins are not yet locked
 by digest. The current container is a preparatory artifact, not verified isolation.
+
+## ADR-046: expressive desktop visual system (15 October)
+
+The user's redesign brief supersedes single-accent/system-font-only guidance.
+Use forest navigation, citron primary selection and coral secondary highlights,
+self-hosted OFL Manrope UI and system document text. Keep light reading surfaces,
+solid controls and original artwork. Use existing Motion/CSS; no GSAP dependency
+or showcase source copying. Preserve fixture honesty and reduced motion. Evidence
+and outstanding native QA: DESIGN_REVIEW_20261015.md.

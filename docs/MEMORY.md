@@ -1,5 +1,11 @@
 # Current project state
 
+Latest UI checkpoint: expressive desktop preview redesign implemented. Five UI
+tests, lint, frontend and native debug builds pass. Browser visual/contrast/reflow
+checks recorded in DESIGN_REVIEW_20261015.md; native scaling/accessibility QA
+remains open. Still fictional data; backend delivery milestone remains next.
+
+
 Updated: 15 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
 choices there are proposed, not implemented. PROGRESS.md records history.
 

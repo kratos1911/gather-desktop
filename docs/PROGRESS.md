@@ -1,5 +1,14 @@
 # Rebuild progress
 
+## 15 October: expressive desktop preview
+
+Implemented the user-requested GSAP-inspired visual direction with original CSS,
+licensed local typography and existing Motion. Fixed tested return-focus handling
+and reduced-motion sample behavior. Five UI tests, lint and frontend/native debug
+builds pass; scoped browser checks recorded in DESIGN_REVIEW_20261015.md.
+No model tests, Docker changes, API changes or remote push. Native QA remains open.
+
+
 ## 2026-10-15 — bounded source context with no new inference
 
 Verified clean checkpoint 33f5716. Implemented one-source-per-result grouping and

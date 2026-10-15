@@ -66,10 +66,16 @@ describe("preview workspace", () => {
     );
     expect(screen.getByText("Source: The art of remembering")).toBeTruthy();
     expect(screen.getByText("Chat is not connected yet")).toBeTruthy();
+    expect(document.activeElement).toBe(
+      screen.getByRole("heading", { name: "The art of remembering" }),
+    );
     await user.click(screen.getByRole("button", { name: "Back to library" }));
     expect(
       screen.getByRole("textbox", { name: "Filter sample files" }),
     ).toBeTruthy();
+    expect(document.activeElement).toBe(
+      screen.getByRole("button", { name: /The art of remembering/ }),
+    );
   });
   it("does not pretend to upload files or install models", async () => {
     const user = userEvent.setup();

@@ -4,10 +4,10 @@ User requirements recorded 26 September 2026. These rules supersede conflicting 
 
 ## Avoid list
 
-- [x] Purple-to-blue gradients. Use solid neutral surfaces and one restrained accent.
+- [x] Purple-to-blue gradients. Use solid surfaces. The 15 October user brief authorizes a primary and complementary secondary accent.
 - [x] Gradient hero text. Headings use solid, readable text.
 - [x] Emojis in headings. Use plain language.
-- [x] Inter everywhere. Use the local Segoe UI/system sans-serif stack for this Windows app.
+- [x] Inter everywhere. The 15 October typography brief supersedes system-font-only styling: self-hosted OFL Manrope for UI; Segoe UI/system sans for document text.
 - [x] Colored left-border cards. Use spacing, labels and subtle full borders.
 - [x] Glassmorphism cards. No translucent blur panels.
 - [x] Low-contrast dark mode. Dark mode is not implemented; verify contrast before adding it.
@@ -27,7 +27,10 @@ User requirements recorded 26 September 2026. These rules supersede conflicting 
 
 The pasted fragments “Space Groteel nlic Inetriiment Serif” and “Grain textul” are interpreted as Space Grotesk/Instrument Serif and grain texture. The original fragments are retained here so this interpretation is visible. Standalone hyphens are formatting artifacts, not additional rules.
 
-Checked means recorded and addressed in code review, not visually certified. Native appearance, zoom and motion still require visual review; previous browser permission denial remains in effect.
+Checked means recorded and addressed in code review, not universally certified.
+The user's 15 October request explicitly authorizes rendered browser inspection.
+See DESIGN_REVIEW_20261015.md; native appearance, Windows scaling and assistive
+technology checks remain open.
 
 ## Positive design direction
 
