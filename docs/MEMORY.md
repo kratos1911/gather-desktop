@@ -1,5 +1,12 @@
 # Current project state
 
+Current backend checkpoint: durable ingestion scheduling prerequisite implemented
+and verified (15 October). 105 database assertions/scenarios and frontend build
+pass. See INGESTION_JOBS.md for leases, fencing, limits and exact scope. No ready
+transition, passage/vector persistence, original admission or desktop integration
+yet. Next: verified originals, immutable staging and atomic publication. No model
+calls, shared Docker changes, deployment or push.
+
 Latest UI checkpoint: expressive desktop preview redesign implemented. Five UI
 tests, lint, frontend and native debug builds pass. Browser visual/contrast/reflow
 checks recorded in DESIGN_REVIEW_20261015.md; native scaling/accessibility QA

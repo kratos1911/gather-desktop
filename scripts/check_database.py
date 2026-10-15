@@ -3,6 +3,7 @@ from pathlib import Path
 import subprocess
 import time
 import uuid
+import json
 from concurrent.futures import ThreadPoolExecutor
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -34,7 +35,8 @@ def main():
         files = [ROOT / 'tests/database/bootstrap.sql',
                  *sorted((ROOT / 'supabase/migrations').glob('*.sql')),
                  ROOT / 'tests/database/ownership.sql',
-                 ROOT / 'tests/database/lifecycle.sql']
+                 ROOT / 'tests/database/lifecycle.sql',
+                 ROOT / 'tests/database/ingestion_jobs.sql']
         result = run('exec', '-i', name, 'psql', '-X', '-U', 'postgres',
                      '-v', 'ON_ERROR_STOP=1', input='\n'.join(
                          path.read_text(encoding='utf-8') for path in files))
@@ -42,6 +44,7 @@ def main():
             if 'PASS:' in line:
                 print(line)
         concurrency_checks(name)
+        ingestion_concurrency_checks(name)
         print('Database checks passed. Auth/Storage services were not tested.')
     except subprocess.CalledProcessError as error:
         print(error.stderr)
@@ -110,6 +113,90 @@ def concurrency_checks(name):
     sql(f"select gather_private.finish_source_cleanup('{source}')")
     assert sql(f"select count(*) from public.source_versions where source_id='{source}'") == '0'
     print('PASS: concurrent version write/delete leaves no derivative after cleanup')
+
+
+def ingestion_concurrency_checks(name):
+    """Committed leases survive worker disconnect; real sessions race lifecycle writes."""
+    def sql(statement):
+        return run('exec', '-i', name, 'psql', '-X', '-At', '-U', 'postgres',
+                   '-v', 'ON_ERROR_STOP=1', input=statement).stdout.strip().splitlines()[-1]
+
+    owner = '00000000-0000-0000-0000-000000000007'
+    sql(f"insert into auth.users values('{owner}'); "
+        f"insert into gather_private.source_quotas values('{owner}',2,0);")
+    source = sql(f"set role authenticated; set request.jwt.claim.sub='{owner}'; "
+                 "select public.save_source(gen_random_uuid(),'file','Synthetic race');")
+
+    def enqueue(key):
+        return sql(f"select gather_private.enqueue_text_job('{owner}','{source}','{key}',"
+                   "repeat('a',64),'fixture-v1',32,'text/plain','fixture-chunks',"
+                   "'fixture-model','fixture-revision',512)")
+
+    key = str(uuid.uuid4())
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        jobs = list(pool.map(enqueue, [key, key]))
+    job = jobs[0]
+    assert jobs[0] == jobs[1]
+    assert sql(f"select count(*) from public.source_versions where source_id='{source}'") == '1'
+    print('PASS: concurrent enqueue creates exactly one job and version')
+
+    def claim(_):
+        value = sql("set role gather_ingestion_worker; "
+                    "select coalesce(gather_private.claim_text_job()::text,'none')")
+        return None if value == 'none' else json.loads(value)
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        claims = list(pool.map(claim, range(2)))
+    assert sum(c is not None for c in claims) == 1, claims
+    first = next(c for c in claims if c)
+    assert first['id'] == job and first['attempts'] == 1
+    assert claim(0) is None  # Earlier claiming psql connection has already exited.
+    print('PASS: concurrent claim is exclusive and survives worker disconnect')
+
+    sql(f"update gather_private.ingestion_jobs set lease_started_at=clock_timestamp()-interval '2 minutes',"
+        f"lease_expires_at=clock_timestamp()-interval '1 second' where id='{job}'")
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        claims = list(pool.map(claim, range(2)))
+    assert sum(c is not None for c in claims) == 1, claims
+    recovered = next(c for c in claims if c)
+    assert recovered['attempts'] == 2 and recovered['lease_token'] != first['lease_token']
+    print('PASS: concurrent recovery grants one fresh token and increments once')
+
+    def renew(token):
+        try:
+            sql(f"set role gather_ingestion_worker; select gather_private.renew_text_job('{job}','{token}')")
+            return 'renewed'
+        except subprocess.CalledProcessError as error:
+            if 'stale_lease' in error.stderr:
+                return 'stale'
+            raise
+
+    # New version and heartbeat both lock the same source before touching jobs.
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        renewal = pool.submit(renew, recovered['lease_token'])
+        replacement = pool.submit(enqueue, str(uuid.uuid4()))
+        assert renewal.result() in ('renewed', 'stale')
+        newer = replacement.result()
+    assert newer != job and renew(recovered['lease_token']) == 'stale'
+    assert sql(f"select state from gather_private.ingestion_jobs where id='{job}'") == 'cancelled'
+    print('PASS: replacement/heartbeat race permanently fences prior version')
+
+    active = claim(0)
+    assert active and active['id'] == newer
+    job = newer
+    def delete():
+        return sql(f"set role authenticated; set request.jwt.claim.sub='{owner}'; "
+                   f"select public.request_source_deletion('{source}')")
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        renewal = pool.submit(renew, active['lease_token'])
+        deletion = pool.submit(delete)
+        assert renewal.result() in ('renewed', 'stale')
+        assert deletion.result() == 't'
+    assert renew(active['lease_token']) == 'stale' and claim(0) is None
+    assert sql(f"select count(*) from gather_private.ingestion_jobs where source_id='{source}' "
+               "and (state<>'cancelled' or lease_token is not null)") == '0'
+    assert sql(f"select gather_private.finish_source_cleanup('{source}')") == 't'
+    print('PASS: deletion/heartbeat race leaves no active lease or derivative after cleanup')
 
 
 if __name__ == '__main__':

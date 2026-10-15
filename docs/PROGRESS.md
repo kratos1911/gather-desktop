@@ -1,5 +1,17 @@
 # Rebuild progress
 
+## 15 October: durable ingestion scheduling prerequisite
+
+Added a private Postgres job ledger tied to immutable source versions, with
+idempotent enqueue, single live lease, capped retries/heartbeat, fenced recovery,
+owner-only status and transactional cancellation on replacement/deletion.
+96 SQL assertions plus 9 concurrency scenarios pass in the isolated 256 MiB
+database harness. Frontend build passes. One preflight: Docker 29.7.2, image
+cached, 3.89 GiB free RAM, 94.69 GiB free on D:. No model calls or protected API
+changes. Existing tombstone/cleanup checks remain intact. New scheduler limits
+and honest gaps documented in INGESTION_JOBS.md. Ready/publication, original
+admission, real JWT/worker integration and desktop flow remain unfinished.
+
 ## 15 October: expressive desktop preview
 
 Implemented the user-requested GSAP-inspired visual direction with original CSS,

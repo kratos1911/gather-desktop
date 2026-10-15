@@ -241,3 +241,13 @@ Linux. On 14 October the real model also passed ten short fictional requests:
 15.78 s startup, 0.59–0.74 s per request and 3.87 GiB peak container memory. This
 does not yet establish performance for long documents or concurrent users.
 See [[services/inference/CONTAINER|Container checks and limits]].
+
+## Durable scheduling and fencing (implemented prerequisite)
+
+A durable job survives the worker connection closing. An idempotency key makes
+repeating the same request return the same job/version. A lease gives one worker
+temporary permission; recovery changes the token so the old worker cannot change
+state. Deleting or replacing the source cancels its old jobs under the same source
+lock. Three attempts and finite leases prevent endless retries. A processing target
+is not a published search version: complete vector validation/activation is still
+next. See [[docs/INGESTION_JOBS]] for evidence and remaining integration boundaries.

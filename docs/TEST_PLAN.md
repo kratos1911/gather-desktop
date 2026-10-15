@@ -8,6 +8,11 @@ authenticated repository reads and delete/version race checks.
 
 ## Current executable checks
 
+15 October scheduler extension: `python scripts/check_database.py` now includes
+tests/database/ingestion_jobs.sql and five new real-connection races. 105 total
+assertions/scenarios pass; see INGESTION_JOBS.md. This uses the existing isolated
+PostgreSQL/Auth-contract shim, not the real JWT/API stack. No model run required.
+
 `python -m unittest discover -s tests/inference -v` runs 25 synthetic process/protocol/reporting/chunking
 boundary tests: reuse/readiness, input and aggregate token limits, normalization,
 busy rejection, startup/request deadlines, crash redaction, cleanup and explicit

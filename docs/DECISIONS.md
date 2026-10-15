@@ -473,3 +473,20 @@ self-hosted OFL Manrope UI and system document text. Keep light reading surfaces
 solid controls and original artwork. Use existing Motion/CSS; no GSAP dependency
 or showcase source copying. Preserve fixture honesty and reduced motion. Evidence
 and outstanding native QA: DESIGN_REVIEW_20261015.md.
+
+## ADR-047: private PostgreSQL scheduling before publication (15 October)
+
+Extend existing sources/versions and cleanup, rather than introduce another queue
+service. Commit version/job/processing-target together for an accepted source;
+retain owner-scoped idempotency. Use a NOLOGIN worker with only claim/renew/fail
+functions, source-before-job locking and fresh-token fencing. Clients read status
+through auth.uid(); no client enqueue grant. No ready transition until complete
+passage/vector validation and atomic publication exist.
+
+Keep 64 KiB text input, one live lease globally (conservative measured CPU
+single-flight), three attempts; choose 60-second renewable leases capped at five
+minutes and exponential transient backoff plus jitter. Cap retained jobs at 16
+per source without silently evicting idempotency records. These are initial local
+scheduler bounds, not new inference limits or production allowances. Publication,
+original admission, rate/byte quotas and a dispatcher remain separate gates.
+See INGESTION_JOBS.md for implementation and evidence.

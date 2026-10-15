@@ -1,5 +1,16 @@
 # Delivery tasks
 
+## 15 October durable ingestion scheduling
+
+TASK-021 scheduling prerequisite complete locally: owner/request idempotency,
+atomic version/job creation for an existing source, exclusive leases, crash
+recovery, bounded retries, immutable provenance, deletion/replacement fencing,
+private worker functions and owner-only status. 96 SQL assertions (51 new) plus
+9 concurrent scenarios (5 new) pass; frontend build passes. Evidence/scope:
+docs/INGESTION_JOBS.md and output/database-checks/ingestion-jobs-20261015.log.
+Whole backend import/search flow remains partial. No ready/publication API is
+exposed; verified originals and passage/vector staging/publication are next.
+
 ## 15 October desktop redesign
 
 TASK-003 visual slice implemented: forest/citron/coral theme, local OFL Manrope,

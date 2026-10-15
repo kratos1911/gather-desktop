@@ -12,7 +12,7 @@
     {
       "id": "source",
       "type": "text",
-      "text": "Save file or link\nPLANNED desktop ingestion",
+      "text": "Save file or link\nPrivate durable jobs + lease fencing verified\nPLANNED: original admission + desktop ingestion",
       "x": 0,
       "y": 0,
       "width": 330,

@@ -1,5 +1,11 @@
 # Private source schema: preparatory slice
 
+15 October: private durable scheduling now exists; 105 total database assertions
+and concurrent scenarios pass. See [ingestion jobs](../docs/INGESTION_JOBS.md) for
+limits, role privileges, cancellation and exact gaps. Older statements below
+about jobs being absent describe the 9 October checkpoint. No published vectors,
+ready transition, actual dispatcher or desktop integration exists yet.
+
 9 October update: real local Auth/PostgREST/Storage checks now pass via
 `python scripts/supabase_test_stack.py`. See [LOCAL_INTEGRATION.md](LOCAL_INTEGRATION.md)
 for the 31 checks, setup and explicit limits. The desktop remains disconnected.

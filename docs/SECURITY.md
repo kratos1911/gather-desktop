@@ -2,6 +2,14 @@
 
 ## Trust boundaries
 
+Ingestion scheduler: only a trusted coordinator may enqueue verified original
+metadata; never pass a client owner/hash as trusted facts. The NOLOGIN worker role
+has claim/renew/fail functions only. Status derives auth.uid() and omits lease
+tokens. Future publication must validate the current lease/target under the same
+transaction as activation. A database lease fences state writes, not CPU work or
+in-flight uploads. See INGESTION_JOBS.md; JWT/API, upload and publication gates
+remain open. No new client-upload or signup permission was added.
+
 Search-context assembly requires a server-authenticated owner and repository-issued
 active snapshots. It verifies supplied owner/version/visibility/hash/offsets and
 caps bytes, but is not authentication, RLS or deletion-race protection. Repository

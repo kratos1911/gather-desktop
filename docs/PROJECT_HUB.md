@@ -5,6 +5,10 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 15 October 2026.
 
+Backend update: [[docs/INGESTION_JOBS|Durable jobs and lease fencing]] is verified
+as a local scheduling prerequisite. [[TASKS]] holds evidence and the next slice:
+verified originals, passage/vector staging and atomic publication.
+
 UI update: [[docs/DESIGN_REVIEW_20261015|Expressive preview redesign and checks]].
 See [[docs/DESIGN_DIRECTION|Color, typography, motion and provenance]]. The visible
 app is still a sample workspace; native/accessibility QA remains open.

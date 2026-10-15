@@ -6,6 +6,12 @@ security checks and delivery gates. Proposed mechanisms are not implemented yet.
 
 ## Current implementation
 
+15 October scheduling prerequisite: private PostgreSQL jobs and processing-target
+versions, idempotent enqueue, bounded leases/retries, narrowly granted worker
+functions, owner-derived status and deletion/replacement fencing are verified.
+See INGESTION_JOBS.md. Processing target is not a published index. Trusted
+original admission, passage/vector persistence and atomic activation remain next.
+
 Bounded context now exists as a pure worker component after ranking. It groups
 sources, expands at most one contiguous neighbor per side and returns exact
 versioned text citations within byte limits. Saved-vector replay is verified;
