@@ -191,6 +191,20 @@ There is no deployed background cleanup worker or desktop connection yet.
 
 ## CPU container checkpoint (13 October)
 
+15 October retrieval follow-up: [[docs/CHUNK_RETRIEVAL_RESULTS]]. A token limit
+counts model pieces, not characters. A 512-token chunk can be larger than the old
+1,024-character chunk for English; text-v2 consolidates 64 passages into 40.
+The paired experiment changes only chunk policy and keeps model/query vectors
+fixed. Main-set retrieval improves, but long conditional rules can cross a boundary.
+
+**Strict evidence coverage** requires the whole supporting span in one retrieved
+passage. **Union coverage** checks whether several retrieved passages from the
+same source jointly cover it without gaps. This diagnostic is not an implemented
+reader/context feature. Boundary strict recall is 50%, union is 87.5%; one
+multi-part query still misses both relevant late passages despite finding the
+files. Next: bounded context assembly with exact source offsets and version/owner
+checks, plus passage diversity. Preserve failures rather than shortening labels.
+
 15 October checkpoint: dependencies patched; scan down to 28 findings/1 high.
 The new helper counts actual model tokens, splits at readable boundaries and
 preserves source offsets plus overlap. It targets <=512 tokens per request;

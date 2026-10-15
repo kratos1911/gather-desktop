@@ -3,6 +3,20 @@
 Updated: 15 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
 choices there are proposed, not implemented. PROGRESS.md records history.
 
+Latest: paired chunk-policy retrieval evaluation completed on 15 October. All
+178 real requests passed. text-v2 candidate dense recall/evidence 1.0, MRR 0.9792;
+predeclared gate passes. Boundary strict evidence stays 0.50, union coverage 0.875;
+three split-condition questions and one multi-part passage miss need attention.
+44 evaluation tests, 26 inference tests and frontend build pass. See
+CHUNK_RETRIEVAL_RESULTS.md for all regressions and evidence. Next: bounded
+same-source context assembly and multi-part coverage before ingestion integration.
+Security/licence review remains open; no model/image promotion, deployment or push.
+Docker recovered from a startup socket error through a user-approved close/reopen;
+no reset or file deletion. Authorized background Teams/WhatsApp closure freed RAM;
+Chrome and this session remained running. No individual API stop/update commands.
+
+Earlier patched-image checkpoint:
+
 Newest checkpoint: separate patched CPU image built; 25 focused tests and frontend
 build passed on 14 October. Torch 2.14.1+cpu / Transformers 5.19.0 and exact Debian
 OpenSSL/PCRE2 fixes reduced scan records from 56 (12 high) to 28 (1 high). Remaining

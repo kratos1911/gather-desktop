@@ -48,7 +48,7 @@
     {
       "id": "vector",
       "type": "text",
-      "text": "Patched CPU: 6 compatibility cases pass\n5 chunks: 3.05–5.88 s; peak 3.95 GiB\nNEXT: chunk retrieval-quality evaluation\n28 scan findings / 1 high; deployment gated",
+      "text": "Paired Qwen chunk evaluation: main gate passes\nBoundary evidence: strict50%, union87.5%\nNEXT: bounded context + multi-part coverage\nSecurity and connected ingestion still gated",
       "x": 800,
       "y": 220,
       "width": 330,

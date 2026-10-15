@@ -1,5 +1,33 @@
 # Architecture decisions
 
+## ADR-044: compare chunk policies with fixed source evidence
+
+15 October: compare legacy 1,024-character/128-character-overlap chunks against
+the prepared 512-token/64-character-overlap policy using the same pinned patched
+image, prompts, dimensions and query vectors. Freeze source/query/label hashes,
+both index hashes, protocol and request order before inference. text-v2 documents
+all fit in 512 tokens, so this compares consolidation there; a separate frozen
+six-source boundary fixture tests longer inputs and conditional evidence.
+
+Preserve exact evidence quotes and offsets across layouts. A quote not fully
+contained in any chunk stays a strict evidence miss. Report continuous union
+coverage across the first five passages separately, never as a replacement for
+strict recall. Wrong-source text, overlap duplication and gaps cannot supply
+missing evidence. Keep absent questions outside recall/MRR and report their
+candidate returns without claiming answerability.
+
+The predeclared text-v2 gate is >=0.90 document recall, strict evidence recall and
+MRR, with no metric dropping more than 0.02 against the paired legacy result.
+Boundary stress is diagnostic, including deliberately placed split conditions;
+do not tune the fixture, overlap or rankings after observing scores. Keep
+production ingestion unchanged until the measured limitations are reviewed.
+
+Outcome: text-v2 gate passed; boundary dense strict evidence remained 0.50 despite
+union coverage reaching 0.875. A multi-part query still missed both late passages.
+Proceed to bounded same-source context assembly/coverage evaluation before
+ingestion integration. Keep RRF diagnostic: it helps stress cases but lowers
+text-v2 MRR versus dense. See CHUNK_RETRIEVAL_RESULTS.md; no retrospective tuning.
+
 ## ADR-043: separate patched candidate and token-aware source preparation
 
 14–15 October: use maintained CPU Torch 2.14.1+cpu / Transformers 5.19.0 releases,

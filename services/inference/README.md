@@ -5,6 +5,10 @@
 Real six-case compatibility and five-chunk timing checks now pass. See UPGRADE.md;
 the helper is not yet connected to desktop ingestion. Deployment remains gated.
 
+Paired retrieval evaluation also passes the text-v2 gate; boundary stress reveals
+split conditions and a multi-part passage miss. Next: bounded context/coverage
+before ingestion integration. See ../../docs/CHUNK_RETRIEVAL_RESULTS.md.
+
 14 October follow-up: extended profiles and security review are complete, with
 open findings. Fifty short requests passed; long/max-batch requests timed out.
 The image scan reports 56 records, including 12 high. See PROFILE_RESULTS.md

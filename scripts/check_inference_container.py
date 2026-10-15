@@ -78,9 +78,11 @@ def command(*args):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--controls', action='store_true')
-    parser.add_argument('--profile', choices=['smoke', 'long', 'batch', 'limits', 'sustained', 'compatibility', 'chunks'], default='smoke')
+    parser.add_argument('--profile', choices=['smoke', 'long', 'batch', 'limits', 'sustained', 'compatibility', 'chunks', 'retrieval'], default='smoke')
     parser.add_argument('--candidate', action='store_true', help='Use the separate patched image and output directory')
     args = parser.parse_args()
+    if args.profile == 'retrieval' and (not args.candidate or args.controls):
+        parser.error('Retrieval comparison requires the patched candidate and real model')
     image_name = 'gather-inference:cpu-patched' if args.candidate else 'gather-inference:cpu-local'
     memory = 512 * 1024**2 if args.controls else 5 * 1024**3
     model = ROOT / 'output/inference-model'
@@ -113,11 +115,21 @@ def main():
         payload = ''
     else:
         options += ['--mount', f'type=bind,source={model},target=/model,readonly', image_name]
-        requests, expected = profile_requests(args.profile)
+        if args.profile == 'retrieval':
+            from scripts.evaluate_chunk_retrieval import prepare_experiment
+            from scripts.score_text_evaluation import index_hash
+            _, requests, plan = prepare_experiment()
+            if not 1 <= len(requests) <= 256:
+                raise ValueError('Bounded experiment requires 1..256 requests')
+            expected = [None] * len(requests)
+        else:
+            requests, expected = profile_requests(args.profile)
         payload = ''.join(json.dumps(request) + '\n' for request in requests)
     identifier = command(*options).strip()
     try:
         config = json.loads(command('inspect', identifier))[0]
+        if args.profile == 'retrieval' and config['Image'] != plan['image_id']:
+            raise ValueError('Frozen experiment image mismatch')
         host = config['HostConfig']
         assert host['Memory'] == memory and host['MemorySwap'] == memory
         assert host['NanoCpus'] == 2000000000 and host['PidsLimit'] == 128
@@ -128,23 +140,34 @@ def main():
         started = time.perf_counter()
         process = subprocess.Popen(['docker', 'start', '-ai', identifier], stdin=subprocess.PIPE,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        outer_timeout = False
         try:
-            stdout, stderr = process.communicate(payload, timeout=300)
+            # More sequential fixtures, not a longer per-inference deadline.
+            stdout, stderr = process.communicate(payload, timeout=900 if args.profile == 'retrieval' else 300)
         except subprocess.TimeoutExpired:
+            outer_timeout = True
             command('kill', identifier)
             process.kill()
-            process.communicate(timeout=10)
-            raise RuntimeError('Container smoke deadline exceeded') from None
+            stdout, stderr = process.communicate(timeout=10)
         state = json.loads(command('inspect', identifier))[0]['State']
         report = {'scope': 'synthetic control tests' if args.controls else 'real Qwen Linux CPU smoke; fictional inputs',
                   'image_id': config['Image'], 'wall_seconds': time.perf_counter() - started,
                   'cpu_limit': 2, 'memory_limit_bytes': memory, 'swap_extra_bytes': 0,
                   'network': 'none', 'nonroot': True, 'readonly': True, 'exit_code': state['ExitCode'],
-                  'oom_killed': state['OOMKilled'], 'passed': not (process.returncode or state['ExitCode'] or state['OOMKilled'])}
+                  'oom_killed': state['OOMKilled'], 'outer_timeout': outer_timeout,
+                  'passed': not (outer_timeout or process.returncode or state['ExitCode'] or state['OOMKilled'])}
         if args.controls:
             print(stderr)
         else:
-            rows = [json.loads(line) for line in stdout.splitlines()]
+            rows = []
+            for line in stdout.splitlines():
+                try:
+                    row = json.loads(line)
+                    if not isinstance(row, dict):
+                        raise ValueError('Non-object frame')
+                    rows.append(row)
+                except ValueError:
+                    rows.append({'error': 'invalid_output_frame'})
             report['passed'] = report['passed'] and bool(rows) and rows[0].get('status') == 'ready'
             results = [row for row in rows if 'result' in row]
             outcomes, valid = review_rows(rows, requests, expected)
@@ -162,6 +185,12 @@ def main():
         if not args.controls and args.profile == 'compatibility':
             # Synthetic-only diagnostic vectors stay ignored; never export user text.
             (destination / 'compatibility-vectors.json').write_text(json.dumps([r['result'] for r in results]))
+        if not args.controls and args.profile == 'retrieval':
+            report['experiment_sha256'] = index_hash(plan)
+            # Frozen fictional requests only. Preserve failures; never score a partial run.
+            rows_path = destination / 'retrieval-rows.json'
+            rows_path.write_text(json.dumps(rows))
+            report['raw_rows_sha256'] = digest(rows_path)
         if not args.controls and args.profile == 'chunks':
             report['passed'] = report['passed'] and all(0 < row.get('prompt_tokens', 0) <= 512 for row in outcomes)
         filename = 'controls.json' if args.controls else ('qwen.json' if args.profile == 'smoke' else f'qwen-{args.profile}.json')

@@ -1,5 +1,11 @@
 # Retrieval development set: text v1
 
+The paired chunk-policy experiment uses frozen text-v2 plus a separate fictional
+boundary stress set. See [the protocol](CHUNK_RETRIEVAL_PROTOCOL.md). It retains
+the existing strict evidence metric and separately reports continuous coverage
+across the first five retrieved passages. Neither the original corpus nor its
+historical exports are rewritten.
+
 The original v1 corpus remains unchanged. A separate frozen challenge set is
 available as `--corpus text-v2`: see [its protocol](TEXT_V2_PROTOCOL.md) and
 [measured results](../../docs/TEXT_V2_RESULTS.md). The same scorer evaluates both;

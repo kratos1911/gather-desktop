@@ -64,7 +64,9 @@ The 4 GiB host guard, 15 s deadline and 5 GiB container ceiling were unchanged.
 Approved one-time Linux clean-page-cache release was needed before each profile;
 Windows reclaimed memory with a delay. No persistent Docker setting changes or
 API stops. These shared-machine fixtures do not establish production capacity or
-retrieval quality with new chunk boundaries. Next: evaluate that retrieval quality
+retrieval quality with new chunk boundaries. The subsequent paired evaluation is
+now recorded in docs/CHUNK_RETRIEVAL_RESULTS.md: main gate passes, but boundary
+context and multi-part passage misses remain. Address bounded context/coverage
 before ingestion integration; keep promotion/security/licence gates open.
 
 The 14 October rescan completed: 172 packages indexed; 28 findings across 13

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "frozen_on": "2026-10-15",
+  "corpus_version": "gather-chunk-boundaries-v1",
+  "corpus_sha256": "6e984a2895c0a942db993dc550f7e8f92f43d10ca69536d3228fae3e5ebd6bde",
+  "documents": 6,
+  "queries": 10,
+  "model_evaluated_at_freeze": false,
+  "protocol": "CHUNK_RETRIEVAL_PROTOCOL.md",
+  "structural_boundary_placement": "Pinned tokenizer only; two current-guide conditional quotes are fully contained in a legacy chunk but not in any candidate chunk."
+}

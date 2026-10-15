@@ -1,5 +1,22 @@
 # Delivery tasks
 
+## 15 October paired chunk retrieval evaluation
+
+TASK-005 evaluation slice complete: frozen text-v2 plus six-source/ten-query
+boundary stress set, both policies on the same patched Qwen512 image. All 178
+requests passed, 0.637–6.972 s each, about 4.00 GiB peak under unchanged limits.
+Main dense gate passes: document recall 1.0, MRR 0.9792, strict evidence recall
+1.0 versus legacy 1.0/0.9613/0.9911. Stress dense strict recall remains 0.50;
+union coverage improves to 0.875. Split conditions and a multi-part passage miss
+remain unresolved; no default fusion or production chunking change.
+
+44 evaluation tests, 26 inference tests and frontend build pass. Failure reports
+now survive outer timeout; test verifies only owned-container cleanup. Evidence:
+tests/evaluation/results/chunk-retrieval-20261015.json and
+docs/CHUNK_RETRIEVAL_RESULTS.md. Next: bounded same-source context assembly and
+multi-part passage coverage, then ingestion integration; security/licence gates
+remain. TASK-005 overall partial. No push or cloud deployment.
+
 ## 15 October patched-image checkpoint
 
 Built separate cpu-patched image with Torch 2.14.1+cpu, Transformers 5.19.0,
@@ -152,7 +169,7 @@ Current checkpoint: local quality checks pass; remote CI execution pending. Link
 | TASK-002 | Validate audience and comparable products | Ready | Record user interviews/feedback or explicitly unvalidated hypotheses; compare primary-source alternatives; decide initial audience/regions |
 | TASK-003 | Desktop shell and design verification | Partial | Frontend/native build and four component tests pass; actual visual, keyboard, zoom and motion checks still pending after browser permission denial |
 | TASK-004 | Transport-independent text processing contract | Done | 12 standard-library tests pass; strict JSON/base64/UTF-8 and 64 KiB source limit; source offsets, hashes/versioned IDs, overlap and retry determinism verified; no personal imports or cloud writes; see services/worker/README.md |
-| TASK-005 | Cloud-oriented embedding evaluation | Partial: patched CPU compatibility/chunk timing verified | v1/v2 benchmarks retained. 25 control/chunking tests; isolated Linux inference verified. Six-case patched-image compatibility and five smaller chunks pass on 15 October. D: storage verified; Gemma account access denied. HTTP/desktop integration, new-boundary retrieval quality, remaining security/licence review, Gemma/visual comparison and cloud measurement remain pending. See services/inference/UPGRADE.md |
+| TASK-005 | Cloud-oriented embedding evaluation | Partial: paired chunk retrieval measured | 44 evaluation/26 inference tests and frontend build pass. 178 real requests; text-v2 candidate dense gate passes, boundary strict/union evidence 0.50/0.875 exposes context and multi-part misses. No connected HTTP/desktop ingestion. Remaining context/coverage, security/licence, Gemma/visual and cloud measurement gates stay open. See docs/CHUNK_RETRIEVAL_RESULTS.md |
 | TASK-006 | Supabase identity and private schema | Needs project configuration | Versioned migrations; supported signup/session/logout flow; enforce audience decision; RLS and two-user isolation tests; secure session storage; quota policy |
 | TASK-007 | Text import-to-search vertical slice | Depends on 005/006 | Import TXT/MD -> durable processing -> all passages -> real search -> reader -> deletion; retry/restart/dedup/isolation tests; user-readable errors |
 | TASK-008 | Native document formats | Depends on 007 | PDF/DOCX/PPTX parsers; preserved page/slide/section references; long-document and malformed-file cases; scanned pages correctly identified |

@@ -18,8 +18,10 @@ and IMAGE_SCAN_REVIEW.md. Long inputs exposed deadline failures; scan findings
 remain open. On 15 October the patched image passed six-case vector/token/rank
 compatibility and five real 306–500-token chunks under the 15 s deadline. Evidence:
 tests/inference/results/patched-{compatibility,comparison,chunks}-20261015.json.
-HTTP ingress, remaining security/licence review and retrieval evaluation with the
-new chunk boundaries remain gates. These fixtures are not full quality regression.
+Paired retrieval subsequently passed the text-v2 gate, but boundary context and
+multi-part passage coverage remain open; see CHUNK_RETRIEVAL_RESULTS.md. HTTP
+ingress and remaining security/licence review are still gates. These fixtures
+are not full real-user quality regression.
 
 `python scripts/check_database.py` separately runs 45 SQL assertions and four
 concurrent scenarios against a
@@ -113,6 +115,15 @@ separate and preserve v1 outputs. test_challenge_corpus.py checks mutations,
 source/query disjointness, late evidence, directory separation and mixed-corpus
 rejection. Follow tests/evaluation/TEXT_V2_PROTOCOL.md without retrospective tuning.
 Review every nonperfect primary-candidate query; see TEXT_V2_RESULTS.md.
+
+Chunk-policy comparison: scripts/evaluate_chunk_retrieval.py freezes both layouts,
+the fictional boundary corpus, protocol hash and deduplicated request order before
+the patched container runs. Legacy and token512 use the same model/runtime and
+512-dimensional vectors. Score unchanged exact quotes; uncontained spans remain
+strict misses. Supplementary union coverage must reject gaps and mixed sources.
+Tests cover legacy-index equivalence, label preservation, frozen edits and coverage.
+Keep the 15 s per-request limit; the 900 s outer limit only allows more sequential
+fixtures. Runtime/plan/image/raw-output hashes must match before scoring.
 
 Record exact commands, passed/failed/not-run results and limitations per task. Review code after tests. Fix material issues before a completion commit. Documentation-only changes require link/state/diff checks, not unnecessary full installer builds.
 

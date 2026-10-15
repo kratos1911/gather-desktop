@@ -1,5 +1,43 @@
 # Rebuild progress
 
+## 2026-10-15 — paired chunk-policy retrieval measured
+
+Added frozen six-source/ten-query fictional boundary stress alongside unchanged
+text-v2. A separate tokenizer-only authoring pass deliberately positioned two
+conditional spans across candidate boundaries; disclose this as structural,
+non-blind development evidence. Legacy/candidate layouts, source labels, protocol,
+request order and pinned image are hashed before inference. Both policies share
+model/query configuration; inference receives no labels. Existing exports/indexes
+are preserved. Strict evidence misses are retained; supplemental union coverage
+requires continuous same-source intervals. Added stale-fixture, label-preservation,
+legacy-equivalence and gap/overlap/source-isolation checks.
+
+Real run: 178 requests, 284.98 s overall, 13.78 s startup, request range
+0.637–6.972 s, about 4.00 GiB cgroup peak, no timeout/OOM, exit zero; owned
+container removed. text-v2 dense main gate passes: recall 1.0, MRR 0.9792 and
+strict evidence 1.0; paired legacy 1.0/0.9613/0.9911. Boundary strict evidence
+stays 0.50 while union improves to 0.875. Three questions have intentionally split
+conditions; another multi-part question misses both late passages. All ten absent
+queries return candidates. All query regressions and remaining misses reviewed in
+CHUNK_RETRIEVAL_RESULTS.md; full metrics/hashes in
+tests/evaluation/results/chunk-retrieval-20261015.json. RRF remains a comparator.
+
+Docker was closed, then failed initial startup with inaccessible sailor-ingest.sock.
+User approved closing/reopening the failed app; Explorer launch recovered engine
+29.7.2 without reset/deletion/settings changes. Released clean Linux cache once;
+RAM guard still stopped the first ready-engine attempt. After user authorized
+unused-app closure, background Teams/WhatsApp were stopped and 4.10 GiB became
+available. Chrome remained open. No individual API stop/update commands. No
+container was created for failed engine/low-RAM attempts. No cloud or downloads.
+
+44 evaluation tests, 26 inference tests and frontend build pass. Independent code
+review identified outer-timeout evidence loss; fixed it and added a mocked test
+verifying failure persistence and owned-only cleanup. No runtime/native assets
+changed, so image/executable rebuilds were unnecessary. Next: bounded same-source
+context assembly and multi-part passage coverage before ingestion integration.
+TASK-005 remains partial; security/licence gates stay open. Notes and Obsidian
+flow updated. Local checkpoint only; no GitHub push.
+
 ## 2026-10-15 — real patched-model compatibility and chunk timing passed
 
 User authorized clearing unnecessary background apps and running the remaining

@@ -1,0 +1,144 @@
+{
+  "version": "gather-chunk-boundaries-v1",
+  "provenance": "Original fictional developer-authored stress fixture frozen on 15 October 2026 before model inference. Two conditional quotes were positioned across candidate boundaries using the pinned tokenizer only. Shared administrative prose deliberately creates confusable long sources. Not blind, independently labelled, or representative of users.",
+  "documents": [
+    {
+      "id": "alder-current",
+      "format": "md",
+      "text": "# Alder Quay room guide, current 2026\n\nAlder Quay Reading Room schedules evening meetings. The librarian assigns rooms, while the host keeps the group together. A room change must follow the current 2026 guide. The coordinator writes the activity name and the date in the diary before copying the reference onto the paper record. Staff compare the names on both copies because two groups sometimes choose the same activity name during the same season. The named contact remains responsible for the record until the coordinator has checked the final handover and signed it. A photograph may show the arrangement of the room or case, but it does not replace the written inventory. Requests for a change are written in pencil until the coordinator confirms them and updates the permanent diary. The next volunteer reads the handover note before starting work, rather than assuming that the previous activity has finished. Each temporary direction card includes the activity date so visitors are not sent to a location used by an earlier group. Staff remove old notices at closing time and place reusable blank cards beside the diary for the following day. The weekly review counts cancellations separately from location changes because those events affect the schedule in different ways. When a named contact leaves early, the second contact takes responsibility and the change is recorded on the paper sheet. A missing item is described individually instead of being hidden inside a general note saying that the activity was completed. The coordinator keeps a spare printed diary at the collection desk in case the main copy is temporarily unavailable. Inventory photographs are taken beside the reference label, which makes it possible to match each photograph with its written record. An equipment demonstration is labelled as practice and must not be mistaken for a confirmed reservation or a real dispatch. Staff do not infer approval from a conversation among visitors; only the confirmed diary entry records the current arrangement. The following morning, the coordinator compares the closing sheet with the diary and resolves differences before accepting another reservation. Blank forms remain in the stationery drawer, while completed forms go to the location stated by the applicable procedure. Retired supplies are stored with training examples and are never counted as supplies available for the next scheduled activity. The front desk writes the actual handover time rather than the time someone first placed the materials beside the door. A copied email subject line cannot establish which record belongs to an activity when several messages use similar wording. The contact checks the reference and date together before asking staff to retrieve a particular entry from the diary. For a current Alder Quay evening reservation, when the lift is unavailable and the booking includes a wheelchair user, the host must wait for the librarian to confirm the ground-floor map room before taking the group there. This exception applies only to the access requirement stated on that booking: a group without that requirement stays in the upstairs reading room during the same lift outage, and the host must not treat another group moving downstairs as permission to move their own meeting. Volunteers use the illustrated route sketch to explain the building layout without promising that every location is currently available. The printed checklist distinguishes cleaning from repairs, so a cleaning note does not imply that damaged equipment has been repaired. A finished activity remains open in the diary until the responsible coordinator has checked the required documents and recorded completion. The second copy stays with the desk while the travelling or visiting group carries the first copy to its activity. Names are copied carefully from the confirmed record because guessing an abbreviation can assign responsibility to the wrong person. Staff describe any difference without guessing when it happened, and the coordinator reviews the evidence at the next handover. The storage label remains in place while the assigned materials are away, allowing the return team to restore them correctly. The closing review covers documents, reusable supplies, temporary notices, and keys in that order before the desk is locked. An unanswered request keeps its original reference so another volunteer can continue the same enquiry without opening a duplicate record. The coordinator writes the activity name and the date in the diary before copying the reference onto the paper record. Staff compare the names on both copies because two groups sometimes choose the same activity name during the same season. The named contact remains responsible for the record until the coordinator has checked the final handover and signed it. A photograph may show the arrangement of the room or case, but it does not replace the written inventory. Requests for a change are written in pencil until the coordinator confirms them and updates the permanent diary. Current Alder Quay closing sheets go into the brass tray beside the map-room desk before the host leaves.\n"
+    },
+    {
+      "id": "alder-archive",
+      "format": "md",
+      "text": "# Alder Quay room guide, archived 2024\n\nThis historical guide is superseded by the current 2026 procedure. Alder Quay Reading Room schedules evening meetings. The librarian assigns rooms, while the host keeps the group together. A room change must follow the archived 2024 guide. The coordinator writes the activity name and the date in the diary before copying the reference onto the paper record. Staff compare the names on both copies because two groups sometimes choose the same activity name during the same season. The named contact remains responsible for the record until the coordinator has checked the final handover and signed it. A photograph may show the arrangement of the room or case, but it does not replace the written inventory. Requests for a change are written in pencil until the coordinator confirms them and updates the permanent diary. The next volunteer reads the handover note before starting work, rather than assuming that the previous activity has finished. Each temporary direction card includes the activity date so visitors are not sent to a location used by an earlier group. Staff remove old notices at closing time and place reusable blank cards beside the diary for the following day. The weekly review counts cancellations separately from location changes because those events affect the schedule in different ways. When a named contact leaves early, the second contact takes responsibility and the change is recorded on the paper sheet. A missing item is described individually instead of being hidden inside a general note saying that the activity was completed. The coordinator keeps a spare printed diary at the collection desk in case the main copy is temporarily unavailable. The archived 2024 Alder Quay room-change form carried code AQ-R14. Inventory photographs are taken beside the reference label, which makes it possible to match each photograph with its written record. An equipment demonstration is labelled as practice and must not be mistaken for a confirmed reservation or a real dispatch. Staff do not infer approval from a conversation among visitors; only the confirmed diary entry records the current arrangement. The following morning, the coordinator compares the closing sheet with the diary and resolves differences before accepting another reservation. Blank forms remain in the stationery drawer, while completed forms go to the location stated by the applicable procedure. Retired supplies are stored with training examples and are never counted as supplies available for the next scheduled activity. The front desk writes the actual handover time rather than the time someone first placed the materials beside the door. A copied email subject line cannot establish which record belongs to an activity when several messages use similar wording. The contact checks the reference and date together before asking staff to retrieve a particular entry from the diary. Volunteers use the illustrated route sketch to explain the building layout without promising that every location is currently available. The printed checklist distinguishes cleaning from repairs, so a cleaning note does not imply that damaged equipment has been repaired. A finished activity remains open in the diary until the responsible coordinator has checked the required documents and recorded completion. The second copy stays with the desk while the travelling or visiting group carries the first copy to its activity. Names are copied carefully from the confirmed record because guessing an abbreviation can assign responsibility to the wrong person. Staff describe any difference without guessing when it happened, and the coordinator reviews the evidence at the next handover. The storage label remains in place while the assigned materials are away, allowing the return team to restore them correctly. The closing review covers documents, reusable supplies, temporary notices, and keys in that order before the desk is locked. An unanswered request keeps its original reference so another volunteer can continue the same enquiry without opening a duplicate record. Under the archived 2024 Alder Quay rules, every evening group moved to the foyer during a lift outage, regardless of its access requirements.\n"
+    },
+    {
+      "id": "foxglove-current",
+      "format": "md",
+      "text": "# Foxglove dispatch guide, current 2026\n\nFoxglove Puppet Studio lends puppet sets for travelling performances. The coordinator approves dispatch and the packer prepares each case. This guide describes the current 2026 procedure. The coordinator writes the activity name and the date in the diary before copying the reference onto the paper record. Staff compare the names on both copies because two groups sometimes choose the same activity name during the same season. The named contact remains responsible for the record until the coordinator has checked the final handover and signed it. A photograph may show the arrangement of the room or case, but it does not replace the written inventory. Requests for a change are written in pencil until the coordinator confirms them and updates the permanent diary. The next volunteer reads the handover note before starting work, rather than assuming that the previous activity has finished. Each temporary direction card includes the activity date so visitors are not sent to a location used by an earlier group. Staff remove old notices at closing time and place reusable blank cards beside the diary for the following day. The weekly review counts cancellations separately from location changes because those events affect the schedule in different ways. When a named contact leaves early, the second contact takes responsibility and the change is recorded on the paper sheet. A missing item is described individually instead of being hidden inside a general note saying that the activity was completed. The coordinator keeps a spare printed diary at the collection desk in case the main copy is temporarily unavailable. Inventory photographs are taken beside the reference label, which makes it possible to match each photograph with its written record. An equipment demonstration is labelled as practice and must not be mistaken for a confirmed reservation or a real dispatch. Staff do not infer approval from a conversation among visitors; only the confirmed diary entry records the current arrangement. The following morning, the coordinator compares the closing sheet with the diary and resolves differences before accepting another reservation. Blank forms remain in the stationery drawer, while completed forms go to the location stated by the applicable procedure. Retired supplies are stored with training examples and are never counted as supplies available for the next scheduled activity. The front desk writes the actual handover time rather than the time someone first placed the materials beside the door. A copied email subject line cannot establish which record belongs to an activity when several messages use similar wording. For a current Foxglove dispatch, if the receiver has not signed the inventory but the coordinator has issued a dated amber exception slip for that booking, the packer may hand over the case after attaching the slip to the dispatch sheet. This permission applies only to the case reference written on the slip: without a matching amber slip the case remains at the studio until the receiver signs the inventory, even when another case has already been released under its own exception. The contact checks the reference and date together before asking staff to retrieve a particular entry from the diary. Volunteers use the illustrated route sketch to explain the building layout without promising that every location is currently available. The printed checklist distinguishes cleaning from repairs, so a cleaning note does not imply that damaged equipment has been repaired. A finished activity remains open in the diary until the responsible coordinator has checked the required documents and recorded completion. The second copy stays with the desk while the travelling or visiting group carries the first copy to its activity. Names are copied carefully from the confirmed record because guessing an abbreviation can assign responsibility to the wrong person. Staff describe any difference without guessing when it happened, and the coordinator reviews the evidence at the next handover. The storage label remains in place while the assigned materials are away, allowing the return team to restore them correctly. The closing review covers documents, reusable supplies, temporary notices, and keys in that order before the desk is locked. An unanswered request keeps its original reference so another volunteer can continue the same enquiry without opening a duplicate record. The coordinator writes the activity name and the date in the diary before copying the reference onto the paper record. Staff compare the names on both copies because two groups sometimes choose the same activity name during the same season. The named contact remains responsible for the record until the coordinator has checked the final handover and signed it. A photograph may show the arrangement of the room or case, but it does not replace the written inventory. Requests for a change are written in pencil until the coordinator confirms them and updates the permanent diary. Current Foxglove return inventories go into the plum folder at the collection desk before the coordinator closes the booking.\n"
+    },
+    {
+      "id": "foxglove-archive",
+      "format": "md",
+      "text": "# Foxglove dispatch guide, archived 2023\n\nThis historical guide is superseded by the current 2026 procedure. Foxglove Puppet Studio lends puppet sets for travelling performances. The coordinator approves dispatch and the packer prepares each case. This guide describes the archived 2023 procedure. The coordinator writes the activity name and the date in the diary before copying the reference onto the paper record. Staff compare the names on both copies because two groups sometimes choose the same activity name during the same season. The named contact remains responsible for the record until the coordinator has checked the final handover and signed it. A photograph may show the arrangement of the room or case, but it does not replace the written inventory. Requests for a change are written in pencil until the coordinator confirms them and updates the permanent diary. The next volunteer reads the handover note before starting work, rather than assuming that the previous activity has finished. Each temporary direction card includes the activity date so visitors are not sent to a location used by an earlier group. Staff remove old notices at closing time and place reusable blank cards beside the diary for the following day. The weekly review counts cancellations separately from location changes because those events affect the schedule in different ways. When a named contact leaves early, the second contact takes responsibility and the change is recorded on the paper sheet. A missing item is described individually instead of being hidden inside a general note saying that the activity was completed. The coordinator keeps a spare printed diary at the collection desk in case the main copy is temporarily unavailable. Under the archived 2023 Foxglove procedure, a missing receiver signature always stopped dispatch; an amber exception slip did not permit handover. Inventory photographs are taken beside the reference label, which makes it possible to match each photograph with its written record. An equipment demonstration is labelled as practice and must not be mistaken for a confirmed reservation or a real dispatch. Staff do not infer approval from a conversation among visitors; only the confirmed diary entry records the current arrangement. The following morning, the coordinator compares the closing sheet with the diary and resolves differences before accepting another reservation. Blank forms remain in the stationery drawer, while completed forms go to the location stated by the applicable procedure. Retired supplies are stored with training examples and are never counted as supplies available for the next scheduled activity. The front desk writes the actual handover time rather than the time someone first placed the materials beside the door. A copied email subject line cannot establish which record belongs to an activity when several messages use similar wording. The contact checks the reference and date together before asking staff to retrieve a particular entry from the diary. Volunteers use the illustrated route sketch to explain the building layout without promising that every location is currently available. The printed checklist distinguishes cleaning from repairs, so a cleaning note does not imply that damaged equipment has been repaired. A finished activity remains open in the diary until the responsible coordinator has checked the required documents and recorded completion. The second copy stays with the desk while the travelling or visiting group carries the first copy to its activity. Names are copied carefully from the confirmed record because guessing an abbreviation can assign responsibility to the wrong person. Staff describe any difference without guessing when it happened, and the coordinator reviews the evidence at the next handover. The storage label remains in place while the assigned materials are away, allowing the return team to restore them correctly. The closing review covers documents, reusable supplies, temporary notices, and keys in that order before the desk is locked. An unanswered request keeps its original reference so another volunteer can continue the same enquiry without opening a duplicate record. Archived Foxglove return inventories were left in the grey box beside the workshop sink.\n"
+    },
+    {
+      "id": "alder-cafe",
+      "format": "md",
+      "text": "# Alder Quay cafe stock note\n\nThe cafe orders tea and paper cups for daytime visitors. Cafe stock records concern supplies rather than reading-room reservations. Spare cups are stored on shelf C, and completed supplier receipts are filed in the orange binder.\n"
+    },
+    {
+      "id": "foxglove-garden",
+      "format": "md",
+      "text": "# Foxglove community garden note\n\nThe garden shares its name with the puppet studio but operates independently. Volunteers record seed-tray counts and watering visits. Finished watering sheets go in the green folder in the potting shed. This note contains no puppet dispatch procedure.\n"
+    }
+  ],
+  "queries": [
+    {
+      "id": "boundary-01",
+      "category": "paraphrase",
+      "text": "The Alder Quay lift is out and our evening group includes a wheelchair user. What must happen before we use the alternative room?",
+      "expected": [
+        {
+          "document_id": "alder-current",
+          "quote": "For a current Alder Quay evening reservation, when the lift is unavailable and the booking includes a wheelchair user, the host must wait for the librarian to confirm the ground-floor map room before taking the group there. This exception applies only to the access requirement stated on that booking: a group without that requirement stays in the upstairs reading room during the same lift outage, and the host must not treat another group moving downstairs as permission to move their own meeting."
+        }
+      ]
+    },
+    {
+      "id": "boundary-02",
+      "category": "confusable",
+      "text": "Does a lift outage move an Alder Quay evening group with no access requirement downstairs under the current rules?",
+      "expected": [
+        {
+          "document_id": "alder-current",
+          "quote": "For a current Alder Quay evening reservation, when the lift is unavailable and the booking includes a wheelchair user, the host must wait for the librarian to confirm the ground-floor map room before taking the group there. This exception applies only to the access requirement stated on that booking: a group without that requirement stays in the upstairs reading room during the same lift outage, and the host must not treat another group moving downstairs as permission to move their own meeting."
+        }
+      ]
+    },
+    {
+      "id": "boundary-03",
+      "category": "late_document",
+      "text": "Where must the current Alder Quay host leave the completed closing sheet before going home?",
+      "expected": [
+        {
+          "document_id": "alder-current",
+          "quote": "Current Alder Quay closing sheets go into the brass tray beside the map-room desk before the host leaves."
+        }
+      ]
+    },
+    {
+      "id": "boundary-04",
+      "category": "exact",
+      "text": "Find the archived Alder Quay form reference AQ-R14.",
+      "expected": [
+        {
+          "document_id": "alder-archive",
+          "quote": "The archived 2024 Alder Quay room-change form carried code AQ-R14."
+        }
+      ]
+    },
+    {
+      "id": "boundary-05",
+      "category": "paraphrase",
+      "text": "Can the Foxglove packer release a case with an unsigned inventory when the coordinator has supplied the dated amber exception?",
+      "expected": [
+        {
+          "document_id": "foxglove-current",
+          "quote": "For a current Foxglove dispatch, if the receiver has not signed the inventory but the coordinator has issued a dated amber exception slip for that booking, the packer may hand over the case after attaching the slip to the dispatch sheet. This permission applies only to the case reference written on the slip: without a matching amber slip the case remains at the studio until the receiver signs the inventory, even when another case has already been released under its own exception."
+        }
+      ]
+    },
+    {
+      "id": "boundary-06",
+      "category": "confusable",
+      "text": "What did the archived Foxglove procedure require if the receiver had not signed, even when there was an amber slip?",
+      "expected": [
+        {
+          "document_id": "foxglove-archive",
+          "quote": "Under the archived 2023 Foxglove procedure, a missing receiver signature always stopped dispatch; an amber exception slip did not permit handover."
+        }
+      ]
+    },
+    {
+      "id": "boundary-07",
+      "category": "late_document",
+      "text": "Where is the current Foxglove return inventory filed before the booking is closed?",
+      "expected": [
+        {
+          "document_id": "foxglove-current",
+          "quote": "Current Foxglove return inventories go into the plum folder at the collection desk before the coordinator closes the booking."
+        }
+      ]
+    },
+    {
+      "id": "boundary-08",
+      "category": "multiple_sources",
+      "text": "Find the current paperwork drop-off locations for Alder Quay closing sheets and Foxglove return inventories.",
+      "expected": [
+        {
+          "document_id": "alder-current",
+          "quote": "Current Alder Quay closing sheets go into the brass tray beside the map-room desk before the host leaves."
+        },
+        {
+          "document_id": "foxglove-current",
+          "quote": "Current Foxglove return inventories go into the plum folder at the collection desk before the coordinator closes the booking."
+        }
+      ]
+    },
+    {
+      "id": "boundary-09",
+      "category": "absent",
+      "text": "What is the exact telephone number of the Alder Quay evening librarian?",
+      "expected": [],
+      "reason": "No source states a telephone number."
+    },
+    {
+      "id": "boundary-10",
+      "category": "absent",
+      "text": "How many pounds is the Foxglove refundable puppet-set deposit?",
+      "expected": [],
+      "reason": "No source states a deposit amount or any price."
+    }
+  ]
+}

@@ -5,6 +5,13 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 15 October 2026.
 
+Latest: [[docs/CHUNK_RETRIEVAL_RESULTS|Paired chunk retrieval results]]. All 178
+requests passed. Main set: 100% document/evidence recall, MRR 0.9792. Boundary
+stress: 50% strict evidence, 87.5% combined coverage. Finding the file is not
+enough when the supporting passage is split or missing. Next: bounded same-source
+context assembly and multi-part passage coverage. 44 evaluation/26 inference
+checks and frontend build pass; no connected ingestion or deployment yet.
+
 Latest: [[services/inference/UPGRADE|Patched CPU candidate and 512-token slices]].
 25 focused checks pass; scan improved from 56/12 high to 28/1 high. Real candidate
 comparison now passes (six cases, unchanged tested rankings); five chunks take

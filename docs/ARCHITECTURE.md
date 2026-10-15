@@ -6,12 +6,19 @@ security checks and delivery gates. Proposed mechanisms are not implemented yet.
 
 ## Current implementation
 
+15 October paired retrieval: host evaluation tooling compares legacy and token512
+layouts using identical patched-model vectors for shared inputs. Frozen source
+quotes remain unchanged; strict and continuous union evidence coverage are scored
+separately. text-v2 gate passes; boundary stress exposes split context and missed
+multi-part passages. Context assembly/coverage remains the next prerequisite,
+not implemented ingestion behavior. See CHUNK_RETRIEVAL_RESULTS.md.
+
 15 October: separate patched CPU image built and scanned (28 findings/1 high).
 Added token-aware <=512-token source preparation, preserving offsets and overlap.
 Existing index/parser versions and request budgets unchanged. Candidate real-model
 compatibility passes on six cases; five 306–500-token chunks complete in
 3.053–5.883 s. Helper not yet connected to ingestion; retrieval quality with the
-new boundaries remains unverified. See services/inference/UPGRADE.md.
+new boundaries is measured with limitations above. See services/inference/UPGRADE.md.
 Deployment/promotion remains gated.
 
 14 October extended profiles: 50 short sequential queries passed; 2,048-token
