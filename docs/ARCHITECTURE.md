@@ -2,15 +2,16 @@
 
 Current forward plan: [DELIVERY_PLAN.md](DELIVERY_PLAN.md), dated 2 October.
 It defines proposed API/worker boundaries, job leases, version publication,
-security checks and delivery gates. Proposed mechanisms are not implemented yet.
+security checks and delivery gates. Implementation status is distinguished below.
 
 ## Current implementation
 
 15 October scheduling prerequisite: private PostgreSQL jobs and processing-target
 versions, idempotent enqueue, bounded leases/retries, narrowly granted worker
 functions, owner-derived status and deletion/replacement fencing are verified.
-See INGESTION_JOBS.md. Processing target is not a published index. Trusted
-original admission, passage/vector persistence and atomic activation remain next.
+See INGESTION_JOBS.md. TEXT_PUBLICATION.md adds verified-byte admission, private
+pgvector staging, a separate published pointer and atomic ready activation.
+Trusted coordinator, search/context adapters and real API integration remain next.
 
 Bounded context now exists as a pure worker component after ranking. It groups
 sources, expands at most one contiguous neighbor per side and returns exact

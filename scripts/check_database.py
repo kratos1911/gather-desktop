@@ -7,11 +7,11 @@ import json
 from concurrent.futures import ThreadPoolExecutor
 
 ROOT = Path(__file__).resolve().parents[1]
-IMAGE = 'postgres@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24'
+IMAGE = 'public.ecr.aws/supabase/postgres@sha256:06ddc7962e11ab0f4f0334fd05671e97c30ea202f6e6a7113800bd3d6e416108'
 
 
 def run(*args, input=None, timeout=60):
-    return subprocess.run(['docker', *args], input=input, text=True,
+    return subprocess.run(['docker', *args], input=input, text=True, encoding='utf-8',
                           capture_output=True, check=True, timeout=timeout)
 
 
@@ -22,8 +22,10 @@ def main():
     try:
         run('run', '--detach', '--name', name, '--network', 'none',
             '--memory', '256m', '--cpus', '1', '--pids-limit', '100',
-            '--tmpfs', '/var/lib/postgresql/data:rw,size=192m',
-            '--env', 'POSTGRES_HOST_AUTH_METHOD=trust', IMAGE)
+            '--tmpfs', '/var/lib/postgresql/data:rw,size=192m,uid=100,gid=101',
+            '--user', '100:101', '--env', 'PGHOST=/tmp',
+            '--mount', f'type=bind,source={ROOT / "tests/database/start-postgres.sh"},target=/gather-start.sh,readonly',
+            '--entrypoint', 'sh', IMAGE, '/gather-start.sh')
         for _ in range(60):
             try:
                 run('exec', name, 'pg_isready', '-U', 'postgres', timeout=5)
@@ -45,6 +47,8 @@ def main():
                 print(line)
         concurrency_checks(name)
         ingestion_concurrency_checks(name)
+        from check_publication import publication_checks
+        publication_checks(name, run)
         print('Database checks passed. Auth/Storage services were not tested.')
     except subprocess.CalledProcessError as error:
         print(error.stderr)

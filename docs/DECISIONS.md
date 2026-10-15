@@ -1,5 +1,22 @@
 # Architecture decisions
 
+## ADR-048: private staging and separate publication pointer (15 October)
+
+Keep validated originals/passages/pgvector values in the existing database's
+private schema. Restrict writes to lease-fenced worker functions, and separate
+the processing target from the active publication so replacement failures do not
+hide prior complete content. Publish the pointer and ready state in one source-
+locked transaction; retain a hashed token receipt for safe lost-response retries.
+Reuse existing version/owner foreign keys and cleanup rather than another store
+or queue. Read published passages through auth.uid(), never from client-visible
+staging. No vector-search endpoint or actual inference is implied by this slice.
+
+Cap vector storage batches at 16 rows/512 KiB while preserving existing source,
+passage, inference and retry limits. Use real pgvector in disposable tests via
+the cached digest-pinned Supabase PostgreSQL image, keeping original memory/CPU
+limits. The startup shim initializes only test roles, not vendor services; its
+temporary bootstrap port avoids false readiness. See TEXT_PUBLICATION.md.
+
 ## ADR-045: bounded source context after ranking
 
 Use source-neighbors-v1: first-ranked seed per source, at most five sources from

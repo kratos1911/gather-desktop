@@ -1,5 +1,22 @@
 # Rebuild progress
 
+## 15 October: verified text and atomic publication
+
+Extended the clean c7bdd9f checkpoint with verified UTF-8 original bytes, private
+passage/pgvector staging and atomic published-version/ready activation. Reviewed
+and fixed premature ready transitions, Unicode empty-text agreement, transactional
+rollback coverage and Windows checkout line endings for the test startup script.
+169 database checks pass (105 retained + 64 new); frontend build passes. Separate
+test-role bootstrap/pgvector smoke and Compose validation pass. Full API stack
+was not rerun; no live embeddings or semantic quality measured. Evidence paths and
+remaining work are in TASKS.md, contracts in TEXT_PUBLICATION.md.
+
+One preflight: Docker 29.7.2, 4.18 GiB available RAM, 94.69 GiB free D: storage,
+required PostgreSQL/pgvector image cached. Only disposable named test containers
+were used, with no shared API changes, models, app closures or paid resources.
+No native rebuild: native/frontend inputs unchanged. Canonical state and linked
+Obsidian concept/flow notes updated. Changes committed locally only.
+
 ## 15 October: durable ingestion scheduling prerequisite
 
 Added a private Postgres job ledger tied to immutable source versions, with

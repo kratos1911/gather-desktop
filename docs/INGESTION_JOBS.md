@@ -1,6 +1,7 @@
 # Durable ingestion jobs
 
-15 October 2026. Implemented scheduling prerequisite, not a working importer.
+15 October 2026. Scheduling contract, not a working importer. The subsequent
+[text publication slice](TEXT_PUBLICATION.md) extends this worker role and state machine.
 Migration: `supabase/migrations/202610150001_ingestion_jobs.sql`.
 
 ## What works
@@ -19,7 +20,7 @@ processing -> transient failure -> delayed queued (at most three attempts)
 processing -> invalid input / exhausted attempts -> failed
 processing -> lease expires -> new attempt with a new token
 any job -> source deleted or replaced -> cancelled
-Ready/searchable publication: not implemented or exposed in this slice
+processing -> complete validated staging -> ready (TEXT_PUBLICATION.md)
 ```
 
 A lease is temporary permission to change a job. Recovery gives a new random
@@ -35,8 +36,8 @@ Late enqueue calls cannot resurrect a deleted source, even after physical cleanu
   execute grant. Its owner parameter must come from the future verified API
   identity, not a desktop payload. It requires configured source quota and checks
   source ownership. Creating the source and enqueueing together remains API work.
-- A new NOLOGIN `gather_ingestion_worker` role can only claim, renew and fail via
-  restricted functions. No direct table reads/writes, enqueue, cleanup or helper
+- A NOLOGIN `gather_ingestion_worker` role can claim, renew and fail via restricted
+  functions; TEXT_PUBLICATION.md adds stage/publish functions. No direct table reads/writes, enqueue, cleanup or helper
   execution. No login credentials or deployment role membership provisioned.
   It is a trusted cross-owner dispatcher role, never an end-user credential.
 - Owner status RPC derives identity from `auth.uid()` and omits lease tokens and
@@ -61,14 +62,15 @@ Late enqueue calls cannot resurrect a deleted source, even after physical cleanu
 - New defensive cap: 16 retained jobs/versions per source. Existing request replay
   still works at the cap. No automatic eviction that loses idempotency evidence.
   This is a local initial bound, not an approved public subscription allowance.
-- No content stored here, new uploads, public signup, API endpoint, cloud resource
-  or vector model call. Production privacy, retention, rate/byte quotas, original
+- The scheduling tables store metadata; TEXT_PUBLICATION.md adds private bytes and
+  vectors. No new uploads, public signup, API endpoint, cloud resource or model
+  call. Production privacy, retention, rate/byte quotas, original
   immutability and upload fencing remain gates in PRIVACY_RELEASE_AUDIT.md.
 
 ## Verification
 
-Run `python scripts/check_database.py`. It uses the existing pinned PostgreSQL
-image, 256 MiB / 1 CPU, bounded tmpfs, no network/host ports/host data mounts, and
+Run `python scripts/check_database.py`. It uses pinned Supabase PostgreSQL/pgvector,
+256 MiB / 1 CPU, bounded tmpfs, no network/host ports, a read-only startup-script mount, and
 removes only its uniquely named test container. Schema constraints and permission
 checks use real PostgreSQL with synthetic identities/content metadata. The existing
 ownership/deletion suite runs because this migration adds a tombstone trigger and
@@ -91,11 +93,7 @@ restart, sustained load or deployed worker behavior is claimed by these checks.
 
 ## Next slice
 
-Verified original admission plus immutable passage/vector staging and atomic
-publication. Validate complete coverage, offsets/citations, text/hash/version and
-embedding identity/dimensions before exposing readiness. Publication must lock the
-live source and validate the **current unexpired lease token and target version in
-the same transaction as all writes/activation**; calling a checker in a separate
-transaction is unsafe. Add missing/invalid vector, partial-batch, stale-worker and
-delete/publication race tests. Then connect the trusted dispatcher, authenticated
-API, search/context repository and finally desktop import/search/open/delete.
+Verified byte admission, private passage/vector staging and atomic publication
+are now implemented locally; see TEXT_PUBLICATION.md. Next connect the trusted
+dispatcher, authenticated API and published search/context repository, followed
+by desktop import/search/open/delete. Production upload and release gates remain.

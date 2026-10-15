@@ -2,12 +2,16 @@
 name: gather-supabase-test
 services:
   db:
-    image: postgres@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    image: public.ecr.aws/supabase/postgres@sha256:06ddc7962e11ab0f4f0334fd05671e97c30ea202f6e6a7113800bd3d6e416108
+    user: '100:101'
+    entrypoint: [sh, /gather-start.sh]
     container_name: gather_integration_db
     environment:
-      POSTGRES_HOST_AUTH_METHOD: trust
-    tmpfs: ['/var/lib/postgresql/data:rw,size=256m']
-    volumes: [./tests/supabase/init.sql:/docker-entrypoint-initdb.d/00-roles.sql:ro]
+      PGHOST: /tmp
+    tmpfs: ['/var/lib/postgresql/data:rw,size=256m,uid=100,gid=101']
+    volumes:
+      - ./tests/supabase/init.sql:/gather-init.sql:ro
+      - ./tests/database/start-postgres.sh:/gather-start.sh:ro
     healthcheck:
       test: [CMD, pg_isready, -U, postgres]
       interval: 2s

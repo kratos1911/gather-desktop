@@ -1,11 +1,10 @@
 # Current project state
 
-Current backend checkpoint: durable ingestion scheduling prerequisite implemented
-and verified (15 October). 105 database assertions/scenarios and frontend build
-pass. See INGESTION_JOBS.md for leases, fencing, limits and exact scope. No ready
-transition, passage/vector persistence, original admission or desktop integration
-yet. Next: verified originals, immutable staging and atomic publication. No model
-calls, shared Docker changes, deployment or push.
+Current backend checkpoint: verified byte admission, private passage/pgvector
+staging, atomic publication and owner-only published reads are implemented locally
+(15 October). See TEXT_PUBLICATION.md; evidence is in TASKS.md. Next: trusted
+coordinator and published-search/context adapters. Real JWT/upload/inference and
+desktop wiring remain incomplete. No model calls, protected API changes or push.
 
 Latest UI checkpoint: expressive desktop preview redesign implemented. Five UI
 tests, lint, frontend and native debug builds pass. Browser visual/contrast/reflow

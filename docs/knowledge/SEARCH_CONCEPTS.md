@@ -3,6 +3,15 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Atomic publication
+
+Think of an index version as a draft: passages and vectors stay private until
+every part is valid. One database transaction switches the published pointer
+and marks the job ready. A replacement draft leaves the earlier complete version
+available. Lease tokens stop an interrupted worker from publishing after another
+attempt or deletion. See [[docs/TEXT_PUBLICATION]] for the implemented contract;
+[[TASKS]] records verification, not a claim of connected semantic search.
+
 ## Fresh evaluation and failure review
 
 On 12 October, [[docs/TEXT_V2_RESULTS|text-v2]] tested new examples with the same

@@ -12,7 +12,7 @@
     {
       "id": "source",
       "type": "text",
-      "text": "Save file or link\nPrivate durable jobs + lease fencing verified\nPLANNED: original admission + desktop ingestion",
+      "text": "Save file or link\nTXT/MD byte validation + private staging verified\nPLANNED: coordinator + desktop ingestion",
       "x": 0,
       "y": 0,
       "width": 330,
@@ -30,7 +30,7 @@
     {
       "id": "chunk",
       "type": "text",
-      "text": "Versioned passages + provenance\nTXT/MD and offline HTML bookmark adapter implemented",
+      "text": "Versioned passages + provenance\nTXT/MD atomic publication verified locally\nSee docs/TEXT_PUBLICATION.md",
       "x": 760,
       "y": 0,
       "width": 330,

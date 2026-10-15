@@ -1,5 +1,19 @@
 # Delivery tasks
 
+## 15 October verified text publication
+
+TASK-021 publication slice complete locally: actual-byte validation, immutable
+private passage/vector staging, complete-coverage/count checks, atomic ready
+transition, prior-version visibility and stale/deleted-worker fencing. See
+docs/TEXT_PUBLICATION.md for contracts and limits. 169 database checks pass:
+105 existing lifecycle/scheduling checks plus 64 publication checks. Frontend
+build passes; Supabase test-role/pgvector bootstrap smoke and Compose validation
+pass. Local logs: output/database-checks/publication-20261015.log and
+publication-frontend-20261015.log. Synthetic unit vectors, no inference evidence.
+No native rebuild required: frontend/native inputs unchanged. Full real API stack
+was not rerun. Next: trusted coordinator and published search/context adapter;
+whole TASK-021 and desktop import/search flow remain partial.
+
 ## 15 October durable ingestion scheduling
 
 TASK-021 scheduling prerequisite complete locally: owner/request idempotency,
@@ -8,8 +22,8 @@ recovery, bounded retries, immutable provenance, deletion/replacement fencing,
 private worker functions and owner-only status. 96 SQL assertions (51 new) plus
 9 concurrent scenarios (5 new) pass; frontend build passes. Evidence/scope:
 docs/INGESTION_JOBS.md and output/database-checks/ingestion-jobs-20261015.log.
-Whole backend import/search flow remains partial. No ready/publication API is
-exposed; verified originals and passage/vector staging/publication are next.
+Historical scheduling-only result; the publication slice above supersedes its
+former next step. Whole backend import/search flow remains partial.
 
 ## 15 October desktop redesign
 
