@@ -1,5 +1,19 @@
 # Delivery tasks
 
+## Current three-milestone path (15 October)
+
+| Order | Outcome | Prerequisites | Completion criteria / status |
+| --- | --- | --- | --- |
+| 1 | Bounded source context and multi-part coverage | Verified saved vectors and source offsets | **Local component complete:** nine focused tests and frontend build pass; saved-vector replay recovers all known evidence in both sets without new inference. See docs/SEARCH_CONTEXT.md. API/desktop integration remains pending. |
+| 2 | Backend TXT/MD import → index → search → open → delete | Existing schema/worker; trusted owner/version repository, durable jobs, idempotency, quotas, upload fencing and storage cleanup; relevant privacy/security gates | Test the full backend flow with isolated identities, restart/retry, stale versions and deletion visibility. No hosted provisioning is implied. |
+| 3 | Desktop end-to-end flow | Milestone 2, session/credential handling and release prerequisites | Native import, truthful processing states, search/context citations, reader and delete survive restart; verify errors, keyboard access and isolation. |
+
+Later optional work: chat, additional format adapters, ranking refinements and
+visual polish. Security/licence fixes remain prerequisites to production, not
+optional improvements. TASK-005/007 overall remain partial. Continue milestone 2
+with one bounded backend slice; do not rerun model experiments without a relevant
+input/configuration change or new evaluation question.
+
 ## 15 October paired chunk retrieval evaluation
 
 TASK-005 evaluation slice complete: frozen text-v2 plus six-source/ten-query

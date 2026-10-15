@@ -3,6 +3,15 @@
 Updated: 15 October 2026. Current forward plan: DELIVERY_PLAN.md. New architecture
 choices there are proposed, not implemented. PROGRESS.md records history.
 
+Current: bounded source context implemented and saved-vector replay completed;
+see SEARCH_CONTEXT.md for policy, safety boundary and evidence. Nine focused tests
+and frontend build pass. Known boundary coverage recovered with zero new model
+calls; ranking/abstention and real-user quality remain unresolved. Next is
+milestone 2 in TASKS.md: backend import/index/search/open/delete coordination with
+trusted ownership/version reads. No Docker/app/process changes this checkpoint.
+
+Prior evaluation checkpoint:
+
 Latest: paired chunk-policy retrieval evaluation completed on 15 October. All
 178 real requests passed. text-v2 candidate dense recall/evidence 1.0, MRR 0.9792;
 predeclared gate passes. Boundary strict evidence stays 0.50, union coverage 0.875;

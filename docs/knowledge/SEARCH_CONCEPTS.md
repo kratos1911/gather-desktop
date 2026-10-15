@@ -191,6 +191,14 @@ There is no deployed background cleanup worker or desktop connection yet.
 
 ## CPU container checkpoint (13 October)
 
+**Source grouping and neighbor expansion (15 October):** choose a seed passage
+per file, then add at most the immediately adjacent passages from that exact
+version. Slice original text once to avoid duplicated overlap and preserve
+citations. Reserve each seed's space before adding context. This improves what
+the reader sees without rerunning embeddings or changing source rankings.
+Known-case context coverage is now complete; larger/unseen libraries remain
+unverified. [[docs/SEARCH_CONTEXT]] holds the limits and evidence.
+
 15 October retrieval follow-up: [[docs/CHUNK_RETRIEVAL_RESULTS]]. A token limit
 counts model pieces, not characters. A 512-token chunk can be larger than the old
 1,024-character chunk for English; text-v2 consolidates 64 passages into 40.

@@ -6,6 +6,11 @@ security checks and delivery gates. Proposed mechanisms are not implemented yet.
 
 ## Current implementation
 
+Bounded context now exists as a pure worker component after ranking. It groups
+sources, expands at most one contiguous neighbor per side and returns exact
+versioned text citations within byte limits. Saved-vector replay is verified;
+trusted repository/API/desktop wiring is pending. See SEARCH_CONTEXT.md.
+
 15 October paired retrieval: host evaluation tooling compares legacy and token512
 layouts using identical patched-model vectors for shared inputs. Frozen source
 quotes remain unchanged; strict and continuous union evidence coverage are scored

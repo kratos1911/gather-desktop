@@ -1,5 +1,11 @@
 # Verification plan
 
+Context component: run tests/worker/test_search_context.py for ownership/version/
+visibility/integrity, offsets, gaps/overlap, one-hop expansion and byte/seed budgets.
+Replay scripts/evaluate_search_context.py only against hash-verified saved vectors;
+no model/Docker required. See SEARCH_CONTEXT.md. Integration still needs real
+authenticated repository reads and delete/version race checks.
+
 ## Current executable checks
 
 `python -m unittest discover -s tests/inference -v` runs 25 synthetic process/protocol/reporting/chunking

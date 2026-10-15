@@ -1,5 +1,29 @@
 # Rebuild progress
 
+## 2026-10-15 — bounded source context with no new inference
+
+Verified clean checkpoint 33f5716. Implemented one-source-per-result grouping and
+immediate contiguous-neighbor expansion with exact owner/version/hash citations.
+Bounds: 100 candidates/snapshots, five sources, 8 KiB/window, 32 KiB total text;
+reserve seed bytes first and report omissions. All input identities and ranges
+are validated before any result. It remains a pure component, not connected auth,
+repository, API or UI behavior. Review added explicit malformed-Unicode rejection
+and a regression test for preserving later seeds' reserved byte budget.
+
+Replayed hash-verified saved vectors with unchanged model/prompt/chunks/rankings.
+Known boundary context coverage reached 1.0 from 0.875 top-five union coverage;
+text-v2 stayed 1.0 with no per-query coverage regressions. Expanded context is a
+different metric from original strict passage recall; no ranking improvement is
+claimed. Ten absent queries still return context. Stress sources have only two
+chunks, so larger/unseen-document coverage remains unverified. Evidence and
+limits: SEARCH_CONTEXT.md and tests/evaluation/results/search-context-20261015.json.
+
+Nine focused tests and frontend build pass. No heavy preflight/model run was
+needed; no Docker, app/process, dependency or cloud changes. One agent, no new
+inference calls, no push. Updated three-milestone plan and linked Obsidian notes;
+next is backend coordination with trusted owner/version reads and durable lifecycle
+safeguards. Existing privacy/security and deployment gates remain in force.
+
 ## 2026-10-15 — paired chunk-policy retrieval measured
 
 Added frozen six-source/ten-query fictional boundary stress alongside unchanged

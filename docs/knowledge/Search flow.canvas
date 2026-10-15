@@ -48,7 +48,7 @@
     {
       "id": "vector",
       "type": "text",
-      "text": "Paired Qwen chunk evaluation: main gate passes\nBoundary evidence: strict50%, union87.5%\nNEXT: bounded context + multi-part coverage\nSecurity and connected ingestion still gated",
+      "text": "Bounded source context implemented\nKnown-case coverage recovered via saved vectors\nNEXT: backend import/index/search/delete flow\nOwnership integration + release gates pending",
       "x": 800,
       "y": 220,
       "width": 330,

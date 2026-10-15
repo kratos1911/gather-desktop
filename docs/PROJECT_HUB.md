@@ -5,6 +5,11 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 15 October 2026.
 
+Current: [[docs/SEARCH_CONTEXT|Bounded context and cached-vector replay]]. Known
+split/multi-part evidence recovered without new model calls. See [[TASKS]] for
+the three-milestone path; backend coordination is next. Context is not connected
+to the desktop yet, and production security gates remain open.
+
 Latest: [[docs/CHUNK_RETRIEVAL_RESULTS|Paired chunk retrieval results]]. All 178
 requests passed. Main set: 100% document/evidence recall, MRR 0.9792. Boundary
 stress: 50% strict evidence, 87.5% combined coverage. Finding the file is not

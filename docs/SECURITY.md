@@ -2,6 +2,11 @@
 
 ## Trust boundaries
 
+Search-context assembly requires a server-authenticated owner and repository-issued
+active snapshots. It verifies supplied owner/version/visibility/hash/offsets and
+caps bytes, but is not authentication, RLS or deletion-race protection. Repository
+read-time ownership/version/deletion checks remain required before API exposure.
+
 The private inference runtime accepts only trusted engine factories/configuration
 and uses an internal Python-serialized pipe. Never expose that pipe or factory
 selection to clients. Its request limits and process deadlines do not replace OS

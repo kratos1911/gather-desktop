@@ -1,5 +1,17 @@
 # Architecture decisions
 
+## ADR-045: bounded source context after ranking
+
+Use source-neighbors-v1: first-ranked seed per source, at most five sources from
+100 candidates, one neighbor per side, contiguous ranges only, 8 KiB/window and
+32 KiB total text. Reserve seed bytes before expanding. Retain exact source/version
+citations and reject visibility/integrity mismatches before output. The trusted
+repository must enforce authentication, ownership and current-version/deletion
+checks; this pure component cannot replace them. Context is for readers, not an
+automatic increase to model input limits. Replay saved verified vectors first;
+known-case coverage improved without new inference. See SEARCH_CONTEXT.md for
+evidence and limits; source ranking and default fusion are unchanged.
+
 ## ADR-044: compare chunk policies with fixed source evidence
 
 15 October: compare legacy 1,024-character/128-character-overlap chunks against
