@@ -12,7 +12,7 @@
     {
       "id": "source",
       "type": "text",
-      "text": "Save file or link\nTXT/MD byte validation + private staging verified\nPLANNED: coordinator + desktop ingestion",
+      "text": "Save file or link\nInternal TXT/MD coordinator + durable original handoff\nPLANNED: authenticated API + desktop ingestion",
       "x": 0,
       "y": 0,
       "width": 330,

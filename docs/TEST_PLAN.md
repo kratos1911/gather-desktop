@@ -8,6 +8,13 @@ authenticated repository reads and delete/version race checks.
 
 ## Current executable checks
 
+16 October coordinator: `python scripts/check_database.py` includes 196 database
+checks with 27 coordinator scenarios. Run `python -m unittest discover -s
+tests/worker -p test_ingestion.py -v` for 10 focused unit tests. Inference controls
+now include cancellation/reaping (27 tests). All use synthetic inputs/providers;
+real driver/network/JWT and model integration remain separate acceptance checks.
+See INGESTION_COORDINATOR.md and TASKS.md for contracts and evidence.
+
 15 October scheduler extension: `python scripts/check_database.py` now includes
 tests/database/ingestion_jobs.sql and five new real-connection races. 105 total
 assertions/scenarios pass; see INGESTION_JOBS.md. This uses the existing isolated

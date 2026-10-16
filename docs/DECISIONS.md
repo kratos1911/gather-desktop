@@ -1,5 +1,21 @@
 # Architecture decisions
 
+## ADR-049: bounded internal coordinator and durable original handoff (16 October)
+
+Reuse the existing database queue, parser, token chunker and publication functions.
+Store bounded original bytes in a private version-bound table in the same
+transaction as submission, avoiding an uncoordinated local-file handoff or a new
+queue/storage subsystem. R2 remains the production originals target. Keep owner
+identity outside the payload, supplied by a verified server context to a narrowly
+granted internal coordinator role. Production authentication remains a prerequisite.
+
+Use ten-second heartbeat renewal plus cooperative runtime cancellation backed by
+process termination. Reuse only committed vectors from the exact validated
+manifest/version. Preflight at most 16 single-passage requests / 8,192 tokens per
+job; preserve all existing database and inference limits. Require explicit provider
+injection, with synthetic implementations confined to tests. No cloud fallback,
+automatic model startup or deployment is introduced. See INGESTION_COORDINATOR.md.
+
 ## ADR-048: private staging and separate publication pointer (15 October)
 
 Keep validated originals/passages/pgvector values in the existing database's

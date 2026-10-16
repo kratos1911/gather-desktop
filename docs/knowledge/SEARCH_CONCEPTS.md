@@ -3,6 +3,15 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Coordinator and durable handoff
+
+A coordinator connects existing processing steps. Durable handoff means saving
+the original with the job so a restarted worker can retrieve the same bytes.
+Heartbeats renew permission to work; losing permission signals cancellation.
+Recovery reuses completed vectors from the same version and computes only what
+is missing. [[docs/INGESTION_COORDINATOR]] describes the internal implementation;
+synthetic workflow tests do not establish semantic search quality.
+
 ## Atomic publication
 
 Think of an index version as a draft: passages and vectors stay private until

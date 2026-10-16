@@ -1,5 +1,24 @@
 # Delivery tasks
 
+## 16 October internal ingestion coordinator
+
+TASK-021 coordinator slice complete locally: trusted-context submission commits
+source/job/original together; the worker claims, parses, chunks, embeds missing
+passages, stages and publishes through existing contracts. Heartbeats cancel
+active work after lease loss; recovered attempts reuse committed vectors.
+196 database checks pass (169 retained + 27 coordinator checks), plus 10 focused
+coordinator unit tests, 27 inference-control tests and the required frontend build.
+Evidence: output/database-checks/coordinator-20261016.log,
+coordinator-unit-20261016.log, coordinator-runtime-20261016.log and
+coordinator-frontend-20261016.log. All embeddings in these runs are synthetic.
+No model loaded; native inputs unchanged, so no native rebuild required.
+
+Contract/limits: docs/INGESTION_COORDINATOR.md. Database integration uses a psql
+test transport; the DB-API adapter has unit checks, not live-driver/network proof.
+Real JWT/API, cloud inference and desktop integration remain incomplete. Next:
+verify server identity/transport and connect published search/open adapters.
+TASK-021 overall remains partial; no production readiness or deployment claimed.
+
 ## 15 October verified text publication
 
 TASK-021 publication slice complete locally: actual-byte validation, immutable

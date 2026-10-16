@@ -1,10 +1,11 @@
 # Current project state
 
-Current backend checkpoint: verified byte admission, private passage/pgvector
-staging, atomic publication and owner-only published reads are implemented locally
-(15 October). See TEXT_PUBLICATION.md; evidence is in TASKS.md. Next: trusted
-coordinator and published-search/context adapters. Real JWT/upload/inference and
-desktop wiring remain incomplete. No model calls, protected API changes or push.
+Current backend checkpoint (16 October): internal TXT/Markdown submission and ingestion coordinator
+connect existing processing/publication with durable original handoff, heartbeat
+cancellation and reuse of completed vectors. See INGESTION_COORDINATOR.md for
+scope; TASKS.md holds passing verification. Next: real server identity/transport boundary
+and published search/open adapters. Real JWT/cloud inference and desktop wiring
+remain incomplete. No model loads, protected API changes or push.
 
 Latest UI checkpoint: expressive desktop preview redesign implemented. Five UI
 tests, lint, frontend and native debug builds pass. Browser visual/contrast/reflow

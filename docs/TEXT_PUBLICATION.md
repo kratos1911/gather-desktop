@@ -85,6 +85,7 @@ Production rate/byte quotas, original-upload fencing, retention, real JWT checks
 provider security/licensing and desktop integration remain release gates. The
 16-version retention cap is unchanged; do not evict history or raise limits silently.
 
-Next: connect a trusted ingestion coordinator to these functions and the existing
-parser/inference interface, then implement the authenticated published-search/open
-adapter. Keep synthetic integration separate from eventual cloud inference checks.
+INGESTION_COORDINATOR.md now connects internal submission and worker execution to
+these functions and the parser/inference interface. Next: real authenticated
+transport and published-search/open adapters. Synthetic integration remains
+separate from eventual cloud inference checks.

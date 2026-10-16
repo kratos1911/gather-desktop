@@ -1,5 +1,24 @@
 # Rebuild progress
 
+## 16 October: internal ingestion coordinator
+
+Continued clean b23cd01 on codex/durable-ingestion-jobs. Added version-bound
+original handoff and restricted admission/read functions, parameterized DB-API
+adapter, existing-parser/chunker/embedding orchestration and runtime cancellation.
+Review added job-wide request preflight and reuse of committed vectors on recovery.
+196 database checks, 10 coordinator unit tests, 27 inference controls and frontend
+build pass. An actual ten-second heartbeat cancelled a synthetic request after
+deletion; interruption after one stored vector recovered without re-embedding it.
+Tests use protocol fixtures, not model-generated semantic vectors.
+
+Docker was initially unavailable. After the user started it, the sandbox denied
+pipe access; approved escalation enabled the same isolated harness. Preflight:
+Docker 29.7.2, cached database image, 2.44 GiB free RAM, D: 94.69 GiB free.
+Only disposable 256 MiB database work and synthetic process tests ran; no models,
+app closures, protected API changes or paid resources. Frontend/native files were
+unchanged. Canonical state, concepts and Obsidian flow updated. Local commit only.
+Remaining integration boundaries and evidence are recorded in TASKS.md.
+
 ## 15 October: verified text and atomic publication
 
 Extended the clean c7bdd9f checkpoint with verified UTF-8 original bytes, private

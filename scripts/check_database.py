@@ -49,6 +49,8 @@ def main():
         ingestion_concurrency_checks(name)
         from check_publication import publication_checks
         publication_checks(name, run)
+        from check_ingestion import coordinator_checks
+        coordinator_checks(name, run)
         print('Database checks passed. Auth/Storage services were not tested.')
     except subprocess.CalledProcessError as error:
         print(error.stderr)

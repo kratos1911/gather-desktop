@@ -94,6 +94,7 @@ restart, sustained load or deployed worker behavior is claimed by these checks.
 ## Next slice
 
 Verified byte admission, private passage/vector staging and atomic publication
-are now implemented locally; see TEXT_PUBLICATION.md. Next connect the trusted
-dispatcher, authenticated API and published search/context repository, followed
-by desktop import/search/open/delete. Production upload and release gates remain.
+are now implemented locally; see TEXT_PUBLICATION.md. INGESTION_COORDINATOR.md
+connects internal submission and worker execution. Next verify the real server
+identity/transport boundary and published search/context repository, followed by
+desktop import/search/open/delete. Production upload and release gates remain.

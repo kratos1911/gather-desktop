@@ -7,6 +7,7 @@ must explicitly start it again after a timeout or model failure.
 import math
 import multiprocessing
 import threading
+import time
 
 MODEL = "Qwen/Qwen3-Embedding-0.6B"
 REVISION = "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3"
@@ -107,11 +108,19 @@ class Runtime:
             self._connection.close()
             self._connection = None
 
-    def _receive(self, timeout):
+    def _receive(self, timeout, cancel=None):
         try:
-            if not self._connection.poll(timeout):
-                self._stop()
-                raise InferenceError("deadline_exceeded")
+            deadline = time.monotonic() + timeout
+            while True:
+                if cancel is not None and cancel.is_set():
+                    self._stop()
+                    raise InferenceError("cancelled")
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    self._stop()
+                    raise InferenceError("deadline_exceeded")
+                if self._connection.poll(min(remaining, 0.05)):
+                    break
             result = self._connection.recv()
         except (EOFError, OSError):
             self._stop()
@@ -143,7 +152,7 @@ class Runtime:
                 self._stop()
                 raise InferenceError("startup_failed")
 
-    def infer(self, request):
+    def infer(self, request, *, cancel=None):
         if not self._lock.acquire(blocking=False):
             raise InferenceError("busy")
         try:
@@ -156,7 +165,7 @@ class Runtime:
             except (OSError, EOFError):
                 self._stop()
                 raise InferenceError("model_failed") from None
-            return self._receive(self.request_timeout)
+            return self._receive(self.request_timeout, cancel)
         finally:
             self._lock.release()
 

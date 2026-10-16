@@ -3,10 +3,10 @@ tags: [gather, project]
 ---
 # Gather project hub
 
-Start here in Obsidian. Updated 15 October 2026.
+Start here in Obsidian. Updated 16 October 2026.
 
-Backend update: [[docs/TEXT_PUBLICATION|Verified text and atomic publication]]
-extends [[docs/INGESTION_JOBS|Durable jobs and lease fencing]]. See [[TASKS]] for
+Backend update: [[docs/INGESTION_COORDINATOR|Trusted ingestion coordinator]] connects
+[[docs/TEXT_PUBLICATION|Atomic publication]] and [[docs/INGESTION_JOBS|Durable jobs]]. See [[TASKS]] for
 evidence and [[docs/MEMORY|Current state]] for remaining integration work.
 
 UI update: [[docs/DESIGN_REVIEW_20261015|Expressive preview redesign and checks]].

@@ -34,6 +34,20 @@ class FakeEngine:
 
 
 class RuntimeTests(unittest.TestCase):
+    def test_cancellation_reaps_active_request(self):
+        runtime = self.runtime('hang')
+        runtime.start()
+        cancel = threading.Event()
+        timer = threading.Timer(.2, cancel.set)
+        timer.start()
+        try:
+            with self.assertRaisesRegex(InferenceError, '^cancelled$'):
+                runtime.infer({'role':'document','texts':['fixture']}, cancel=cancel)
+            self.assertIsNone(runtime.pid)
+            self.assertFalse(runtime.ready)
+        finally:
+            timer.join()
+
     def runtime(self, mode=None, **kwargs):
         runtime = Runtime(FakeEngine, mode, **kwargs)
         self.addCleanup(runtime.close)

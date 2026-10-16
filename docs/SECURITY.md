@@ -2,6 +2,13 @@
 
 ## Trust boundaries
 
+Internal submission now uses a dedicated NOLOGIN coordinator role and derives
+ownership from the trusted database session, not an owner field in the payload.
+Original handoff bytes and completed-vector IDs are private and lease-fenced.
+The DB-API connection factory must configure verified identity and bounded network
+I/O; that real transport/authentication boundary remains unverified. See
+INGESTION_COORDINATOR.md. No public submission endpoint or new user permission.
+
 Ingestion scheduler: only a trusted coordinator may enqueue verified original
 metadata; never pass a client owner/hash as trusted facts. The NOLOGIN worker role
 has restricted claim/renew/fail and text/vector staging/publication functions.

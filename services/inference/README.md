@@ -25,7 +25,9 @@ then serves sequential requests through an internal pipe. Concurrent calls fail
 with `busy`; there is no unbounded queue. A deadline or model failure terminates
 and reaps the child, clears readiness and requires an explicit restart. Cleanup
 can add up to four seconds after the inference deadline. `close()` waits for an
-active request's bounded deadline; it is not an immediate cancellation API.
+active request's bounded deadline. `infer(..., cancel=event)` now observes a
+coordinator cancellation signal at 50 ms polling intervals and reaps the child;
+cleanup can add up to four seconds. See ../../docs/INGESTION_COORDINATOR.md.
 
 Only operator-owned code may supply the engine factory/configuration. The pipe
 uses Python serialization and must never be exposed to clients. The Qwen adapter
@@ -50,9 +52,9 @@ instruction used in the frozen Qwen benchmark; documents retain their text.
 | Output | Model/revision/dimensions, ordered vectors, prompt-token count |
 | Failures | Fixed errors; no exception bodies or document content in errors |
 
-The response includes no user ownership information. A future authenticated
-coordinator must enforce ownership, quotas and document-version publication.
-Compatibility with the existing HTTPS embedding client is not wired yet.
+The response includes no user ownership information. The internal coordinator
+now enforces version/configuration checks and uses the embedding client's response
+validator; real authenticated server and cloud transport integration remain pending.
 
 ## Verification
 

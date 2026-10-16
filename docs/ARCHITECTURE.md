@@ -11,7 +11,9 @@ versions, idempotent enqueue, bounded leases/retries, narrowly granted worker
 functions, owner-derived status and deletion/replacement fencing are verified.
 See INGESTION_JOBS.md. TEXT_PUBLICATION.md adds verified-byte admission, private
 pgvector staging, a separate published pointer and atomic ready activation.
-Trusted coordinator, search/context adapters and real API integration remain next.
+INGESTION_COORDINATOR.md adds internal submission, durable original handoff,
+lease-aware worker orchestration and reuse of completed vectors. Search/context
+adapters and real authenticated API/transport integration remain next.
 
 Bounded context now exists as a pure worker component after ranking. It groups
 sources, expands at most one contiguous neighbor per side and returns exact
