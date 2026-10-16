@@ -278,3 +278,11 @@ state. Deleting or replacing the source cancels its old jobs under the same sour
 lock. Three attempts and finite leases prevent endless retries. A processing target
 is not a published search version: complete vector validation/activation is still
 next. See [[docs/INGESTION_JOBS]] for evidence and remaining integration boundaries.
+
+## Query coordination and stale citations
+
+A query is embedded once in the same model space as stored passages. Ranking
+identifies candidates; exact-version reads supply trusted source text for bounded
+neighbor expansion. If the source changes between these calls, omit that result
+instead of silently attaching the old citation to new text. Implemented internally;
+synthetic tests pass, live API verification pending. See [[docs/QUERY_SEARCH]].

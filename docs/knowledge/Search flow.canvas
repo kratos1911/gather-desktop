@@ -57,7 +57,7 @@
     {
       "id": "results",
       "type": "text",
-      "text": "Authenticated published vector search + reader\nLocal JWT/API checks pass with synthetic vectors\nQuery embedding + desktop integration pending",
+      "text": "Published vector search + exact-version reader\nInternal query-to-context coordinator implemented\nSynthetic checks pass; live coordinator API check blocked\nDesktop/cloud transport pending",
       "x": 600,
       "y": 440,
       "width": 330,

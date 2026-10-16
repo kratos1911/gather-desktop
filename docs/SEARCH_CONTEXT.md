@@ -2,7 +2,8 @@
 
 15 October 2026. Implemented in services/worker/search_context.py; evaluated with
 saved, hash-verified Qwen vectors. No Docker, model calls, downloads or cloud work.
-This pure backend component is not yet connected to a repository, API or desktop.
+QUERY_SEARCH.md now connects it through an internal coordinator. Synthetic contract
+checks pass; live coordinator API checks and desktop wiring remain pending.
 
 ## Policy and boundary
 

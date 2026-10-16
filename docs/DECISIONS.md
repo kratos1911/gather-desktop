@@ -1,5 +1,14 @@
 # Architecture decisions
 
+## ADR-051: internal query coordinator with exact-version context (16 October)
+
+Reuse the ingestion provider contract, query template, published RPCs and existing
+context algorithm. Authenticate through a single-user transport before inference;
+never take an owner ID from the request. Limit reads to five selected sources,
+validate every candidate, and omit stale citations rather than open replacements.
+Keep one query embedding and no automatic retries. Boundaries and pending real
+transport/deployment verification are explicit in QUERY_SEARCH.md.
+
 ## ADR-050: reuse PostgREST for authenticated published reads (16 October)
 
 Expose two narrowly granted SQL functions through the existing Supabase JWT

@@ -5,7 +5,8 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 16 October 2026.
 
-Backend update: [[docs/PUBLISHED_SEARCH|Authenticated published search and reader]]
+Backend update: [[docs/QUERY_SEARCH|Query-to-context coordinator and remaining gates]].
+[[docs/PUBLISHED_SEARCH|Authenticated published search and reader]]
 now complements [[docs/INGESTION_COORDINATOR|Internal ingestion]]. See [[TASKS]] for
 evidence and [[docs/MEMORY|Current state]] for remaining integration work.
 

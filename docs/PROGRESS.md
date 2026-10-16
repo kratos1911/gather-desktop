@@ -1,5 +1,18 @@
 # Rebuild progress
 
+## 16 October: query embedding and bounded result context
+
+Connected the existing query inference contract, authenticated published RPCs and
+context assembler through an internal coordinator. Review fixed seed ranks after
+source grouping and stale-result omission. 23 focused tests and frontend build
+pass; syntax-check of updated API harness passes. No SQL/UI/model changes.
+
+One preflight found Docker's Linux engine pipe absent; RAM inspection was denied
+by the sandbox, D: had about 94.7 GiB free. No heavy run or unchanged retry was
+attempted. Three real-session coordinator cases are prepared but unverified.
+Explicit synthetic providers are test-only; no live semantic-search claim.
+User action to unblock: start Docker Desktop and wait for its Linux engine.
+
 ## 16 October: authenticated published search and reader
 
 Added owner-derived exact pgvector search and version-required text opening via

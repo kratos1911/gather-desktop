@@ -1,11 +1,11 @@
 # Current project state
 
-Current backend checkpoint (16 October): published vector search and version-bound
-text opening now work through the local Supabase Auth/PostgREST boundary. See
-PUBLISHED_SEARCH.md; TASKS.md holds evidence. The internal ingestion coordinator
-remains implemented separately. Next: query-text embedding and bounded context
-integration, plus verification of the privileged ingestion connection factory.
-Cloud inference and desktop wiring remain incomplete. No model loads or push.
+Current backend checkpoint (16 October): internal query-to-context coordinator
+implemented with injected session/inference dependencies. See QUERY_SEARCH.md;
+TASKS.md holds evidence. Focused checks/build pass; three new real-JWT integration
+checks remain unrun because Docker's Linux engine is unavailable. Next: start the
+engine and run the isolated API harness, then bounded production transport and
+privileged ingestion connection verification. Cloud and desktop remain incomplete.
 
 Latest UI checkpoint: expressive desktop preview redesign implemented. Five UI
 tests, lint, frontend and native debug builds pass. Browser visual/contrast/reflow

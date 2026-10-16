@@ -7,6 +7,8 @@ import json
 import uuid
 
 from services.worker.text_processing import process_request
+from services.worker.search import search as search_text
+from services.inference.runtime import MODEL, REVISION, DIMENSIONS
 
 
 def check_published_api(api, request, sql, check, sources):
@@ -22,22 +24,35 @@ def check_published_api(api, request, sql, check, sources):
     def literal(value):
         return "'"+str(value).replace("'","''")+"'"
 
-    def fixture(who, sid, vec=vector, *, activate=True, revision='fixture-v1', dimensions=512):
+    def fixture(who, sid, vec=vector, *, activate=True, revision=REVISION, dimensions=512):
         job = sql(f"select gather_private.enqueue_text_job('{who}','{sid}',gen_random_uuid(),"
             f"'{parsed['source_sha256']}','{parsed['parser_version']}',{len(body)},'text/markdown',"
-            f"'{parsed['chunker_version']}','synthetic-search',{literal(revision)},{dimensions})").splitlines()[-1]
+            f"'{parsed['chunker_version']}',{literal(MODEL)},{literal(revision)},{dimensions})").splitlines()[-1]
         claim = json.loads(sql("set role gather_ingestion_worker; select gather_private.claim_text_job()").splitlines()[-1])
         assert claim['id'] == job
         args = f"'{job}','{claim['lease_token']}'"
         rows = [{'id':c['id'],'vector':vec} for c in manifest]
         sql(f"set role gather_ingestion_worker; select gather_private.stage_text({args},decode('{body.hex()}','hex'),"
             f"'text/markdown',{literal(json.dumps(manifest))}::jsonb); "
-            f"select gather_private.stage_vectors({args},'synthetic-search',{literal(revision)},{dimensions},{literal(json.dumps(rows))}::jsonb)")
+            f"select gather_private.stage_vectors({args},{literal(MODEL)},{literal(revision)},{dimensions},{literal(json.dumps(rows))}::jsonb)")
         if activate:
             sql(f"set role gather_ingestion_worker; select gather_private.publish_text({args})")
         return claim
 
-    query = dict(p_query=vector,p_model='synthetic-search',p_revision='fixture-v1',p_dimensions=512,p_limit=20)
+    query = dict(p_query=vector,p_model=MODEL,p_revision=REVISION,p_dimensions=512,p_limit=20)
+
+    class SyntheticProvider:
+        # TEST ONLY: identity matches fixture rows, vectors are NOT model outputs.
+        def count_tokens(self, text):
+            return 32
+
+        def infer(self, request, *, cancel):
+            return dict(model=MODEL, revision=REVISION, dimensions=DIMENSIONS,
+                        data=[dict(index=0, embedding=vector)])
+
+    def coordinated(who=token):
+        return search_text('synthetic stars', provider=SyntheticProvider(),
+            api=lambda method, path, payload: api(method, path, who, payload))
     def search(who=token, **overrides):
         return api('POST','/rest/v1/rpc/search_published_text',who,dict(query,**overrides))
 
@@ -46,6 +61,12 @@ def check_published_api(api, request, sql, check, sources):
 
     first = fixture(owner,source)
     fixture(other,other_source)
+    context = coordinated()
+    check(len(context['windows'])==1 and context['windows'][0]['source_id']==source
+          and context['windows'][0]['text']==body.decode(),
+          'query coordinator joins real JWT search and exact cited context with injected synthetic vectors')
+    check(all(w['source_id']==other_source for w in coordinated(other_token)['windows']),
+          'query coordinator respects second real bearer session')
     params = {'p_request_key':str(uuid.uuid4()),'p_kind':'file','p_title':'Synthetic secondary'}
     second = str(uuid.UUID(api('POST','/rest/v1/rpc/save_source',token,params)))
     sources.append((owner,second,token,params))  # Existing harness owns exact cleanup.
@@ -86,7 +107,15 @@ def check_published_api(api, request, sql, check, sources):
           and all(abs(r['similarity'])<1e-6 for r in results[len(manifest):]),'published secondary source is ranked by cosine distance')
     replacement = fixture(owner,source,alternate,activate=False)
     check(opened(source,first['version_id']) and any(r['version_id']==first['version_id'] for r in search()),'replacement draft preserves prior reader and search version')
-    sql(f"set role gather_ingestion_worker; select gather_private.publish_text('{replacement['id']}','{replacement['lease_token']}')")
+    def replacing_api(method, path, payload):
+        result = api(method, path, token, payload)
+        if path.endswith('/search_published_text'):
+            sql(f"set role gather_ingestion_worker; select gather_private.publish_text('{replacement['id']}','{replacement['lease_token']}')")
+        return result
+    raced = search_text('synthetic stars', provider=SyntheticProvider(), api=replacing_api)
+    check(all(w['source_id']!=source for w in raced['windows'])
+          and {'source_id':source,'reason':'no_longer_available'} in raced['omitted_sources'],
+          'replacement between coordinated ranking and open omits old context')
     check(opened(source,first['version_id'])==[],'stale search citation cannot silently open replacement')
     check(opened(source,replacement['version_id']) and all(r['version_id']!=first['version_id'] for r in search()),'publication switches search and reader to current version')
     # Leave the added fixture tombstoned, so earlier lifecycle assertions retain one source.

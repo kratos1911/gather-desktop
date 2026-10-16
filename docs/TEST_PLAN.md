@@ -1,5 +1,10 @@
 # Verification plan
 
+Query coordinator: `python -m unittest discover -s tests/worker -p test_search*.py -v`
+runs 23 synthetic checks. The API harness includes three new real-session cases;
+these remain unrun until Docker is available. See QUERY_SEARCH.md. The historical
+64-check result below predates those additions.
+
 Context component: run tests/worker/test_search_context.py for ownership/version/
 visibility/integrity, offsets, gaps/overlap, one-hop expansion and byte/seed budgets.
 Replay scripts/evaluate_search_context.py only against hash-verified saved vectors;

@@ -14,8 +14,9 @@ pgvector staging, a separate published pointer and atomic ready activation.
 INGESTION_COORDINATOR.md adds internal submission, durable original handoff,
 lease-aware worker orchestration and reuse of completed vectors. PUBLISHED_SEARCH.md
 adds published-vector search and version-bound text reads through locally verified
-Supabase JWT/PostgREST. Query-text embedding/context and privileged ingestion
-transport integration remain next.
+Supabase JWT/PostgREST. QUERY_SEARCH.md adds internal query embedding/context
+coordination with injected dependencies; live coordinator API checks and production
+transport, plus privileged ingestion transport integration, remain pending.
 
 Bounded context now exists as a pure worker component after ranking. It groups
 sources, expands at most one contiguous neighbor per side and returns exact

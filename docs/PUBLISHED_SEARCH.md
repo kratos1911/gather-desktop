@@ -59,7 +59,7 @@ only generated fixtures and the dedicated test stack. Public signup stays disabl
 The established lifecycle/storage checks also run because these endpoints share
 the same authentication and deletion boundary.
 
-Next connect server-side query-text embedding and bounded context assembly to
-these authenticated reads, then the desktop. The private ingestion coordinator's
+QUERY_SEARCH.md adds internal query-text embedding and bounded context coordination.
+Its new live API checks remain unrun; production transport and desktop are pending. The private ingestion coordinator's
 real connection factory/authentication boundary still needs verification. Neither
 new RPC accepts files nor exposes privileged ingestion credentials.

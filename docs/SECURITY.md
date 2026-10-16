@@ -1,5 +1,11 @@
 # Security requirements
 
+Query coordination: only server-created single-user API/provider dependencies are
+accepted at the internal boundary. Auth is checked before inference; reader identity,
+hashes and citations are validated. Production transport deadlines/body limits,
+per-user rate limits and real-session coordinator verification remain gates;
+see QUERY_SEARCH.md. No public endpoint or credentials were added.
+
 ## Trust boundaries
 
 Published search/open RPCs now derive ownership from auth.uid() through PostgREST.
