@@ -1,5 +1,10 @@
 # Verification plan
 
+Service clients: `python -m unittest discover -s tests/worker -p test_service_clients.py -v`
+runs 11 tests against controlled loopback peers, including process deadline and
+cleanup. Requires permission for local networking. The 67-check API harness now
+uses SessionClient for coordinator checks. See SERVICE_CLIENTS.md for limitations.
+
 Query coordinator: `python -m unittest discover -s tests/worker -p test_search*.py -v`
 runs 23 synthetic checks. The API harness now passes 67 real-session checks,
 including three coordinator cases with synthetic vectors. See QUERY_SEARCH.md.

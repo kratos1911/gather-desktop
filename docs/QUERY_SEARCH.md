@@ -14,7 +14,8 @@ server-created dependencies. The API callable takes method/path/JSON payload,
 is permanently bound to one user's bearer token, and returns decoded JSON only
 on successful responses. It must enforce bounded responses, timeouts, no redirects
 and content-free errors/logging. Never use a service-role key or accept a transport,
-provider or owner from a client payload. The production HTTP adapter remains pending.
+provider or owner from a client payload. SERVICE_CLIENTS.md implements this adapter
+with locally verified Auth/REST integration; hosted TLS verification remains pending.
 
 The provider contract is the existing ingestion infer/count_tokens interface.
 Count the exact pinned Qwen query template; pass raw query text with role=query
@@ -48,5 +49,6 @@ Evidence: output/database-checks/query-api-20261016.log. Synthetic vectors verif
 orchestration and boundaries, not live model quality or production transport.
 
 No real model loaded, prompt/chunk/vector benchmark changed, or deployment made.
-Next: implement the bounded production session/inference transport, verify private
-ingestion identity/driver integration, and connect the desktop under release gates.
+SERVICE_CLIENTS.md now provides bounded session and prepared inference clients.
+Next: authenticated inference HTTP handler and remote integration; verify private
+ingestion identity/driver integration and connect the desktop under release gates.

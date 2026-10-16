@@ -2,7 +2,8 @@
 
 api(method, path, payload) must be a trusted, bounded transport permanently bound
 to ONE user's bearer session (never a service key). It decodes JSON, rejects HTTP
-errors, forbids redirects and does not log bodies. Production transport is pending.
+errors, forbids redirects and does not log bodies. SessionClient implements this
+contract; hosted transport and deployment verification remain pending.
 Provider uses the same explicit infer/count_tokens contract as ingestion.
 """
 import math

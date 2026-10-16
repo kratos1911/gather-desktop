@@ -1,5 +1,22 @@
 # Delivery tasks
 
+## 16 October bounded service connections
+
+TASK-021 client slice verified locally: fixed-session Auth/published-read client,
+prepared runtime-compatible inference client, HTTPS-only defaults, exact route
+allowlists, request/response limits, whole-call deadlines, cancellation and helper
+cleanup. No automatic retries, credential discovery, redirects or model startup.
+11 controlled-loopback transport tests + 23 existing query/context tests pass;
+frontend build passes. All 67 real local API checks pass with the coordinator
+using SessionClient. Evidence: output/database-checks/service-clients-api-20261016.log.
+Test fixtures/stack removed. The restricted loopback run initially failed due to
+sandbox network access; authorized rerun passed. No model loads or native changes.
+
+Contract: docs/SERVICE_CLIENTS.md. Inference HTTP handler, remote authentication,
+TLS/provider integration and hosted deployment remain incomplete. Next major step:
+authenticated HTTP boundary around the existing runtime, preceded by the user's
+learning quiz. Privileged ingestion transport and desktop wiring remain separate.
+
 ## 16 October query-to-context coordination
 
 TASK-021 internal query slice verified through local Auth/REST; production remains partial.

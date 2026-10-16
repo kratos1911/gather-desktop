@@ -1,5 +1,22 @@
 # Rebuild progress
 
+## 16 October: bounded session and inference client adapters
+
+Added fixed-service JSON clients using isolated request helpers. Five-second
+session and 15-second inference deadlines include DNS/TLS/body; cancellation
+kills/reaps only the request helper. Limits, fixed routes, no redirects/retries,
+credential validation and safe errors documented in SERVICE_CLIENTS.md. Inference
+client targets the existing runtime JSON contract; no HTTP server exists yet.
+
+11 controlled-loopback tests, 23 query/context tests and frontend build pass.
+First loopback run could not connect under sandbox restrictions; approved network
+run passed. Review added helper-reaping/environment assertions, which also pass.
+Docker preflight: engine 29.7.2, all five pinned images cached, about 2.05 GiB RAM
+available, no preexisting test stack. All 67 API checks passed with the new session
+adapter; exact fixtures and disposable stack removed. No unrelated workload,
+model, native build or paid resource changes. Learning quiz preference saved in
+RULES.md. No push. Remaining boundaries and next task in MEMORY.md.
+
 ## 16 October: query coordinator API verification unblocked
 
 Docker 29.7.2 ready; all five pinned images cached, about 2.99 GiB RAM available,

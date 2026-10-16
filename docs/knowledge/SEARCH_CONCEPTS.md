@@ -287,3 +287,12 @@ neighbor expansion. If the source changes between these calls, omit that result
 instead of silently attaching the old citation to new text. Implemented internally;
 synthetic tests and local real-session API checks pass. Model/cloud transport and
 desktop wiring remain pending. See [[docs/QUERY_SEARCH]].
+
+## Whole-request deadlines
+
+A socket timeout limits a stalled socket operation; a server can still trickle
+bytes slowly. A whole-request deadline bounds DNS, connection and reading together.
+Gather's service client runs HTTP in a short-lived helper and stops that helper
+on timeout/cancellation. This does not cancel remote model computation; the model
+server needs its own deadline. Locally verified; hosted integration pending.
+See [[docs/SERVICE_CLIENTS]].

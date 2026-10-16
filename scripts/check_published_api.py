@@ -11,7 +11,7 @@ from services.worker.search import search as search_text
 from services.inference.runtime import MODEL, REVISION, DIMENSIONS
 
 
-def check_published_api(api, request, sql, check, sources):
+def check_published_api(api, request, sql, check, sources, session_factory):
     owner, source, token, _ = sources[0]
     other, other_source, other_token, _ = sources[1]
     vector = [1]+[0]*511
@@ -52,7 +52,7 @@ def check_published_api(api, request, sql, check, sources):
 
     def coordinated(who=token):
         return search_text('synthetic stars', provider=SyntheticProvider(),
-            api=lambda method, path, payload: api(method, path, who, payload))
+            api=session_factory(who))
     def search(who=token, **overrides):
         return api('POST','/rest/v1/rpc/search_published_text',who,dict(query,**overrides))
 
@@ -107,8 +107,9 @@ def check_published_api(api, request, sql, check, sources):
           and all(abs(r['similarity'])<1e-6 for r in results[len(manifest):]),'published secondary source is ranked by cosine distance')
     replacement = fixture(owner,source,alternate,activate=False)
     check(opened(source,first['version_id']) and any(r['version_id']==first['version_id'] for r in search()),'replacement draft preserves prior reader and search version')
+    replacement_session = session_factory(token)
     def replacing_api(method, path, payload):
-        result = api(method, path, token, payload)
+        result = replacement_session(method, path, payload)
         if path.endswith('/search_published_text'):
             sql(f"set role gather_ingestion_worker; select gather_private.publish_text('{replacement['id']}','{replacement['lease_token']}')")
         return result

@@ -8,6 +8,11 @@ Read AGENTS.md, docs/PRD.md, docs/ARCHITECTURE.md, docs/DESIGN.md, this file, TA
 
 ## Task discipline
 
+Learning checkpoint (user preference, 16 October): before a major change, quiz
+the user briefly on the preceding work, review their answers accurately, and
+explain corrections before continuing. The service-client milestone follows a
+completed quiz on vector compatibility, stale citations and synthetic evidence.
+
 Implement one reviewable feature or prerequisite at a time. Prefer complete vertical user flows. Keep the current data private, changes scoped, boundaries explicit and TypeScript strict. Reuse components; avoid speculative abstractions and duplicated database layers. Explain significant decisions; routine authorized steps do not need repeated approval.
 
 Use statuses: done (criteria verified), partial (implemented with missing evidence), ready, blocked (specific external dependency), deferred. Include evidence and limitations rather than marking a whole phase done when only UI exists.

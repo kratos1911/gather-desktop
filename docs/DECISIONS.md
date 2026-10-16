@@ -1,5 +1,16 @@
 # Architecture decisions
 
+## ADR-052: bounded fixed-service clients before hosted inference (16 October)
+
+Reuse the existing JSON contracts with fixed per-session credentials and allowed
+read routes. Use an isolated helper for each HTTP request, following the existing
+fetch broker's process-deadline approach, so DNS and trickling responses cannot
+outlive the request budget. No bookmark-fetch policies are relaxed: these clients
+accept operator configuration only. Keep one nonblocking HTTP slot per process,
+5/15-second deadlines and bounded bodies. Do not add a dependency or cloud service.
+Inference HTTP handler/auth and remote TLS verification remain explicit next gates.
+See SERVICE_CLIENTS.md.
+
 ## ADR-051: internal query coordinator with exact-version context (16 October)
 
 Reuse the ingestion provider contract, query template, published RPCs and existing

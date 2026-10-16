@@ -15,8 +15,9 @@ INGESTION_COORDINATOR.md adds internal submission, durable original handoff,
 lease-aware worker orchestration and reuse of completed vectors. PUBLISHED_SEARCH.md
 adds published-vector search and version-bound text reads through locally verified
 Supabase JWT/PostgREST. QUERY_SEARCH.md adds internal query embedding/context
-coordination with injected dependencies; live coordinator API checks and production
-transport, plus privileged ingestion transport integration, remain pending.
+coordination with injected dependencies. SERVICE_CLIENTS.md adds bounded session
+and prepared inference HTTP clients; local coordinator API tests pass. Inference
+HTTP handler, remote deployment and privileged ingestion transport remain pending.
 
 Bounded context now exists as a pure worker component after ranking. It groups
 sources, expands at most one contiguous neighbor per side and returns exact

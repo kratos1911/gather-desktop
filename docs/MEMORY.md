@@ -1,11 +1,12 @@
 # Current project state
 
-Current backend checkpoint (16 October): internal query-to-context coordinator
-implemented with injected session/inference dependencies. See QUERY_SEARCH.md;
-TASKS.md holds evidence. Focused checks/build pass; all 67 local Auth/REST/Storage
-checks now pass, including three coordinator cases with synthetic vectors.
-Next: bounded production transport and privileged ingestion connection
-verification. Cloud inference and desktop remain incomplete.
+Current backend checkpoint (16 October): bounded session client and prepared
+inference HTTP client implemented; see SERVICE_CLIENTS.md. 11 transport + 23
+query/context tests, all 67 real local API checks and frontend build pass. The
+model HTTP handler/remote auth/TLS deployment remain incomplete; next major step
+is the authenticated runtime HTTP boundary, after the user's learning quiz.
+Privileged ingestion transport and desktop wiring remain separate. TASKS.md holds
+evidence. No model loads or paid deployment.
 
 Latest UI checkpoint: expressive desktop preview redesign implemented. Five UI
 tests, lint, frontend and native debug builds pass. Browser visual/contrast/reflow

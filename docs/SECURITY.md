@@ -2,9 +2,10 @@
 
 Query coordination: only server-created single-user API/provider dependencies are
 accepted at the internal boundary. Auth is checked before inference; reader identity,
-hashes and citations are validated. Production transport deadlines/body limits,
-and per-user rate limits remain gates; local real-session coordination now passes;
-see QUERY_SEARCH.md. No public endpoint or credentials were added.
+hashes and citations are validated. Service clients now enforce whole-request
+deadlines/body limits and fixed-session read routes; local real-session checks pass.
+Inference HTTP authentication, hosted TLS verification and per-user rate limits
+remain gates; see SERVICE_CLIENTS.md. No public endpoint or credentials added.
 
 ## Trust boundaries
 
