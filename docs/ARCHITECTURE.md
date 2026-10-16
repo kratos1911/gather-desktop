@@ -1,5 +1,10 @@
 # Architecture: how the product works
 
+Production direction (17 October): [Cloud Run design](CLOUD_RUN_DESIGN.md) maps
+current components to proposed service identities, bounded resources and ordered
+implementation gates. It supersedes older hosting proposals, not current-code
+claims. No cloud service has been deployed as part of this work.
+
 Current forward plan: [DELIVERY_PLAN.md](DELIVERY_PLAN.md), dated 2 October.
 It defines proposed API/worker boundaries, job leases, version publication,
 security checks and delivery gates. Implementation status is distinguished below.

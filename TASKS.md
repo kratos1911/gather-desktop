@@ -1,5 +1,19 @@
 # Delivery tasks
 
+## 17 October cloud hosting and identity design
+
+Planning milestone complete: docs/CLOUD_RUN_DESIGN.md maps local components to
+application API, IAM-protected CPU inference and bounded ingestion execution.
+Reviewed current official Cloud Run identity/runtime/memory/timeout/scaling/budget
+and FastAPI lifecycle guidance. Defined separate user/service identities, least
+privilege, artifact/startup strategy, pilot resource proposal, cold-start and cost
+gates, ordered acceptance criteria and rollback. No resources or IAM changed.
+
+Validated local Markdown links and Obsidian canvas JSON; documentation-only,
+so compatible endpoint/frontend results from 16 October are retained, not rerun.
+Next: learning quiz, then local production ASGI adapter/lifecycle (step 1).
+Dependency pins/review and cloud identity integration remain unimplemented.
+
 ## 16 October authenticated local inference endpoint
 
 TASK-005 HTTP boundary slice verified locally: service bearer authentication,

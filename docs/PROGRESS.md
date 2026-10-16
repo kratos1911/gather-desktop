@@ -1,5 +1,20 @@
 # Rebuild progress
 
+## 17 October: production hosting and service identity plan
+
+Completed CLOUD_RUN_DESIGN.md after repository inspection and official-document
+research. Proposed FastAPI/Uvicorn single web process with existing Runtime child,
+Google ID-token invocation for private inference, separate Supabase user identity,
+and bounded ingestion execution retaining PostgreSQL job authority. No provisioning.
+
+Found two deployment gaps explicitly: current localhost/stream container is not
+Cloud Run ingress-ready; measured local startup can consume the entire current
+client deadline. Plan requires cold-start measurement/UX or separately approved
+warm capacity before release. Memory filesystem, image storage/licence/security,
+IAM isolation, cost limits, shutdown, staged rollout and rollback documented.
+Local links/canvas JSON checked; no runtime or frontend changes warranting reruns.
+Prior 16 October verification retained. Next step is local ASGI adapter after quiz.
+
 ## 16 October: authenticated loopback inference endpoint
 
 Added a local HTTP adapter around the unchanged Runtime with explicit service

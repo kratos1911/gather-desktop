@@ -80,6 +80,15 @@
       "y": 240,
       "width": 330,
       "height": 240
+    },
+    {
+      "id": "cloud-design",
+      "type": "file",
+      "file": "docs/CLOUD_RUN_DESIGN.md",
+      "x": 760,
+      "y": -260,
+      "width": 710,
+      "height": 200
     }
   ],
   "edges": [

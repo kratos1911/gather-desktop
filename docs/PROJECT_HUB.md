@@ -3,7 +3,10 @@ tags: [gather, project]
 ---
 # Gather project hub
 
-Start here in Obsidian. Updated 16 October 2026.
+Start here in Obsidian. Updated 17 October 2026.
+
+Planning update: [[docs/CLOUD_RUN_DESIGN|Cloud hosting, identity and next steps]].
+Documented direction only; no deployment or paid provisioning.
 
 Backend update: [[docs/INFERENCE_HTTP|Authenticated local inference endpoint]]
 now works with the bounded inference client and synthetic engine. Production

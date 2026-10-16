@@ -1,5 +1,10 @@
 # Security requirements
 
+Production identity plan: CLOUD_RUN_DESIGN.md separates Supabase user identity
+from Google backend identity, restricts model invocation and excludes library
+credentials from inference. IAM/production ingress and hosted negative-auth tests
+remain unimplemented; documentation does not close these gates.
+
 Inference HTTP local boundary: constant-time service bearer check before body/
 inference, fixed loopback binding, bounded headers/body/connections and independent
 receive/compute deadlines. This shared credential is NOT user identity or a desktop

@@ -305,3 +305,11 @@ worker is reaped even after its client disconnects. Invalid credentials never
 reach the model. A service credential authenticates the backend caller, not the
 owner of a document. Locally verified; public identity/deployment pending.
 See [[docs/INFERENCE_HTTP]].
+
+## User identity versus service identity (planned)
+
+Supabase identifies the person and protects their documents. Google service
+identity identifies which backend may call the model; it does not grant that
+backend ownership of every document. The model only needs bounded input text,
+not database or file-store credentials. Scale-to-zero can save idle capacity but
+adds startup delay; it is not a free-or-fast guarantee. See [[docs/CLOUD_RUN_DESIGN]].

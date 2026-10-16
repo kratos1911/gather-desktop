@@ -1,5 +1,19 @@
 # Architecture decisions
 
+## ADR-054: production hosting and service identity direction (17 October)
+
+Plan separate Cloud Run application API and IAM-protected CPU inference, using
+short-lived service ID tokens and dedicated least-privilege accounts. Supabase
+user sessions/RLS still govern document ownership. No service-account key files
+or local shared bearer secret promoted into the desktop/cloud identity scheme.
+
+Propose FastAPI/Uvicorn single web process around existing Runtime; preserve its
+limits, one inference at a time and 2-CPU/5-GiB pilot budget. Do not ship the local
+standard-library server as public ingress. Region/spend approval, managed-token
+implementation, cold-start policy and release gates remain pending. The initial
+min-zero/max-one experiment does not guarantee latency, availability or cost caps.
+See CLOUD_RUN_DESIGN.md for sources, identity matrix and acceptance order.
+
 ## ADR-053: verify inference HTTP locally before production ingress (16 October)
 
 Wrap the existing process runtime without changing model behavior or deadlines.
