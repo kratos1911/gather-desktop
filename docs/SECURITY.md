@@ -1,5 +1,10 @@
 # Security requirements
 
+Inference HTTP local boundary: constant-time service bearer check before body/
+inference, fixed loopback binding, bounded headers/body/connections and independent
+receive/compute deadlines. This shared credential is NOT user identity or a desktop
+secret. No public ingress or Cloud Run IAM verification yet. See INFERENCE_HTTP.md.
+
 Query coordination: only server-created single-user API/provider dependencies are
 accepted at the internal boundary. Auth is checked before inference; reader identity,
 hashes and citations are validated. Service clients now enforce whole-request

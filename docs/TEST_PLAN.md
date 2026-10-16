@@ -1,5 +1,10 @@
 # Verification plan
 
+Inference HTTP: `python -m unittest discover -s tests/inference -p test_http_server.py -v`
+runs nine synthetic-engine tests over real loopback HTTP, including hung-worker
+reaping after client disconnect. Requires local network permission; no weights or
+Docker. Production ingress/TLS and real-model HTTP integration remain unverified.
+
 Service clients: `python -m unittest discover -s tests/worker -p test_service_clients.py -v`
 runs 11 tests against controlled loopback peers, including process deadline and
 cleanup. Requires permission for local networking. The 67-check API harness now

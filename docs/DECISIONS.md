@@ -1,5 +1,16 @@
 # Architecture decisions
 
+## ADR-053: verify inference HTTP locally before production ingress (16 October)
+
+Wrap the existing process runtime without changing model behavior or deadlines.
+Use an explicitly injected service bearer credential and strict loopback binding
+for local integration. Separate five-second header/body reception from bounded
+model computation; a disconnected client cannot disable server-side termination.
+Limit handler connections and reject busy model work instead of queuing. Keep
+public deployment, mature production ingress and managed identity as separate
+review gates, rather than present the standard-library server as cloud-ready.
+See INFERENCE_HTTP.md.
+
 ## ADR-052: bounded fixed-service clients before hosted inference (16 October)
 
 Reuse the existing JSON contracts with fixed per-session credentials and allowed

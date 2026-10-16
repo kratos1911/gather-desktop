@@ -1,12 +1,11 @@
 # Current project state
 
-Current backend checkpoint (16 October): bounded session client and prepared
-inference HTTP client implemented; see SERVICE_CLIENTS.md. 11 transport + 23
-query/context tests, all 67 real local API checks and frontend build pass. The
-model HTTP handler/remote auth/TLS deployment remain incomplete; next major step
-is the authenticated runtime HTTP boundary, after the user's learning quiz.
-Privileged ingestion transport and desktop wiring remain separate. TASKS.md holds
-evidence. No model loads or paid deployment.
+Current backend checkpoint (16 October): authenticated loopback inference HTTP
+endpoint wraps the existing Runtime. Nine synthetic-engine endpoint tests and
+frontend build pass; see INFERENCE_HTTP.md and TASKS.md. Existing InferenceClient
+round-trip verified locally. No real model load, public ingress or cloud deploy.
+Next: learning quiz, production ingress/identity design and remaining security/
+licence gates. Private ingestion driver/auth and desktop wiring remain separate.
 
 Latest UI checkpoint: expressive desktop preview redesign implemented. Five UI
 tests, lint, frontend and native debug builds pass. Browser visual/contrast/reflow

@@ -17,7 +17,9 @@ adds published-vector search and version-bound text reads through locally verifi
 Supabase JWT/PostgREST. QUERY_SEARCH.md adds internal query embedding/context
 coordination with injected dependencies. SERVICE_CLIENTS.md adds bounded session
 and prepared inference HTTP clients; local coordinator API tests pass. Inference
-HTTP handler, remote deployment and privileged ingestion transport remain pending.
+HTTP adapter now has a locally verified authenticated loopback implementation
+(INFERENCE_HTTP.md); production ingress, remote deployment and privileged ingestion
+transport remain pending.
 
 Bounded context now exists as a pure worker component after ranking. It groups
 sources, expands at most one contiguous neighbor per side and returns exact

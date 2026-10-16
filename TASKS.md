@@ -1,5 +1,21 @@
 # Delivery tasks
 
+## 16 October authenticated local inference endpoint
+
+TASK-005 HTTP boundary slice verified locally: service bearer authentication,
+fixed /embed contract, bounded headers/body/connections, total read deadline and
+existing independent Runtime compute deadline. Loopback-only integration server;
+no public production ingress, managed identity or cloud deployment claimed.
+Nine synthetic-engine HTTP tests pass, including existing client round-trip,
+wrong credentials before body reads, invalid input/framing, busy/token rejection,
+slow headers, hung-worker reaping and deadline enforcement after client disconnect.
+Frontend build passes. No real model, Docker or native inputs changed.
+
+Contract: docs/INFERENCE_HTTP.md. Earlier API and client suites retained, not
+rerun because their implementations did not change. Next major step requires a
+learning quiz, then production ingress/identity design and release-gate review;
+private ingestion driver/auth and desktop wiring remain outstanding.
+
 ## 16 October bounded service connections
 
 TASK-021 client slice verified locally: fixed-session Auth/published-read client,

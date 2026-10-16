@@ -296,3 +296,12 @@ Gather's service client runs HTTP in a short-lived helper and stops that helper
 on timeout/cancellation. This does not cancel remote model computation; the model
 server needs its own deadline. Locally verified; hosted integration pending.
 See [[docs/SERVICE_CLIENTS]].
+
+## Client disconnect versus model deadline
+
+Closing an HTTP connection does not guarantee model work stops. The local
+inference endpoint independently uses Runtime's compute deadline; a hung synthetic
+worker is reaped even after its client disconnects. Invalid credentials never
+reach the model. A service credential authenticates the backend caller, not the
+owner of a document. Locally verified; public identity/deployment pending.
+See [[docs/INFERENCE_HTTP]].

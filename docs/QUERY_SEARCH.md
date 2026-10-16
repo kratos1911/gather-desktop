@@ -50,5 +50,6 @@ orchestration and boundaries, not live model quality or production transport.
 
 No real model loaded, prompt/chunk/vector benchmark changed, or deployment made.
 SERVICE_CLIENTS.md now provides bounded session and prepared inference clients.
-Next: authenticated inference HTTP handler and remote integration; verify private
+Local inference HTTP handler is verified (INFERENCE_HTTP.md). Next: production
+ingress/managed identity and remote integration; verify private
 ingestion identity/driver integration and connect the desktop under release gates.

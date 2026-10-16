@@ -16,7 +16,8 @@ credentials, public routes or hosted resources were added. Evidence: TASKS.md.
   after checking exact prompted token counts. The future server must apply the
   runtime template once and return its pinned model/revision/dimension/vector
   contract. Existing coordinators validate the response before staging/search.
-  This client is prepared; an authenticated model HTTP server is NOT implemented.
+  INFERENCE_HTTP.md now supplies a locally verified authenticated loopback server;
+  production ingress and cloud identity remain pending.
 
 Operator-configured HTTPS origins only, without paths, credentials, queries or
 fragments. Never obtain origins, transports or model credentials from desktop
@@ -65,7 +66,7 @@ timeouts, cancellation, busy rejection and helper cleanup/recovery. These use no
 real credentials or models. The local Supabase harness routes all three existing
 coordinator integration cases through SessionClient; see TASKS.md for run status.
 
-Remaining: authenticated inference HTTP handler and managed-service credential
-mechanism, live TLS/provider integration, per-owner quotas/rate limits, image and
+Local authenticated HTTP handler now verified (INFERENCE_HTTP.md). Remaining:
+production ingress and managed-service credential mechanism, live TLS integration, per-owner quotas/rate limits, image and
 licence release gates, privileged ingestion identity/driver verification, desktop
 sessions and UI wiring. No production readiness or semantic-quality claim.

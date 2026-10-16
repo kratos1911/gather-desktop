@@ -1,5 +1,19 @@
 # Rebuild progress
 
+## 16 October: authenticated loopback inference endpoint
+
+Added a local HTTP adapter around the unchanged Runtime with explicit service
+secret injection, constant-time auth checks, input/header bounds, four connection
+slots, no request queue for model work and a five-second total receive deadline.
+Runtime retains its at-most-15-second computation deadline and cleanup. No auto
+model start/restart, weights, cloud spending or shared workloads touched.
+
+Eight initial tests passed; review added a client-disconnect case demonstrating
+independent server deadline/reaping. All nine endpoint tests now pass with the
+synthetic engine and real local HTTP/client transport. Frontend build passes.
+Unchanged database/client/model suites retained. Public server/TLS/IAM selection
+and real-model-over-HTTP validation remain unverified. No push.
+
 ## 16 October: bounded session and inference client adapters
 
 Added fixed-service JSON clients using isolated request helpers. Five-second

@@ -54,10 +54,10 @@ class SessionClient:
 
 
 class InferenceClient:
-    """Prepared client for a future trusted /embed endpoint using Runtime's JSON.
+    """Client for the trusted /embed endpoint using Runtime's JSON.
 
     count_tokens must use the pinned tokenizer, supplied by trusted server code.
-    Remote auth/handler, TLS integration and model deployment remain separate.
+    Local handler verified; managed identity, TLS and deployment remain separate.
     """
     def __init__(self, base, credential_value, count_tokens, *, _test_loopback=False):
         self._base = origin(base, test_loopback=_test_loopback)
