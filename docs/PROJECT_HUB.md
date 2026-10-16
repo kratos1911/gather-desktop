@@ -5,7 +5,8 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 16 October 2026.
 
-Backend update: [[docs/QUERY_SEARCH|Query-to-context coordinator and remaining gates]].
+Backend update: [[docs/QUERY_SEARCH|Query-to-context coordinator and remaining gates]]
+now passes local real-session API verification; inference remains synthetic in tests.
 [[docs/PUBLISHED_SEARCH|Authenticated published search and reader]]
 now complements [[docs/INGESTION_COORDINATOR|Internal ingestion]]. See [[TASKS]] for
 evidence and [[docs/MEMORY|Current state]] for remaining integration work.

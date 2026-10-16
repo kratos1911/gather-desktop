@@ -1,5 +1,16 @@
 # Rebuild progress
 
+## 16 October: query coordinator API verification unblocked
+
+Docker 29.7.2 ready; all five pinned images cached, about 2.99 GiB RAM available,
+94.6 GiB D: free, no existing test stack. Initial sandbox pipe access was denied;
+authorized Docker access succeeded. One isolated run passed all 67 API checks,
+including the three coordinator cases. Exact context, second-user isolation and
+replacement during rank/open verified using injected synthetic vectors. Fixtures
+and temporary stack removed successfully. Evidence in TASKS.md. No source changes,
+model loads, API workload changes or push. Prior 23 focused tests and frontend
+build remain applicable; no redundant rerun. Production transport remains next.
+
 ## 16 October: query embedding and bounded result context
 
 Connected the existing query inference contract, authenticated published RPCs and

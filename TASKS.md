@@ -2,16 +2,17 @@
 
 ## 16 October query-to-context coordination
 
-TASK-021 internal query slice implemented; live integration remains partial.
+TASK-021 internal query slice verified through local Auth/REST; production remains partial.
 23 focused tests pass (14 coordinator + nine existing context checks), and
 scripts/desktop.ps1 build passes. Tests cover query/template bounds, identity,
 invalid vectors, auth failure, cancellation, stale readers, citation integrity,
 original ranking and bounded snapshot reads. All provider/session fixtures are
-synthetic. The new three real-session checks are prepared but unrun: Docker's
-Linux engine pipe is absent. No stack launch, retry, model load or native rebuild.
-Contract: docs/QUERY_SEARCH.md. Next: run the prepared API check once Docker is
-running, then bounded session/inference transport and private ingestion identity
-verification before desktop wiring. Previous API evidence is not new evidence.
+synthetic. Follow-up: 67 real local Auth/REST/Storage checks pass, including the
+three new coordinator cases. Log: output/database-checks/query-api-20261016.log.
+Temporary stack and generated fixtures removed. No model load or native rebuild.
+Prior focused checks/frontend build retained: no implementation changed this run.
+Contract: docs/QUERY_SEARCH.md. Next: bounded session/inference transport and
+private ingestion identity verification before desktop wiring.
 
 ## 16 October authenticated published search and reader
 

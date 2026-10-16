@@ -285,4 +285,5 @@ A query is embedded once in the same model space as stored passages. Ranking
 identifies candidates; exact-version reads supply trusted source text for bounded
 neighbor expansion. If the source changes between these calls, omit that result
 instead of silently attaching the old citation to new text. Implemented internally;
-synthetic tests pass, live API verification pending. See [[docs/QUERY_SEARCH]].
+synthetic tests and local real-session API checks pass. Model/cloud transport and
+desktop wiring remain pending. See [[docs/QUERY_SEARCH]].

@@ -42,10 +42,11 @@ read; multiple RPCs do not provide a cross-request database snapshot.
 Unit tests inject synthetic vectors and session responses. The existing local
 Supabase harness now includes three additional coordinator checks using real JWT
 requests with explicitly synthetic vectors labelled with the pinned identity.
-Those new integration checks have NOT run: Docker's Linux engine was unavailable.
-Previous 64-check API evidence is historical and does not verify this coordinator.
+All 67 local Auth/REST/Storage checks now pass, including those three coordinator
+cases: exact context, second-user isolation and replacement between rank/open.
+Evidence: output/database-checks/query-api-20261016.log. Synthetic vectors verify
+orchestration and boundaries, not live model quality or production transport.
 
 No real model loaded, prompt/chunk/vector benchmark changed, or deployment made.
-Next: start Docker Desktop's Linux engine and run the prepared isolated API check.
-Then implement the bounded production session/inference transport, verify private
+Next: implement the bounded production session/inference transport, verify private
 ingestion identity/driver integration, and connect the desktop under release gates.

@@ -2,10 +2,10 @@
 
 Current backend checkpoint (16 October): internal query-to-context coordinator
 implemented with injected session/inference dependencies. See QUERY_SEARCH.md;
-TASKS.md holds evidence. Focused checks/build pass; three new real-JWT integration
-checks remain unrun because Docker's Linux engine is unavailable. Next: start the
-engine and run the isolated API harness, then bounded production transport and
-privileged ingestion connection verification. Cloud and desktop remain incomplete.
+TASKS.md holds evidence. Focused checks/build pass; all 67 local Auth/REST/Storage
+checks now pass, including three coordinator cases with synthetic vectors.
+Next: bounded production transport and privileged ingestion connection
+verification. Cloud inference and desktop remain incomplete.
 
 Latest UI checkpoint: expressive desktop preview redesign implemented. Five UI
 tests, lint, frontend and native debug builds pass. Browser visual/contrast/reflow
