@@ -1,15 +1,15 @@
 # Current project state
 
-Current planning checkpoint (17 October): CLOUD_RUN_DESIGN.md defines the
-production hosting/identity path, pilot limits and ordered gates. Planning only:
-no deployed services, IAM edits or purchases. Next: learning quiz, then production
-ASGI adapter/lifecycle locally. Cold-start behavior versus the unchanged 15-second
-client deadline is an explicit release gate; no warm-capacity spending approved.
+Current implementation checkpoint (17 October): ASGI adapter locally verified;
+see INFERENCE_ASGI.md. Eight HTTP/lifecycle tests, 15 runtime tests and frontend
+build pass with synthetic engines. Mandatory auth, readiness, busy rejection and
+startup/shutdown cancellation work; public binding is blocked pending IAM.
 
-Current verified implementation: authenticated loopback inference HTTP endpoint;
-nine synthetic-engine endpoint tests and frontend build passed on 16 October.
-Private ingestion driver/auth, R2 integration and desktop wiring remain incomplete.
-TASKS.md records evidence. No model loaded for the planning change; no push.
+Next: learning quiz, bounded Google service ID-token adapter and deployment
+identity configuration. Combined Linux dependency lock/image scan, real-model
+ASGI behavior and actual Linux SIGTERM remain unverified. Cloud pilot approval,
+cold-start policy, private ingestion/R2 and desktop integration remain separate.
+No cloud resources or shared packages changed; local h11 fix isolated on D:.
 
 Latest UI checkpoint: expressive desktop preview redesign implemented. Five UI
 tests, lint, frontend and native debug builds pass. Browser visual/contrast/reflow

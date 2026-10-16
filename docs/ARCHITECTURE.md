@@ -1,5 +1,10 @@
 # Architecture: how the product works
 
+17 October serving update: INFERENCE_ASGI.md adds locally verified FastAPI/Uvicorn
+lifecycle around the existing runtime. Public binding and deployment remain gated
+on IAM, Linux packaging/security and real-model checks. CLOUD_RUN_DESIGN.md remains
+the target; this adapter does not implement its cloud identity boundary.
+
 Production direction (17 October): [Cloud Run design](CLOUD_RUN_DESIGN.md) maps
 current components to proposed service identities, bounded resources and ordered
 implementation gates. It supersedes older hosting proposals, not current-code

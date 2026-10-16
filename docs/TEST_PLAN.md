@@ -1,5 +1,10 @@
 # Verification plan
 
+ASGI: use output/asgi-checks/venv/Scripts/python.exe for tests/inference/test_asgi.py
+(eight cases) and test_runtime.py (15 cases). Shared h11 0.14.0 is deliberately
+rejected by the adapter. Requirements and isolated environment scope are recorded
+in INFERENCE_ASGI.md. Signal-handler invocation is not Linux SIGTERM evidence.
+
 Inference HTTP: `python -m unittest discover -s tests/inference -p test_http_server.py -v`
 runs nine synthetic-engine tests over real loopback HTTP, including hung-worker
 reaping after client disconnect. Requires local network permission; no weights or

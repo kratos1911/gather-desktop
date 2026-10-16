@@ -1,5 +1,10 @@
 # Security requirements
 
+ASGI boundary: mandatory auth callback, version-guarded parser/protocol, total
+receive limit and single-inference admission verified locally. Public binding is
+rejected. Local h11 advisory remediation is isolated on D:; full Linux dependency
+scan, managed IAM and actual OS shutdown remain release gates. See INFERENCE_ASGI.md.
+
 Production identity plan: CLOUD_RUN_DESIGN.md separates Supabase user identity
 from Google backend identity, restricts model invocation and excludes library
 credentials from inference. IAM/production ingress and hosted negative-auth tests

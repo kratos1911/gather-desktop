@@ -1,0 +1,17 @@
+# Exact tested Python 3.10 Windows dependency set, NOT the Linux model image lock.
+# No standard extras, auto-reload, websockets or CLI plugin packages required.
+# Linux hashes/combined inference lock and security scan remain a packaging gate.
+fastapi==0.141.1
+uvicorn==0.54.0
+starlette==1.7.0
+pydantic==2.13.5
+pydantic-core==2.46.5
+annotated-types==0.7.0
+annotated-doc==0.0.5
+typing-inspection==0.4.4
+typing-extensions==4.16.0
+anyio==4.15.1
+idna==3.10
+exceptiongroup==1.3.0
+h11==0.16.0
+click==8.1.8

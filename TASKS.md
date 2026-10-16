@@ -1,5 +1,21 @@
 # Delivery tasks
 
+## 17 October ASGI runtime adapter
+
+TASK-005 serving slice implemented and verified locally: FastAPI/Uvicorn lifespan,
+mandatory auth injection, minimal readiness, single-inference admission, bounded
+protocol receive/write behavior and shutdown/startup cancellation. Public binding
+fails closed pending IAM. Eight Uvicorn/loopback synthetic-engine tests and 15
+runtime tests pass; focused dependency-guard recheck and frontend build pass.
+No weights, Docker, external APIs or paid resources used.
+
+Created isolated D: test venv inheriting existing packages; installed only the
+existing hash-locked h11 0.16.0 there. Shared h11 0.14.0 left untouched and rejected
+by the server guard. Tested dependency pins and limitations in INFERENCE_ASGI.md.
+Combined Linux hash lock/image/security scan and real OS SIGTERM remain unverified;
+Windows tests invoked the signal handler directly. Next: quiz, then bounded Google
+ID-token adapter and fail-closed deployment identity. No cloud deployment claim.
+
 ## 17 October cloud hosting and identity design
 
 Planning milestone complete: docs/CLOUD_RUN_DESIGN.md maps local components to

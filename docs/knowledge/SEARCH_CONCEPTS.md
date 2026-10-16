@@ -313,3 +313,11 @@ identity identifies which backend may call the model; it does not grant that
 backend ownership of every document. The model only needs bounded input text,
 not database or file-store credentials. Scale-to-zero can save idle capacity but
 adds startup delay; it is not a free-or-fast guarantee. See [[docs/CLOUD_RUN_DESIGN]].
+
+## Lifespan, readiness and admission
+
+Lifespan loads one model process before serving and closes it on shutdown.
+Readiness says whether that process can accept work; a running web server alone
+is not proof of a ready model. Admission rejects excess inference immediately
+instead of building a hidden queue. Async serving lets health checks respond
+while the blocking model runs elsewhere. See [[docs/INFERENCE_ASGI]].

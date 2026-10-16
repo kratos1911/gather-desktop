@@ -131,7 +131,7 @@ or free-operation promise is made by this document.
 
 | Step | Deliverable | Acceptance |
 | --- | --- | --- |
-| 1, next | Production ASGI adapter and lifecycle, no deployment | Existing client + synthetic Runtime tests; auth-boundary configuration fails closed; input/deadline/busy/SIGTERM behavior preserved; no extra model processes |
+| 1, local implementation verified; Linux shutdown/image pending | Production ASGI adapter and lifecycle, no deployment | Existing client + synthetic Runtime tests; auth-boundary configuration fails closed; input/deadline/busy/SIGTERM behavior preserved; no extra model processes |
 | 2 | Managed ID-token client and declarative deployment policy | Bounded token acquisition; correct audience/expiry; no secret fallback; policy disallows anonymous model invocation and excess IAM grants; local tests labelled simulated |
 | 3 | Reproducible image with verified model artifacts | Licence and current vulnerability review closed; hashes/digests pinned; real HTTP smoke, startup/RAM/shutdown measured under existing limits |
 | 4, approval required | Isolated cloud pilot | Region/project/budget approved; negative IAM tests for anonymous/wrong identity/audience; permitted caller works; cold/warm latency/RAM/cost measured; rollback exercised |

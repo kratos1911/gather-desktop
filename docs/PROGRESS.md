@@ -1,5 +1,23 @@
 # Rebuild progress
 
+## 17 October: ASGI adapter and lifecycle verification
+
+Reused installed FastAPI/Uvicorn with explicit auth, lifespan model ownership,
+readiness and one active inference. Added pinned protocol hooks for total TCP
+receive deadline and header limits; shutdown signals cancel active/startup work.
+Runtime.start now accepts an optional cancellation event using existing cleanup.
+
+Dependency review found shared h11 0.14.0 affected by upstream GHSA-vqfr-h8mv-ghfj.
+Created D: system-package-inheriting venv and hash-verified h11 0.16.0 using the
+existing model lock. No shared installation modified. Added exact local dependency
+pins and startup rejection for unreviewed h11/Uvicorn versions. Full Linux lock,
+security scan and image validation remain open.
+
+All eight loopback ASGI tests and 15 focused runtime tests pass; dependency/public
+bind guard rechecked after review. Frontend build passes. No Docker/model workload
+needed. Actual Linux signal delivery and real-model HTTP behavior unverified;
+Windows test directly invokes SIGTERM handling. No public binding/deployment/push.
+
 ## 17 October: production hosting and service identity plan
 
 Completed CLOUD_RUN_DESIGN.md after repository inspection and official-document

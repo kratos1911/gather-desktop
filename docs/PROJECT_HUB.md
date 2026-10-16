@@ -5,6 +5,9 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 17 October 2026.
 
+Implementation update: [[docs/INFERENCE_ASGI|ASGI serving and lifecycle]] verified
+locally with synthetic engines. Cloud identity/Linux image remain pending.
+
 Planning update: [[docs/CLOUD_RUN_DESIGN|Cloud hosting, identity and next steps]].
 Documented direction only; no deployment or paid provisioning.
 

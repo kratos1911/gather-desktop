@@ -1,5 +1,9 @@
 # CPU serving prerequisite
 
+17 October: FastAPI/Uvicorn lifecycle adapter locally verified; see
+../../docs/INFERENCE_ASGI.md. Public binding is blocked pending IAM. Eight ASGI
+and 15 runtime tests plus frontend build pass; no real-model HTTP/cloud claim.
+
 16 October: authenticated loopback HTTP adapter now wraps the existing Runtime.
 Nine synthetic-engine endpoint tests and frontend build pass; see
 ../../docs/INFERENCE_HTTP.md. No real-model HTTP run or public/cloud deployment.

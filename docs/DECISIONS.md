@@ -1,5 +1,18 @@
 # Architecture decisions
 
+## ADR-055: lifecycle-owned ASGI runtime with guarded serving dependencies
+
+Use FastAPI lifespan and one Runtime child; offload inference while preserving
+nonqueued admission and responsive readiness. Cancel startup/active work from
+the Uvicorn shutdown hook before draining tasks. Pin the protocol implementation
+and patched h11 parser; keep total receive protection below ASGI header parsing.
+Public binding remains disabled until managed identity is configured/tested.
+
+Reuse installed packages for local verification with patched h11 isolated on D:;
+do not alter unrelated environments or conflate the local dependency snapshot
+with a reproducible Linux production lock. See INFERENCE_ASGI.md for remaining
+gates and verification scope.
+
 ## ADR-054: production hosting and service identity direction (17 October)
 
 Plan separate Cloud Run application API and IAM-protected CPU inference, using

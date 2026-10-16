@@ -57,7 +57,7 @@
     {
       "id": "results",
       "type": "text",
-      "text": "Published search + exact-version context\nBounded session + local inference HTTP verified\nSynthetic model tests only; public identity/ingress pending\nDesktop/cloud deployment pending",
+      "text": "Published search + exact-version context\nASGI lifecycle/readiness locally verified\nSynthetic engine only; managed IAM/Linux image pending\nDesktop/cloud deployment pending",
       "x": 600,
       "y": 440,
       "width": 330,

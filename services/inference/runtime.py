@@ -131,7 +131,7 @@ class Runtime:
             raise InferenceError(result["error"])
         return result
 
-    def start(self):
+    def start(self, *, cancel=None):
         with self._lock:
             self._stop()
             context = multiprocessing.get_context("spawn")
@@ -146,7 +146,7 @@ class Runtime:
                 raise InferenceError("startup_failed") from None
             finally:
                 child.close()
-            result = self._receive(self.startup_timeout)
+            result = self._receive(self.startup_timeout, cancel)
             self.ready = result == {"status": "ready"}
             if not self.ready:
                 self._stop()
