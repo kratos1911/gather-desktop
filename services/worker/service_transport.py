@@ -11,7 +11,7 @@ import sys
 import threading
 import time
 from urllib.error import HTTPError
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, urlencode
 from urllib.request import Request, ProxyHandler, build_opener
 
 from services.worker.embedding_client import _NoRedirect
@@ -74,6 +74,22 @@ def request_json(base, path, headers, payload, *, timeout, cancel=None):
                                body=None if body is None else body.decode('utf-8'))).encode()
     except (ValueError, TypeError, UnicodeError, RecursionError):
         raise TransportError('invalid_request') from None
+    return _exchange(wire, timeout=timeout, cancel=cancel)
+
+
+def request_identity_token(audience, *, timeout=5, cancel=None):
+    """Explicit Google-runtime-only operation; no ADC/key files or URL injection."""
+    from services.worker.cloud_identity import validate_audience
+    validate_audience(audience)
+    if type(timeout) not in (int,float) or not 0 < timeout <= 15:
+        raise TransportError('invalid_configuration')
+    return _exchange(json.dumps({'metadata_audience':audience}).encode(),
+                     timeout=min(5,timeout), cancel=cancel)
+
+
+def _exchange(wire, *, timeout, cancel):
+    if type(timeout) not in (int,float) or not 0 < timeout <= 15:
+        raise TransportError('invalid_configuration')
     if cancel is not None and cancel.is_set():
         raise TransportError('cancelled')
     if not _SLOT.acquire(blocking=False):
@@ -137,6 +153,10 @@ def child_main():
         if len(raw) > 2 * MAX_REQUEST + 32768:
             raise ValueError()
         args = strict_json(raw)
+        if set(args) == {'metadata_audience'}:
+            output = _metadata_response(args['metadata_audience'])
+            sys.stdout.buffer.write(output)
+            return
         body = args['body']
         headers = dict(args['headers'], **{'Accept': 'application/json',
             'Accept-Encoding': 'identity', 'Content-Type': 'application/json'})
@@ -159,3 +179,22 @@ def child_main():
     except Exception:
         pass
     sys.stdout.buffer.write(output)
+
+
+def _metadata_response(audience):
+    from services.worker.cloud_identity import validate_audience
+    validate_audience(audience)
+    url = ('http://metadata.google.internal/computeMetadata/v1/instance/'
+           'service-accounts/default/identity?' + urlencode({'audience':audience,'format':'full'}))
+    request = Request(url,headers={'Metadata-Flavor':'Google','Accept-Encoding':'identity'})
+    opener = build_opener(ProxyHandler({}),_NoRedirect())
+    with opener.open(request,timeout=5) as response:
+        if (response.status != 200 or response.headers.get('Metadata-Flavor') != 'Google'
+                or response.headers.get('Content-Encoding','identity') != 'identity'):
+            return b'ERR\ninvalid_response'
+        data = response.read(8193)
+        if len(data)>8192:
+            return b'ERR\nresponse_too_large'
+        token = data.decode('ascii')
+        credential(token)
+        return b'OK\n'+json.dumps(token).encode('ascii')

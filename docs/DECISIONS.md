@@ -1,5 +1,15 @@
 # Architecture decisions
 
+## ADR-056: explicit metadata identity with bounded cache lifetime
+
+Reuse the isolated HTTP helper for Google metadata acquisition, with a fixed
+destination and five-second bound inside the 15-second inference HTTP budget.
+Require explicit caller/audience/intended invokers, no ADC key-file lookup or secret
+fallback. Cache only until expiry minus 60 seconds using wall and monotonic clocks.
+Claim inspection is configuration validation, not cryptographic authentication.
+Keep public binding blocked until receiving auth and actual IAM gates are verified.
+See CLOUD_IDENTITY.md; no cloud changes are authorized by this local implementation.
+
 ## ADR-055: lifecycle-owned ASGI runtime with guarded serving dependencies
 
 Use FastAPI lifespan and one Runtime child; offload inference while preserving

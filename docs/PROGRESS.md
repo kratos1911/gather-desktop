@@ -1,5 +1,16 @@
 # Rebuild progress
 
+## 17 October: outbound managed identity client
+
+Added bounded metadata token acquisition using the existing isolated transport,
+expiry/audience/caller cache checks, intended invoker policy validation and explicit
+CloudInferenceClient. No shared-secret fallback. Review fixed unhashable malformed
+policy handling and invalid timeout handling; provider configuration is read-only.
+12 mocked identity tests and 11 existing loopback transport tests pass, as does the
+frontend build. Synthetic JWTs do not verify signatures or deployed IAM. No cloud
+access, models, Docker, UI or protected workloads changed. Public binding remains
+blocked. Next Linux packaging/security and cloud gates: CLOUD_IDENTITY.md.
+
 ## 17 October: ASGI adapter and lifecycle verification
 
 Reused installed FastAPI/Uvicorn with explicit auth, lifespan model ownership,

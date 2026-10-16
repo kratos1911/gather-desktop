@@ -1,5 +1,9 @@
 # Architecture: how the product works
 
+Outbound service identity: CloudInferenceClient obtains bounded metadata ID tokens
+through the existing transport; intended-policy config is fail-closed. See
+CLOUD_IDENTITY.md. Actual receiving IAM enforcement remains a deployment gate.
+
 17 October serving update: INFERENCE_ASGI.md adds locally verified FastAPI/Uvicorn
 lifecycle around the existing runtime. Public binding and deployment remain gated
 on IAM, Linux packaging/security and real-model checks. CLOUD_RUN_DESIGN.md remains

@@ -132,7 +132,7 @@ or free-operation promise is made by this document.
 | Step | Deliverable | Acceptance |
 | --- | --- | --- |
 | 1, local implementation verified; Linux shutdown/image pending | Production ASGI adapter and lifecycle, no deployment | Existing client + synthetic Runtime tests; auth-boundary configuration fails closed; input/deadline/busy/SIGTERM behavior preserved; no extra model processes |
-| 2 | Managed ID-token client and declarative deployment policy | Bounded token acquisition; correct audience/expiry; no secret fallback; policy disallows anonymous model invocation and excess IAM grants; local tests labelled simulated |
+| 2, client/intended config locally verified; deployed policy and receiving auth pending | Managed ID-token client and declarative deployment policy | See CLOUD_IDENTITY.md; bounded acquisition, audience/expiry and no fallback tested with synthetic tokens. Actual IAM verification remains open |
 | 3 | Reproducible image with verified model artifacts | Licence and current vulnerability review closed; hashes/digests pinned; real HTTP smoke, startup/RAM/shutdown measured under existing limits |
 | 4, approval required | Isolated cloud pilot | Region/project/budget approved; negative IAM tests for anonymous/wrong identity/audience; permitted caller works; cold/warm latency/RAM/cost measured; rollback exercised |
 | 5 | Connected ingestion and desktop flow | Verified private driver/owner propagation, dispatch/reconciliation, R2 quota/cleanup, secure desktop sessions, real import/search/open/delete; privacy/release gates pass |

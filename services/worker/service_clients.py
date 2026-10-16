@@ -1,5 +1,6 @@
 """Server-only fixed-service adapters. No hosted inference endpoint is deployed."""
 import base64
+import time
 from uuid import UUID
 
 from services.inference.runtime import validate_request, InferenceError
@@ -72,8 +73,7 @@ class InferenceClient:
             counts = [self.count_tokens(text) for text in texts]
             if any(type(n) is not int or not 0 < n <= 2048 for n in counts) or sum(counts) > 4096:
                 raise InferenceError('token_limit')
-            return request_json(self._base, '/embed', self._headers, request,
-                                timeout=15, cancel=cancel)
+            return self._send(request,cancel=cancel)
         except InferenceError:
             raise
         except TransportError as error:
@@ -81,3 +81,32 @@ class InferenceClient:
             raise InferenceError(code) from None
         except Exception:
             raise InferenceError('service_unavailable') from None
+
+    def _send(self, request, *, cancel):
+        return request_json(self._base, '/embed', self._headers, request,
+                            timeout=15,cancel=cancel)
+
+
+class CloudInferenceClient(InferenceClient):
+    """Explicit managed identity client; no local secret or credential fallback."""
+    def __init__(self, identity, count_tokens):
+        from services.worker.cloud_identity import IdentityConfig, MetadataTokenProvider
+        if not isinstance(identity,IdentityConfig) or not callable(count_tokens):
+            raise TransportError('invalid_identity_configuration')
+        self._base = identity.audience
+        self.count_tokens = count_tokens
+        self._identity = MetadataTokenProvider(identity)
+
+    def _send(self, request, *, cancel):
+        deadline = time.monotonic()+15
+        token = self._identity.get(cancel=cancel,timeout=5)
+        remaining = deadline-time.monotonic()
+        if remaining <= 0:
+            raise TransportError('timeout')
+        try:
+            return request_json(self._base,'/embed',{'Authorization':'Bearer '+token},
+                                request,timeout=remaining,cancel=cancel)
+        except TransportError as error:
+            if str(error)=='authentication_failed':
+                self._identity.invalidate()
+            raise

@@ -5,6 +5,9 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 17 October 2026.
 
+Identity update: [[docs/CLOUD_IDENTITY|Outbound service tokens and trust boundary]].
+Client verified with synthetic tokens; actual IAM and public ingress still gated.
+
 Implementation update: [[docs/INFERENCE_ASGI|ASGI serving and lifecycle]] verified
 locally with synthetic engines. Cloud identity/Linux image remain pending.
 

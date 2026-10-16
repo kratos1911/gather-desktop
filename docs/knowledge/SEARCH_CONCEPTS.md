@@ -3,6 +3,14 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Service tokens are different from user sessions
+
+The application proves its service identity to inference with a short-lived token
+whose audience names that exact service. The user's Supabase session separately
+controls document ownership. Reading token fields helps reject mistakes; only the
+receiving identity boundary verifies signatures and permissions. Refresh failure
+must stop the call, not reuse an expired token. See [[docs/CLOUD_IDENTITY]].
+
 ## Search identity and version-bound reading
 
 Cosine search compares vector directions only within the same model/revision and

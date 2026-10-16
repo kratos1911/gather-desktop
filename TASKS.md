@@ -1,5 +1,16 @@
 # Delivery tasks
 
+## 17 October outbound cloud identity client
+
+Local slice complete: fixed metadata acquisition, expiring per-service token cache,
+validated intended invoker configuration and CloudInferenceClient with one shared
+15-second acquisition/HTTP budget. No secret fallback or automatic retry.
+12 synthetic identity checks, 11 existing loopback transport checks and required
+frontend build pass. Reviewed malformed configuration and made cache configuration
+read-only. No real tokens, Google requests, models or Docker used.
+Actual IAM/receiving auth integration is incomplete; public binding remains blocked.
+See docs/CLOUD_IDENTITY.md. Next: Linux packaging/security review after learning quiz.
+
 ## 17 October ASGI runtime adapter
 
 TASK-005 serving slice implemented and verified locally: FastAPI/Uvicorn lifespan,

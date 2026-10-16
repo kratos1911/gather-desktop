@@ -1,5 +1,10 @@
 # Security requirements
 
+Outbound identity: fixed metadata destination, bounded acquisition/cache, exact
+audience/caller checks and no secret fallback. Decoded claims and intended invoker
+settings do not verify signatures or deployed permissions. Public binding stays
+blocked; see CLOUD_IDENTITY.md for evidence and remaining IAM gates.
+
 ASGI boundary: mandatory auth callback, version-guarded parser/protocol, total
 receive limit and single-inference admission verified locally. Public binding is
 rejected. Local h11 advisory remediation is isolated on D:; full Linux dependency

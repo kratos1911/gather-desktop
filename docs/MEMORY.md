@@ -1,15 +1,16 @@
 # Current project state
 
-Current implementation checkpoint (17 October): ASGI adapter locally verified;
-see INFERENCE_ASGI.md. Eight HTTP/lifecycle tests, 15 runtime tests and frontend
-build pass with synthetic engines. Mandatory auth, readiness, busy rejection and
-startup/shutdown cancellation work; public binding is blocked pending IAM.
+Current implementation checkpoint (17 October): bounded outbound Google service
+identity client and intended-policy validation verified locally; see CLOUD_IDENTITY.md.
+12 synthetic identity tests, 11 existing transport tests and frontend build pass.
+No Google credentials or cloud calls used. Public ASGI binding remains blocked;
+intended configuration does not establish deployed IAM enforcement.
 
-Next: learning quiz, bounded Google service ID-token adapter and deployment
-identity configuration. Combined Linux dependency lock/image scan, real-model
-ASGI behavior and actual Linux SIGTERM remain unverified. Cloud pilot approval,
-cold-start policy, private ingestion/R2 and desktop integration remain separate.
-No cloud resources or shared packages changed; local h11 fix isolated on D:.
+Next: learning quiz, reproducible Linux dependency/image and security review.
+Real-model ASGI behavior, actual Linux SIGTERM, receiving cloud auth wiring and
+deployed IAM verification remain open. Cloud pilot approval, cold-start policy,
+private ingestion/R2 and desktop integration remain separate. No shared packages
+or workloads changed.
 
 Latest UI checkpoint: expressive desktop preview redesign implemented. Five UI
 tests, lint, frontend and native debug builds pass. Browser visual/contrast/reflow
