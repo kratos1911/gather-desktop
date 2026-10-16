@@ -4,6 +4,7 @@ Called by supabase_test_stack.py against a disposable stack. Never prints tokens
 Deletes only this run's generated fixtures, including when an assertion fails.
 """
 from pathlib import Path
+import sys
 import json
 import secrets
 import subprocess
@@ -12,6 +13,7 @@ from urllib.error import HTTPError
 from urllib.request import Request, build_opener, ProxyHandler
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 DB = 'gather_integration_db'
 BASE = 'http://127.0.0.1:55431'
 BUCKET = 'gather-originals'
@@ -102,6 +104,8 @@ def main(config):
 
         owner, source, token, params = sources[0]
         other_token = sources[1][2]
+        from check_published_api import check_published_api
+        check_published_api(api, request, sql, check, sources)
         path = objects[0]
         read_path = f'/storage/v1/object/authenticated/{BUCKET}/{path}'
         check(api('POST', '/rest/v1/rpc/save_source', token, params) == source, 'RPC retry is idempotent')

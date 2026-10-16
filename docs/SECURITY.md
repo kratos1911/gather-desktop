@@ -2,6 +2,12 @@
 
 ## Trust boundaries
 
+Published search/open RPCs now derive ownership from auth.uid() through PostgREST.
+Local real-JWT tests verify signature tampering/anonymous denial and isolation;
+this does not close the privileged ingestion connection or hosted-release gates.
+Search excludes drafts/deleted sources and incompatible model spaces. Opening
+requires the exact current published version. See PUBLISHED_SEARCH.md.
+
 Internal submission now uses a dedicated NOLOGIN coordinator role and derives
 ownership from the trusted database session, not an owner field in the payload.
 Original handoff bytes and completed-vector IDs are private and lease-fenced.

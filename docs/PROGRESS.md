@@ -1,5 +1,24 @@
 # Rebuild progress
 
+## 16 October: authenticated published search and reader
+
+Added owner-derived exact pgvector search and version-required text opening via
+the existing PostgREST/JWT boundary. 64 real Auth/REST/Storage checks and frontend
+build pass using synthetic users/documents/vectors. Drafts, other owners, old
+versions and deleted sources remain inaccessible as specified. See TASKS.md.
+
+The first stack run failed before Auth readiness. A diagnostic run identified a
+missing pg_hba network rule introduced by the earlier minimal database startup
+script. Restored access only for three test service roles on directly connected
+private networks; the database still publishes no host port. The corrected run
+passed and removed its stack/fixtures. Added redacted startup diagnostics so the
+next startup failure is actionable without a diagnostic-only rerun.
+
+Preflight: Docker 29.7.2, all images cached, 2.56 GiB available RAM and 94.66 GiB
+free on D:. Protected workloads untouched; no models or paid resources used.
+Real query embedding, privileged ingestion transport, desktop wiring and hosted
+release remain unfinished. Canonical and Obsidian-linked notes updated locally.
+
 ## 16 October: internal ingestion coordinator
 
 Continued clean b23cd01 on codex/durable-ingestion-jobs. Added version-bound

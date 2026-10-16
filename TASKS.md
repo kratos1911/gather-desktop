@@ -1,5 +1,22 @@
 # Delivery tasks
 
+## 16 October authenticated published search and reader
+
+TASK-021 read API slice complete locally: exact cosine search restricted to the
+owner's current publications and matching model space; version-bound reader with
+exact text/hash/offsets. Real Auth/PostgREST tests cover token tampering, anonymous
+access, owner isolation, drafts, replacement, deletion and invalid query vectors.
+64 API checks pass (31 retained lifecycle/storage checks + 33 new read checks).
+Frontend build passes. Evidence: output/database-checks/published-api-20261016.log
+and published-api-frontend-20261016.log. Synthetic vectors prove ordering and API
+boundaries, not natural-language retrieval quality. No model or native rebuild.
+
+Fixed the disposable harness's missing private-network database access rule;
+startup failures now retain bounded, redacted diagnostics before cleanup.
+Contract: docs/PUBLISHED_SEARCH.md. Next: query-text embedding/context integration
+and privileged ingestion transport verification. Desktop and cloud deployment
+remain separate milestones. Earlier database/model evidence was not rerun.
+
 ## 16 October internal ingestion coordinator
 
 TASK-021 coordinator slice complete locally: trusted-context submission commits

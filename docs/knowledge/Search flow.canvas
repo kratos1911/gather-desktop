@@ -57,7 +57,7 @@
     {
       "id": "results",
       "type": "text",
-      "text": "Combine ranks -> source excerpts\nPLANNED connected search",
+      "text": "Authenticated published vector search + reader\nLocal JWT/API checks pass with synthetic vectors\nQuery embedding + desktop integration pending",
       "x": 600,
       "y": 440,
       "width": 330,

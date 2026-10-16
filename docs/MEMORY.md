@@ -1,11 +1,11 @@
 # Current project state
 
-Current backend checkpoint (16 October): internal TXT/Markdown submission and ingestion coordinator
-connect existing processing/publication with durable original handoff, heartbeat
-cancellation and reuse of completed vectors. See INGESTION_COORDINATOR.md for
-scope; TASKS.md holds passing verification. Next: real server identity/transport boundary
-and published search/open adapters. Real JWT/cloud inference and desktop wiring
-remain incomplete. No model loads, protected API changes or push.
+Current backend checkpoint (16 October): published vector search and version-bound
+text opening now work through the local Supabase Auth/PostgREST boundary. See
+PUBLISHED_SEARCH.md; TASKS.md holds evidence. The internal ingestion coordinator
+remains implemented separately. Next: query-text embedding and bounded context
+integration, plus verification of the privileged ingestion connection factory.
+Cloud inference and desktop wiring remain incomplete. No model loads or push.
 
 Latest UI checkpoint: expressive desktop preview redesign implemented. Five UI
 tests, lint, frontend and native debug builds pass. Browser visual/contrast/reflow

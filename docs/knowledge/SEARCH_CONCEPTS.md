@@ -3,6 +3,15 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Search identity and version-bound reading
+
+Cosine search compares vector directions only within the same model/revision and
+dimension space. The authenticated database filters ownership and publication
+before comparison. A result carries its source version: opening that version
+either returns the same text or reports it unavailable after replacement/deletion.
+This keeps citations trustworthy. See [[docs/PUBLISHED_SEARCH]]; unit-vector tests
+verify the API contract, while semantic relevance still needs actual embeddings.
+
 ## Coordinator and durable handoff
 
 A coordinator connects existing processing steps. Durable handoff means saving

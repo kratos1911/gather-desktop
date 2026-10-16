@@ -47,6 +47,7 @@ def main():
         capture_output=True, text=True, check=True, timeout=15)
     if existing.stdout.strip():
         raise RuntimeError('A gather-supabase-test stack already exists; inspect it before retrying')
+    startup_complete = False
     try:
         compose('up', '-d')
         http = build_opener(ProxyHandler({}))
@@ -61,6 +62,7 @@ def main():
                 time.sleep(0.5)
             else:
                 raise RuntimeError('Local service did not become ready: ' + path)
+        startup_complete = True
         for migration in sorted((ROOT / 'supabase/migrations').glob('*.sql')):
             check_supabase.sql(migration.read_text(encoding='utf-8'))
         check_supabase.sql("notify pgrst, 'reload schema'")
@@ -77,6 +79,20 @@ def main():
         # Anonymous OpenAPI can omit protected functions, so the functional tests
         # remain the final readiness/authorization proof.
         check_supabase.main(config)
+    except Exception:
+        if not startup_complete:
+            # Capture bounded startup evidence before cleanup, before fixture users
+            # or document requests exist. Never print credentials from container logs.
+            diagnostic = subprocess.run([*COMPOSE,'logs','--no-color','--tail','35','db','auth','storage','gateway'],
+                cwd=ROOT,env=env,capture_output=True,text=True,timeout=20)
+            logs = diagnostic.stdout + diagnostic.stderr
+            for value in (secret,config['ANON_KEY'],config['SERVICE_ROLE_KEY']):
+                logs = logs.replace(value,'[redacted]')
+            target = ROOT / 'output/database-checks/supabase-startup.log'
+            target.parent.mkdir(parents=True,exist_ok=True)
+            target.write_text(logs,encoding='utf-8')
+            print('Startup diagnostics saved under output/database-checks/supabase-startup.log')
+        raise
     finally:
         compose('down', '--volumes')
         print('Disposable Supabase stack removed; no test data retained.')

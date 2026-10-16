@@ -1,5 +1,16 @@
 # Architecture decisions
 
+## ADR-050: reuse PostgREST for authenticated published reads (16 October)
+
+Expose two narrowly granted SQL functions through the existing Supabase JWT
+boundary. Derive ownership from auth.uid(), filter by published pointer and exact
+model identity, then use exact cosine ranking. Materialize eligible vectors before
+distance calculation to exclude incompatible dimensions. Require the search
+version when opening content, so stale citations fail instead of changing meaning.
+Reuse the existing context assembler later; no second ranking/context service or
+custom JWT verifier is introduced. Large-library performance and production query
+rate/deadline controls remain gates. See PUBLISHED_SEARCH.md.
+
 ## ADR-049: bounded internal coordinator and durable original handoff (16 October)
 
 Reuse the existing database queue, parser, token chunker and publication functions.

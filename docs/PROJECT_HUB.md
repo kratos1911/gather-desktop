@@ -5,8 +5,8 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 16 October 2026.
 
-Backend update: [[docs/INGESTION_COORDINATOR|Trusted ingestion coordinator]] connects
-[[docs/TEXT_PUBLICATION|Atomic publication]] and [[docs/INGESTION_JOBS|Durable jobs]]. See [[TASKS]] for
+Backend update: [[docs/PUBLISHED_SEARCH|Authenticated published search and reader]]
+now complements [[docs/INGESTION_COORDINATOR|Internal ingestion]]. See [[TASKS]] for
 evidence and [[docs/MEMORY|Current state]] for remaining integration work.
 
 UI update: [[docs/DESIGN_REVIEW_20261015|Expressive preview redesign and checks]].

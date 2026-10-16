@@ -8,6 +8,10 @@ authenticated repository reads and delete/version race checks.
 
 ## Current executable checks
 
+Published API: `python scripts/supabase_test_stack.py` runs 64 real Auth/REST/Storage
+checks, including 33 published-search/reader cases. Uses synthetic vectors and
+users, with public signup disabled and exact fixture cleanup. See PUBLISHED_SEARCH.md.
+
 16 October coordinator: `python scripts/check_database.py` includes 196 database
 checks with 27 coordinator scenarios. Run `python -m unittest discover -s
 tests/worker -p test_ingestion.py -v` for 10 focused unit tests. Inference controls

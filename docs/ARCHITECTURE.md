@@ -12,8 +12,10 @@ functions, owner-derived status and deletion/replacement fencing are verified.
 See INGESTION_JOBS.md. TEXT_PUBLICATION.md adds verified-byte admission, private
 pgvector staging, a separate published pointer and atomic ready activation.
 INGESTION_COORDINATOR.md adds internal submission, durable original handoff,
-lease-aware worker orchestration and reuse of completed vectors. Search/context
-adapters and real authenticated API/transport integration remain next.
+lease-aware worker orchestration and reuse of completed vectors. PUBLISHED_SEARCH.md
+adds published-vector search and version-bound text reads through locally verified
+Supabase JWT/PostgREST. Query-text embedding/context and privileged ingestion
+transport integration remain next.
 
 Bounded context now exists as a pure worker component after ranking. It groups
 sources, expands at most one contiguous neighbor per side and returns exact
