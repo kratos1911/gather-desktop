@@ -1,5 +1,14 @@
 # Architecture decisions
 
+## 18 October: separate Cloud Run and application token headers
+
+Use X-Serverless-Authorization for platform invocation and preserve Authorization
+for independent signed-token verification. Use one acquired token, no extra fetch,
+static-secret fallback or larger receive limit. Cloud-client token cap is 7,168
+characters to budget both copies. Google documented precedence motivates this
+choice; actual deployed handoff/IAM remains a required test, not an assumption.
+See CLOUD_IDENTITY.md for source and acceptance checks.
+
 ## ADR-059: scheduled trusted-key refresh, independent of request key IDs
 
 Use the existing isolated HTTP helper for one fixed Google HTTPS certificate URL.

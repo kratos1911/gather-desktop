@@ -1,5 +1,43 @@
 # Outbound Google service identity
 
+## Header handoff update, 18 October
+
+CloudInferenceClient now sends the same metadata-issued token in Authorization
+and X-Serverless-Authorization. Cloud Run checks the latter when both are present;
+Gather verifies the signed Authorization token independently. The stripped platform
+header is never an application credential or fallback. Missing, stripped or
+ambiguous application authorization remains rejected. Public bind guard unchanged.
+
+The cloud client tightens its token ceiling to 7,168 ASCII characters so two
+copies leave space within the existing 16 KiB incoming-header limit. Larger tokens
+fail before inference HTTP; no limit increase, second token fetch or automatic
+retry. Actual platform-added header size still requires deployed verification.
+
+33 focused identity/verifier/transport checks and frontend build pass. The new
+handoff fixture uses ephemeral RSA keys and a simulated platform transformation;
+it proves local client/verifier compatibility, not Google signing, IAM or ingress.
+The previously built image predates this source change; package the reviewed source
+before a pilot. No models, Docker operations, cloud requests or deployment used.
+
+Reference inspected 18 October: [Google service authentication](https://docs.cloud.google.com/run/docs/authenticating/service-to-service).
+
+### Required pilot evidence, not executed
+
+- Inspect actual IAM: invoker check enabled, no allUsers/allAuthenticatedUsers,
+  only approved service accounts; verify exact audience and account subject IDs.
+- Authorized platform and application tokens: /embed succeeds with valid output.
+- Missing/wrong-audience/non-invoker platform token: rejected by Cloud Run even
+  when the application token is valid; prove application inference was not called.
+- Valid platform token with missing/tampered/wrong-caller application token:
+  Gather rejects before inference; no fallback to the platform header.
+- Verify signed Authorization survives the real proxy and total headers fit limits.
+- Keep logs free of token values, queries, vectors and document content.
+
+Next local prerequisite: trusted startup wiring and explicit allowed API/worker
+identities. Current receiver binds one caller; a two-caller deployment must not be
+claimed supported until that startup/authorization contract is implemented/tested.
+Actual pilot requires separate project/region/spend approval and security gates.
+
 Local client milestone verified on 17 October 2026. No Google requests, credentials,
 IAM changes or deployments were used. This is not proof of deployed authorization.
 

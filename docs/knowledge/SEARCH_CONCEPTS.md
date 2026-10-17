@@ -3,6 +3,13 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Platform identity and application identity
+
+Cloud Run checks permission to invoke the service; Gather independently verifies
+the signed caller token. A proxy-processed header is not a substitute for a valid
+application signature. Both boundaries need negative tests. Local fixtures cannot
+prove a deployed IAM policy. See [[docs/CLOUD_IDENTITY]].
+
 ## Transport success versus CPU suitability
 
 An HTTP 200 proves neither valid embeddings nor affordable hosting. Check vector

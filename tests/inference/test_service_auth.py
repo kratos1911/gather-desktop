@@ -47,6 +47,30 @@ class ServiceAuthTests(unittest.TestCase):
         self.assertTrue(self.accepted(self.token()))
         self.assertTrue(self.accepted(self.token({'iss':'accounts.google.com'})))
 
+    def test_client_handoff_keeps_application_signature_required(self):
+        from services.worker.service_clients import CloudInferenceClient
+        client = CloudInferenceClient(self.identity, lambda text: 1)
+        token = self.token().decode('ascii')
+        captured = []
+        def platform_fixture(base, path, headers, body, **kwargs):
+            self.assertEqual(headers['X-Serverless-Authorization'], 'Bearer '+token)
+            self.assertEqual(headers['Authorization'], 'Bearer '+token)
+            # Model the documented platform handoff, not actual Google IAM.
+            forwarded = [(b'authorization', headers['Authorization'].encode()),
+                         (b'x-serverless-authorization', b'Bearer stripped.fixture.')]
+            self.assertTrue(self.auth(forwarded))
+            self.assertFalse(self.auth(forwarded[1:]))
+            self.assertFalse(self.auth([(b'authorization', b'Bearer stripped.fixture.'),
+                                       forwarded[1]]))
+            self.assertFalse(self.auth([forwarded[0], forwarded[0], forwarded[1]]))
+            captured.append(True)
+            return {'fixture': True}
+        with patch.object(client._identity, 'get', return_value=token), patch(
+                'services.worker.service_clients.request_json', side_effect=platform_fixture):
+            self.assertEqual(client.infer({'role':'query','texts':['fixture']}, cancel=None),
+                             {'fixture': True})
+        self.assertEqual(captured, [True])
+
     def test_untrusted_signer_and_tampering(self):
         self.assertFalse(self.accepted(self.token(key=self.other)))
         token = self.token()

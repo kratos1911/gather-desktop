@@ -1,5 +1,12 @@
 # Receiving service identity — local verifier
 
+## Header pairing, 18 October
+
+See [[docs/CLOUD_IDENTITY]]: cloud client sends the platform and application
+headers separately. Receiver still trusts only the signed Authorization token.
+Local signed-key handoff/rejection tests pass; deployed proxy/IAM remains unverified.
+Local real-model HTTP is now verified in [[services/inference/HTTP_SMOKE]].
+
 ## Linux integration update, 17 October
 
 The verifier and managed refresh are now included in the 47-package Linux candidate.

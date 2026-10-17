@@ -100,11 +100,17 @@ class CloudInferenceClient(InferenceClient):
     def _send(self, request, *, cancel):
         deadline = time.monotonic()+15
         token = self._identity.get(cancel=cancel,timeout=5)
+        # Two copies must fit the receiver's unchanged 16 KiB header budget,
+        # leaving room for Host, content framing and platform forwarding headers.
+        if len(credential(token)) > 7168:
+            raise TransportError('invalid_identity_token')
         remaining = deadline-time.monotonic()
         if remaining <= 0:
             raise TransportError('timeout')
         try:
-            return request_json(self._base,'/embed',{'Authorization':'Bearer '+token},
+            headers = {'Authorization':'Bearer '+token,
+                       'X-Serverless-Authorization':'Bearer '+token}
+            return request_json(self._base,'/embed',headers,
                                 request,timeout=remaining,cancel=cancel)
         except TransportError as error:
             if str(error)=='authentication_failed':

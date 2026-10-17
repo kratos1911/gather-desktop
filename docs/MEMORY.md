@@ -1,5 +1,11 @@
 # Current project state
 
+Latest, 18 October: cloud header pairing implemented and locally verified; 33
+focused checks and frontend build pass. See CLOUD_IDENTITY.md for the contract
+and unexecuted pilot checks. No actual IAM proof, image rebuild or cloud deployment.
+Next: trusted startup wiring/explicit API-worker caller allowlist; existing receiver
+is single-caller. Model/security/pilot approval gates remain separate.
+
 Current next-step status (17 October): real Qwen loopback HTTP smoke passed.
 Startup 12.68 s, short requests 0.68-0.82 s, 512-token passage 4.69 s, peak 3.98 GiB
 under the unchanged 5 GiB ceiling. Valid vectors, rejection/recovery and cleanup

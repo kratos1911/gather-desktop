@@ -147,8 +147,17 @@ class IdentityTests(unittest.TestCase):
                 'services.worker.service_clients.time.monotonic', side_effect=[100,103]), patch(
                 'services.worker.service_clients.request_json', return_value={'fixture':True}) as send:
             self.assertEqual(client.infer(dict(role='query', texts=['hello']), cancel=None), {'fixture':True})
-            self.assertEqual(send.call_args.args[:3], (AUD, '/embed', {'Authorization':'Bearer '+token()}))
+            self.assertEqual(send.call_args.args[:3], (AUD, '/embed', {
+                'Authorization':'Bearer '+token(), 'X-Serverless-Authorization':'Bearer '+token()}))
             self.assertEqual(send.call_args.kwargs['timeout'], 12)
+
+    def test_dual_header_size_bound_rejects_before_send(self):
+        client = CloudInferenceClient(self.config, lambda text: 1)
+        with patch.object(client._identity, 'get', return_value='x'*7169), patch(
+                'services.worker.service_clients.request_json') as send:
+            with self.assertRaisesRegex(InferenceError, 'service_unavailable'):
+                client.infer(dict(role='query', texts=['hello']), cancel=None)
+            send.assert_not_called()
 
     def test_cloud_client_rejects_before_io_and_no_fallback(self):
         client = CloudInferenceClient(self.config, lambda text: 2049)

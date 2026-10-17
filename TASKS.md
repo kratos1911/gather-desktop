@@ -1,5 +1,13 @@
 # Delivery tasks
 
+## 18 October cloud header handoff locally verified
+
+Cloud client sends paired platform/application authorization with a tighter
+7,168-character token limit within unchanged receiver limits. Synthetic signed-key
+handoff rejects absent/stripped/duplicate app authorization. 33 focused tests and
+frontend build pass. No model/Docker/cloud operations. Pilot acceptance and next
+trusted startup/multiple caller gap recorded in docs/CLOUD_IDENTITY.md.
+
 ## 17 October real-model HTTP smoke passed
 
 Four real Qwen HTTP requests passed with pinned identity/512-dimensional vectors,

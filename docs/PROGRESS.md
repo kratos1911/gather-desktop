@@ -1,5 +1,14 @@
 # Rebuild progress
 
+## 18 October: Cloud Run token handoff preparation
+
+Reviewed Google primary documentation: X-Serverless-Authorization takes platform
+precedence when both headers exist. Added dual-header cloud client path, retaining
+independent application signature checks and all deadlines. 33 focused local
+identity/verifier/transport checks and frontend build pass. Deployed IAM/header
+preservation remains unverified; public binding blocked and existing image predates
+this code. No model rerun, paid resources, Docker workload change or push.
+
 ## 17 October: real CPU inference over HTTP verified
 
 User authorized unused-app closure, then specifically approved one-time WSL file-
