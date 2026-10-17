@@ -1,5 +1,16 @@
 # Delivery tasks
 
+## 17 October OS advisory and ingress review
+
+Completed scoped primary-source review in services/inference/OS_RISK_REVIEW.md;
+no OS change or risk acceptance. Upstream zlib fix exists but installed Debian
+remediation/classification unresolved; tar is disputed. Retain scan findings.
+Added one regression: five compressed/archive inputs rejected before inference,
+then valid recovery. Focused Windows loopback check and frontend build pass.
+Docker unavailable; new Linux check pending without repeated retries. Existing
+image/eight Linux checks retained. Next: receiving cloud-token verification locally.
+Interview checkpoints limited to 1–2 important questions per major milestone.
+
 ## 17 October Linux serving packaging
 
 Combined 41-distribution Linux lock preserves all 34 model package hashes and adds

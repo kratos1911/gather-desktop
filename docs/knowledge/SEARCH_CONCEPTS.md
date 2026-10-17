@@ -3,6 +3,14 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Findings, exposure and remediation
+
+A scanner finding identifies a potentially affected package. Reviewing the vendor
+advisory and actual application paths helps assess exposure; it does not itself fix
+the library. Non-root/read-only settings reduce impact but do not prove safety.
+Keep the finding until remediation or evidence-backed adjudication is complete.
+See [[services/inference/OS_RISK_REVIEW]].
+
 ## Package locks and image checks
 
 A version pin names a release; a SHA-256 lock identifies the exact package file.

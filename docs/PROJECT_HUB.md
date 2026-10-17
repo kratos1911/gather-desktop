@@ -5,6 +5,9 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 17 October 2026.
 
+Security review: [[services/inference/OS_RISK_REVIEW|OS findings and ingress evidence]].
+Release findings remain open; receiving cloud authentication can proceed locally.
+
 Packaging: [[services/inference/SERVING_IMAGE|Linux serving candidate and gates]].
 Combined dependencies and synthetic Linux HTTP verified; no model/cloud promotion.
 

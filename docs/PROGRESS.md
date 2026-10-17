@@ -1,5 +1,17 @@
 # Rebuild progress
 
+## 17 October: OS advisory review and focused ingress regression
+
+Read Debian trackers and zlib maintainer/fix sources. Corrected the interpretation
+of "no fix": upstream code fix exists, but vendor package and affected-range
+resolution remain open. Tar dispute and extraction prerequisites recorded without
+silently dismissing the scanner. No arbitrary OS removal or custom backport.
+Added compressed/archive rejection regression: five cases never call inference,
+then valid recovery succeeds. Focused host test and frontend build pass. Docker
+engine absent at one preflight; used existing D: test environment, no model loads,
+restart, protected workload changes or repeat scan. OS_RISK_REVIEW.md records limits.
+Updated learning rules to keep interview questions bounded and development moving.
+
 ## 17 October: Linux serving packaging and synthetic verification
 
 Reused the cached CPU wheels and base/OS layers. Downloaded seven exact serving

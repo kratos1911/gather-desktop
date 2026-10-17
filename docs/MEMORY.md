@@ -8,7 +8,14 @@ See services/inference/SERVING_IMAGE.md for image IDs and release evidence.
 
 Scan reviewed: 28 findings (1 high, 1 medium, 26 low), none reported for Python.
 Unfixed zlib/tar findings keep deployment blocked; no vulnerabilities suppressed.
-Next: upstream OS remediation review before model/cloud release checks.
+OS review complete with unresolved release findings; see
+services/inference/OS_RISK_REVIEW.md. Upstream zlib fix exists but Debian package
+status/range remains unresolved; tar advisory is disputed. No findings suppressed.
+New compressed/archive ingress regression passes locally (five rejected cases,
+then valid recovery). Linux recheck is pending: Docker engine pipe absent; no retry
+or shared-setting changes. Frontend build passes.
+Next independent development: receiving service-token verification, keeping public
+binding blocked until actual cloud authorization gates pass.
 Real-model ASGI behavior, actual Linux
 SIGTERM, receiving cloud auth and deployed IAM verification remain open. No model
 loaded, no shared packages or protected workloads changed. Cloud pilot approval,

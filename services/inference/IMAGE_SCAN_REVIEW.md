@@ -1,5 +1,9 @@
 # Inference image security review
 
+Follow-up interpretation: OS_RISK_REVIEW.md distinguishes scanner-listed fixes
+from upstream patches, records zlib version uncertainty and tar's disputed status.
+All original findings remain; this review is not remediation or deployment approval.
+
 ## Linux serving candidate — 17 October 2026
 
 See SERVING_IMAGE.md for exact runtime/index IDs and raw report checksum. The

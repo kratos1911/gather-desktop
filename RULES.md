@@ -12,6 +12,10 @@ Learning checkpoint (user preference, 16 October): before a major change, quiz
 the user briefly on the preceding work, review their answers accurately, and
 explain corrections before continuing. The service-client milestone follows a
 completed quiz on vector compatibility, stale citations and synthetic evidence.
+Updated 17 October: use at most one or two important AI Engineer interview-style
+questions per major milestone. Give concise, strict feedback; avoid extended
+follow-up chains that stall development. When the user requests continuation,
+explain any essential correction and proceed with authorized work.
 
 Implement one reviewable feature or prerequisite at a time. Prefer complete vertical user flows. Keep the current data private, changes scoped, boundaries explicit and TypeScript strict. Reuse components; avoid speculative abstractions and duplicated database layers. Explain significant decisions; routine authorized steps do not need repeated approval.
 

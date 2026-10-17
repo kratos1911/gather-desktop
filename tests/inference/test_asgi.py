@@ -83,6 +83,33 @@ class ASGITests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'unverified_server_dependencies'):
                 create_server(self.app)
 
+    def test_compressed_and_archive_requests_never_reach_inference(self):
+        # This verifies the ingress contract, not remediation of OS-library CVEs.
+        cases = [
+            ('application/json', 'gzip', b'\x1f\x8bsynthetic'),
+            ('application/json', 'deflate', b'synthetic'),
+            ('application/x-tar', None, b'synthetic archive'),
+            ('application/zip', None, b'PK\x03\x04synthetic'),
+            ('application/json', None, b'PK\x03\x04synthetic'),
+        ]
+        with patch.object(self.runtime, 'infer', wraps=self.runtime.infer) as infer:
+            for content_type, encoding, body in cases:
+                with self.subTest(content_type=content_type, encoding=encoding):
+                    conn = http.client.HTTPConnection('127.0.0.1', self.port, timeout=3)
+                    try:
+                        headers = {'Authorization':'Bearer '+SECRET,
+                                   'Content-Type':content_type}
+                        if encoding:
+                            headers['Content-Encoding'] = encoding
+                        conn.request('POST', '/embed', body=body, headers=headers)
+                        response = conn.getresponse()
+                        self.assertEqual(response.status, 400)
+                        self.assertEqual(json.loads(response.read()), {'error':'invalid_request'})
+                    finally:
+                        conn.close()
+            infer.assert_not_called()
+        self.assertEqual(self.request()[0], 200)
+
     def test_busy_and_health_stays_responsive(self):
         entered = threading.Event()
         original = self.runtime.infer
