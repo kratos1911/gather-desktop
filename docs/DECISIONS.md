@@ -1,5 +1,15 @@
 # Architecture decisions
 
+## ADR-059: scheduled trusted-key refresh, independent of request key IDs
+
+Use the existing isolated HTTP helper for one fixed Google HTTPS certificate URL.
+Honor upstream freshness, capped at five minutes, and atomically replace only fully
+validated snapshots. A single lifecycle thread refreshes with a 30-second minimum
+interval; inbound unknown keys cannot amplify network calls. On transient failure,
+retain still-fresh keys without extending their expiry. Prefer temporary denial
+over stale trust. Startup fetch precedes model loading; shutdown cancels and joins.
+This is locally verified behavior, not deployed IAM or a live-key validation claim.
+
 ## ADR-058: bounded offline receiving verifier before trusted-key lifecycle
 
 Use Google's JWT library with explicit RS256 and exact service-account subject as

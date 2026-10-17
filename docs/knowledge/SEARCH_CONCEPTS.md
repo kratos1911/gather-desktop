@@ -3,6 +3,13 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Key rotation without a refresh storm
+
+A token's unknown key ID must not cause an unrestricted network call. Gather's
+prepared receiver refreshes on a bounded schedule instead. A failed refresh can
+reuse still-fresh keys, but cannot extend their expiration. Once keys expire,
+readiness and authentication fail closed. See [[docs/RECEIVING_IDENTITY]].
+
 ## A valid signature is only part of authorization
 
 A signature establishes who signed a token and protects its contents. The receiver

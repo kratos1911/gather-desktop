@@ -4,7 +4,9 @@ One isolated helper per request bounds DNS/TLS/body time as well as socket time.
 No retry, proxy inheritance, redirect, implicit credential or model startup.
 """
 import json
+from email.utils import parsedate_to_datetime
 import os
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -87,6 +89,11 @@ def request_identity_token(audience, *, timeout=5, cancel=None):
                      timeout=min(5,timeout), cancel=cancel)
 
 
+def request_google_certificates(*, cancel=None):
+    """Fixed public Google certificate endpoint; no caller tokens sent."""
+    return _exchange(b'{"google_certificates":true}', timeout=5, cancel=cancel)
+
+
 def _exchange(wire, *, timeout, cancel):
     if type(timeout) not in (int,float) or not 0 < timeout <= 15:
         raise TransportError('invalid_configuration')
@@ -153,6 +160,9 @@ def child_main():
         if len(raw) > 2 * MAX_REQUEST + 32768:
             raise ValueError()
         args = strict_json(raw)
+        if args == {'google_certificates': True}:
+            sys.stdout.buffer.write(_certificate_response())
+            return
         if set(args) == {'metadata_audience'}:
             output = _metadata_response(args['metadata_audience'])
             sys.stdout.buffer.write(output)
@@ -198,3 +208,36 @@ def _metadata_response(audience):
         token = data.decode('ascii')
         credential(token)
         return b'OK\n'+json.dumps(token).encode('ascii')
+
+
+def _certificate_response():
+    request = Request('https://www.googleapis.com/oauth2/v1/certs',
+                      headers={'Accept':'application/json','Accept-Encoding':'identity'})
+    opener = build_opener(ProxyHandler({}), _NoRedirect())
+    with opener.open(request, timeout=5) as response:
+        if (response.status != 200 or response.headers.get_content_type() != 'application/json'
+                or response.headers.get('Content-Encoding','identity').lower() != 'identity'):
+            return b'ERR\ninvalid_response'
+        raw = response.read(65537)
+        if len(raw) > 65536:
+            return b'ERR\nresponse_too_large'
+        certificates = strict_json(raw)
+        if not isinstance(certificates, dict) or not 1 <= len(certificates) <= 8:
+            return b'ERR\ninvalid_response'
+        # Honor upstream freshness rather than inventing a cache lifetime.
+        directives = [d.strip().lower() for d in response.headers.get('Cache-Control','').split(',')]
+        if any(d.split('=')[0] in ('no-store','no-cache','private') for d in directives):
+            return b'ERR\ninvalid_response'
+        ages = [d.split('=',1)[1] for d in directives if d.startswith('max-age=')]
+        age = response.headers.get('Age','0')
+        dates = response.headers.get_all('Date', [])
+        if (len(ages) != 1 or not re.fullmatch(r'[0-9]{1,9}', ages[0])
+                or not re.fullmatch(r'[0-9]{1,9}', age) or len(dates) != 1):
+            return b'ERR\ninvalid_response'
+        date = parsedate_to_datetime(dates[0])
+        if date.tzinfo is None or date.timestamp() > time.time()+60:
+            return b'ERR\ninvalid_response'
+        ttl = min(300, int(ages[0])-max(int(age), max(0,time.time()-date.timestamp())))
+        if ttl <= 0:
+            return b'ERR\ninvalid_response'
+        return b'OK\n'+json.dumps({'certificates':certificates,'ttl':ttl},allow_nan=False).encode()

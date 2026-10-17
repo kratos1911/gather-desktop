@@ -1,5 +1,44 @@
 # Receiving service identity — local verifier
 
+## Managed refresh update (17 October)
+
+`ManagedGoogleServiceAuth` now owns the verifier snapshot and refresh lifecycle.
+ASGI acquires trusted keys before starting the model, then starts one refresh
+thread. Shutdown signals its cancellation event and joins the thread; readiness
+also requires fresh keys. The initial fetch fails startup if unavailable.
+
+Fetches use only `https://www.googleapis.com/oauth2/v1/certs`, default verified TLS,
+no proxies/redirects/credentials, the existing isolated helper's five-second total
+deadline and at most two seconds cleanup. The response is limited to 64 KiB/eight
+keys. Freshness uses Cache-Control max-age, Age and Date, capped at 300 seconds;
+network elapsed time is conservatively deducted. Stale, noncacheable, compressed
+or malformed responses cannot replace the snapshot. Key parsing/validation must
+complete before atomic replacement. No remote key URL is accepted from a token.
+
+Refreshes occur at 80% of remaining freshness, with a 30-second minimum interval
+and 240-second maximum. A nonblocking lock prevents overlapping refresh attempts.
+Failures retry through the scheduled loop at 30 seconds, never through inbound
+requests. The previous snapshot survives only to its unchanged expiry. Very short
+upstream freshness or outages may therefore cause temporary unavailability; this
+does not justify accepting stale keys. Unknown key IDs never initiate network I/O
+and can remain rejected until a scheduled refresh. Limits are per verifier instance;
+the deployment must retain the planned single web worker.
+
+Ten new mocked transport/rotation/lifecycle tests, eight verifier tests, nine ASGI
+tests and eleven existing transport checks pass (38 total). Frontend build passes.
+The first host run stalled in Windows event-loop socket initialization under sandbox
+restrictions; a bounded stack trace identified it, only those test processes were
+stopped, and the run passed with loopback permission. No application-code workaround.
+No live Google endpoint, real service token, model or Docker workload was used.
+
+Next: package these dependencies/modules in the Linux candidate and verify the
+lifecycle there. Live Google response/header handoff and deployed IAM remain
+unverified, and public binding remains blocked. OS release findings remain open.
+The original snapshot-only milestone below is retained as implementation history;
+its key-retrieval gap is now addressed locally, not yet proven against Google.
+
+## Original snapshot verifier
+
 17 October 2026. `GoogleServiceAuth` is a synchronous, network-free authentication
 callback for the existing ASGI app. It verifies RSA signatures with google-auth
 2.59.1/cryptography 50.0.2; it does not implement cryptographic primitives itself.

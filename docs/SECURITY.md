@@ -1,5 +1,10 @@
 # Security requirements
 
+Managed refresh now uses fixed Google HTTPS certificates, bounded transport and
+cache freshness; request key IDs never fetch. Only fresh snapshots authorize and
+startup/shutdown own the refresh thread. Locally mocked evidence is recorded in
+RECEIVING_IDENTITY.md; live Google and deployed IAM remain release gates.
+
 Receiving verifier: RECEIVING_IDENTITY.md records real RSA verification against
 synthetic trusted snapshots, exact account subject/email and fail-closed key expiry.
 Trusted Google key retrieval/rotation, Linux packaging and actual IAM/header handoff

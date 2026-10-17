@@ -1,5 +1,19 @@
 # Delivery tasks
 
+## 17 October managed key refresh
+
+Implemented fixed Google certificate fetch using existing bounded subprocess HTTP,
+64 KiB/eight-key bounds, Cache-Control/Age/Date freshness and a 300-second cap.
+Managed auth atomically rotates validated snapshots, prevents overlap and limits
+attempts to one per 30 seconds per instance. Request paths never fetch. ASGI keys
+load before model startup; shutdown cancels/joins refresh work. Failure retains
+old keys only until unchanged expiry. 10 new checks + 28 existing checks pass (38),
+and frontend build passes. All key responses mocked; no live Google/model/Docker.
+Windows event-loop sandbox socket stall diagnosed with bounded traceback; exact
+test processes stopped and loopback-permitted rerun passed. No repeated blind retry.
+Next Linux packaging and lifecycle validation; release gates remain in
+docs/RECEIVING_IDENTITY.md.
+
 ## 17 October receiving signature verifier
 
 Local complete slice: GoogleServiceAuth uses google-auth for real RS256 verification

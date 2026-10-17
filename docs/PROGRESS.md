@@ -1,5 +1,16 @@
 # Rebuild progress
 
+## 17 October: managed Google-key refresh lifecycle
+
+Added fixed-endpoint key retrieval, strict upstream cache freshness and snapshot
+rotation under one lifecycle thread. No request-triggered fetch or stale extension;
+initial key failure prevents model startup, shutdown cancels/joins work. Thirty-
+second minimum attempts preserve resource bounds during unknown-key traffic/outage.
+38 focused mocked/synthetic and loopback checks plus frontend build pass. A sandbox
+event-loop socket stall was traced and the exact tests rerun with loopback access;
+no model/API/container interventions. No live Google evidence claimed. Linux
+packaging, real platform header/IAM checks and OS findings remain open.
+
 ## 17 October: receiving-token verifier
 
 Reused installed google-auth/cryptography; recorded exact local dependencies.

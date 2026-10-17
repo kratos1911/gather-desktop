@@ -45,13 +45,19 @@ def create_app(runtime, authenticate):
     @asynccontextmanager
     async def lifespan(app):
         try:
+            if hasattr(authenticate, 'start'):
+                await authenticate.start(cancel=stopping)
             await asyncio.to_thread(runtime.start, cancel=stopping)
             state['started'] = True
             yield
         finally:
             state['started'] = False
             stopping.set()
-            await asyncio.to_thread(runtime.close)
+            try:
+                await asyncio.to_thread(runtime.close)
+            finally:
+                if hasattr(authenticate, 'close'):
+                    await authenticate.close()
 
     app = FastAPI(lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None)
     app.state.stopping = stopping
