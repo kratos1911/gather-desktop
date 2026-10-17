@@ -6,7 +6,8 @@ tags: [gather, project]
 Start here in Obsidian. Updated 17 October 2026.
 
 Identity handoff: [[docs/CLOUD_IDENTITY|Dual headers and cloud pilot checks]].
-Locally verified; startup wiring and deployed IAM remain next.
+Locally verified; [[docs/RECEIVING_IDENTITY|Trusted startup and paired callers]]
+now implemented. Artifact entry point and deployed IAM remain pending.
 
 HTTP evidence: [[services/inference/HTTP_SMOKE|Bounded real-model HTTP check]].
 Real local Qwen HTTP smoke passed; measurements and remaining cloud gates recorded.

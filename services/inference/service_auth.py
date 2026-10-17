@@ -12,22 +12,20 @@ from types import MappingProxyType
 
 from google.auth import jwt
 
-from services.worker.cloud_identity import IdentityConfig
+from services.worker.cloud_identity import receiver_identity
 from services.worker.service_transport import strict_json
 
 
 class GoogleServiceAuth:
-    """One allowed service identity; bounded, immutable public-key snapshot.
+    """One or two allowed identity pairs; bounded, immutable public-key snapshot.
 
     key_ttl must not exceed the authenticated key response's remaining freshness.
     Maximum local lifetime is five minutes. Recreate the verifier on key rotation.
     This verifies signatures; it does NOT establish Cloud Run IAM permissions.
     """
     def __init__(self, identity, caller_subject, certificates, *, key_ttl):
-        if (not isinstance(identity, IdentityConfig)
-                or not isinstance(caller_subject, str)
-                or not re.fullmatch(r'[0-9]{1,32}', caller_subject)
-                or type(key_ttl) not in (int, float) or not 0 < key_ttl <= 300
+        identity = receiver_identity(identity, caller_subject)
+        if (type(key_ttl) not in (int, float) or not 0 < key_ttl <= 300
                 or not isinstance(certificates, dict) or not 1 <= len(certificates) <= 8):
             raise ValueError('invalid_verifier_configuration')
         if version('google-auth') != '2.59.1' or version('cryptography') != '50.0.2':
@@ -53,7 +51,6 @@ class GoogleServiceAuth:
         except Exception:
             raise ValueError('invalid_verifier_configuration') from None
         self._identity = identity
-        self._subject = caller_subject
         self._certificates = MappingProxyType(copied)
         self._deadline = time.monotonic() + key_ttl
         self._expires = time.time() + key_ttl
@@ -86,8 +83,7 @@ class GoogleServiceAuth:
             now = time.time()
             if (claims.get('iss') not in ('https://accounts.google.com', 'accounts.google.com')
                     or claims.get('aud') != self._identity.audience
-                    or claims.get('sub') != self._subject
-                    or claims.get('email') != self._identity.caller_email
+                    or (claims.get('email'), claims.get('sub')) not in self._identity.callers
                     or claims.get('email_verified') is not True
                     or type(claims.get('iat')) is not int or type(claims.get('exp')) is not int
                     or not claims['iat'] <= now < claims['exp']

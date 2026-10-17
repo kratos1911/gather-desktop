@@ -1,5 +1,40 @@
 # Receiving service identity — local verifier
 
+## Trusted startup composition, 18 October
+
+`services/inference/startup.py` parses operator-owned JSON bytes (maximum 4 KiB)
+with exactly audience and callers. Each of one or two caller entries has exactly
+email and subject. Unknown fields, duplicate JSON keys, empty/oversized lists,
+invalid accounts and repeated emails/subjects fail closed. Configuration is frozen;
+request claims cannot add callers. The email/subject pair must match together.
+
+`create_trusted_app(raw_identity, runtime)` connects this policy to the existing
+ASGI lifespan and one ManagedGoogleServiceAuth instance. Both callers share a
+single key snapshot/fetch thread, cooldown and expiry. Valid keys precede runtime
+startup; missing keys prevent model load, and shutdown closes both. Runtime is
+supplied by trusted artifact-loading code; this factory does not verify artifacts,
+read environment defaults, bind publicly or bypass IAM.
+
+Example shape (fictional identities; never deploy unchanged):
+```json
+{"audience":"https://gather-model-example.run.app","callers":[
+  {"email":"gather-api@sample-project.iam.gserviceaccount.com","subject":"123456789"},
+  {"email":"gather-worker@sample-project.iam.gserviceaccount.com","subject":"987654321"}
+]}
+```
+
+40 focused checks pass: four new startup/pairing checks, 32 existing identity/
+managed-auth checks, four staging checks. Frontend build passes. Tests use synthetic
+RSA keys/mocked Google responses, no real model or cloud IAM. Legacy single-caller
+constructors still work; legacy configs naming two invokers now fail rather than
+silently omitting the second caller. Packaging allowlist includes startup.py;
+the existing built image has NOT been rebuilt and predates these changes.
+
+Next: verified model-artifact startup/entry-point assembly, then package and verify
+that exact candidate. Actual IAM, public ingress, licence/OS security, project/
+region/spend approval and deployed negative-token tests remain separate gates.
+
+
 ## Header pairing, 18 October
 
 See [[docs/CLOUD_IDENTITY]]: cloud client sends the platform and application

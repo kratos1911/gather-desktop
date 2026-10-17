@@ -1,10 +1,11 @@
 # Current project state
 
-Latest, 18 October: cloud header pairing implemented and locally verified; 33
-focused checks and frontend build pass. See CLOUD_IDENTITY.md for the contract
-and unexecuted pilot checks. No actual IAM proof, image rebuild or cloud deployment.
-Next: trusted startup wiring/explicit API-worker caller allowlist; existing receiver
-is single-caller. Model/security/pilot approval gates remain separate.
+Latest, 18 October: trusted startup composition and explicit API/worker email-
+subject pairs locally complete. One shared key-refresh lifecycle, fail-closed
+configuration and startup verified. 40 focused checks plus frontend build pass.
+See RECEIVING_IDENTITY.md. No model/Docker/cloud operations; built image is older.
+Next: verified model-artifact startup/entry-point assembly, then exact candidate
+packaging. Public binding, actual IAM and security/spend gates remain open.
 
 Current next-step status (17 October): real Qwen loopback HTTP smoke passed.
 Startup 12.68 s, short requests 0.68-0.82 s, 512-token passage 4.69 s, peak 3.98 GiB

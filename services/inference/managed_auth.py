@@ -1,20 +1,16 @@
 """Lifecycle-owned Google key refresh; inbound requests never initiate fetching."""
 import asyncio
-import re
 import threading
 import time
 
 from services.inference.service_auth import GoogleServiceAuth
-from services.worker.cloud_identity import IdentityConfig
+from services.worker.cloud_identity import receiver_identity
 from services.worker.service_transport import request_google_certificates
 
 
 class ManagedGoogleServiceAuth:
-    def __init__(self, identity, caller_subject):
-        if (not isinstance(identity, IdentityConfig) or not isinstance(caller_subject,str)
-                or not re.fullmatch(r'[0-9]{1,32}',caller_subject)):
-            raise ValueError('invalid_verifier_configuration')
-        self._identity, self._subject = identity, caller_subject
+    def __init__(self, identity, caller_subject=None):
+        self._identity = receiver_identity(identity, caller_subject)
         self._snapshot = None
         self._stop = threading.Event()
         self._thread = None
@@ -48,7 +44,7 @@ class ManagedGoogleServiceAuth:
             remaining = ttl-(time.monotonic()-started)
             if remaining <= 0 or self._stop.is_set():
                 return False
-            candidate = GoogleServiceAuth(self._identity,self._subject,
+            candidate = GoogleServiceAuth(self._identity,None,
                                           result['certificates'],key_ttl=remaining)
             candidate._deadline = min(candidate._deadline,started+ttl)
             candidate._expires = min(candidate._expires,wall+ttl)

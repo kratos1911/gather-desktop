@@ -3,6 +3,13 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Authorize identity pairs, not independent lists
+
+An allowed email and an allowed account ID must belong to the same configured
+pair. Checking two independent lists would accidentally accept crossed identities.
+Gather shares one fresh key snapshot across both allowed callers; it does not
+fetch keys separately for each request or caller. See [[docs/RECEIVING_IDENTITY]].
+
 ## Platform identity and application identity
 
 Cloud Run checks permission to invoke the service; Gather independently verifies

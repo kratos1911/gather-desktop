@@ -1,5 +1,13 @@
 # Delivery tasks
 
+## 18 October trusted receiver startup composition
+
+Bounded strict operator JSON, immutable one/two caller pairs and shared key
+refresh now compose through the existing ASGI lifespan. Cross-paired email/sub
+claims reject. Missing keys prevent runtime startup; cleanup remains shared.
+40 focused checks and frontend build pass. No models/cloud/Docker. Image staging
+includes startup.py, but existing image predates this change. See RECEIVING_IDENTITY.md.
+
 ## 18 October cloud header handoff locally verified
 
 Cloud client sends paired platform/application authorization with a tighter

@@ -33,10 +33,9 @@ Reference inspected 18 October: [Google service authentication](https://docs.clo
 - Verify signed Authorization survives the real proxy and total headers fit limits.
 - Keep logs free of token values, queries, vectors and document content.
 
-Next local prerequisite: trusted startup wiring and explicit allowed API/worker
-identities. Current receiver binds one caller; a two-caller deployment must not be
-claimed supported until that startup/authorization contract is implemented/tested.
-Actual pilot requires separate project/region/spend approval and security gates.
+Startup composition now supports one or two explicit paired identities; see
+RECEIVING_IDENTITY.md. Model-artifact entry-point assembly and exact candidate
+packaging remain next. Actual pilot requires approval and security gates.
 
 Local client milestone verified on 17 October 2026. No Google requests, credentials,
 IAM changes or deployments were used. This is not proof of deployed authorization.

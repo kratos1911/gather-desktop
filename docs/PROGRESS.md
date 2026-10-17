@@ -1,5 +1,14 @@
 # Rebuild progress
 
+## 18 October: explicit API/worker receiver policy
+
+Added immutable paired email/subject receiver configuration and bounded strict
+startup JSON. Reused the existing verifier, managed refresh and ASGI lifecycle;
+both callers share one key fetch/thread. Rejected ambiguous legacy two-invoker
+configuration instead of silently accepting only one. Four startup tests plus 32
+existing identity/lifecycle checks and four staging checks pass; frontend build
+passes. No model loading, network key fetch, image rebuild, deployment or push.
+
 ## 18 October: Cloud Run token handoff preparation
 
 Reviewed Google primary documentation: X-Serverless-Authorization takes platform

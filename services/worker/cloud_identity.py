@@ -39,6 +39,40 @@ class IdentityConfig:
             raise TransportError('invalid_identity_configuration')
 
 
+@dataclass(frozen=True)
+class ReceiverIdentity:
+    """Trusted, bounded pairs; never construct this from request claims."""
+    audience: str
+    callers: tuple[tuple[str, str], ...]
+
+    def __post_init__(self):
+        validate_audience(self.audience)
+        if (not isinstance(self.callers, tuple) or not 1 <= len(self.callers) <= 2
+                or any(not isinstance(pair, tuple) or len(pair) != 2
+                       or any(not isinstance(v, str) for v in pair) for pair in self.callers)):
+            raise TransportError('invalid_identity_configuration')
+        emails, subjects = zip(*self.callers)
+        if (len(set(emails)) != len(emails) or len(set(subjects)) != len(subjects)
+                or any(not re.fullmatch(r'[0-9]{1,32}', sub) for sub in subjects)):
+            raise TransportError('invalid_identity_configuration')
+        members = tuple('serviceAccount:'+email for email in emails)
+        for email in emails:
+            IdentityConfig(self.audience, email, members)
+
+
+def receiver_identity(identity, subject):
+    if isinstance(identity, ReceiverIdentity) and subject is None:
+        return identity
+    if isinstance(identity, IdentityConfig) and isinstance(subject, str):
+        # Legacy single-caller construction must not silently omit another invoker.
+        if identity.invoker_members == ('serviceAccount:'+identity.caller_email,):
+            try:
+                return ReceiverIdentity(identity.audience, ((identity.caller_email, subject),))
+            except TransportError:
+                pass
+    raise ValueError('invalid_verifier_configuration')
+
+
 def _claims(token, config, now):
     try:
         if not isinstance(token,str) or len(token)>8192:
