@@ -3,6 +3,14 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Shutdown evidence and dependency scans
+
+A server can finish cleanup and then exit with its original termination signal.
+Check that work and refresh threads stop, not merely whether exit status is zero.
+Synthetic inference can verify that control flow; actual model resources still
+need separate measurement. Likewise, scanner exit zero means the scan completed,
+not zero vulnerabilities. See [[services/inference/SERVING_IMAGE]].
+
 ## Key rotation without a refresh storm
 
 A token's unknown key ID must not cause an unrestricted network call. Gather's

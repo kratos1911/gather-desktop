@@ -1,9 +1,54 @@
 # Linux serving candidate
 
+## Auth packaging update, 17 October
+
+The current serving lock contains 47 distributions and includes service_auth.py
+and managed_auth.py. Use output/inference-auth and gather-inference:auth-candidate
+with the same staging/build commands below. The original 41 hashes are preserved;
+added wheel provenance is in tests/inference/results/auth-wheel-inventory.json.
+Wheel licence notices remain installed (MIT-0, Apache-2.0, BSD variants).
+
+Initial auth image 45e898b5a3393069a96a5abda418e1c9d350438544c25b6ea610254f1429b904
+passed 38 Linux checks plus a corrected actual SIGTERM check. Uvicorn deliberately
+re-raises SIGTERM after lifespan cleanup: the test verifies cleanup before the
+expected signal exit, HTTP 503, stopped inference child and joined refresh thread.
+It uses synthetic inference and mocked Google keys, not real model/cloud evidence.
+
+Its scan reported 31 findings, including three new high pyasn1 0.6.3 findings
+CVE-2026-59884/59885/59886. The scanner lists 0.6.4 as fixed; the
+[PyPI release](https://pypi.org/project/pyasn1/0.6.4/) was verified and its wheel
+replaces only that dependency. Initial scan evidence is retained in
+tests/inference/results/auth-image-scan-20261017.json.
+Patched image verification follows. Historical 41-package
+results below describe the older image, not the current candidate.
+
 This packaging slice adds the ASGI dependencies and code to the existing CPU image.
 It does not enable public ingress or change the default stream entry point. Trusted
 application construction and receiving cloud authentication remain separate gates.
 No weights or credentials are included; no production image is promoted.
+
+## Patched auth verification
+
+Image index: `sha256:554ccb8a9d25ce960dbe1d61c1521a0413277f474172927d6f9891b9fb9bb7a8`.
+Runtime manifest: `sha256:591abf5e13047cfcb2983e895e1c6552acdd08316294718b01380fa3f05eceb1`.
+Config: `sha256:9efc0972fd5f24d8dd2dae814da67ba18047572492b27d51ed3b20a98a03de79`.
+Offline hash installation and pip check pass. All 39 Linux checks pass in one
+28.789-second run after the pyasn1 fix (18 auth/refresh, nine ASGI, eleven service
+transport, one real SIGTERM with synthetic inference). The container has no network,
+512 MiB memory, one CPU, 64 PIDs, read-only root and test mount, 64 MiB tmpfs,
+dropped capabilities and no-new-privileges. No models or personal files mounted.
+Four host staging checks and frontend build passed earlier in this same milestone;
+those inputs did not change during the dependency fix, so they were not repeated.
+All 41 previous dependency hashes remain unchanged. This does not clear cloud IAM,
+real-model HTTP/resource behavior or unresolved OS release findings.
+
+Final patched scan exited 0: 28 findings (1 high, 1 medium, 26 low), with no
+Python findings reported. Its records match the previous 41-package scan; the
+three added pyasn1 findings are absent. This is not proof of zero vulnerability.
+Reviewed evidence: tests/inference/results/auth-patched-image-scan-20261017.json.
+Raw SHA-256: `0d6bbe076ac490821c555350e03e5696436b6a14f8eba66a34645ef56e5c2219`.
+Scout reported a locked temporary archive during cleanup on D:; scan/report
+completed. No forced cleanup or shared Docker changes attempted.
 
 ## Reproduce
 

@@ -1,34 +1,22 @@
 # Current project state
 
-Latest (17 October): managed trusted-key fetch/rotation and ASGI lifecycle complete
-locally with mocked Google responses; see RECEIVING_IDENTITY.md. All 38 focused
-checks and frontend build pass. Fixed HTTPS endpoint, bounded response/deadline,
-upstream freshness, single refresh, cooldown and fail-closed expiry verified.
-Unknown key IDs never fetch. No live Google calls, models or Docker used.
-Next: Linux packaging/integration for both verifier and refresh lifecycle. Existing
-image lacks their modules/dependencies. Live Google/IAM/header handoff and OS
-release gates remain open; public binding blocked. No protected workload changes.
+Latest (17 October): receiving authentication and managed key refresh packaged in
+an isolated 47-dependency Linux candidate. Actual SIGTERM verifies that a busy
+synthetic inference child stops, HTTP returns 503 and the refresh thread joins.
+Four host staging checks and required frontend build pass. Initial image passed
+38 Linux checks plus the corrected signal test; patched image passes all 39
+in one run. No real model or Google call.
 
-Current implementation checkpoint (17 October): Linux serving package candidate
-built with 41 hash-locked dependencies. Four staging tests, eight Linux synthetic
-ASGI tests and frontend build pass. Exact source allowlist checked with a harmless
-excluded marker; cached rebuild produced identical runtime layers/configuration.
-See services/inference/SERVING_IMAGE.md for image IDs and release evidence.
+Scan caught three high pyasn1 0.6.3 findings; upgraded only that added dependency
+to 0.6.4. Final patched-image verification is recorded in
+services/inference/SERVING_IMAGE.md. Final scan returns to 28 OS findings,
+with none reported for Python; OS findings remain unresolved.
+Public binding and deployment remain blocked. No protected workloads changed.
 
-Scan reviewed: 28 findings (1 high, 1 medium, 26 low), none reported for Python.
-Unfixed zlib/tar findings keep deployment blocked; no vulnerabilities suppressed.
-OS review complete with unresolved release findings; see
-services/inference/OS_RISK_REVIEW.md. Upstream zlib fix exists but Debian package
-status/range remains unresolved; tar advisory is disputed. No findings suppressed.
-New compressed/archive ingress regression passes locally (five rejected cases,
-then valid recovery). Linux recheck is pending: Docker engine pipe absent; no retry
-or shared-setting changes. Frontend build passes.
-Next independent development: receiving service-token verification, keeping public
-binding blocked until actual cloud authorization gates pass.
-Real-model ASGI behavior, actual Linux
-SIGTERM, receiving cloud auth and deployed IAM verification remain open. No model
-loaded, no shared packages or protected workloads changed. Cloud pilot approval,
-cold-start policy, private ingestion/R2 and desktop integration remain separate.
+Next: bounded real-model HTTP smoke after one 4 GiB RAM/artifact preflight.
+Actual Google/IAM/header handoff, release security review and cloud pilot approval
+remain separate prerequisites. Desktop uses sample data; no live integration claim.
+Historical implementation/test evidence is in PROGRESS.md and TASKS.md.
 
 Latest UI checkpoint: expressive desktop preview redesign implemented. Five UI
 tests, lint, frontend and native debug builds pass. Browser visual/contrast/reflow

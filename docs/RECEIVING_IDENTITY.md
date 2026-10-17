@@ -1,5 +1,14 @@
 # Receiving service identity — local verifier
 
+## Linux integration update, 17 October
+
+The verifier and managed refresh are now included in the 47-package Linux candidate.
+Synthetic signed-token admission, key freshness and actual SIGTERM cleanup were
+verified together; see [[services/inference/SERVING_IMAGE]] for exact image/test
+and remediation evidence. Historical pending-packaging statements below are
+superseded by this update. Live Google/IAM/header behavior and real-model HTTP
+remain unverified; public binding remains blocked.
+
 ## Managed refresh update (17 October)
 
 `ManagedGoogleServiceAuth` now owns the verifier snapshot and refresh lifecycle.

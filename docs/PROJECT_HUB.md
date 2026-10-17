@@ -5,11 +5,9 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 17 October 2026.
 
-Refresh update: [[docs/RECEIVING_IDENTITY|Managed Google-key lifecycle]] verified
-with mocked responses. Linux packaging and actual Google/IAM checks remain next.
-
-Identity: [[docs/RECEIVING_IDENTITY|Receiving signature verification]] now tested
-locally. Trusted live key retrieval/rotation and Linux packaging remain next.
+Linux auth update: [[services/inference/SERVING_IMAGE|Packaging, shutdown and scan evidence]].
+Verifier and refresh lifecycle tested with synthetic inference/mocked keys.
+Real-model HTTP, Google/IAM and security release gates remain open.
 
 Security review: [[services/inference/OS_RISK_REVIEW|OS findings and ingress evidence]].
 Release findings remain open; receiving cloud authentication can proceed locally.

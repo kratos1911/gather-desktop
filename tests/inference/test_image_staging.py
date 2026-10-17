@@ -19,7 +19,8 @@ class StagingTests(unittest.TestCase):
         source.mkdir(parents=True)
         worker = self.root / 'services/worker'
         worker.mkdir()
-        for name in ('runtime.py','qwen.py','stream.py','chunking.py','asgi.py','Dockerfile'):
+        for name in ('runtime.py','qwen.py','stream.py','chunking.py','asgi.py',
+                     'service_auth.py','managed_auth.py','Dockerfile'):
             (source / name).write_text('# fixture')
         for name in ('service_transport.py','embedding_client.py','service_clients.py','cloud_identity.py'):
             (worker / name).write_text('# fixture')
@@ -37,6 +38,8 @@ class StagingTests(unittest.TestCase):
         stale.write_text('secret fixture')
         staging.prepare(self.build, update_lock=True, serving=True)
         self.assertTrue((self.build / 'services/inference/asgi.py').exists())
+        for name in ('service_auth.py','managed_auth.py'):
+            self.assertTrue((self.build / 'services/inference' / name).exists())
         policy = (self.build / '.dockerignore').read_text()
         self.assertNotIn('!services/inference/*.py',policy)
         self.assertNotIn('unreviewed',policy)

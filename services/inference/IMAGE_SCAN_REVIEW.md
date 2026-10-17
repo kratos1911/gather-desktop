@@ -1,5 +1,17 @@
 # Inference image security review
 
+## Auth candidate review, 17 October
+
+Initial auth scan exited 0 but reported 31 findings: 4 high, 1 medium, 26 low.
+Three new Python findings affect pyasn1 0.6.3 (CVE-2026-59884/59885/59886),
+with scanner-listed fix 0.6.4. Retained evidence:
+tests/inference/results/auth-image-scan-20261017.json. A successful scanner exit
+means the scan ran, not that the image is safe. The isolated wheel is upgraded to
+0.6.4; no shared Python environment or model dependency changed. See SERVING_IMAGE.md
+for patched-image verification. Existing OS findings remain release blockers.
+Final patched scan: 28 findings, no Python findings, exact prior OS records.
+Evidence: tests/inference/results/auth-patched-image-scan-20261017.json.
+
 Follow-up interpretation: OS_RISK_REVIEW.md distinguishes scanner-listed fixes
 from upstream patches, records zlib version uncertainty and tar's disputed status.
 All original findings remain; this review is not remediation or deployment approval.

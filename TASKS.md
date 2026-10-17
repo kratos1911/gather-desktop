@@ -1,5 +1,19 @@
 # Delivery tasks
 
+## 17 October Linux auth packaging
+
+Final patched image: 39 Linux checks pass; scan exits 0 with 28 retained OS
+findings and no Python findings. Deployment remains blocked.
+
+Packaged verifier/managed refresh and six hash-locked dependencies, retaining all
+41 prior hashes. Added actual Linux SIGTERM fixture covering busy inference
+cancellation, HTTP 503 and auth thread cleanup. Four staging checks and frontend
+build pass. Initial Linux run: 38 passed; signal test expected the wrong exit
+status. Reviewed Uvicorn signal re-raise behavior, corrected the assertion, and
+focused rerun passed. Scan found three high pyasn1 findings; patched to 0.6.4.
+Exact final image, scan and test evidence: services/inference/SERVING_IMAGE.md.
+No real model, Google IAM proof, deployment or protected workload changes.
+
 ## 17 October managed key refresh
 
 Implemented fixed Google certificate fetch using existing bounded subprocess HTTP,

@@ -1,5 +1,21 @@
 # Rebuild progress
 
+## 17 October: Linux auth image and signal cleanup
+
+Final patched image: 39 Linux checks pass; scan exits 0 with 28 retained OS
+findings and no Python findings. Deployment remains blocked.
+
+Built a separate receiving-auth candidate using cached wheels plus six pinned
+additions. Synthetic tests verify signature admission, refresh expiry and actual
+Linux SIGTERM cancellation/join. The first signal assertion failed because Uvicorn
+re-raises SIGTERM after graceful cleanup; changed the fixture to observe cleanup
+inside lifespan and expect signal exit, then its focused rerun passed.
+Four host staging tests and frontend build also passed. Initial scan exited zero
+but reported 31 findings, including three high pyasn1 0.6.3 issues. Downloaded
+0.6.4 from PyPI without changing shared environments; rebuilt the isolated candidate.
+Final verification is recorded in services/inference/SERVING_IMAGE.md. No findings
+suppressed, no models loaded, no cloud provisioning or API workload changes.
+
 ## 17 October: managed Google-key refresh lifecycle
 
 Added fixed-endpoint key retrieval, strict upstream cache freshness and snapshot
