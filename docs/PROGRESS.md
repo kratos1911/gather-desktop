@@ -1,5 +1,14 @@
 # Rebuild progress
 
+## 17 October: bounded HTTP check prepared
+
+One preflight confirmed Docker/image, model paths and 85.3 GiB free on D:. CIM
+RAM query was unavailable; psutil reported 2.03 GiB. Did not retry unchanged
+conditions or close apps. Implemented HTTP profile through the existing container
+launcher and verified seven host checks plus three Linux synthetic checks.
+Frontend build passed. No real-model performance or cloud readiness claimed;
+services/inference/HTTP_SMOKE.md records the command, boundaries and blocker.
+
 ## 17 October: Linux auth image and signal cleanup
 
 Final patched image: 39 Linux checks pass; scan exits 0 with 28 retained OS

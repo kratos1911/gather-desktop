@@ -1,5 +1,13 @@
 # Delivery tasks
 
+## 17 October HTTP smoke tooling; real run blocked
+
+Added a four-request real-model HTTP profile to the existing guarded container
+launcher. Reuses model integrity/resource checks and existing fictional fixtures;
+records startup, latency, peak memory, rejection/recovery and cleanup. Seven host
+checks, three Linux synthetic harness checks and frontend build pass. Real run
+not attempted: 2.03 GiB free versus 4 GiB guard. See services/inference/HTTP_SMOKE.md.
+
 ## 17 October Linux auth packaging
 
 Final patched image: 39 Linux checks pass; scan exits 0 with 28 retained OS

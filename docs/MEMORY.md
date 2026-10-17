@@ -1,5 +1,11 @@
 # Current project state
 
+Current next-step status (17 October): real-model HTTP harness prepared and
+synthetically verified on Windows/Linux; frontend build passes. Real run is
+RAM-blocked (2.03 GiB available; 4 GiB required). No model loaded or protected
+workload changed. See services/inference/HTTP_SMOKE.md for the exact next command.
+Recheck only after memory is freed; do not repeat the full model benchmark.
+
 Latest (17 October): receiving authentication and managed key refresh packaged in
 an isolated 47-dependency Linux candidate. Actual SIGTERM verifies that a busy
 synthetic inference child stops, HTTP returns 503 and the refresh thread joins.

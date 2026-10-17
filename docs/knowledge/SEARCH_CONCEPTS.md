@@ -3,6 +3,13 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Transport success versus CPU suitability
+
+An HTTP 200 proves neither valid embeddings nor affordable hosting. Check vector
+identity/shape, startup time, individual latency and peak memory. Four requests
+are a smoke check, not reliable p95 or concurrent-user capacity evidence.
+See [[services/inference/HTTP_SMOKE]].
+
 ## Shutdown evidence and dependency scans
 
 A server can finish cleanup and then exit with its original termination signal.

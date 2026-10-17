@@ -78,12 +78,16 @@ def command(*args):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--controls', action='store_true')
-    parser.add_argument('--profile', choices=['smoke', 'long', 'batch', 'limits', 'sustained', 'compatibility', 'chunks', 'retrieval'], default='smoke')
+    parser.add_argument('--profile', choices=['smoke', 'long', 'batch', 'limits', 'sustained', 'compatibility', 'chunks', 'retrieval', 'http'], default='smoke')
     parser.add_argument('--candidate', action='store_true', help='Use the separate patched image and output directory')
     args = parser.parse_args()
+    if args.profile == 'http' and (not args.candidate or args.controls):
+        parser.error('HTTP smoke requires the candidate and real model')
     if args.profile == 'retrieval' and (not args.candidate or args.controls):
         parser.error('Retrieval comparison requires the patched candidate and real model')
     image_name = 'gather-inference:cpu-patched' if args.candidate else 'gather-inference:cpu-local'
+    if args.profile == 'http':
+        image_name = 'gather-inference:auth-candidate'
     memory = 512 * 1024**2 if args.controls else 5 * 1024**3
     model = ROOT / 'output/inference-model'
     if not args.controls:
@@ -114,7 +118,12 @@ def main():
                     '-m', 'unittest', 'discover', '-s', '/tests', '-v']
         payload = ''
     else:
-        options += ['--mount', f'type=bind,source={model},target=/model,readonly', image_name]
+        options += ['--mount', f'type=bind,source={model},target=/model,readonly']
+        if args.profile == 'http':
+            options += ['--mount', f'type=bind,source={ROOT / "scripts"},target=/app/scripts,readonly',
+                        '--entrypoint', 'python', image_name, '-B', '-m', 'scripts.check_inference_http']
+        else:
+            options += [image_name]
         if args.profile == 'retrieval':
             from scripts.evaluate_chunk_retrieval import prepare_experiment
             from scripts.score_text_evaluation import index_hash
@@ -125,6 +134,8 @@ def main():
         else:
             requests, expected = profile_requests(args.profile)
         payload = ''.join(json.dumps(request) + '\n' for request in requests)
+        if args.profile == 'http':
+            payload = ''
     identifier = command(*options).strip()
     try:
         config = json.loads(command('inspect', identifier))[0]
@@ -158,6 +169,15 @@ def main():
                   'passed': not (outer_timeout or process.returncode or state['ExitCode'] or state['OOMKilled'])}
         if args.controls:
             print(stderr)
+        elif args.profile == 'http':
+            try:
+                evidence = json.loads(stdout)
+                report['passed'] = report['passed'] and evidence.get('passed') is True
+                report['http'] = evidence
+            except (ValueError, AttributeError):
+                report['passed'] = False
+                report['error'] = 'invalid_http_report'
+            report['scope'] = 'real Qwen Linux loopback HTTP; fictional inputs; not cloud IAM or retrieval evaluation'
         else:
             rows = []
             for line in stdout.splitlines():
