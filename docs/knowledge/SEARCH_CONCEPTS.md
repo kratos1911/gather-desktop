@@ -3,6 +3,14 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Package locks and image checks
+
+A version pin names a release; a SHA-256 lock identifies the exact package file.
+An offline install uses only those reviewed artifacts. Linux tests then check that
+the combined packages work together. Neither hashes nor passing tests prove the
+absence of security flaws: scanning and release review remain separate.
+See [[services/inference/SERVING_IMAGE]].
+
 ## Service tokens are different from user sessions
 
 The application proves its service identity to inference with a short-lived token

@@ -1,5 +1,21 @@
 # Delivery tasks
 
+## 17 October Linux serving packaging
+
+Combined 41-distribution Linux lock preserves all 34 model package hashes and adds
+seven serving packages. Offline install/pip check, four staging tests, eight Linux
+synthetic ASGI checks and frontend build pass. Non-root and pip removal verified.
+Review tightened exact build-context exclusions; a harmless stale-file marker was
+excluded by Docker. Cached verification rebuild preserves runtime manifest/config.
+No model load or protected workload changes. Security/release review, real-model
+HTTP, actual OS SIGTERM and receiving IAM remain open; see
+services/inference/SERVING_IMAGE.md for evidence and image identities.
+
+Recovered and reviewed the complete Scout SARIF report after the tool session
+ended; process exit status unavailable, scan not rerun. 28 findings (1 high,
+1 medium, 26 low), none for Python. High zlib and medium tar have no fix listed.
+Deployment remains blocked. Reviewed records: tests/inference/results/serving-image-scan-20261017.json.
+
 ## 17 October outbound cloud identity client
 
 Local slice complete: fixed metadata acquisition, expiring per-service token cache,

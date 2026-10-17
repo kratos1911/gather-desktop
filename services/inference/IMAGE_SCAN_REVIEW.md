@@ -1,5 +1,14 @@
 # Inference image security review
 
+## Linux serving candidate — 17 October 2026
+
+See SERVING_IMAGE.md for exact runtime/index IDs and raw report checksum. The
+combined ASGI/CPU image reports 28 findings (1 high, 1 medium, 26 low), none for
+Python packages. High zlib CVE-2026-85091 and medium tar CVE-2025-45582 remain
+without scanner-listed fixes. Findings are retained, not accepted or suppressed.
+The candidate is not deployment-approved. Compact records:
+../../tests/inference/results/serving-image-scan-20261017.json.
+
 ## Patched candidate scan — 14 October 2026
 
 Image `sha256:5d84bdf24729cacb20389734baee56fd49293eeb1bd2053d5eac1d0259c04f95`

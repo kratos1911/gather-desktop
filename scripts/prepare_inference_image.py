@@ -16,10 +16,13 @@ BUILD = ROOT / "output/inference-patched"
 
 def digest(path):
     with path.open("rb") as source:
-        return hashlib.file_digest(source, "sha256").hexdigest()
+        result = hashlib.sha256()
+        for block in iter(lambda: source.read(1024 * 1024), b''):
+            result.update(block)
+        return result.hexdigest()
 
 
-def prepare(build=BUILD, update_lock=False):
+def prepare(build=BUILD, update_lock=False, serving=False):
     if ROOT.drive.upper() != "D:":
         raise SystemExit("Build/model staging must be on D:.")
     build = build.resolve()
@@ -40,7 +43,14 @@ def prepare(build=BUILD, update_lock=False):
         if name in records:
             raise ValueError("Duplicate distribution in wheelhouse")
         records[name] = f"{name}=={data['Version']} --hash=sha256:{digest(wheel)}"
-    lock = ROOT / "services/inference/requirements.lock"
+    if serving:
+        # Preserve the reviewed model environment exactly, including wheel hashes.
+        original = ROOT / 'services/inference/requirements.lock'
+        for line in original.read_text().splitlines():
+            if line and not line.startswith('#') and records.get(line.split('==')[0]) != line:
+                raise ValueError('Serving wheelhouse changed a pinned model dependency')
+    lock = ROOT / ('services/inference/requirements-serving.lock' if serving else
+                   'services/inference/requirements.lock')
     content = "# Linux x86_64 CPython 3.12; torch from official CPU index, others PyPI.\n" + '\n'.join(records[name] for name in sorted(records)) + '\n'
     # Regeneration must be deliberate: a changed wheelhouse cannot silently rewrite a lock.
     if lock.exists() and lock.read_text() != content and not update_lock:
@@ -54,6 +64,21 @@ def prepare(build=BUILD, update_lock=False):
         shutil.copyfile(ROOT / "services/inference" / name, target / name)
     # BuildKit sees only this allowlist even if output contains older artifacts.
     (build / '.dockerignore').write_text('**\n!Dockerfile\n!requirements.lock\n!wheels/\n!wheels/*.whl\n!services/\n!services/inference/\n!services/inference/*.py\n')
+    if serving:
+        shutil.copyfile(ROOT / 'services/inference/asgi.py', target / 'asgi.py')
+        worker = build / 'services/worker'
+        worker.mkdir(parents=True, exist_ok=True)
+        names = ('service_transport.py', 'embedding_client.py', 'service_clients.py', 'cloud_identity.py')
+        for name in names:
+            shutil.copyfile(ROOT / 'services/worker' / name, worker / name)
+        # Exact filenames exclude stale Python files left in a reused context.
+        allowed = ['Dockerfile', 'requirements.lock', 'wheels/*.whl']
+        allowed += ['services/inference/'+name for name in
+                    ('runtime.py','qwen.py','stream.py','chunking.py','asgi.py')]
+        allowed += ['services/worker/'+name for name in names]
+        (build / '.dockerignore').write_text('**\n'+''.join('!'+name+'\n' for name in allowed))
+        print(f'Staged {len(wheels)} locked serving wheels; no model weights or credentials copied.')
+        return
     manifest = json.loads((ROOT / "output/model-benchmark/qwen-download.json").read_text())
     if (manifest['model'], manifest['revision'], manifest['status']) != (MODEL, REVISION, 'verified'):
         raise ValueError("Pinned verified model required")
@@ -78,7 +103,9 @@ def prepare(build=BUILD, update_lock=False):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--build-dir', type=Path, default=BUILD)
+    parser.add_argument('--build-dir', type=Path)
     parser.add_argument('--update-lock', action='store_true')
+    parser.add_argument('--serving', action='store_true', help='Stage ASGI code without copying model weights')
     options = parser.parse_args()
-    prepare(options.build_dir, options.update_lock)
+    build = options.build_dir or (ROOT / 'output/inference-asgi' if options.serving else BUILD)
+    prepare(build, options.update_lock, options.serving)

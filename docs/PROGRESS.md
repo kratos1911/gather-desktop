@@ -1,5 +1,23 @@
 # Rebuild progress
 
+## 17 October: Linux serving packaging and synthetic verification
+
+Reused the cached CPU wheels and base/OS layers. Downloaded seven exact serving
+wheels to D:, recorded hashes/licence metadata and generated a separate combined
+lock. Added serving staging to existing preparation script; old model hashes
+cannot drift, model materialization is skipped and source inclusion is explicit.
+Changed digest implementation to bounded streaming for the available Python 3.10.
+Review tightened directory exceptions; a marker exclusion check and cached rebuild
+confirmed identical runtime layers. Four staging tests, eight Linux ASGI tests,
+offline dependency consistency, non-root/pip-removal smoke and frontend build pass.
+No model loads, shared dependency changes, cloud deployment or protected API changes.
+Remaining security and deployment gates are in services/inference/SERVING_IMAGE.md.
+
+Scout's completed SARIF report recovered after its tool session ended; exit code
+was unavailable. Reviewed 28 findings: 1 high/1 medium/26 low, no Python-package
+findings. No suppression or approval: unfixed zlib/tar remain blockers. Raw report
+checksum and compact reviewed records retained. No repeat scan was necessary.
+
 ## 17 October: outbound managed identity client
 
 Added bounded metadata token acquisition using the existing isolated transport,

@@ -1,5 +1,15 @@
 # Architecture decisions
 
+## ADR-057: additive Linux serving lock without model dependency drift
+
+Keep the existing CPU lock and Dockerfile; add a separate combined serving lock
+containing exactly those original dependencies plus seven serving dependencies.
+Staging verifies original wheel hashes even on lock regeneration, uses exact code
+allowlists and skips model copying. Reuse cached artifacts on D:; preserve the
+stream entry point and public-bind guard until receiving cloud auth is implemented.
+Hash pins support repeatable Python installation, not archived Debian availability
+or proof of security. See services/inference/SERVING_IMAGE.md for evidence/gates.
+
 ## ADR-056: explicit metadata identity with bounded cache lifetime
 
 Reuse the isolated HTTP helper for Google metadata acquisition, with a fixed

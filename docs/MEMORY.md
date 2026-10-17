@@ -1,16 +1,18 @@
 # Current project state
 
-Current implementation checkpoint (17 October): bounded outbound Google service
-identity client and intended-policy validation verified locally; see CLOUD_IDENTITY.md.
-12 synthetic identity tests, 11 existing transport tests and frontend build pass.
-No Google credentials or cloud calls used. Public ASGI binding remains blocked;
-intended configuration does not establish deployed IAM enforcement.
+Current implementation checkpoint (17 October): Linux serving package candidate
+built with 41 hash-locked dependencies. Four staging tests, eight Linux synthetic
+ASGI tests and frontend build pass. Exact source allowlist checked with a harmless
+excluded marker; cached rebuild produced identical runtime layers/configuration.
+See services/inference/SERVING_IMAGE.md for image IDs and release evidence.
 
-Next: learning quiz, reproducible Linux dependency/image and security review.
-Real-model ASGI behavior, actual Linux SIGTERM, receiving cloud auth wiring and
-deployed IAM verification remain open. Cloud pilot approval, cold-start policy,
-private ingestion/R2 and desktop integration remain separate. No shared packages
-or workloads changed.
+Scan reviewed: 28 findings (1 high, 1 medium, 26 low), none reported for Python.
+Unfixed zlib/tar findings keep deployment blocked; no vulnerabilities suppressed.
+Next: upstream OS remediation review before model/cloud release checks.
+Real-model ASGI behavior, actual Linux
+SIGTERM, receiving cloud auth and deployed IAM verification remain open. No model
+loaded, no shared packages or protected workloads changed. Cloud pilot approval,
+cold-start policy, private ingestion/R2 and desktop integration remain separate.
 
 Latest UI checkpoint: expressive desktop preview redesign implemented. Five UI
 tests, lint, frontend and native debug builds pass. Browser visual/contrast/reflow
