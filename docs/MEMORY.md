@@ -1,5 +1,13 @@
 # Current project state
 
+Latest (17 October): receiving signature-verifier slice complete locally; see
+RECEIVING_IDENTITY.md. Eight synthetic-key tests plus nine ASGI tests (17 total)
+and frontend build pass. Rejects unauthorized signed tokens before inference;
+expired key snapshots make readiness false. Public binding remains blocked.
+Next: trusted Google key retrieval/rotation and lifecycle integration. The existing
+Linux image does not yet include verifier code/dependencies. No cloud calls, model
+loads or shared-package changes. Prior release/security gates below remain open.
+
 Current implementation checkpoint (17 October): Linux serving package candidate
 built with 41 hash-locked dependencies. Four staging tests, eight Linux synthetic
 ASGI tests and frontend build pass. Exact source allowlist checked with a harmless

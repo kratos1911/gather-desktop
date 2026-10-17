@@ -1,5 +1,15 @@
 # Rebuild progress
 
+## 17 October: receiving-token verifier
+
+Reused installed google-auth/cryptography; recorded exact local dependencies.
+Added expiring immutable RSA public-key snapshot and pinned account subject/email,
+strict RS256/header/claim checks and library signature verification. No request-led
+key fetching, credential discovery or fallback. Readiness now reflects auth-key
+expiry. Eight new signed synthetic-key tests and nine ASGI tests pass; frontend
+build passes. Public binding remains blocked. Google key provenance/lifecycle and
+Linux image integration remain separate, explicit gaps in RECEIVING_IDENTITY.md.
+
 ## 17 October: OS advisory review and focused ingress regression
 
 Read Debian trackers and zlib maintainer/fix sources. Corrected the interpretation

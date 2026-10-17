@@ -3,6 +3,14 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## A valid signature is only part of authorization
+
+A signature establishes who signed a token and protects its contents. The receiver
+must also check the intended service, lifetime and allowed caller. A correctly
+signed token for another service or account is still rejected. The signing public
+key must come from a trusted source; a request cannot nominate its own key.
+See [[docs/RECEIVING_IDENTITY]].
+
 ## Findings, exposure and remediation
 
 A scanner finding identifies a potentially affected package. Reviewing the vendor

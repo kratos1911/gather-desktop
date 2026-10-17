@@ -1,5 +1,15 @@
 # Delivery tasks
 
+## 17 October receiving signature verifier
+
+Local complete slice: GoogleServiceAuth uses google-auth for real RS256 verification
+with a bounded expiring trusted key snapshot, exact service subject/email/audience
+and strict header/claim validation. ASGI readiness respects snapshot expiry.
+Eight new synthetic-key checks plus nine ASGI checks pass (17 total); frontend
+build passes. No model/Google requests or installations. Key provenance/retrieval,
+rotation lifecycle and Linux packaging remain incomplete; public bind guard stays.
+Next: bounded trusted-key retrieval/refresh. Details: docs/RECEIVING_IDENTITY.md.
+
 ## 17 October OS advisory and ingress review
 
 Completed scoped primary-source review in services/inference/OS_RISK_REVIEW.md;

@@ -1,5 +1,15 @@
 # Architecture decisions
 
+## ADR-058: bounded offline receiving verifier before trusted-key lifecycle
+
+Use Google's JWT library with explicit RS256 and exact service-account subject as
+well as email. Requests cannot select signing keys or endpoints. Trusted key
+snapshots expire within five minutes; expiration rejects auth and readiness.
+Separate verification from trusted HTTPS key retrieval/rotation so neither token
+parsing nor attacker-selected key IDs can initiate unbounded network work. Keep
+public binding blocked until real IAM/header handoff and other release gates pass.
+See RECEIVING_IDENTITY.md for local evidence and incomplete production integration.
+
 ## ADR-057: additive Linux serving lock without model dependency drift
 
 Keep the existing CPU lock and Dockerfile; add a separate combined serving lock

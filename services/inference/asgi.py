@@ -67,7 +67,8 @@ def create_app(runtime, authenticate):
 
     @app.get('/ready')
     async def ready():
-        ok = state['started'] and runtime.ready and not stopping.is_set()
+        ok = (state['started'] and runtime.ready and not stopping.is_set()
+              and getattr(authenticate, 'ready', True))
         return reply(200 if ok else 503, {'ready':ok})
 
     @app.post('/embed')

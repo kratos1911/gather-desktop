@@ -1,5 +1,10 @@
 # Security requirements
 
+Receiving verifier: RECEIVING_IDENTITY.md records real RSA verification against
+synthetic trusted snapshots, exact account subject/email and fail-closed key expiry.
+Trusted Google key retrieval/rotation, Linux packaging and actual IAM/header handoff
+remain open; no synthetic key snapshot may be used as production trust.
+
 Outbound identity: fixed metadata destination, bounded acquisition/cache, exact
 audience/caller checks and no secret fallback. Decoded claims and intended invoker
 settings do not verify signatures or deployed permissions. Public binding stays

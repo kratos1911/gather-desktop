@@ -5,6 +5,9 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 17 October 2026.
 
+Identity: [[docs/RECEIVING_IDENTITY|Receiving signature verification]] now tested
+locally. Trusted live key retrieval/rotation and Linux packaging remain next.
+
 Security review: [[services/inference/OS_RISK_REVIEW|OS findings and ingress evidence]].
 Release findings remain open; receiving cloud authentication can proceed locally.
 
