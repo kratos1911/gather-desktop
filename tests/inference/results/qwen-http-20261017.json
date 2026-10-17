@@ -1,0 +1,60 @@
+{
+  "scope": "real Qwen Linux loopback HTTP; fictional inputs; not cloud IAM or retrieval evaluation",
+  "image_id": "sha256:554ccb8a9d25ce960dbe1d61c1521a0413277f474172927d6f9891b9fb9bb7a8",
+  "wall_seconds": 22.017581500000006,
+  "cpu_limit": 2,
+  "memory_limit_bytes": 5368709120,
+  "swap_extra_bytes": 0,
+  "network": "none",
+  "nonroot": true,
+  "readonly": true,
+  "exit_code": 0,
+  "oom_killed": false,
+  "outer_timeout": false,
+  "passed": true,
+  "http": {
+    "passed": true,
+    "authentication": "ephemeral local bearer; not Google IAM",
+    "startup_seconds": 12.681053595999856,
+    "checks": {
+      "ready": true,
+      "unauthorized": true,
+      "token_limit": true,
+      "vectors": true,
+      "http_statuses": true,
+      "process_reused": true,
+      "repeat_stable": true,
+      "ready_after": true,
+      "passage_tokens": true
+    },
+    "outcomes": [
+      {
+        "index": 0,
+        "passed": true,
+        "seconds": 0.8194950120000613,
+        "prompt_tokens": 10
+      },
+      {
+        "index": 1,
+        "passed": true,
+        "seconds": 0.7812523289999262,
+        "prompt_tokens": 26
+      },
+      {
+        "index": 2,
+        "passed": true,
+        "seconds": 4.6879499540000324,
+        "prompt_tokens": 512
+      },
+      {
+        "index": 3,
+        "passed": true,
+        "seconds": 0.6833893000000444,
+        "prompt_tokens": 26
+      }
+    ],
+    "process_reaped": true,
+    "server_stopped": true,
+    "container_peak_bytes": 4275261440
+  }
+}

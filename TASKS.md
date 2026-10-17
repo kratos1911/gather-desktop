@@ -1,5 +1,14 @@
 # Delivery tasks
 
+## 17 October real-model HTTP smoke passed
+
+Four real Qwen HTTP requests passed with pinned identity/512-dimensional vectors,
+missing-credential rejection, 2,049-token rejection and subsequent recovery.
+Startup 12.68 s; 512-token passage 4.69 s; peak 3.98 GiB; clean exit and cleanup.
+Evidence: tests/inference/results/qwen-http-20261017.json. Cloud IAM, real-model
+load/timeout behavior and existing OS release gates remain open. No code changed;
+reuse the passing focused harness checks and frontend build from 6495f13.
+
 ## 17 October HTTP smoke tooling; real run blocked
 
 Added a four-request real-model HTTP profile to the existing guarded container

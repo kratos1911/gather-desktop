@@ -1,5 +1,18 @@
 # Rebuild progress
 
+## 17 October: real CPU inference over HTTP verified
+
+User authorized unused-app closure, then specifically approved one-time WSL file-
+cache release. Closed windowless Chrome background processes. Cache release
+initially left Windows at 2.92 GiB; after reclaim settled, 6.05 GiB passed the guard.
+Nine protected APIs were running; mailflow-rules-api and email-api showed recent
+restarts of undetermined cause. No stop/restart or persistent settings commands
+were issued. Ran the existing guarded HTTP profile once: all assertions passed,
+no OOM/timeout, owned test container cleaned up. Startup 12.681 s, four requests
+0.819/0.781/4.688/0.683 s; peak 4,275,261,440 bytes. Retained real-model evidence
+and limits in services/inference/HTTP_SMOKE.md. No source changes, so prior
+harness checks/frontend build reused. No deployment or push.
+
 ## 17 October: bounded HTTP check prepared
 
 One preflight confirmed Docker/image, model paths and 85.3 GiB free on D:. CIM

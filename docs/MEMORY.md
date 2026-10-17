@@ -1,10 +1,13 @@
 # Current project state
 
-Current next-step status (17 October): real-model HTTP harness prepared and
-synthetically verified on Windows/Linux; frontend build passes. Real run is
-RAM-blocked (2.03 GiB available; 4 GiB required). No model loaded or protected
-workload changed. See services/inference/HTTP_SMOKE.md for the exact next command.
-Recheck only after memory is freed; do not repeat the full model benchmark.
+Current next-step status (17 October): real Qwen loopback HTTP smoke passed.
+Startup 12.68 s, short requests 0.68-0.82 s, 512-token passage 4.69 s, peak 3.98 GiB
+under the unchanged 5 GiB ceiling. Valid vectors, rejection/recovery and cleanup
+pass. See services/inference/HTTP_SMOKE.md and its retained real-model evidence.
+RAM guard passed at 6.05 GiB after specifically approved transient cache release.
+No stop/restart commands or persistent Docker setting changes; API restart caveat
+is recorded in PROGRESS.md. Next: cloud IAM/header integration plan and remaining
+security gates before any authorized deployment. No cloud readiness claim.
 
 Latest (17 October): receiving authentication and managed key refresh packaged in
 an isolated 47-dependency Linux candidate. Actual SIGTERM verifies that a busy
@@ -19,7 +22,7 @@ services/inference/SERVING_IMAGE.md. Final scan returns to 28 OS findings,
 with none reported for Python; OS findings remain unresolved.
 Public binding and deployment remain blocked. No protected workloads changed.
 
-Next: bounded real-model HTTP smoke after one 4 GiB RAM/artifact preflight.
+The real-model HTTP smoke above supersedes the previous RAM-blocked next step.
 Actual Google/IAM/header handoff, release security review and cloud pilot approval
 remain separate prerequisites. Desktop uses sample data; no live integration claim.
 Historical implementation/test evidence is in PROGRESS.md and TASKS.md.

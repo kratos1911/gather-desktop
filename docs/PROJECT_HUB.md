@@ -6,11 +6,11 @@ tags: [gather, project]
 Start here in Obsidian. Updated 17 October 2026.
 
 HTTP next step: [[services/inference/HTTP_SMOKE|Bounded real-model HTTP check]].
-Tooling verified with synthetic engines; actual model run awaits 4 GiB free RAM.
+Real local Qwen HTTP smoke passed; measurements and remaining cloud gates recorded.
 
 Linux auth update: [[services/inference/SERVING_IMAGE|Packaging, shutdown and scan evidence]].
 Verifier and refresh lifecycle tested with synthetic inference/mocked keys.
-Real-model HTTP, Google/IAM and security release gates remain open.
+Google/IAM and security release gates remain open; local model HTTP is verified.
 
 Security review: [[services/inference/OS_RISK_REVIEW|OS findings and ingress evidence]].
 Release findings remain open; receiving cloud authentication can proceed locally.

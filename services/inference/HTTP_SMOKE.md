@@ -1,11 +1,22 @@
 # Real-model HTTP smoke
 
-Status, 17 October: tooling verified with synthetic engines; real run blocked by
-2.03 GiB available host RAM versus the unchanged 4 GiB guard. Docker Linux and
-the auth candidate exist; D: has 85.3 GiB free, and model directory/manifest exist.
-Full artifact hashes are checked by the launcher before any model load. The CIM
-memory read was unavailable; psutil supplied the valid measurement. No retry,
-app closure, protected workload change or model load occurred.
+Status, 17 October: **real local Linux HTTP smoke passed** in auth image
+554ccb8a9d25ce960dbe1d61c1521a0413277f474172927d6f9891b9fb9bb7a8.
+Evidence: tests/inference/results/qwen-http-20261017.json.
+
+Startup 12.681 s; requests 0.819/0.781/4.688/0.683 s (10/26/512/26 tokens).
+Peak container memory 4,275,261,440 bytes (3.98 GiB), below the unchanged 5 GiB
+limit; exit 0, no OOM or outer timeout. All vector/identity, authorization rejection,
+token-limit/recovery, stable repeat, readiness and cleanup assertions passed.
+This is local loopback with an ephemeral bearer, not deployed IAM or load testing.
+
+The initial 2.03 GiB RAM blocker was resolved after authorized unused Chrome
+closure and a specifically approved one-time WSL page-cache release. Windows
+reported 6.05 GiB free after reclaim settled; the guarded launcher then verified
+model artifact hashes before loading. No container stop/restart or persistent
+Docker setting changes were issued. All nine protected APIs were running before
+the test; two showed recent restarts of undetermined cause. Do not attribute them
+to this smoke or claim uninterrupted uptime. No further workload intervention.
 
 ## Run after memory is available
 
@@ -43,5 +54,6 @@ candidate with 512 MiB and no model mount. Valid synthetic output passes; invali
 vectors fail while cleanup remains required. Incorrect CLI mode fails before
 Docker operations. Required frontend build passes; UI/native inputs unchanged.
 
-Real-model HTTP acceptance remains **unverified** until the guarded run succeeds.
+This four-request local real-model HTTP acceptance check passed; cloud capacity
+and real-model timeout/concurrent overload behavior remain unmeasured.
 OS release findings and deployed cloud identity remain separate open gates.
