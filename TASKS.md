@@ -1,5 +1,12 @@
 # Delivery tasks
 
+## CLI collaboration workflow
+
+Added docs/CLI_WORKFLOW.md and AGENTS.md handoff rules: one writer, scoped
+changes, explicit commit ownership and independent verification. Also fixed
+Python launcher text-pipeline forwarding discovered during documentation work.
+Pipeline smoke, five staging tests and frontend build pass.
+
 ## Windows CLI runtime launcher
 
 Added scripts/python.ps1 and agent instructions. Five staging tests pass via

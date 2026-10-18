@@ -34,5 +34,9 @@ foreach ($candidate in ($candidates | Select-Object -Unique)) {
 if (-not $selectedPython) {
     throw 'No working Python 3.10+ found. Set GATHER_PYTHON to an existing python.exe path. Do not repeatedly retry or scan whole drives.'
 }
-& $selectedPython @pythonArguments
+if ($MyInvocation.ExpectingInput) {
+    $input | & $selectedPython @pythonArguments
+} else {
+    & $selectedPython @pythonArguments
+}
 exit $LASTEXITCODE

@@ -1,5 +1,12 @@
 # Project working rules
 
+## Desktop and CLI collaboration
+
+- Follow docs/CLI_WORKFLOW.md when a task is handed between sessions. Shared files do not mean shared conversation history.
+- Use one writer at a time in this checkout. The other session may review but must not edit, commit, change branches or run resource-heavy checks concurrently. Parallel implementation needs separately agreed worktrees and integration ownership.
+- Begin with branch, HEAD and working-tree status. Preserve pre-existing changes. Work only within the assigned file scope; report a missing prerequisite before expanding it.
+- A delegated CLI task ends with changed files, actual commands/exit codes, limitations and proposed documentation updates. Leave it uncommitted unless the handoff explicitly assigns commit ownership. The reviewing session independently verifies before committing. This scopes the normal commit/documentation workflow for delegated tasks.
+
 ## Windows execution
 
 - For lightweight Python checks use `./scripts/python.ps1 -m unittest <module>` in PowerShell. It resolves an installed interpreter without relying only on PATH and propagates the test exit code. `GATHER_PYTHON` can select an explicit interpreter. Model work still uses its dedicated runtime scripts.

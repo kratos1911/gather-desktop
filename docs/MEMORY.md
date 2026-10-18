@@ -1,5 +1,9 @@
 # Current project state
 
+Desktop/CLI collaboration rules ready: docs/CLI_WORKFLOW.md. One writer per
+checkout, scoped handoff, reviewer-owned commit by default. No automatic session
+connection. Python launcher now forwards piped text; focused checks/build pass.
+
 Windows CLI runtime discovery fixed for lightweight checks: scripts/python.ps1
 handles missing PATH, redirected LOCALAPPDATA and spaces; propagates failures.
 AGENTS.md documents usage and bounded troubleshooting. Existing CLI test edit

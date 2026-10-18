@@ -1,5 +1,12 @@
 # Rebuild progress
 
+## CLI collaboration setup
+
+Documented desktop/CLI handoff workflow, runtime commands and review contract.
+Shared files are not shared chat memory; user signals completion. No automated
+messaging or concurrent writers enabled. Found launcher did not forward piped
+text; fixed and checked it. Preserved existing CLI test edit and root logs.
+
 ## Windows CLI troubleshooting correction
 
 Added a bounded Python resolver for lightweight repository checks, with explicit

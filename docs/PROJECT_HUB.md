@@ -5,6 +5,8 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 18 October 2026.
 
+Collaboration: [[docs/CLI_WORKFLOW|Desktop and CLI handoffs]].
+
 Windows CLI: [[AGENTS|Runtime instructions]]; use scripts/python.ps1 for lightweight checks.
 
 Zlib fix: [[services/inference/zlib/README|Local backport and original-versus-fixed evidence]].
