@@ -1,11 +1,11 @@
 # Current project state
 
-Latest, 18 October: artifact verification and explicit loopback startup implemented.
-13 focused checks, real snapshot hashes and frontend build pass. No model loaded.
-See services/inference/ARTIFACT_STARTUP.md. Updated 47-package context staged;
-Linux image build blocked by absent Docker engine pipe. Existing image is older.
-Next: open Docker Desktop, build/check separate startup candidate. Actual IAM,
-public ingress, licence/OS review and pilot-spend approval remain open gates.
+Latest, 18 October: startup-candidate built; all 51 focused Linux checks pass.
+Artifact verification, paired callers and shutdown tested with synthetic inputs.
+Evidence: services/inference/ARTIFACT_STARTUP.md. Base/dependency layers unchanged;
+prior scan/frontend evidence reused. No real model loaded or protected API changes.
+Next: bounded live Google public-key fetch compatibility, then remaining licence/
+OS security and cloud pilot approvals. Public bind and deployment remain gated.
 
 Current next-step status (17 October): real Qwen loopback HTTP smoke passed.
 Startup 12.68 s, short requests 0.68-0.82 s, 512-token passage 4.69 s, peak 3.98 GiB

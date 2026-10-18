@@ -1,8 +1,9 @@
 # Linux serving candidate
 
-18 October source update: paired-caller startup and pinned artifact verification
-are staged but NOT rebuilt into the candidate below. See ARTIFACT_STARTUP.md.
-Docker engine unavailable; historical image evidence does not cover new source.
+18 October: startup-candidate now packages paired-caller and artifact verification
+source. All 51 focused Linux checks pass. See ARTIFACT_STARTUP.md and
+tests/inference/results/startup-image-20261018.json for exact image/layer evidence.
+Older candidate IDs/results below are retained as history.
 
 ## Auth packaging update, 17 October
 

@@ -3,14 +3,14 @@ tags: [gather, project]
 ---
 # Gather project hub
 
-Start here in Obsidian. Updated 17 October 2026.
+Start here in Obsidian. Updated 18 October 2026.
 
 Startup artifacts: [[services/inference/ARTIFACT_STARTUP|Verified files and entry point]].
-Host verified; updated Linux image awaits Docker.
+Updated Linux startup image verified: 51 focused synthetic checks pass.
 
 Identity handoff: [[docs/CLOUD_IDENTITY|Dual headers and cloud pilot checks]].
 Locally verified; [[docs/RECEIVING_IDENTITY|Trusted startup and paired callers]]
-now implemented. Artifact entry point host checks pass; packaging/IAM remain pending.
+now implemented. Artifact startup packaging passes; actual Google/IAM remains pending.
 
 HTTP evidence: [[services/inference/HTTP_SMOKE|Bounded real-model HTTP check]].
 Real local Qwen HTTP smoke passed; measurements and remaining cloud gates recorded.

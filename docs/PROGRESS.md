@@ -1,5 +1,15 @@
 # Rebuild progress
 
+## 18 October: Docker packaging blocker resolved
+
+User opened Docker; Linux engine and all nine API containers confirmed running.
+Preflight 2.69 GiB RAM/85.27 GiB D: free permitted 512 MiB synthetic checks, not
+a real-model load. Built startup-candidate from cached dependencies, then all
+51 packaged Linux checks passed (15.322 s). Compared rootfs layer hashes: eight
+base/dependency layers unchanged, final source layer changed. Retained dated
+17 October scan evidence rather than repeating it; 28 OS findings remain.
+No source/frontend changes, model run, API intervention or Docker settings changes.
+
 ## 18 October: verified model artifact entry point
 
 Portable manifest derived from prior verified snapshot, retaining ten exact hashes

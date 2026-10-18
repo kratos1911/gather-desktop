@@ -1,5 +1,13 @@
 # Delivery tasks
 
+## 18 October startup image verified
+
+Built separate startup-candidate after Docker became available. 51 focused Linux
+checks pass in 15.322 s; no model loaded. Eight base/dependency layers match prior
+scanned image exactly; only source differs. Prior scan and unchanged frontend
+build reused explicitly. Evidence: tests/inference/results/startup-image-20261018.json.
+Actual Google compatibility/IAM and OS release gates remain open.
+
 ## 18 October artifact startup verified locally; packaging blocked
 
 Added packaged pinned manifest, bounded exact-file hash verification and explicit

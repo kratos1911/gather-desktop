@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-18",
+  "image": "sha256:2b1e6e04109e53757beee72efc00c12cc99c02682a0ffa9a290a837c1846a7bb",
+  "previous": "sha256:554ccb8a9d25ce960dbe1d61c1521a0413277f474172927d6f9891b9fb9bb7a8",
+  "layer_count": 9,
+  "unchanged_base_dependency_layers": 8,
+  "old_source_layer": "sha256:626e18ba1cda1fd982735b3e92facf385d4b193c631e86b09fad01092cee170e",
+  "new_source_layer": "sha256:1c382c97dfae759d0f84199645394978048e9c91d8f75d2a48c72b3a94944253",
+  "user": "65532:65532",
+  "scan_basis": "Prior 17 October scan retained for identical dependency layers; no new vulnerability scan performed",
+  "source_checkpoint": "4fc82ef",
+  "linux_tests": 51,
+  "test_seconds": 15.322,
+  "test_exit": 0,
+  "scope": "synthetic keys/engines and tiny artifact files; no real model or Google IAM",
+  "limits": {
+    "memory_bytes": 536870912,
+    "cpus": 1,
+    "pids": 64,
+    "network": "none",
+    "readonly": true
+  },
+  "frontend": "Previous build at 4fc82ef reused; frontend inputs unchanged",
+  "model": "Prior HTTP evidence retained only for unchanged model/runtime, not this new full startup path"
+}
