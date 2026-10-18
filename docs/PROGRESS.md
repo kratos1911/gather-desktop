@@ -1,5 +1,20 @@
 # Rebuild progress
 
+## 18 October model attribution and Linux package verification
+
+Retained pinned model card (hash matches model-manifest) and official Apache
+licence; five supplements now packaged. Staging rejects missing required
+upstream attribution. Ten focused tests and frontend build pass. Preflight:
+Docker Linux available, about 3.60 GiB free RAM and 85.27 GiB D: space. CIM needed
+read permission. Initial network-none build missed cache and failed at apt;
+restoring original network mode reused every existing layer and built in seconds.
+No package pin changes. Isolated 128 MiB/one-CPU, read-only, network-none container
+verified all notice text hashes, 47 wheels, 177 notices, five supplements and
+non-root user; 87 OS copyright files present. Existing nine layers identical.
+Image and bundle hashes saved in notices-image-20261018.json. Existing images,
+models, API containers and cloud resources unchanged. Copyright presence is not
+complete native licence clearance; unresolved OS findings retained.
+
 ## 18 October missing licence corrected and packaging implemented
 
 Fetched exact tokenizers upstream tag tree and licence files; recorded hashes

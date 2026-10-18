@@ -1,0 +1,17 @@
+{
+  "project": "Qwen/Qwen3-Embedding-0.6B",
+  "version": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "files": [
+    {
+      "path": "README.md",
+      "url": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B/raw/97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3/README.md",
+      "sha256": "c34d9b7e5a267ad3fdd13227a253686bc90844ff4744a2a6a86c7c905e3d06f3"
+    },
+    {
+      "path": "LICENSE",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    }
+  ],
+  "scope": "Pinned model card licence declaration plus official Apache licence text; no weights copied"
+}

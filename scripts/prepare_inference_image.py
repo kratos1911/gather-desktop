@@ -58,6 +58,12 @@ def prepare(build=BUILD, update_lock=False, serving=False):
         raise ValueError("Wheelhouse differs from reviewed lock")
     lock.write_text(content, encoding="utf-8")
     notices = collect(build / 'wheels', lock)
+    required = {('huggingface/tokenizers', '0.23.3', 'LICENSE'),
+                (MODEL, REVISION, 'LICENSE'), (MODEL, REVISION, 'README.md')}
+    supplied = {(item['project'], item['version'], item['path'])
+                for item in notices['supplements']}
+    if not required.issubset(supplied):
+        raise ValueError('Missing required upstream attribution')
     (build / 'third-party-notices.json').write_text(json.dumps(notices, indent=2)+'\n', encoding='utf-8')
     shutil.copyfile(lock, build / "requirements.lock")
     shutil.copyfile(ROOT / "services/inference/Dockerfile", build / "Dockerfile")

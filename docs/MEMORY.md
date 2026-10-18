@@ -1,5 +1,14 @@
 # Current project state
 
+Current: notice-packaged Linux candidate built and verified. Model card matches
+the pinned artifact hash; official Apache licence retained. All required notices
+are enforced by staging. 47 wheels, 177 embedded notices, five supplements;
+87 OS copyright files present. Previous nine image layers identical. Ten focused
+checks and frontend build pass. Evidence: notices-image-20261018.json.
+Next independent development: explicit guarded Cloud Run entry point, keeping
+loopback default. Deployment remains blocked by OS adjudication, full native
+attribution review, actual IAM acceptance and spend approval. No model rerun.
+
 Current: tokenizers upstream licence gap fixed in source; exact-version files
 and provenance retained. Notice collection integrated into image staging and
 Dockerfile. 47 wheels / 177 notices / 3 supplements staged; new image not built.

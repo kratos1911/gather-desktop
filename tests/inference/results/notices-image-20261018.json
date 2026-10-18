@@ -1,0 +1,13 @@
+{
+  "bundle_sha256": "e37baa6b8be6409bbe4f848a010a4ea1832f672c7d3cd471f52fbbd8a136b4e9",
+  "wheels": 47,
+  "embedded_notices": 177,
+  "supplements": 5,
+  "os_copyright_files": 87,
+  "uid": 65532,
+  "image": "sha256:3a2270ae23c73e8515ca3b8693802820b22d563c7636bc11707ae62a4d156405",
+  "previous": "sha256:2b1e6e04109e53757beee72efc00c12cc99c02682a0ffa9a290a837c1846a7bb",
+  "unchanged_layers": 9,
+  "verification": "Notice bytes verified inside bounded Linux container; no model loaded; no fresh vulnerability scan",
+  "scan_basis": "All prior layers identical; retained unresolved 17 October scan findings"
+}

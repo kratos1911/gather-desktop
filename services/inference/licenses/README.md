@@ -19,3 +19,20 @@ open; filename discovery is not proof of all transitive licence obligations.
 
 Sources: https://github.com/huggingface/tokenizers/tree/v0.23.3 and the immutable
 URLs in tokenizers-0.23.3/provenance.json. No credentials or models downloaded.
+
+## Verified image update
+
+Model attribution now includes the pinned model card (checked against the model
+artifact manifest) and official Apache-2.0 text. Five supplements are packaged.
+The tokenizers/tokenizers/LICENSE upstream entry is a relative symlink payload
+(`../LICENSE`), retained as source evidence; the full root licence is also bundled.
+Staging now requires the root tokenizers licence and both model files, so deleting
+their provenance directories cannot silently yield a successful package.
+
+notices-candidate contains the verified bundle; see
+../../../tests/inference/results/notices-image-20261018.json. Its original nine
+layers exactly match startup-candidate. Ten focused tests and frontend build
+pass. No real model rerun or new security scan. Complete native dependency licence
+coverage remains separate: in particular, upstream Rust dependency attribution
+must be reconciled with the compiled tokenizers wheel rather than inferred from
+its root Apache licence. OS copyright-file presence likewise is not legal clearance.

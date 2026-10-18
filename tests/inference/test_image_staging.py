@@ -65,6 +65,12 @@ class StagingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'output directory'):
             staging.prepare(self.root / 'outside', serving=True)
 
+    def test_missing_required_attribution_blocks_staging(self):
+        with patch.object(staging, 'collect', return_value={'supplements': []}):
+            with self.assertRaisesRegex(ValueError, 'required upstream attribution'):
+                staging.prepare(self.build, update_lock=True, serving=True)
+        self.assertFalse((self.build / 'third-party-notices.json').exists())
+
 
 if __name__ == '__main__':
     unittest.main()

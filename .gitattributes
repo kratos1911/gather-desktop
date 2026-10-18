@@ -5,3 +5,4 @@
 /tests/database/start-postgres.sh text eol=lf
 # Supplemental notices are verified by upstream byte hashes.
 /services/inference/licenses/**/LICENSE -text
+/services/inference/licenses/qwen3-embedding-0.6b/README.md -text

@@ -34,7 +34,7 @@ request-based proposal, not an applied billing setting. Source:
 | Public keys | Live Google certificate fetch passed; it does not establish real caller token, IAM or proxy-header behavior |
 | OS security | Retain 17 October scan: 28 OS findings (1 high, 1 medium, 26 low); unchanged base/dependency layer evidence reused, no new scan |
 | Model licence | Pinned model card declares Apache-2.0; retain licence, attribution and applicable upstream notices in the release artifact |
-| Dependencies | All 47 cached serving wheels match lock hashes. Inventory records metadata and notice-file paths; tokenizers upstream licence files now retained with provenance and included by staging. New image build and native/model attribution review remain pending |
+| Dependencies | All 47 cached serving wheels match lock hashes. Inventory records metadata and notice-file paths; tokenizers upstream licence files now retained with provenance and included by staging. Notice image built and verified; pinned model attribution included. Full native attribution review remains pending |
 | Native components | Wheel metadata alone does not audit bundled native code or Debian licences. Complete distribution notice review remains open |
 | Cloud operation | Explicit guarded cloud entry point, immutable release image, intended IAM policy and measured pilot still needed |
 
@@ -48,8 +48,9 @@ adjudication remains required; no risk exception is granted here.
 
 ## Ordered next steps
 
-1. **Local prerequisite:** assemble reviewed third-party notices, resolve the
-   tokenizers notice gap, and document exact OS remediation/adjudication evidence.
+1. **Release prerequisites:** notice collection and model attribution are packaged
+   and verified. Complete native dependency attribution and document exact OS
+   remediation/adjudication evidence. These do not block local cloud-mode coding.
    No model run is needed for this work. Do not repeatedly scan unchanged layers.
 2. **Local cloud packaging:** implement explicit cloud mode without changing the
    safe loopback default. Require validated audience/caller pairs and port, use

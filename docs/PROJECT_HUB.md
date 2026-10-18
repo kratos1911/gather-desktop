@@ -5,6 +5,8 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 18 October 2026.
 
+Notice image: [[tests/inference/results/notices-image-20261018.json|Linux bundle verified; release gates remain]].
+
 Notice packaging: [[services/inference/licenses/README|Verified upstream licences and staged bundle]].
 
 Pilot review: [[docs/CLOUD_PILOT_PLAN|Configuration, gates and acceptance]].

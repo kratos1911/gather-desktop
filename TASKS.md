@@ -1,5 +1,14 @@
 # Delivery tasks
 
+## 18 October notice image verified
+
+Completed model attribution packaging and mandatory supplemental-notice gate.
+Ten focused tests, real wheel staging, frontend build and bounded Linux notice
+verification pass. All nine prior image layers match; only notice layer added.
+Evidence: tests/inference/results/notices-image-20261018.json. No model test or
+new vulnerability scan. Next: guarded cloud startup implementation independently
+of unresolved OS/native release review. No deployment or push.
+
 ## 18 October notice packaging
 
 Exact tokenizers 0.23.3 licence files retained with immutable provenance.
