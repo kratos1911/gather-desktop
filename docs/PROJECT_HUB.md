@@ -5,6 +5,9 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 18 October 2026.
 
+Pilot review: [[docs/CLOUD_PILOT_PLAN|Configuration, gates and acceptance]].
+No cloud resources deployed; see this plan for the next local prerequisite.
+
 Live keys: [[docs/RECEIVING_IDENTITY|Google public-key compatibility passed]].
 Real service-account token and deployed IAM remain unverified.
 

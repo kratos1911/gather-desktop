@@ -57,7 +57,15 @@ was loaded. Prior eight Linux tests remain valid historical evidence; the new
 regression has not run in Linux because Docker's engine pipe is absent. No restart
 or repeated preflight attempted. Start Docker normally to enable that later check.
 
-## Next work
+## 18 October evidence update
+
+The historical Docker/test blockers above are superseded: real local Qwen HTTP
+and the startup candidate's 51 synthetic Linux checks passed. Their retained
+reports are linked in docs/CLOUD_PILOT_PLAN.md and TASKS.md. No new image scan was
+run for this documentation review. OS findings remain open; current pilot gates
+and licence inventory are in docs/CLOUD_PILOT_PLAN.md.
+
+## Historical next work (17 October)
 
 Release remains blocked by unresolved OS adjudication/remediation, actual cloud
 authorization and real-model HTTP/Linux shutdown evidence. Independent development

@@ -1,5 +1,14 @@
 # Architecture decisions
 
+## 18 October proposal: CPU allocation must support key refresh
+
+CLOUD_PILOT_PLAN.md supersedes the earlier request-based billing proposal.
+Background refresh cannot assume idle CPU under that mode. Prefer instance-based
+CPU for a supervised pilot, retaining minimum zero and fresh-key rejection.
+This is a proposal requiring spend approval, not authorization to change billing.
+An alternative request-driven refresh design requires its own bounded design and
+verification; do not add it implicitly or relax freshness.
+
 ## 18 October: separate Cloud Run and application token headers
 
 Use X-Serverless-Authorization for platform invocation and preserve Authorization

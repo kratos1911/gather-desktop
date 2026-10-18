@@ -1,5 +1,17 @@
 # Rebuild progress
 
+## 18 October: bounded cloud pilot proposal and licence inventory
+
+Reviewed official Cloud Run CPU allocation, pinned model licence declaration and
+Debian zlib status. Found request-based CPU incompatible with assuming timely idle
+key refresh. Proposed instance-based allocation with explicit cost approval;
+no settings applied. Inventoried and hash-verified all 47 current serving wheels;
+tokenizers has no detected notice file. Initial 41-wheel older staging directory
+was identified and replaced with current auth staging before recording evidence.
+No runtime changes, model/Docker tests, paid resources or protected workloads.
+Existing verification retained; JSON/lock/document consistency checked locally.
+See CLOUD_PILOT_PLAN.md for acceptance, sequencing and teardown boundaries.
+
 ## 18 October: real public-key endpoint compatibility
 
 Ran one live key fetch through the existing ManagedGoogleServiceAuth in an

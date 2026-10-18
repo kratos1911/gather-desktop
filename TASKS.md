@@ -1,5 +1,14 @@
 # Delivery tasks
 
+## 18 October cloud pilot review
+
+Completed review artifact: docs/CLOUD_PILOT_PLAN.md. All 47 serving wheel hashes
+verified against requirements-serving.lock; notice inventory saved. tokenizers
+notice gap and existing OS findings remain open. Corrected CPU-allocation
+proposal for background key refresh. Documentation/JSON checks pass; unchanged
+51 Linux checks, real HTTP smoke and frontend build retained, not rerun.
+Next local task: exact-version licence notices and OS adjudication evidence.
+
 ## 18 October live Google public-key fetch passed
 
 One bounded Linux request accepted two Google signing keys in 0.505 s; freshness

@@ -89,6 +89,15 @@
       "y": -260,
       "width": 710,
       "height": 200
+    },
+    {
+      "id": "cloud-pilot-plan",
+      "type": "file",
+      "file": "docs/CLOUD_PILOT_PLAN.md",
+      "x": 760,
+      "y": -260,
+      "width": 440,
+      "height": 200
     }
   ],
   "edges": [

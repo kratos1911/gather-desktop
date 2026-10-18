@@ -1,5 +1,12 @@
 # Current project state
 
+Current checkpoint, 18 October: CLOUD_PILOT_PLAN.md records the bounded pilot
+proposal and open gates. All 47 serving wheel hashes match the lock; tokenizers
+has no detected bundled notice file. No licence clearance or OS waiver claimed.
+Background key refresh requires revising the request-based CPU proposal;
+instance-based billing is proposed, not authorized. Next: exact-version notices
+and security adjudication, then explicit guarded cloud packaging. No deployment.
+
 Latest, 18 October: live Google public-key compatibility passed inside Linux
 startup-candidate: two keys, 0.505 s, unchanged freshness/resource bounds.
 Evidence: RECEIVING_IDENTITY.md and tests/inference/results/live-google-keys-20261018.json.

@@ -3,6 +3,13 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Background work needs CPU while idle
+
+A live server instance is not a promise that background threads can run. Cloud
+Run CPU allocation must match trusted-key refresh scheduling. Instance-based CPU
+supports this but bills idle lifetime; minimum zero still allows shutdown.
+Expired keys must still fail closed. See [[docs/CLOUD_PILOT_PLAN]].
+
 ## Model files are part of the serving contract
 
 Pin the model revision and verify every expected file hash before loading. Reject

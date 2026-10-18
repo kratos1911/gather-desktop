@@ -1,6 +1,7 @@
 # Cloud Run hosting and identity design
 
-17 October 2026. Reviewed implementation plan, NOT deployed infrastructure.
+18 October 2026. See [current pilot plan](CLOUD_PILOT_PLAN.md) for current gates.
+Reviewed implementation plan, NOT deployed infrastructure.
 No account, IAM, billing, service, secret or resource changes made. The prior
 local evidence remains in TASKS.md; it is not cloud evidence.
 
@@ -96,7 +97,7 @@ Cloud Run, and do not download gigabytes into the writable memory filesystem.
 | Model CPU / memory | 2 vCPU / 5 GiB: preserve the tested container budget; production adapter must pass within it |
 | Model concurrency | 1 request per instance; one runtime child; no multiple model copies |
 | Instances | Minimum 0, service-level maximum 1 for initial measurement only |
-| Billing | Request-based pilot; no unattended/background model jobs |
+| Billing | Proposed instance-based CPU for background key refresh; spend approval required; see CLOUD_PILOT_PLAN.md |
 | Application request bounds | Existing 5 s session I/O, 15 s inference client and 15 s model compute retained |
 | Platform request timeout | Proposed 30 s outer guard; not a compute cancellation mechanism or client-budget increase |
 | Startup | Existing 90 s runtime startup ceiling; readiness probe only after model is usable |
@@ -110,8 +111,8 @@ leave code executing: keep the runtime's own cancellation/termination. See
 On shutdown, stop accepting work, signal cancellation and reap the child within
 the platform shutdown allowance; test SIGTERM explicitly.
 
-**Cold-start gate:** local model startup was about 14–16 seconds before HTTP
-overhead; cloud startup is unmeasured. Minimum-zero plus a 15-second client limit
+**Cold-start gate:** latest local HTTP model startup was 12.68 seconds;
+cloud startup is unmeasured. Minimum-zero plus a 15-second client limit
 cannot promise reliable first-query success. Do not silently extend deadlines or
 retry. The pilot must measure this, then choose a separately bounded warm-up flow
 with honest UI states, improve startup, or approve paid warm capacity. A readiness
