@@ -1,5 +1,13 @@
 # Delivery tasks
 
+## 18 October artifact startup verified locally; packaging blocked
+
+Added packaged pinned manifest, bounded exact-file hash verification and explicit
+loopback startup entry point using existing Qwen Runtime/auth lifecycle. 13 focused
+checks and frontend build pass; real snapshot hash check passed in 1.357 s without
+model loading. Staged 47 locked dependencies/source. Docker Linux pipe absent;
+updated image build remains unverified. See services/inference/ARTIFACT_STARTUP.md.
+
 ## 18 October trusted receiver startup composition
 
 Bounded strict operator JSON, immutable one/two caller pairs and shared key

@@ -65,7 +65,7 @@ def prepare(build=BUILD, update_lock=False, serving=False):
     # BuildKit sees only this allowlist even if output contains older artifacts.
     (build / '.dockerignore').write_text('**\n!Dockerfile\n!requirements.lock\n!wheels/\n!wheels/*.whl\n!services/\n!services/inference/\n!services/inference/*.py\n')
     if serving:
-        for name in ('asgi.py','service_auth.py','managed_auth.py','startup.py'):
+        for name in ('asgi.py','service_auth.py','managed_auth.py','startup.py','artifacts.py','model-manifest.json'):
             shutil.copyfile(ROOT / 'services/inference' / name, target / name)
         worker = build / 'services/worker'
         worker.mkdir(parents=True, exist_ok=True)
@@ -76,7 +76,7 @@ def prepare(build=BUILD, update_lock=False, serving=False):
         allowed = ['Dockerfile', 'requirements.lock', 'wheels/*.whl']
         allowed += ['services/inference/'+name for name in
                     ('runtime.py','qwen.py','stream.py','chunking.py','asgi.py',
-                     'service_auth.py','managed_auth.py','startup.py')]
+                     'service_auth.py','managed_auth.py','startup.py','artifacts.py','model-manifest.json')]
         allowed += ['services/worker/'+name for name in names]
         (build / '.dockerignore').write_text('**\n'+''.join('!'+name+'\n' for name in allowed))
         print(f'Staged {len(wheels)} locked serving wheels; no model weights or credentials copied.')

@@ -5,9 +5,12 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 17 October 2026.
 
+Startup artifacts: [[services/inference/ARTIFACT_STARTUP|Verified files and entry point]].
+Host verified; updated Linux image awaits Docker.
+
 Identity handoff: [[docs/CLOUD_IDENTITY|Dual headers and cloud pilot checks]].
 Locally verified; [[docs/RECEIVING_IDENTITY|Trusted startup and paired callers]]
-now implemented. Artifact entry point and deployed IAM remain pending.
+now implemented. Artifact entry point host checks pass; packaging/IAM remain pending.
 
 HTTP evidence: [[services/inference/HTTP_SMOKE|Bounded real-model HTTP check]].
 Real local Qwen HTTP smoke passed; measurements and remaining cloud gates recorded.

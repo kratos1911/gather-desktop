@@ -30,3 +30,40 @@ def create_trusted_app(raw_identity, runtime):
     from services.inference.managed_auth import ManagedGoogleServiceAuth
     from services.inference.asgi import create_app
     return create_app(runtime, ManagedGoogleServiceAuth(identity))
+
+
+def build_verified_app(raw_identity, snapshot):
+    # Reject bad policy/artifacts before constructing any model runtime.
+    load_identity(raw_identity)
+    from services.inference.artifacts import verify_snapshot
+    from services.inference.qwen import QwenEngine
+    from services.inference.runtime import Runtime
+    verified = verify_snapshot(snapshot)
+    return create_trusted_app(raw_identity, Runtime(QwenEngine, str(verified)))
+
+
+def main():
+    import argparse
+    from pathlib import Path
+    from services.inference.asgi import create_server
+    parser = argparse.ArgumentParser(description='Verified local serving; public cloud bind remains gated')
+    parser.add_argument('--identity', type=Path, required=True)
+    parser.add_argument('--model', type=Path, required=True)
+    parser.add_argument('--port', type=int, default=8080)
+    args = parser.parse_args()
+    try:
+        if not 1 <= args.port <= 65535:
+            raise ValueError()
+        with args.identity.open('rb') as stream:
+            raw = stream.read(4097)
+        app = build_verified_app(raw, args.model)
+        server = create_server(app, port=args.port)  # Loopback only, never infer public mode.
+    except Exception:
+        raise SystemExit('startup_validation_failed') from None
+    server.run()
+    if not server.started:
+        raise SystemExit('startup_failed')
+
+
+if __name__ == '__main__':
+    main()

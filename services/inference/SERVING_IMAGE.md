@@ -1,5 +1,9 @@
 # Linux serving candidate
 
+18 October source update: paired-caller startup and pinned artifact verification
+are staged but NOT rebuilt into the candidate below. See ARTIFACT_STARTUP.md.
+Docker engine unavailable; historical image evidence does not cover new source.
+
 ## Auth packaging update, 17 October
 
 The current serving lock contains 47 distributions and includes service_auth.py

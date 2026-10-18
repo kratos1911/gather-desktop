@@ -3,6 +3,13 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Model files are part of the serving contract
+
+Pin the model revision and verify every expected file hash before loading. Reject
+extra files too. Keep the model directory immutable afterward: a successful hash
+check alone cannot stop later privileged modifications. A hash check does not
+load the model or measure its performance. See [[services/inference/ARTIFACT_STARTUP]].
+
 ## Authorize identity pairs, not independent lists
 
 An allowed email and an allowed account ID must belong to the same configured

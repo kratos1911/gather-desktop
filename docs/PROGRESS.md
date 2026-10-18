@@ -1,5 +1,15 @@
 # Rebuild progress
 
+## 18 October: verified model artifact entry point
+
+Portable manifest derived from prior verified snapshot, retaining ten exact hashes
+and sizes. New entry point rejects invalid policy/artifacts before constructing
+Runtime; public bind stays blocked. First sandbox lifecycle test invocation stalled
+in the previously observed asyncio path; stopped only its test PIDs, then 13 focused
+checks passed with permission. Frontend build passed. Real artifact hashes checked
+in 1.357 s, no inference. Build context staged with unchanged lock. One Docker
+preflight found no Linux engine pipe; no retry or protected workload changes.
+
 ## 18 October: explicit API/worker receiver policy
 
 Added immutable paired email/subject receiver configuration and bounded strict
