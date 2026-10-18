@@ -1,5 +1,15 @@
 # Rebuild progress
 
+## Windows CLI troubleshooting correction
+
+Added a bounded Python resolver for lightweight repository checks, with explicit
+GATHER_PYTHON override, normal runtime discovery and per-user install fallback.
+Sandbox LOCALAPPDATA redirection explained the initial fallback miss; USERPROFILE
+lookup fixes it without drive scans. Verified missing PATH, spaces and exit-code
+propagation plus five staging tests and frontend build. No global settings,
+installs or model workloads. PowerShell 5.1 authorization block left unchanged.
+CLI-produced test edit and root logs preserved outside this commit.
+
 Final zlib scan: 28 findings (1 high, 1 medium, 26 low). Scout still flags
 CVE-2026-85091 on +gather1; no suppression applied. The targeted defect is fixed
 and regression-verified independently, not scanner-cleared. Evidence:

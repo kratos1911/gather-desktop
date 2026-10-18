@@ -1,5 +1,13 @@
 # Delivery tasks
 
+## Windows CLI runtime launcher
+
+Added scripts/python.ps1 and agent instructions. Five staging tests pass via
+launcher; isolated checks pass with empty PATH/redirected LOCALAPPDATA, spaced
+arguments, child exit 7, and invalid explicit runtime. Frontend build passes.
+Windows PowerShell 5.1 subprocess was blocked by AuthorizationManager in this
+environment; verified current PowerShell runtime, without policy bypass.
+
 Final zlib scan: 28 findings (1 high, 1 medium, 26 low). Scout still flags
 CVE-2026-85091 on +gather1; no suppression applied. The targeted defect is fixed
 and regression-verified independently, not scanner-cleared. Evidence:

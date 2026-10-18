@@ -1,5 +1,10 @@
 # Current project state
 
+Windows CLI runtime discovery fixed for lightweight checks: scripts/python.ps1
+handles missing PATH, redirected LOCALAPPDATA and spaces; propagates failures.
+AGENTS.md documents usage and bounded troubleshooting. Existing CLI test edit
+and root log files remain uncommitted and untouched. No global PATH changes.
+
 Final zlib scan: 28 findings (1 high, 1 medium, 26 low). Scout still flags
 CVE-2026-85091 on +gather1; no suppression applied. The targeted defect is fixed
 and regression-verified independently, not scanner-cleared. Evidence:

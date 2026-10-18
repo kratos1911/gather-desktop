@@ -1,5 +1,12 @@
 # Project working rules
 
+## Windows execution
+
+- For lightweight Python checks use `./scripts/python.ps1 -m unittest <module>` in PowerShell. It resolves an installed interpreter without relying only on PATH and propagates the test exit code. `GATHER_PYTHON` can select an explicit interpreter. Model work still uses its dedicated runtime scripts.
+- Use PowerShell commands (`Get-Content`, `Get-Command`, `where.exe`), not assumed Unix tools or the ambiguous `where` alias. Invoke quoted executable paths with `&` and keep arguments separate.
+- After two failed environment attempts, diagnose the actual error before retrying. Never recursively scan whole drives for runtimes, repeatedly try unchanged commands, or install software to fix a discovery/quoting issue.
+- Keep diagnostic files under ignored `output/` on D:, not the repository root. Report extra files honestly. Do not bypass approval rejections.
+
 Read docs/PRD.md, docs/ARCHITECTURE.md, docs/DESIGN.md, RULES.md, TASKS.md and docs/MEMORY.md before changing this project. Read relevant test/security/decision notes and the supporting blueprint when needed. The latest user choices take priority over earlier design proposals.
 
 Follow Read -> Understand -> Plan -> Implement -> Test -> Review -> Fix -> Commit -> Update documentation. Select one task and its acceptance criteria. Keep current status in MEMORY.md, work/evidence in TASKS.md, rationale in DECISIONS.md and historical updates in PROGRESS.md. Do not mark partial or unverified features complete.

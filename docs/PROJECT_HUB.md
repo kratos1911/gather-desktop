@@ -5,6 +5,8 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 18 October 2026.
 
+Windows CLI: [[AGENTS|Runtime instructions]]; use scripts/python.ps1 for lightweight checks.
+
 Zlib fix: [[services/inference/zlib/README|Local backport and original-versus-fixed evidence]].
 
 Notice image: [[tests/inference/results/notices-image-20261018.json|Linux bundle verified; release gates remain]].
