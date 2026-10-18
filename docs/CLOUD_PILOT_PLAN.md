@@ -34,7 +34,7 @@ request-based proposal, not an applied billing setting. Source:
 | Public keys | Live Google certificate fetch passed; it does not establish real caller token, IAM or proxy-header behavior |
 | OS security | Retain 17 October scan: 28 OS findings (1 high, 1 medium, 26 low); unchanged base/dependency layer evidence reused, no new scan |
 | Model licence | Pinned model card declares Apache-2.0; retain licence, attribution and applicable upstream notices in the release artifact |
-| Dependencies | All 47 cached serving wheels match lock hashes. Inventory records metadata and notice-file paths; tokenizers has no detected notice file. Verify exact-version upstream licence and supply required notices before release |
+| Dependencies | All 47 cached serving wheels match lock hashes. Inventory records metadata and notice-file paths; tokenizers upstream licence files now retained with provenance and included by staging. New image build and native/model attribution review remain pending |
 | Native components | Wheel metadata alone does not audit bundled native code or Debian licences. Complete distribution notice review remains open |
 | Cloud operation | Explicit guarded cloud entry point, immutable release image, intended IAM policy and measured pilot still needed |
 

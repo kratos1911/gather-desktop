@@ -72,3 +72,12 @@ authorization and real-model HTTP/Linux shutdown evidence. Independent developme
 can continue with receiving service-token verification; do not wait idly for an
 upstream package, or repeatedly rescan an unchanged image. Revisit these findings
 when a vendor fix/classification or the image/input paths change.
+
+## Follow-up: Debian issue checked on 18 October
+
+[Debian bug 1146895](https://bugs.debian.org/1146895) still lists the installed
+trixie version among affected versions and is tagged fixed-upstream, not fixed
+in Debian. Contributor claims about unaffected older code do not constitute
+maintainer adjudication. No supported fixed package was established; retained
+finding, with no new scan or runtime changes. Continue independent attribution
+and packaging work; re-evaluate remediation when supported evidence changes.

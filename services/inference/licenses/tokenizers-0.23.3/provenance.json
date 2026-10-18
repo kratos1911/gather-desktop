@@ -1,0 +1,24 @@
+{
+  "project": "huggingface/tokenizers",
+  "version": "0.23.3",
+  "tree": "301277072263fb3830eb66eec7e47adadf76f1dc",
+  "tree_url": "https://api.github.com/repos/huggingface/tokenizers/git/trees/v0.23.3?recursive=1",
+  "files": [
+    {
+      "path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/huggingface/tokenizers/301277072263fb3830eb66eec7e47adadf76f1dc/LICENSE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "bindings/node/LICENSE",
+      "url": "https://raw.githubusercontent.com/huggingface/tokenizers/301277072263fb3830eb66eec7e47adadf76f1dc/bindings/node/LICENSE",
+      "sha256": "02965ed67e29f871a53f7a7afa593a0ddc8020f86ccce0faaf1aa59215b5269e"
+    },
+    {
+      "path": "tokenizers/LICENSE",
+      "url": "https://raw.githubusercontent.com/huggingface/tokenizers/301277072263fb3830eb66eec7e47adadf76f1dc/tokenizers/LICENSE",
+      "sha256": "1e881ecf2862d01e6e5bc2b861e46886d2a6fb01499c0c508a209a7271b13cf2"
+    }
+  ],
+  "scope": "Upstream licence/notice files; bundled native dependency review remains separate"
+}

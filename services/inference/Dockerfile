@@ -15,5 +15,6 @@ RUN --mount=type=bind,source=wheels,target=/wheels python -m pip --isolated inst
     && python -m pip uninstall --yes pip \
     && python -c "import pathlib, shutil, sysconfig; shutil.rmtree(pathlib.Path(sysconfig.get_path('stdlib')) / 'ensurepip')"
 COPY services /app/services
+COPY third-party-notices.json /app/third-party-notices.json
 USER 65532:65532
 ENTRYPOINT ["python", "-m", "services.inference.stream"]

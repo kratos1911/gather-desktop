@@ -5,6 +5,8 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 18 October 2026.
 
+Notice packaging: [[services/inference/licenses/README|Verified upstream licences and staged bundle]].
+
 Pilot review: [[docs/CLOUD_PILOT_PLAN|Configuration, gates and acceptance]].
 No cloud resources deployed; see this plan for the next local prerequisite.
 

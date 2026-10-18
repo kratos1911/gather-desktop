@@ -43,6 +43,8 @@ class StagingTests(unittest.TestCase):
         policy = (self.build / '.dockerignore').read_text()
         self.assertNotIn('!services/inference/*.py',policy)
         self.assertNotIn('unreviewed',policy)
+        self.assertIn('!third-party-notices.json',policy)
+        self.assertTrue((self.build / 'third-party-notices.json').exists())
         self.assertFalse((self.root / 'output/inference-model').exists())
         staging.prepare(self.build, serving=True)
 

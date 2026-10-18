@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import shutil
 import zipfile
+from scripts.inference_notices import collect
 
 from services.inference.runtime import MODEL, REVISION
 
@@ -56,6 +57,8 @@ def prepare(build=BUILD, update_lock=False, serving=False):
     if lock.exists() and lock.read_text() != content and not update_lock:
         raise ValueError("Wheelhouse differs from reviewed lock")
     lock.write_text(content, encoding="utf-8")
+    notices = collect(build / 'wheels', lock)
+    (build / 'third-party-notices.json').write_text(json.dumps(notices, indent=2)+'\n', encoding='utf-8')
     shutil.copyfile(lock, build / "requirements.lock")
     shutil.copyfile(ROOT / "services/inference/Dockerfile", build / "Dockerfile")
     target = build / "services/inference"
@@ -63,7 +66,7 @@ def prepare(build=BUILD, update_lock=False, serving=False):
     for name in ("runtime.py", "qwen.py", "stream.py", "chunking.py"):
         shutil.copyfile(ROOT / "services/inference" / name, target / name)
     # BuildKit sees only this allowlist even if output contains older artifacts.
-    (build / '.dockerignore').write_text('**\n!Dockerfile\n!requirements.lock\n!wheels/\n!wheels/*.whl\n!services/\n!services/inference/\n!services/inference/*.py\n')
+    (build / '.dockerignore').write_text('**\n!Dockerfile\n!requirements.lock\n!third-party-notices.json\n!wheels/\n!wheels/*.whl\n!services/\n!services/inference/\n!services/inference/*.py\n')
     if serving:
         for name in ('asgi.py','service_auth.py','managed_auth.py','startup.py','artifacts.py','model-manifest.json'):
             shutil.copyfile(ROOT / 'services/inference' / name, target / name)
@@ -73,7 +76,7 @@ def prepare(build=BUILD, update_lock=False, serving=False):
         for name in names:
             shutil.copyfile(ROOT / 'services/worker' / name, worker / name)
         # Exact filenames exclude stale Python files left in a reused context.
-        allowed = ['Dockerfile', 'requirements.lock', 'wheels/*.whl']
+        allowed = ['Dockerfile', 'requirements.lock', 'wheels/*.whl', 'third-party-notices.json']
         allowed += ['services/inference/'+name for name in
                     ('runtime.py','qwen.py','stream.py','chunking.py','asgi.py',
                      'service_auth.py','managed_auth.py','startup.py','artifacts.py','model-manifest.json')]

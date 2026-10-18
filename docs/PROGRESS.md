@@ -1,5 +1,16 @@
 # Rebuild progress
 
+## 18 October missing licence corrected and packaging implemented
+
+Fetched exact tokenizers upstream tag tree and licence files; recorded hashes
+and immutable URLs. Added offline locked-wheel notice collector and Docker COPY.
+Focused checks reject modified/missing wheels and changed/escaping supplements.
+Nine checks plus frontend build pass; real 47-wheel staging includes 177 notices
+and three supplements. No existing image modified; container build verification
+remains pending. Debian bug 1146895 still lists our version as affected with no
+fixed package; retained findings and did not silently patch/remove native code.
+No paid deployment, model load or protected workload mutation.
+
 ## 18 October: bounded cloud pilot proposal and licence inventory
 
 Reviewed official Cloud Run CPU allocation, pinned model licence declaration and

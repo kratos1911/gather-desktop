@@ -1,5 +1,12 @@
 # Current project state
 
+Current: tokenizers upstream licence gap fixed in source; exact-version files
+and provenance retained. Notice collection integrated into image staging and
+Dockerfile. 47 wheels / 177 notices / 3 supplements staged; new image not built.
+Focused checks and frontend build pass. OS zlib still unresolved in Debian's
+tracker and bug report; no waiver. Next: model/native attribution review and
+supported OS remediation evidence before release-image promotion.
+
 Current checkpoint, 18 October: CLOUD_PILOT_PLAN.md records the bounded pilot
 proposal and open gates. All 47 serving wheel hashes match the lock; tokenizers
 has no detected bundled notice file. No licence clearance or OS waiver claimed.

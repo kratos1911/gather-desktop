@@ -1,5 +1,14 @@
 # Delivery tasks
 
+## 18 October notice packaging
+
+Exact tokenizers 0.23.3 licence files retained with immutable provenance.
+Nine focused staging/notice checks pass; actual 47-wheel collection passes
+(177 embedded notices, three supplements); frontend build passes. Dockerfile
+copies the bundle on future builds; existing image not rebuilt or promoted.
+Remaining: model/native attribution and unresolved OS adjudication/remediation.
+See services/inference/licenses/README.md. No model benchmark or cloud changes.
+
 ## 18 October cloud pilot review
 
 Completed review artifact: docs/CLOUD_PILOT_PLAN.md. All 47 serving wheel hashes
