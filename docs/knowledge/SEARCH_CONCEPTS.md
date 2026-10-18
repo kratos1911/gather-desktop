@@ -3,6 +3,13 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Prove a security backport with a failing control
+
+The same bounded test should expose the bug in the original dependency and pass
+with the fix. Verify the installed library too, not just compiled source. Keep
+scanner findings separate: a local backport may still match an advisory by package
+version. See [[services/inference/zlib/README]] for Gather’s zlib evidence.
+
 ## Background work needs CPU while idle
 
 A live server instance is not a promise that background threads can run. Cloud

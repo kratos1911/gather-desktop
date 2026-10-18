@@ -1,5 +1,19 @@
 # Current project state
 
+Final zlib scan: 28 findings (1 high, 1 medium, 26 low). Scout still flags
+CVE-2026-85091 on +gather1; no suppression applied. The targeted defect is fixed
+and regression-verified independently, not scanner-cleared. Evidence:
+tests/inference/results/zlib-scan-20261018.json. Scanner exited zero; temporary
+archive cleanup hit a file lock, so no forced deletion was attempted.
+
+Current: zlib error-state bug fixed in the separate zlib-candidate image using
+a pinned local backport, not an official Debian update. Original installed
+library fails the regression (42); patched installed library passes (0).
+Standard zlib tests, compression/PyTorch compatibility, 14 focused checks and
+frontend build pass. See services/inference/zlib/README.md and retained evidence.
+No model rerun or deployment. Other release gates remain; next is guarded cloud
+startup implementation with the final scan result retained above.
+
 Current: notice-packaged Linux candidate built and verified. Model card matches
 the pinned artifact hash; official Apache licence retained. All required notices
 are enforced by staging. 47 wheels, 177 embedded notices, five supplements;

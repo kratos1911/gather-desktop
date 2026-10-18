@@ -1,5 +1,16 @@
 # Architecture decisions
 
+## 18 October: maintain a narrow local zlib backport
+
+User prioritized fixing zlib. Debian maintainers confirm the older direct-write
+error path can retain invalid input state; absence of non-blocking API is not
+an exemption. Adapt upstream df84af25 to the installed 1.3.1 source, retaining its
+return expression and resetting only the two input fields. Use a separately
+versioned local Debian package with pinned hashes and original-versus-patched
+regression evidence. Replace it with a verified official update when available.
+This resolves the tested error path, not every release gate or scanner finding.
+Details and source provenance limits: services/inference/zlib/README.md.
+
 ## 18 October proposal: CPU allocation must support key refresh
 
 CLOUD_PILOT_PLAN.md supersedes the earlier request-based billing proposal.

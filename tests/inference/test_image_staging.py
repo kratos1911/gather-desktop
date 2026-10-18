@@ -31,6 +31,9 @@ class StagingTests(unittest.TestCase):
         self.patch = patch.object(staging,'ROOT',self.root)
         self.patch.start()
         self.addCleanup(self.patch.stop)
+        self.zlib_patch = patch.object(staging, 'stage_zlib')
+        self.zlib_patch.start()
+        self.addCleanup(self.zlib_patch.stop)
 
     def test_serving_stages_without_model_and_excludes_stale_code(self):
         stale = self.build / 'services/inference/unreviewed.py'

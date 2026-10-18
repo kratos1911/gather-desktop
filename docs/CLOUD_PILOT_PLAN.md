@@ -41,10 +41,11 @@ request-based proposal, not an applied billing setting. Source:
 Inventory: [licence evidence](../tests/inference/results/license-inventory-20261018.json).
 Model declaration: [pinned model card](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B/blob/97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3/README.md).
 Security: [retained OS review](../services/inference/OS_RISK_REVIEW.md).
+The system zlib error-state defect now has a [verified local backport](../services/inference/zlib/README.md); it is not an official Debian update. Other security gates remain.
 The [Debian zlib tracker](https://security-tracker.debian.org/tracker/CVE-2026-85091)
 still does not establish a supported fixed package for our image. Do not suppress
-the finding from version-string inference. Remediation or authoritative binary
-adjudication remains required; no risk exception is granted here.
+the finding from version-string inference. The local backport is the implemented remediation for this path; vendor replacement
+and other OS findings remain tracked. No blanket risk exception is granted here.
 
 ## Ordered next steps
 

@@ -5,6 +5,8 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 18 October 2026.
 
+Zlib fix: [[services/inference/zlib/README|Local backport and original-versus-fixed evidence]].
+
 Notice image: [[tests/inference/results/notices-image-20261018.json|Linux bundle verified; release gates remain]].
 
 Notice packaging: [[services/inference/licenses/README|Verified upstream licences and staged bundle]].

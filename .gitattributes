@@ -7,3 +7,4 @@
 /services/inference/licenses/**/LICENSE -text
 # Preserve upstream trailing spaces too; modifying them breaks the pinned hash.
 /services/inference/licenses/qwen3-embedding-0.6b/README.md -text whitespace=-blank-at-eol
+/services/inference/zlib/*.patch -text

@@ -1,5 +1,21 @@
 # Delivery tasks
 
+Final zlib scan: 28 findings (1 high, 1 medium, 26 low). Scout still flags
+CVE-2026-85091 on +gather1; no suppression applied. The targeted defect is fixed
+and regression-verified independently, not scanner-cleared. Evidence:
+tests/inference/results/zlib-scan-20261018.json. Scanner exited zero; temporary
+archive cleanup hit a file lock, so no forced deletion was attempted.
+
+## 18 October zlib backport verified
+
+Pinned Debian source plus adapted upstream error-state fix built as local
+zlib1g +gather1. Same dynamic regression fails on original image and passes on
+patched candidate. Debian zlib tests, nine compression/archive roundtrips,
+PyTorch archive check, 14 focused staging tests and frontend build pass.
+Image staging/installation fail on changed package, patch or base version.
+Evidence: tests/inference/results/zlib-build-20261018.json and zlib-image-20261018.json.
+No scanner suppression, model loading, protected API changes or deployment.
+
 ## 18 October notice image verified
 
 Completed model attribution packaging and mandatory supplemental-notice gate.

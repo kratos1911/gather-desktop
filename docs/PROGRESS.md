@@ -1,5 +1,25 @@
 # Rebuild progress
 
+Final zlib scan: 28 findings (1 high, 1 medium, 26 low). Scout still flags
+CVE-2026-85091 on +gather1; no suppression applied. The targeted defect is fixed
+and regression-verified independently, not scanner-cleared. Evidence:
+tests/inference/results/zlib-scan-20261018.json. Scanner exited zero; temporary
+archive cleanup hit a file lock, so no forced deletion was attempted.
+
+## 18 October: zlib fix built and tested
+
+Resumed after approval-review usage limit (previous compiler build never ran).
+Read stronger Debian maintainer evidence; chose narrow upstream backport instead
+of claiming not-affected. Isolated toolchain first lacked build-essential; added
+that declared build prerequisite. Offline source builds used one CPU/1 GiB.
+Unpatched regression failed as required; patched source and actual installed
+library passed. Debian standard/shared/64-bit tests passed. New zlib-candidate
+contains only local runtime package, not compiler tools. Compression/PyTorch
+archive checks, 14 focused tests and frontend build pass. Artifacts stay on D:.
+Initial Scout request rejected due metadata egress; user explicitly approved
+that scan before retry. No bypass, model run, push or deployment.
+See services/inference/zlib/README.md for reproduction, hashes and limits.
+
 ## 18 October model attribution and Linux package verification
 
 Retained pinned model card (hash matches model-manifest) and official Apache

@@ -1,5 +1,15 @@
 # OS finding review — 17 October 2026
 
+## Current zlib resolution, 18 October
+
+The stale-input-state defect is fixed and regression-verified in zlib-candidate
+using a local +gather1 backport. This supersedes the earlier wait-for-vendor-only
+approach below; those entries remain historical. See [backport review](zlib/README.md).
+Not an official Debian update and not blanket image approval. Original installed
+library fails the targeted check; patched image passes. Other findings remain. Final scan still lists 28 findings including the local
+zlib package; see tests/inference/results/zlib-scan-20261018.json. No suppression.
+Do not interpret scanner version matching as the behavior test or suppress it.
+
 Scope: serving runtime manifest
 `sha256:dc666a4893f77cce955c1b62f8e6b5b5a12ce8da21799f2c5db8ae252cfbf6f4`.
 This review does not suppress findings, accept risk or approve deployment. The
