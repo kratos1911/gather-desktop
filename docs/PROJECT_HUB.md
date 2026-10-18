@@ -5,12 +5,15 @@ tags: [gather, project]
 
 Start here in Obsidian. Updated 18 October 2026.
 
+Live keys: [[docs/RECEIVING_IDENTITY|Google public-key compatibility passed]].
+Real service-account token and deployed IAM remain unverified.
+
 Startup artifacts: [[services/inference/ARTIFACT_STARTUP|Verified files and entry point]].
 Updated Linux startup image verified: 51 focused synthetic checks pass.
 
 Identity handoff: [[docs/CLOUD_IDENTITY|Dual headers and cloud pilot checks]].
 Locally verified; [[docs/RECEIVING_IDENTITY|Trusted startup and paired callers]]
-now implemented. Artifact startup packaging passes; actual Google/IAM remains pending.
+now implemented. Artifact startup packaging passes; actual service-account token/IAM remains pending.
 
 HTTP evidence: [[services/inference/HTTP_SMOKE|Bounded real-model HTTP check]].
 Real local Qwen HTTP smoke passed; measurements and remaining cloud gates recorded.

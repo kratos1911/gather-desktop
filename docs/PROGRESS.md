@@ -1,5 +1,15 @@
 # Rebuild progress
 
+## 18 October: real public-key endpoint compatibility
+
+Ran one live key fetch through the existing ManagedGoogleServiceAuth in an
+isolated 256 MiB/one-CPU/64-PID read-only non-root startup-candidate container.
+Exit zero, two keys accepted in 0.505 s; remaining TTL 299.495 s. Credential-free
+request to Google public certificates only; no token, user content or model.
+Missing authorization still rejected. Container removed automatically. No code
+changes, new installs, paid resources, protected API changes or push. Existing
+model/Linux test/frontend evidence retained; deployed IAM remains unverified.
+
 ## 18 October: Docker packaging blocker resolved
 
 User opened Docker; Linux engine and all nine API containers confirmed running.

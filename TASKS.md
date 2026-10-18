@@ -1,5 +1,13 @@
 # Delivery tasks
 
+## 18 October live Google public-key fetch passed
+
+One bounded Linux request accepted two Google signing keys in 0.505 s; freshness
+and missing-credential rejection passed. No real identity token/model/IAM test.
+Evidence: tests/inference/results/live-google-keys-20261018.json. No code changed;
+reuse 51 Linux checks and the prior unchanged frontend build. Next: consolidate
+remaining licence/OS security gates and prepare a concrete gated cloud pilot.
+
 ## 18 October startup image verified
 
 Built separate startup-candidate after Docker became available. 51 focused Linux

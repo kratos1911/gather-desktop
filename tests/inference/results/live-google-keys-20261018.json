@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-18",
+  "image_tag": "gather-inference:startup-candidate",
+  "scope": "One live Google public certificate fetch from Linux; fictional caller policy; no ID token, model or IAM verification",
+  "endpoint": "https://www.googleapis.com/oauth2/v1/certs",
+  "passed": true,
+  "seconds": 0.5049055009999961,
+  "key_count": 2,
+  "remaining_ttl_seconds": 299.49509597099996,
+  "missing_credentials_rejected": true,
+  "exit_code": 0,
+  "requests": 1,
+  "memory_limit_bytes": 268435456,
+  "cpu_limit": 1,
+  "pids_limit": 64,
+  "readonly": true,
+  "user": "65532:65532",
+  "limits": "Existing five-second transport deadline and response/key bounds unchanged",
+  "limitations": [
+    "No actual service-account token verified",
+    "No deployed IAM policy checked",
+    "No rotation/outage integration run",
+    "No model loaded"
+  ]
+}

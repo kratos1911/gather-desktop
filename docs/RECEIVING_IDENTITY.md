@@ -1,5 +1,15 @@
 # Receiving service identity — local verifier
 
+## Live public-key compatibility, 18 October
+
+One live HTTPS request through the existing bounded transport and managed refresh
+passed inside startup-candidate. Google returned two usable keys; snapshot became
+ready in 0.505 s with 299.495 s remaining under the 300 s cap. Missing authorization
+remained rejected. Fictional caller policy only: no Google ID token or actual IAM
+verified. Evidence: tests/inference/results/live-google-keys-20261018.json.
+No credentials sent, model loaded, retries or limit changes. This one response
+does not establish future rotation/outage behavior; those remain synthetic tests.
+
 ## Trusted startup composition, 18 October
 
 `services/inference/startup.py` parses operator-owned JSON bytes (maximum 4 KiB)

@@ -1,11 +1,12 @@
 # Current project state
 
-Latest, 18 October: startup-candidate built; all 51 focused Linux checks pass.
-Artifact verification, paired callers and shutdown tested with synthetic inputs.
-Evidence: services/inference/ARTIFACT_STARTUP.md. Base/dependency layers unchanged;
-prior scan/frontend evidence reused. No real model loaded or protected API changes.
-Next: bounded live Google public-key fetch compatibility, then remaining licence/
-OS security and cloud pilot approvals. Public bind and deployment remain gated.
+Latest, 18 October: live Google public-key compatibility passed inside Linux
+startup-candidate: two keys, 0.505 s, unchanged freshness/resource bounds.
+Evidence: RECEIVING_IDENTITY.md and tests/inference/results/live-google-keys-20261018.json.
+Earlier 51 Linux checks and unchanged frontend build retained; no model rerun.
+Next: remaining licence/OS security review and concrete cloud pilot configuration.
+Actual identity-token/IAM/header validation, public bind and spend approval remain
+gates. Successful public-key retrieval alone does not authorize deployment.
 
 Current next-step status (17 October): real Qwen loopback HTTP smoke passed.
 Startup 12.68 s, short requests 0.68-0.82 s, 512-token passage 4.69 s, peak 3.98 GiB
