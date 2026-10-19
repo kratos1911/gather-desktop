@@ -1,5 +1,10 @@
 # Local zlib backport
 
+19 October staging update: all four inputs are read before destination writes.
+Hashes are checked on the captured bytes that are copied. Missing installer or
+manifest leaves existing staging unchanged and creates no new target. This is
+input-failure protection, not rollback for failures during filesystem writes.
+
 18 October 2026. The Gather candidate replaces Debian's
 `1:1.3.dfsg+really1.3.1-1+b1` with local `1:1.3.dfsg+really1.3.1-1+gather1`.
 This is a Gather-maintained backport, **not an official Debian security update**.

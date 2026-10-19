@@ -3,6 +3,9 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+19 October: staging input preflight verified; [[TASKS|Checks and next milestone]].
+Next is guarded Cloud Run startup, not deployment.
+
 Start here in Obsidian. Updated 18 October 2026.
 
 Collaboration: [[docs/CLI_WORKFLOW|Desktop and CLI handoffs]].

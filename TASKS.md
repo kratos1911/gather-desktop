@@ -1,5 +1,14 @@
 # Delivery tasks
 
+## 19 October: validate all staging inputs before writes
+
+Done: read package, patch, manifest and installer before creating/writing the
+target; validate hashes against captured bytes. Retain CLI missing-patch test;
+add missing-installer, missing-manifest and existing-output preservation cases.
+18 focused staging/notice tests and frontend build pass. No model/container run.
+Scope: input failures; not an atomic filesystem transaction for disk-write errors.
+Next milestone: explicit guarded Cloud Run entry point.
+
 ## CLI collaboration workflow
 
 Added docs/CLI_WORKFLOW.md and AGENTS.md handoff rules: one writer, scoped

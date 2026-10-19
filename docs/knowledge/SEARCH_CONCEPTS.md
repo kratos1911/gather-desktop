@@ -3,6 +3,13 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Validate before staging output
+
+Read all required build inputs before changing the destination, then hash and
+write the same captured bytes. Missing files cannot leave a new partial staging
+directory or overwrite an existing one. This does not make separate filesystem
+writes atomic if a disk error occurs. See [[scripts/stage_zlib.py]].
+
 ## Prove a security backport with a failing control
 
 The same bounded test should expose the bug in the original dependency and pass

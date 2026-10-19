@@ -1,5 +1,17 @@
 # Rebuild progress
 
+## 19 October: staging preflight completed
+
+Fixed the independently verified CLI-review finding: missing install.py previously
+failed after creating and partially populating zlib-patch. stage_zlib now reads
+every input before writes and copies exactly the bytes it hash-checked. Missing
+manifest/installer and failed retry against existing staging have regressions;
+the CLI-authored missing-patch test is preserved. 18 focused checks pass; frontend
+build passes. Used owning-account execution after sandbox Git ownership errors;
+no global Git trust or execution-policy changes. No Docker, model, cloud or paid
+work. Root error.txt/output.txt left untouched. Disk-write failure rollback remains
+outside this bounded fix; no filesystem atomicity claim. Next: guarded cloud startup.
+
 ## CLI collaboration setup
 
 Documented desktop/CLI handoff workflow, runtime commands and review contract.

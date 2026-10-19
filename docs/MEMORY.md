@@ -1,5 +1,13 @@
 # Current project state
 
+19 October: complete-input validation for zlib staging is verified. All four
+inputs are read before output creation; hashes validate the bytes actually copied.
+Missing installer/manifest fails without new or modified staging output. The CLI's
+previous missing-patch regression is retained and included in this checkpoint.
+18 focused tests and frontend build pass; no Docker/model run. Disk-write failures
+are not transactionally rolled back. Next: guarded Cloud Run startup, with current
+security/licence/IAM/spend release gates retained. Root CLI logs remain untouched.
+
 Desktop/CLI collaboration rules ready: docs/CLI_WORKFLOW.md. One writer per
 checkout, scoped handoff, reviewer-owned commit by default. No automatic session
 connection. Python launcher now forwards piped text; focused checks/build pass.
