@@ -1,5 +1,9 @@
 # Bounded inference cloud pilot
 
+19 October update: [guarded cloud startup](CLOUD_STARTUP.md) is implemented and
+host-tested. Linux image verification is pending Docker availability. Earlier
+rows below retain their dated evidence; no cloud deployment has occurred.
+
 18 October 2026. Reviewable proposal, **not approved or deployed**. Scope is one
 private inference service using fictional test text. This is not desktop rollout.
 

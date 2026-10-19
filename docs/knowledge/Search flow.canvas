@@ -98,6 +98,15 @@
       "y": -260,
       "width": 440,
       "height": 200
+    },
+    {
+      "id": "cloud-startup",
+      "type": "file",
+      "file": "docs/CLOUD_STARTUP.md",
+      "x": 1250,
+      "y": -260,
+      "width": 440,
+      "height": 200
     }
   ],
   "edges": [

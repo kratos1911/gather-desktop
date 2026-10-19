@@ -20,6 +20,10 @@ class ManagedGoogleServiceAuth:
         self._started = False
 
     @property
+    def identity(self):
+        return self._identity
+
+    @property
     def ready(self):
         snapshot = self._snapshot
         return not self._stop.is_set() and snapshot is not None and snapshot.ready

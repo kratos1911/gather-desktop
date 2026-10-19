@@ -1,5 +1,14 @@
 # Architecture decisions
 
+## 19 October: explicit cloud composition, preserved local default
+
+Use a separate services.inference.cloud_startup module. Environment variables
+alone must never enable public binding. Validate intended IAM policy through the
+existing IdentityConfig and match it to the receiver's callers; require the actual
+managed verifier in the server factory. Retain the existing bounded HTTP/lifecycle
+implementation. This declaration is not evidence of deployed Google permissions;
+real IAM/header/cold-start acceptance stays in the approved pilot. See CLOUD_STARTUP.md.
+
 ## 18 October: maintain a narrow local zlib backport
 
 User prioritized fixing zlib. Debian maintainers confirm the older direct-write

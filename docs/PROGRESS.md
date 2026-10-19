@@ -1,5 +1,21 @@
 # Rebuild progress
 
+## 19 October: explicit guarded Cloud Run entry point
+
+Added cloud_startup.py with bounded operator identity/policy reads, strict PORT,
+matching audience/invoker membership and early validation. Reuses verified model
+composition and managed-key lifespan. Server public binding now requires the
+managed verifier and matching typed policy; shared secrets/arbitrary callbacks
+cannot enable it. Local default and protocol/resource controls unchanged.
+Added 11 configuration/CLI tests and updated exact source staging allowlist.
+41 initial host cases passed (nine new plus 32 existing); final expanded cloud
+subset passed all 11. Also 18 staging checks, frontend build and actual 47-wheel
+source staging passed. No model/live Google calls. Docker preflight had about
+6.76 GiB free RAM but missing Linux pipe; switched to the existing host serving
+test environment without restarting Docker or retrying unchanged conditions.
+Linux packaging remains unverified. Updated canonical and Obsidian notes. No
+protected API changes, global policy changes, deployment or push.
+
 ## 19 October: staging preflight completed
 
 Fixed the independently verified CLI-review finding: missing install.py previously

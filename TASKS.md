@@ -1,5 +1,15 @@
 # Delivery tasks
 
+## 19 October: guarded cloud startup, host verified
+
+Implemented separate cloud_startup module, intended-policy/PORT validation and
+public-bind guard requiring ManagedGoogleServiceAuth. Local entry point unchanged.
+11 cloud tests + 32 existing auth/startup/HTTP cases + 18 staging checks pass;
+frontend build and real 47-wheel source staging pass. Synthetic identity/model
+fixtures only. Linux image not built: Docker engine pipe unavailable. Next is
+bounded Linux candidate verification after Docker starts, then remaining pilot
+gates. See docs/CLOUD_STARTUP.md. No deployment or resource-limit increases.
+
 ## 19 October: validate all staging inputs before writes
 
 Done: read package, patch, manifest and installer before creating/writing the

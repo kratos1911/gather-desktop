@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-19",
+  "scope": "Host synthetic identities/engines; cloud configuration construction only, no public listener or live Google",
+  "cloud_tests": 11,
+  "existing_startup_auth_http_tests": 32,
+  "staging_tests": 18,
+  "frontend_build_exit": 0,
+  "source_staging": "47 pinned wheels; exact new source verified",
+  "linux_image": "not built: Docker Linux engine pipe absent",
+  "files": {
+    "services/inference/cloud_startup.py": "a1888c6cef81df36306d2539e8448e0fe17a9101919ae96892fb0f7a05b8fb5d",
+    "services/inference/asgi.py": "0dac32d7cd8e06cce185243caecd340f08c25e0eaf4238bba8bcf7bb35251c23",
+    "services/inference/managed_auth.py": "c9d605f6c82d117880e2849eace137943e90ac50c233418da2521bca3cc536c5"
+  }
+}

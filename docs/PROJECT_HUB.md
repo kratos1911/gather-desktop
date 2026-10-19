@@ -3,6 +3,9 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Cloud startup: [[docs/CLOUD_STARTUP|Explicit mode and host verification]].
+Next: Linux image verification after Docker starts; no deployment yet.
+
 19 October: staging input preflight verified; [[TASKS|Checks and next milestone]].
 Next is guarded Cloud Run startup, not deployment.
 

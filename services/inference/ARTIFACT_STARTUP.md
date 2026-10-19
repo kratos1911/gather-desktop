@@ -29,7 +29,9 @@ Explicit local entry point (paths must be operator-provided, never request data)
 python -B -m services.inference.startup --identity <operator-policy.json> --model <absolute-readonly-model-directory> --port 8080
 ```
 
-This entry point binds loopback only, with no public-host switch or credential
+The separate cloud entry point is now described in docs/CLOUD_STARTUP.md;
+its host checks pass, while Linux packaging and actual IAM remain unverified.
+This local entry point binds loopback only, with no public-host switch or credential
 fallback. It will fetch Google keys on lifespan startup; the command was NOT run
 against live Google in this milestone. Default Docker stream entry point remains
 unchanged; select this module explicitly for future controlled integration checks.

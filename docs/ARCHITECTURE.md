@@ -1,5 +1,10 @@
 # Architecture: how the product works
 
+19 October current update: explicit cloud startup and managed-identity public-bind
+guard implemented; see CLOUD_STARTUP.md. Local mode remains loopback. Host checks
+pass; Linux packaging and deployed IAM remain unverified. Historical notes below
+describe earlier milestones and are superseded on public-bind availability.
+
 Outbound service identity: CloudInferenceClient obtains bounded metadata ID tokens
 through the existing transport; intended-policy config is fail-closed. See
 CLOUD_IDENTITY.md. Actual receiving IAM enforcement remains a deployment gate.

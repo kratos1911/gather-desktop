@@ -1,5 +1,13 @@
 # Current project state
 
+19 October: guarded Cloud Run startup implemented and host-verified; see
+CLOUD_STARTUP.md. Explicit module requires matching intended IAM policy, managed
+Google auth and valid PORT; local startup remains loopback-only. 11 new cloud,
+32 existing auth/startup/HTTP and 18 staging checks pass; frontend build passes.
+Exact source staged, no models loaded. Linux image verification remains blocked:
+Docker Linux engine pipe absent on preflight. Next: start Docker normally and
+verify a separate cloud-startup candidate. No live IAM proof or deployment.
+
 19 October: complete-input validation for zlib staging is verified. All four
 inputs are read before output creation; hashes validate the bytes actually copied.
 Missing installer/manifest fails without new or modified staging output. The CLI's

@@ -1,4 +1,4 @@
-"""Production-server adapter, locally verifiable; cloud IAM is not implemented.
+"""Bounded server adapter; intended cloud policy is not deployed IAM evidence.
 
 Only trusted code constructs runtime and authentication. No import-time model load.
 """
@@ -63,6 +63,7 @@ def create_app(runtime, authenticate):
     app.state.stopping = stopping
     app.state.runtime = runtime
     app.state.local_auth = isinstance(authenticate, LocalBearer)
+    app.state.authenticate = authenticate
 
     def reply(status, value):
         raw = json.dumps(value, allow_nan=False).encode()
@@ -189,10 +190,19 @@ class InferenceASGIServer(uvicorn.Server):
         super().handle_exit(sig, frame)
 
 
-def create_server(app, *, host='127.0.0.1', port=8080):
-    # IAM deployment mode deliberately unavailable until the identity milestone.
+def create_server(app, *, host='127.0.0.1', port=8080, cloud_policy=None):
     if host != '127.0.0.1':
-        raise ValueError('cloud_identity_not_configured')
+        from services.inference.managed_auth import ManagedGoogleServiceAuth
+        from services.worker.cloud_identity import IdentityConfig
+        auth = getattr(app.state, 'authenticate', None)
+        if (host != '0.0.0.0' or type(auth) is not ManagedGoogleServiceAuth
+                or type(cloud_policy) is not IdentityConfig
+                or cloud_policy.audience != auth.identity.audience
+                or set(cloud_policy.invoker_members) != {
+                    'serviceAccount:'+email for email, _ in auth.identity.callers}):
+            raise ValueError('cloud_identity_not_configured')
+        if type(port) is not int or not 1 <= port <= 65535:
+            raise ValueError('invalid_cloud_port')
     # Protocol hooks are tied to the reviewed version; never silently run with
     # the older shared h11 parser or an unreviewed Uvicorn hook implementation.
     if version('uvicorn') != '0.54.0' or version('h11') != '0.16.0':

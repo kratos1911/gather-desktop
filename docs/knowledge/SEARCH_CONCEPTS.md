@@ -3,6 +3,14 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Intended policy is not deployed authorization
+
+Cloud startup can check that an operator's allowed callers match the token
+verifier. It cannot infer that Google IAM is actually configured that way.
+Keep those checks separate: local tests prove configuration consistency; the
+cloud pilot must prove permitted/forbidden requests at the deployed service.
+See [[docs/CLOUD_STARTUP]].
+
 ## Validate before staging output
 
 Read all required build inputs before changing the destination, then hash and
