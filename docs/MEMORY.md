@@ -1,5 +1,13 @@
 # Current project state
 
+19 October latest: Docker available; cloud-startup candidate built. All 49 Linux
+startup/auth/HTTP/artifact/SIGTERM checks pass, 512 MiB/one CPU, no model/network.
+See CLOUD_STARTUP.md and cloud-startup-linux-20261019.json for evidence. Prior
+unchanged frontend build retained. Two protected APIs showed restart-count changes;
+no mutation commands issued and no cause inferred. Next: native attribution and
+immutable model-bearing release packaging, then approved cloud pilot. Live IAM,
+cold start, release findings and paid deployment remain unverified/unapproved.
+
 19 October: guarded Cloud Run startup implemented and host-verified; see
 CLOUD_STARTUP.md. Explicit module requires matching intended IAM policy, managed
 Google auth and valid PORT; local startup remains loopback-only. 11 new cloud,

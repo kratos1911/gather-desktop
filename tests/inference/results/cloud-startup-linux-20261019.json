@@ -1,0 +1,145 @@
+{
+  "date": "2026-10-19",
+  "source_checkpoint": "7d5ba57",
+  "image": "sha256:d7fa3e676872ee79720250ee61fe31f4b9fc5c7153e319a222fb9fb0522e6837",
+  "user": "65532:65532",
+  "exit_code": 0,
+  "seconds": 17.563,
+  "modules": [
+    "tests.inference.test_cloud_startup",
+    "tests.inference.test_startup",
+    "tests.inference.test_service_auth",
+    "tests.inference.test_managed_auth",
+    "tests.inference.test_asgi",
+    "tests.inference.test_artifacts",
+    "tests.inference.test_linux_auth_shutdown"
+  ],
+  "tests": 49,
+  "limits": {
+    "memory_bytes": 536870912,
+    "cpus": 1,
+    "pids": 64,
+    "network": "none",
+    "readonly": true,
+    "published_ports": []
+  },
+  "scope": "Synthetic engines/keys and tiny artifact files; no real model, Google IAM or deployment",
+  "log_sha256": "2e025ba8247b57fcbd887d2f06d024d46c41d5ab61824b3d3f8d18029cad6109",
+  "containers_before": {
+    "directory-api": {
+      "id": "e0ef396f6fd5f974168b8e91c659a837755b7ce0378d03358dfd4d37efe7a0e1",
+      "restarts": 0,
+      "started_at": "2026-10-19T11:47:17.949147176Z",
+      "running": true
+    },
+    "mailflow-rules-api": {
+      "id": "b7901b42bfbb0cf04dcabeb43cbcc94f4d0788aca1dbae8c80a0b164daf7c370",
+      "restarts": 4,
+      "started_at": "2026-10-19T11:48:55.819683109Z",
+      "running": true
+    },
+    "email-api": {
+      "id": "a9c4e0495e5c278f9145f962402ecd2213d50e38953688ddcfbec3fe0a672295",
+      "restarts": 4,
+      "started_at": "2026-10-19T11:48:56.020152517Z",
+      "running": true
+    },
+    "policy-api": {
+      "id": "5de5994190c9088943b4f18580a6405b2693b842cbddf81b80ca7c02f0dc64d6",
+      "restarts": 0,
+      "started_at": "2026-10-19T11:47:17.933996728Z",
+      "running": true
+    },
+    "registration-api": {
+      "id": "fbf994ce78370e12365e95200a464d09e8ec16118cfced8961377d28651c63d9",
+      "restarts": 0,
+      "started_at": "2026-10-19T11:47:17.938930646Z",
+      "running": true
+    },
+    "login-api": {
+      "id": "c9c7b185a05fec169b37616833b6af490ab3a147369450f63d120f2b35e9931d",
+      "restarts": 0,
+      "started_at": "2026-10-19T11:47:17.946900284Z",
+      "running": true
+    },
+    "analytics-api": {
+      "id": "d955c615b4e936b28b1487a3e1cf54a20d3d52f7966f8bba498f86143f2694f1",
+      "restarts": 0,
+      "started_at": "2026-10-19T11:47:17.917026577Z",
+      "running": true
+    },
+    "api-gateway": {
+      "id": "dc8414e3c364642afaf384cbb23613bb3bfc0adb8b51fddce29331eb9783e295",
+      "restarts": 0,
+      "started_at": "2026-10-19T11:47:17.954160818Z",
+      "running": true
+    },
+    "licensing-node": {
+      "id": "eb32ec6bfd9b56e6246ae6e41f5c4d9d03cd8056c4f9dbca599fd8cc287c84db",
+      "restarts": 0,
+      "started_at": "2026-10-19T11:47:17.956661172Z",
+      "running": true
+    }
+  },
+  "containers_after": {
+    "directory-api": {
+      "id": "e0ef396f6fd5f974168b8e91c659a837755b7ce0378d03358dfd4d37efe7a0e1",
+      "restarts": 0,
+      "started_at": "2026-10-19T11:47:17.949147176Z",
+      "running": true
+    },
+    "mailflow-rules-api": {
+      "id": "b7901b42bfbb0cf04dcabeb43cbcc94f4d0788aca1dbae8c80a0b164daf7c370",
+      "restarts": 5,
+      "started_at": "2026-10-19T11:49:19.06944542Z",
+      "running": true
+    },
+    "email-api": {
+      "id": "a9c4e0495e5c278f9145f962402ecd2213d50e38953688ddcfbec3fe0a672295",
+      "restarts": 5,
+      "started_at": "2026-10-19T11:49:19.197392804Z",
+      "running": true
+    },
+    "policy-api": {
+      "id": "5de5994190c9088943b4f18580a6405b2693b842cbddf81b80ca7c02f0dc64d6",
+      "restarts": 0,
+      "started_at": "2026-10-19T11:47:17.933996728Z",
+      "running": true
+    },
+    "registration-api": {
+      "id": "fbf994ce78370e12365e95200a464d09e8ec16118cfced8961377d28651c63d9",
+      "restarts": 0,
+      "started_at": "2026-10-19T11:47:17.938930646Z",
+      "running": true
+    },
+    "login-api": {
+      "id": "c9c7b185a05fec169b37616833b6af490ab3a147369450f63d120f2b35e9931d",
+      "restarts": 0,
+      "started_at": "2026-10-19T11:47:17.946900284Z",
+      "running": true
+    },
+    "analytics-api": {
+      "id": "d955c615b4e936b28b1487a3e1cf54a20d3d52f7966f8bba498f86143f2694f1",
+      "restarts": 0,
+      "started_at": "2026-10-19T11:47:17.917026577Z",
+      "running": true
+    },
+    "api-gateway": {
+      "id": "dc8414e3c364642afaf384cbb23613bb3bfc0adb8b51fddce29331eb9783e295",
+      "restarts": 0,
+      "started_at": "2026-10-19T11:47:17.954160818Z",
+      "running": true
+    },
+    "licensing-node": {
+      "id": "eb32ec6bfd9b56e6246ae6e41f5c4d9d03cd8056c4f9dbca599fd8cc287c84db",
+      "restarts": 0,
+      "started_at": "2026-10-19T11:47:17.956661172Z",
+      "running": true
+    }
+  },
+  "unchanged_base_dependency_layers": 8,
+  "previous_image": "sha256:921268f606df96e60fb781156a03ad1e63a2a2143168cdc879564a382532d2df",
+  "scan_basis": "18 October zlib-candidate scan retained as historical evidence; no new scan. Base/dependency layers identical; pinned backport package unchanged.",
+  "frontend": "Prior successful build at 7d5ba57 reused; no frontend or build-input changes.",
+  "protected_workload_observation": "No protected-container mutation commands issued. mailflow-rules-api and email-api restart counts increased 4 to 5; both running afterward. Cause not investigated."
+}

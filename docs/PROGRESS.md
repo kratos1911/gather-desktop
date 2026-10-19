@@ -1,5 +1,18 @@
 # Rebuild progress
 
+## 19 October: Docker unblocked; cloud startup verified in Linux
+
+Preflight: Linux engine ready, about 3.75 GiB RAM and 108.8 GiB D: free. Staged
+47 locked wheels and built a separate cloud-startup-candidate. 49 tests passed
+in 15.381 s (17.563 s including container invocation), exit zero, bounded at
+512 MiB/one CPU/64 PIDs, non-root/read-only/network-none. Actual Linux SIGTERM
+reaps synthetic inference and joins key refresh. No real model, Google or cloud
+deployment. Eight base/dependency layers identical; pinned zlib backport retained.
+Prior scan and unchanged frontend build reused explicitly. During the test,
+mailflow-rules-api and email-api restart counts increased 4 to 5. No protected
+container stop/restart/update commands issued; no cause inferred or investigated.
+Both remained running afterward. Full evidence in cloud-startup-linux-20261019.json.
+
 ## 19 October: explicit guarded Cloud Run entry point
 
 Added cloud_startup.py with bounded operator identity/policy reads, strict PORT,

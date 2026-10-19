@@ -1,7 +1,7 @@
 # Bounded inference cloud pilot
 
 19 October update: [guarded cloud startup](CLOUD_STARTUP.md) is implemented and
-host-tested. Linux image verification is pending Docker availability. Earlier
+host/Linux-tested; all 49 packaged Linux checks pass. Earlier
 rows below retain their dated evidence; no cloud deployment has occurred.
 
 18 October 2026. Reviewable proposal, **not approved or deployed**. Scope is one

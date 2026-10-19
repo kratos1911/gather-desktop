@@ -1,5 +1,14 @@
 # Delivery tasks
 
+## 19 October: Linux cloud-startup verification complete
+
+Separate cloud-startup-candidate built; all 49 Linux checks pass, including real
+SIGTERM cleanup. No model loaded, no host port or external network. Eight base/
+dependency layers match prior candidate; no fresh scan. Previous frontend build
+reused. Evidence: tests/inference/results/cloud-startup-linux-20261019.json.
+Next: complete native attribution and immutable model-bearing release packaging;
+cloud pilot still requires project/region/spend and actual IAM acceptance.
+
 ## 19 October: guarded cloud startup, host verified
 
 Implemented separate cloud_startup module, intended-policy/PORT validation and

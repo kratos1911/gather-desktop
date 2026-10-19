@@ -1,5 +1,9 @@
 # Linux serving candidate
 
+19 October: cloud-startup-candidate now verified with 49 Linux checks; see
+docs/CLOUD_STARTUP.md and tests/inference/results/cloud-startup-linux-20261019.json.
+No model weights bundled or live IAM tested. Earlier images below are historical.
+
 18 October: startup-candidate now packages paired-caller and artifact verification
 source. All 51 focused Linux checks pass. See ARTIFACT_STARTUP.md and
 tests/inference/results/startup-image-20261018.json for exact image/layer evidence.

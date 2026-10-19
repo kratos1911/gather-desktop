@@ -3,6 +3,9 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Linux checkpoint: [[docs/CLOUD_STARTUP|49 packaged startup/security/shutdown checks passed]].
+Next: model release packaging and remaining attribution/pilot gates.
+
 Cloud startup: [[docs/CLOUD_STARTUP|Explicit mode and host verification]].
 Next: Linux image verification after Docker starts; no deployment yet.
 

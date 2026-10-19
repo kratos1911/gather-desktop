@@ -1,7 +1,7 @@
 # Explicit Cloud Run startup
 
-19 October 2026. Implemented and verified on the Windows host with synthetic
-engines/identities. Linux packaging, real Google IAM and deployment remain pending.
+19 October 2026. Implemented and verified on Windows and in the packaged Linux
+candidate with synthetic engines/identities. Real Google IAM and deployment remain pending.
 
 ## Two deliberate entry points
 
@@ -75,7 +75,23 @@ listener opened by these new configuration tests, and nothing was deployed.
 - Cloud source included in exact staging allowlist. Docker preflight failed:
   Linux engine pipe absent. No restart or repeat attempted; no new Linux image.
 
-Next: start Docker normally, then build a separate candidate and run the same
-focused Linux tests with bounded resources. Retain current zlib scan findings,
-licence review and pilot approval gates. This milestone does not connect the
-sample desktop UI to live inference.
+## Linux verification completed
+
+After the user started Docker, built `gather-inference:cloud-startup-candidate`,
+image `sha256:d7fa3e676872ee79720250ee61fe31f4b9fc5c7153e319a222fb9fb0522e6837`.
+All 49 Linux startup/auth/HTTP/artifact/SIGTERM checks passed in 15.381 seconds
+(17.563 seconds including container invocation), exit zero. Limits: 512 MiB,
+one CPU, 64 PIDs, read-only/non-root, no external network or published host ports.
+Eight base/dependency layers match zlib-candidate; dated scan findings retained,
+not represented as a fresh scan. Unchanged frontend build reused.
+
+Evidence: [Linux result](../tests/inference/results/cloud-startup-linux-20261019.json).
+No model or live Google calls. Configuration tests construct cloud mode without
+opening a public listener; HTTP and SIGTERM checks use isolated loopback.
+No protected-container mutation commands were issued. Two existing API containers
+recorded restarts during the check; cause uninvestigated, both running afterward.
+
+Next: finish native dependency attribution and prepare the immutable model-bearing
+release artifact for review. Real-model verification is needed when that artifact
+changes, not another retrieval benchmark. Retain zlib scan findings and cloud
+project/region/spend/IAM pilot gates. Desktop remains a sample preview.
