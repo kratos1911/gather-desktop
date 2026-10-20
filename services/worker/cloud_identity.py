@@ -13,7 +13,11 @@ from services.worker.service_transport import TransportError, strict_json, reque
 
 
 def validate_audience(value):
-    if not isinstance(value,str) or not re.fullmatch(r'https://[a-z0-9][a-z0-9-]{0,200}\.run\.app',value):
+    # Google supports regional and generated multi-label run.app hostnames.
+    # Accept only an HTTPS origin; the verifier still pins its exact value.
+    label = r'[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?'
+    if (not isinstance(value,str) or len(value)>261
+            or not re.fullmatch(r'https://'+label+r'(?:\.'+label+r')*\.run\.app',value)):
         raise TransportError('invalid_identity_configuration')
     return value
 

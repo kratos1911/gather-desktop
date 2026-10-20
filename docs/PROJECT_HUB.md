@@ -3,6 +3,9 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Release/pilot: [[docs/RELEASE_AND_PILOT|Built candidate, Gather project, INR 500 plan and blockers]].
+No deployment; personal CLI sign-in and real-image RAM prerequisite remain.
+
 Linux checkpoint: [[docs/CLOUD_STARTUP|49 packaged startup/security/shutdown checks passed]].
 Next: model release packaging and remaining attribution/pilot gates.
 

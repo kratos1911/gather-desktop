@@ -40,6 +40,14 @@ class HTTPSmokeTests(unittest.TestCase):
             self.assertEqual(error.exception.code, 2)
             docker.assert_not_called()
 
+    def test_release_requires_bounded_real_http_profile(self):
+        for args in (['--release'], ['--release','--candidate','--controls','--profile','http']):
+            with patch('sys.argv',['check',*args]), patch('scripts.check_inference_container.command') as docker:
+                with self.assertRaises(SystemExit) as error:
+                    main()
+                self.assertEqual(error.exception.code,2)
+                docker.assert_not_called()
+
 
 if __name__ == '__main__':
     unittest.main()

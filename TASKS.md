@@ -1,5 +1,15 @@
 # Delivery tasks
 
+## 20 October: release image and Gather-only pilot preparation
+
+Partial milestones 1/2: built baked-model candidate, native notice collection,
+bounded release HTTP harness, and deployment settings manifest for Gather only.
+34 identity/startup tests plus 8 release/harness tests pass; frontend build and
+isolated 128 MiB image integrity/permissions check pass. New real-model inference
+not run (3.09 GiB available versus 4 GiB threshold). Personal gcloud sign-in missing;
+browser project verified. See docs/RELEASE_AND_PILOT.md for exact next actions.
+No deployment approval inferred from INR 500/project/region planning choices.
+
 ## 19 October: Linux cloud-startup verification complete
 
 Separate cloud-startup-candidate built; all 49 Linux checks pass, including real

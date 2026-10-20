@@ -42,6 +42,19 @@ class IdentityTests(unittest.TestCase):
             with self.subTest(fields=fields), self.assertRaises(TransportError):
                 IdentityConfig(**(dict(audience=AUD, caller_email=EMAIL, invoker_members=MEMBERS)|fields))
 
+    def test_regional_and_generated_service_origins(self):
+        for audience in ('https://gather-inference-123456789.asia-south1.run.app',
+                         'https://gather-inference-fixture-uc.a.run.app', AUD):
+            self.assertEqual(IdentityConfig(audience, EMAIL, MEMBERS).audience, audience)
+        for audience in ('https://x.run.app.evil.example', 'https://user@x.run.app',
+                         'https://x.run.app:443', 'https://x.run.app/',
+                         'https://x.run.app?token=x', 'https://x..run.app',
+                         'https://-x.run.app', 'https://x-.run.app',
+                         'https://'+'x'*64+'.run.app',
+                         'https://'+'.'.join(['x'*63]*4)+'.run.app'):
+            with self.subTest(audience=audience), self.assertRaises(TransportError):
+                IdentityConfig(audience, EMAIL, MEMBERS)
+
     def test_cache_and_explicit_invalidation(self):
         provider = MetadataTokenProvider(self.config)
         self.assertEqual(provider.get(), token())

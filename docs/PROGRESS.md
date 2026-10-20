@@ -1,5 +1,26 @@
 # Rebuild progress
 
+## 19–20 October: release artifact and pilot plan prepared
+
+Collected 439 hash-pinned crate source notice sets from wheel SBOMs, with six
+upstream supplement files for three crates. Kept 14 local project components
+separate; no binary-completeness/legal certification claim. Built a model-bearing
+candidate with 10 hash-verified, root-owned non-writable model files and native
+notices. Found/fixed regional/generated run.app hostname incompatibility while
+retaining exact audience verification. Reused model layers for the small overlay.
+34 identity/verifier/startup tests, 8 packaging/HTTP harness tests, frontend build
+and 128 MiB in-image hash/permission verification pass. Real-model smoke remains
+unrun: memory checks stayed below 4 GiB; no limits relaxed or apps closed.
+
+User chose INR 500/Mumbai. Initial local gcloud project turned out to be
+Intrixshield; only read metadata/billing, then stopped on user's instruction.
+User supplied Gather Development, gather-development-511211; browser verified
+project and displayed trial credits. Personal browser account differs from the
+only CLI account; explicit Gather read denied, no fallback project used. Final
+plan excludes Intrixshield and all cloud mutations remain approval-gated.
+Read-only build metadata, source downloads and local container tests only.
+No model rerun, paid provisioning, account switch, push or protected API changes.
+
 ## 19 October: Docker unblocked; cloud startup verified in Linux
 
 Preflight: Linux engine ready, about 3.75 GiB RAM and 108.8 GiB D: free. Staged

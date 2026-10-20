@@ -81,9 +81,11 @@ def run(runtime):
 
 
 def main():
+    from services.inference.artifacts import verify_snapshot
     from services.inference.qwen import QwenEngine
     from services.inference.runtime import Runtime
-    report = run(Runtime(QwenEngine, '/model'))
+    verified = verify_snapshot(Path('/model'))
+    report = run(Runtime(QwenEngine, str(verified)))
     report['container_peak_bytes'] = int(Path('/sys/fs/cgroup/memory.peak').read_text())
     print(json.dumps(report, allow_nan=False), flush=True)
     return 0 if report['passed'] else 1

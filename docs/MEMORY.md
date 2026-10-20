@@ -1,5 +1,16 @@
 # Current project state
 
+20 October: model-bearing release candidate built; see RELEASE_AND_PILOT.md and
+deploy/cloud-run/pilot.json. Correct target is gather-development-511211 (Gather
+Development), Mumbai; INR 500 total ceiling. Intrixshield is forbidden. Browser
+verified Gather; local gcloud only has the work account and cannot access it.
+Collected notices for 439 hashed crates plus separate parent-project components.
+Fixed real Cloud Run hostname compatibility; 34 identity tests, 8 packaging/HTTP
+checks, frontend build and 128 MiB baked-file integrity verification pass.
+Real-model release smoke is blocked by 3.09 GiB free RAM (<4 GiB required).
+Milestones 1/2 remain partial: personal CLI sign-in, real smoke and final resource/
+security approval pending. No cloud mutation/upload/deployment. Model/caches on D:.
+
 19 October latest: Docker available; cloud-startup candidate built. All 49 Linux
 startup/auth/HTTP/artifact/SIGTERM checks pass, 512 MiB/one CPU, no model/network.
 See CLOUD_STARTUP.md and cloud-startup-linux-20261019.json for evidence. Prior

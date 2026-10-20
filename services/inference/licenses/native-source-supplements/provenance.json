@@ -1,0 +1,48 @@
+{
+  "project": "native-source-supplements",
+  "version": "2026-10-19",
+  "files": [
+    {
+      "path": "defmt-parser-1.0.0/LICENSE-APACHE",
+      "url": "https://raw.githubusercontent.com/knurling-rs/defmt/4a8cdb44891ed57b8ff5a023b6bec7137c48708f/LICENSE-APACHE",
+      "sha256": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+      "crate": "defmt-parser-1.0.0",
+      "revision": "4a8cdb44891ed57b8ff5a023b6bec7137c48708f"
+    },
+    {
+      "path": "defmt-parser-1.0.0/LICENSE-MIT",
+      "url": "https://raw.githubusercontent.com/knurling-rs/defmt/4a8cdb44891ed57b8ff5a023b6bec7137c48708f/LICENSE-MIT",
+      "sha256": "2710a622a896bba67356913d4d0492cab5465f61b2ecce6d880aeb483834fb50",
+      "crate": "defmt-parser-1.0.0",
+      "revision": "4a8cdb44891ed57b8ff5a023b6bec7137c48708f"
+    },
+    {
+      "path": "r-efi-5.2.0/AUTHORS",
+      "url": "https://raw.githubusercontent.com/r-efi/r-efi/db87f6c8c6346d66750b5bda6befebafa0dc0c4c/AUTHORS",
+      "sha256": "c42285aa32440c3b5358fd4805b817cd8d6e1795111d2e4c547530be41896b2d",
+      "crate": "r-efi-5.2.0",
+      "revision": "db87f6c8c6346d66750b5bda6befebafa0dc0c4c"
+    },
+    {
+      "path": "wit-bindgen-rt-0.39.0/LICENSE-APACHE",
+      "url": "https://raw.githubusercontent.com/bytecodealliance/wit-bindgen/f2393e6e98fa5f9236cac580db8a3fc9de6a4b70/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+      "crate": "wit-bindgen-rt-0.39.0",
+      "revision": "f2393e6e98fa5f9236cac580db8a3fc9de6a4b70"
+    },
+    {
+      "path": "wit-bindgen-rt-0.39.0/LICENSE-MIT",
+      "url": "https://raw.githubusercontent.com/bytecodealliance/wit-bindgen/f2393e6e98fa5f9236cac580db8a3fc9de6a4b70/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+      "crate": "wit-bindgen-rt-0.39.0",
+      "revision": "f2393e6e98fa5f9236cac580db8a3fc9de6a4b70"
+    },
+    {
+      "path": "wit-bindgen-rt-0.39.0/LICENSE-Apache-2.0_WITH_LLVM-exception",
+      "url": "https://raw.githubusercontent.com/bytecodealliance/wit-bindgen/f2393e6e98fa5f9236cac580db8a3fc9de6a4b70/LICENSE-Apache-2.0_WITH_LLVM-exception",
+      "sha256": "268872b9816f90fd8e85db5a28d33f8150ebb8dd016653fb39ef1f94f2686bc5",
+      "crate": "wit-bindgen-rt-0.39.0",
+      "revision": "f2393e6e98fa5f9236cac580db8a3fc9de6a4b70"
+    }
+  ]
+}

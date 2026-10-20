@@ -1,5 +1,16 @@
 # Architecture decisions
 
+## 20 October: isolated Gather pilot and bounded release artifact
+
+Use gather-development-511211, asia-south1, INR 500 maximum total pilot budget.
+Never use primeval-splice-467909-k5/Intrixshield or alter its configuration.
+Use explicit account/project arguments after personal-account CLI sign-in.
+Package verified immutable model files into the tested serving image, retain
+hash-pinned source notices, and verify the baked image instead of mounting host
+weights for its final smoke. Reuse unchanged model layers. Exact audience matching
+remains required while allowing Google's documented multi-label run.app origins.
+These decisions prepare a pilot, not authorize provisioning or waive findings.
+
 ## 19 October: explicit cloud composition, preserved local default
 
 Use a separate services.inference.cloud_startup module. Environment variables

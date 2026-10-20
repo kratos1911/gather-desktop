@@ -1,0 +1,54 @@
+{
+  "status": "prepared_not_approved_for_deployment",
+  "project_id": "gather-development-511211",
+  "project_name": "Gather Development",
+  "region": "asia-south1",
+  "budget": {
+    "currency": "INR",
+    "maximum_total": 500,
+    "scope": "One supervised pilot including compute, storage, transfer and taxes",
+    "is_provider_enforced_cap": false
+  },
+  "service": {
+    "name": "gather-inference-pilot",
+    "cpu": 2,
+    "memory_gib": 5,
+    "concurrency": 1,
+    "min_instances": 0,
+    "max_instances": 1,
+    "billing": "instance_based",
+    "startup_cpu_boost": false,
+    "timeout_seconds": 30,
+    "port": 8080,
+    "invoker_iam_check": true,
+    "public_invoker": false,
+    "access_logs": false
+  },
+  "repository": {
+    "name": "gather-pilot-images",
+    "location": "asia-south1",
+    "format": "docker",
+    "remote_build": false
+  },
+  "identities": {
+    "runtime_account_name": "gather-inference",
+    "caller_account_name": "gather-pilot-caller",
+    "caller_subject": null,
+    "audience": null,
+    "download_service_account_keys": false
+  },
+  "candidate_image": "sha256:fa60e15879e583c9bff8e04b78f774ebd7fd65eb8b9022304d249d125fb291fc",
+  "pilot_bounds": {
+    "max_test_requests": 12,
+    "supervised_window_minutes": 60,
+    "image_retention_hours": 24,
+    "automatic_retries": 0
+  },
+  "deployment_blocks": [
+    "Personal Gather account is not yet signed in to local gcloud",
+    "Real baked-image model test requires at least 4 GiB free RAM",
+    "Actual project number, service-account subject and deployed audience must be verified",
+    "Final security-risk and resource-creation approval is outstanding"
+  ],
+  "forbidden_project_ids": ["primeval-splice-467909-k5"]
+}

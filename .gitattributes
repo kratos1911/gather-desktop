@@ -8,3 +8,7 @@
 # Preserve upstream trailing spaces too; modifying them breaks the pinned hash.
 /services/inference/licenses/qwen3-embedding-0.6b/README.md -text whitespace=-blank-at-eol
 /services/inference/zlib/*.patch -text
+/services/inference/licenses/native-source-supplements/** -text
+/services/inference/licenses/native-source-supplements/provenance.json text eol=lf
+# Retain the upstream notice's hash-pinned final blank line.
+/services/inference/licenses/native-source-supplements/wit-bindgen-rt-0.39.0/LICENSE-Apache-2.0_WITH_LLVM-exception whitespace=-blank-at-eof

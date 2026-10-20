@@ -1,0 +1,6 @@
+{
+  "base_image": "gather-inference:cloud-startup-candidate",
+  "base_image_id": "sha256:d7fa3e676872ee79720250ee61fe31f4b9fc5c7153e319a222fb9fb0522e6837",
+  "native_bundle_sha256": "314643eab529c387be785b8841bb381499f6dc094e03507d04956ffa30d301e9",
+  "native_crates": 439
+}

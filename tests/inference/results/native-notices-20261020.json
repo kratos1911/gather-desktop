@@ -1,0 +1,196 @@
+{
+  "scope": "All declared cargo components, including potentially non-runtime targets; not legal clearance",
+  "bundle_sha256": "314643eab529c387be785b8841bb381499f6dc094e03507d04956ffa30d301e9",
+  "hashed_crates": 439,
+  "unresolved_crates": [],
+  "local_components": [
+    {
+      "wheel": "cryptography-50.0.2-cp311-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "name": "cryptography-cffi",
+      "version": "0.50.2",
+      "purl": "pkg:cargo/cryptography-cffi@0.50.2?download_url=file://cryptography-cffi",
+      "licenses": [
+        {
+          "expression": "Apache-2.0 OR BSD-3-Clause"
+        }
+      ]
+    },
+    {
+      "wheel": "cryptography-50.0.2-cp311-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "name": "cryptography-crypto",
+      "version": "0.50.2",
+      "purl": "pkg:cargo/cryptography-crypto@0.50.2?download_url=file://cryptography-crypto",
+      "licenses": [
+        {
+          "expression": "Apache-2.0 OR BSD-3-Clause"
+        }
+      ]
+    },
+    {
+      "wheel": "cryptography-50.0.2-cp311-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "name": "cryptography-keepalive",
+      "version": "0.50.2",
+      "purl": "pkg:cargo/cryptography-keepalive@0.50.2?download_url=file://cryptography-keepalive",
+      "licenses": [
+        {
+          "expression": "Apache-2.0 OR BSD-3-Clause"
+        }
+      ]
+    },
+    {
+      "wheel": "cryptography-50.0.2-cp311-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "name": "cryptography-key-parsing",
+      "version": "0.50.2",
+      "purl": "pkg:cargo/cryptography-key-parsing@0.50.2?download_url=file://cryptography-key-parsing",
+      "licenses": [
+        {
+          "expression": "Apache-2.0 OR BSD-3-Clause"
+        }
+      ]
+    },
+    {
+      "wheel": "cryptography-50.0.2-cp311-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "name": "cryptography-openssl",
+      "version": "0.50.2",
+      "purl": "pkg:cargo/cryptography-openssl@0.50.2?download_url=file://cryptography-openssl",
+      "licenses": [
+        {
+          "expression": "Apache-2.0 OR BSD-3-Clause"
+        }
+      ]
+    },
+    {
+      "wheel": "cryptography-50.0.2-cp311-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "name": "cryptography-x509",
+      "version": "0.50.2",
+      "purl": "pkg:cargo/cryptography-x509@0.50.2?download_url=file://cryptography-x509",
+      "licenses": [
+        {
+          "expression": "Apache-2.0 OR BSD-3-Clause"
+        }
+      ]
+    },
+    {
+      "wheel": "cryptography-50.0.2-cp311-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "name": "cryptography-x509-verification",
+      "version": "0.50.2",
+      "purl": "pkg:cargo/cryptography-x509-verification@0.50.2?download_url=file://cryptography-x509-verification",
+      "licenses": [
+        {
+          "expression": "Apache-2.0 OR BSD-3-Clause"
+        }
+      ]
+    },
+    {
+      "wheel": "hf_xet-1.7.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "name": "xet-client",
+      "version": "1.7.0",
+      "purl": "pkg:cargo/xet-client@1.7.0?download_url=file:///home/runner/work/xet-core/xet-core/xet_client",
+      "licenses": [
+        {
+          "expression": "Apache-2.0"
+        }
+      ]
+    },
+    {
+      "wheel": "hf_xet-1.7.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "name": "xet-core-structures",
+      "version": "1.7.0",
+      "purl": "pkg:cargo/xet-core-structures@1.7.0?download_url=file:///home/runner/work/xet-core/xet-core/xet_core_structures",
+      "licenses": [
+        {
+          "expression": "Apache-2.0"
+        }
+      ]
+    },
+    {
+      "wheel": "hf_xet-1.7.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "name": "xet-data",
+      "version": "1.7.0",
+      "purl": "pkg:cargo/xet-data@1.7.0?download_url=file:///home/runner/work/xet-core/xet-core/xet_data",
+      "licenses": [
+        {
+          "expression": "Apache-2.0"
+        }
+      ]
+    },
+    {
+      "wheel": "hf_xet-1.7.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "name": "hf-xet",
+      "version": "1.7.0",
+      "purl": "pkg:cargo/hf-xet@1.7.0?download_url=file:///home/runner/work/xet-core/xet-core/xet_pkg",
+      "licenses": [
+        {
+          "expression": "Apache-2.0"
+        }
+      ]
+    },
+    {
+      "wheel": "hf_xet-1.7.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "name": "xet-runtime",
+      "version": "1.7.0",
+      "purl": "pkg:cargo/xet-runtime@1.7.0?download_url=file:///home/runner/work/xet-core/xet-core/xet_runtime",
+      "licenses": [
+        {
+          "expression": "Apache-2.0"
+        }
+      ]
+    },
+    {
+      "wheel": "safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "name": "safetensors",
+      "version": "0.8.0",
+      "purl": "pkg:cargo/safetensors@0.8.0?download_url=file:///home/runner/work/safetensors/safetensors/safetensors",
+      "licenses": [
+        {
+          "expression": "Apache-2.0"
+        }
+      ]
+    },
+    {
+      "wheel": "tokenizers-0.23.3-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "name": "tokenizers",
+      "version": "0.23.2",
+      "purl": "pkg:cargo/tokenizers@0.23.2?download_url=file:///home/runner/work/tokenizers/tokenizers/tokenizers",
+      "licenses": [
+        {
+          "expression": "Apache-2.0"
+        }
+      ]
+    }
+  ],
+  "sboms": [
+    {
+      "wheel": "cryptography-50.0.2-cp311-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "path": "cryptography-50.0.2.dist-info/sboms/cryptography-rust.cyclonedx.json",
+      "sha256": "0f6d5a1a35917f545a6647066b3d72e6d654b74ac4f2c3f6495d38f036adf20b"
+    },
+    {
+      "wheel": "cryptography-50.0.2-cp311-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "path": "cryptography-50.0.2.dist-info/sboms/sbom.json",
+      "sha256": "6191c1fb750c0fd2264e4c5db2aa3bafd32bc33d603f2ee25cbfbe51d66b6d2f"
+    },
+    {
+      "wheel": "hf_xet-1.7.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "path": "hf_xet-1.7.0.dist-info/sboms/hf_xet.cyclonedx.json",
+      "sha256": "cb60fc609397473419653fb56eb8c3fff0d722a3775f3ac2079e40ec550ab2e4"
+    },
+    {
+      "wheel": "pydantic_core-2.46.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "path": "pydantic_core-2.46.5.dist-info/sboms/pydantic-core.cyclonedx.json",
+      "sha256": "4f40c790f0cb384a793663331904117a914a50ef220b112c399d77f1463e3dd5"
+    },
+    {
+      "wheel": "safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "path": "safetensors-0.8.0.dist-info/sboms/safetensors-python.cyclonedx.json",
+      "sha256": "00d0bf552d8f1493ce598f45faafee9dd0adc805b74cb7ea844a72963743260e"
+    },
+    {
+      "wheel": "tokenizers-0.23.3-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "path": "tokenizers-0.23.3.dist-info/sboms/tokenizers-python.cyclonedx.json",
+      "sha256": "6faa23324b2b53b4a8da9b451a675610cc45e1a23e8c5bb0740c080064e1ba0d"
+    }
+  ],
+  "notice_files": 815,
+  "source_archives": "output/native-notices/crates (ignored, D:)"
+}

@@ -107,6 +107,15 @@
       "y": -260,
       "width": 440,
       "height": 200
+    },
+    {
+      "id": "release-pilot",
+      "type": "file",
+      "file": "docs/RELEASE_AND_PILOT.md",
+      "x": 1750,
+      "y": -260,
+      "width": 460,
+      "height": 200
     }
   ],
   "edges": [

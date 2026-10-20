@@ -80,7 +80,10 @@ def main():
     parser.add_argument('--controls', action='store_true')
     parser.add_argument('--profile', choices=['smoke', 'long', 'batch', 'limits', 'sustained', 'compatibility', 'chunks', 'retrieval', 'http'], default='smoke')
     parser.add_argument('--candidate', action='store_true', help='Use the separate patched image and output directory')
+    parser.add_argument('--release', action='store_true', help='HTTP smoke of the baked-model release image')
     args = parser.parse_args()
+    if args.release and (args.profile != 'http' or not args.candidate or args.controls):
+        parser.error('Release smoke requires --candidate --profile http without controls')
     if args.profile == 'http' and (not args.candidate or args.controls):
         parser.error('HTTP smoke requires the candidate and real model')
     if args.profile == 'retrieval' and (not args.candidate or args.controls):
@@ -88,6 +91,8 @@ def main():
     image_name = 'gather-inference:cpu-patched' if args.candidate else 'gather-inference:cpu-local'
     if args.profile == 'http':
         image_name = 'gather-inference:auth-candidate'
+    if args.release:
+        image_name = 'gather-inference:release-candidate'
     memory = 512 * 1024**2 if args.controls else 5 * 1024**3
     model = ROOT / 'output/inference-model'
     if not args.controls:
@@ -118,7 +123,8 @@ def main():
                     '-m', 'unittest', 'discover', '-s', '/tests', '-v']
         payload = ''
     else:
-        options += ['--mount', f'type=bind,source={model},target=/model,readonly']
+        if not args.release:
+            options += ['--mount', f'type=bind,source={model},target=/model,readonly']
         if args.profile == 'http':
             options += ['--mount', f'type=bind,source={ROOT / "scripts"},target=/app/scripts,readonly',
                         '--entrypoint', 'python', image_name, '-B', '-m', 'scripts.check_inference_http']
@@ -142,6 +148,9 @@ def main():
         if args.profile == 'retrieval' and config['Image'] != plan['image_id']:
             raise ValueError('Frozen experiment image mismatch')
         host = config['HostConfig']
+        if args.release:
+            if any(m['Destination']=='/model' for m in config['Mounts']):
+                raise ValueError('Release check must use baked model files')
         assert host['Memory'] == memory and host['MemorySwap'] == memory
         assert host['NanoCpus'] == 2000000000 and host['PidsLimit'] == 128
         assert host['NetworkMode'] == 'none' and host['ReadonlyRootfs']
@@ -201,6 +210,8 @@ def main():
         destination = ROOT / 'output/inference-results'
         if args.candidate:
             destination = destination / 'patched'
+        if args.release:
+            destination = ROOT/'output/inference-results/release'
         destination.mkdir(parents=True, exist_ok=True)
         if not args.controls and args.profile == 'compatibility':
             # Synthetic-only diagnostic vectors stay ignored; never export user text.

@@ -1,5 +1,15 @@
 # Serving notice provenance
 
+20 October: native SBOM source-notice collection now covers all 439 hashed crate
+versions (conservatively including non-runtime targets); 14 local components
+remain linked to their parent-project wheel notices. Three missing archive notices
+resolved via immutable upstream commits, including r-efi AUTHORS licence text.
+Six supplemental files are under native-source-supplements. Collector output and
+archives stay on D: under output/native-notices; the 4.5 MB notice bundle is pinned
+in services/inference/release-policy.json and included in the model-bearing image.
+This supersedes the earlier unresolved crate-notice gap, not a claim of legal
+certification or complete knowledge of undeclared bundled binaries.
+
 18 October 2026. tokenizers 0.23.3 upstream licence files are retained verbatim.
 provenance.json records the resolved upstream tree, source URLs and SHA-256s.
 The release tag contains root, Rust and Node binding LICENSE files and no file

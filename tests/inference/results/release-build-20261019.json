@@ -1,0 +1,9 @@
+{
+  "image": "sha256:fa60e15879e583c9bff8e04b78f774ebd7fd65eb8b9022304d249d125fb291fc",
+  "base_image": "sha256:d7fa3e676872ee79720250ee61fe31f4b9fc5c7153e319a222fb9fb0522e6837",
+  "user": "65532:65532",
+  "cloud_identity_sha256": "b33a26427edb89cd10a1cd3ca2344f0f4f0b89e09e15a60e64a4388e989d6127",
+  "native_bundle_sha256": "314643eab529c387be785b8841bb381499f6dc094e03507d04956ffa30d301e9",
+  "model_files": 10,
+  "status": "candidate built; real-image smoke and deployment approval required"
+}

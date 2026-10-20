@@ -1,5 +1,11 @@
 # Bounded inference cloud pilot
 
+20 October: concrete Gather-only settings and current release status are in
+[RELEASE_AND_PILOT.md](RELEASE_AND_PILOT.md) and deploy/cloud-run/pilot.json.
+Project gather-development-511211, Mumbai, INR 500 planning ceiling. Intrixshield
+is excluded. Milestones remain partial until real-image smoke/account access and
+final approval; no cloud resources created.
+
 19 October update: [guarded cloud startup](CLOUD_STARTUP.md) is implemented and
 host/Linux-tested; all 49 packaged Linux checks pass. Earlier
 rows below retain their dated evidence; no cloud deployment has occurred.
