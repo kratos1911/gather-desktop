@@ -1,5 +1,12 @@
 # Architecture decisions
 
+21 October: keep existing transaction/function contracts and add an isolated
+Psycopg helper per DB operation. A socket timeout alone cannot bound DNS or commit;
+the parent enforces five seconds plus one-second cleanup. Separate admission and
+worker logins, fixed transaction-local roles, explicit verified owner and no
+retry preserve fencing/idempotency. Reuse the installed driver for local proof;
+production dependency approval and hosted TLS verification remain separate.
+
 21 October: use one internal LibrarySession bound to the original user bearer.
 Resolve import ownership through actual Supabase Auth and keep published reads,
 job status and deletion under that same session. Do not substitute a service key

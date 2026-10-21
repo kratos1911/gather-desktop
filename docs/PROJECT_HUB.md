@@ -3,6 +3,9 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Current connection milestone: [[docs/DATABASE_TRANSPORT|Real driver, restricted roles and deadlines]].
+Local verification passes; next is application HTTP admission and hosted setup.
+
 Latest: [[docs/LIBRARY_SESSION|Authenticated library flow and two-user verification]].
 Next: production database/HTTP composition; desktop remains sample mode.
 

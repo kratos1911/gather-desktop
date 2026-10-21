@@ -641,6 +641,13 @@ invocation, browser dependencies and live compatibility tests. No semantic resul
 or end-to-end desktop ingestion claimed.
 ## 21 October: cloud ingestion composition
 
+Latest prerequisite complete locally: bounded database driver with separate
+admission/worker identities and fixed role/function selection. Eight new tests
+plus ingestion/library regressions (24 total), five disposable real-driver
+integration groups and frontend build pass. Initial lease timestamp encoding
+failure fixed; both test containers removed. Hosted config/TLS, approved production
+driver packaging and application HTTP remain open. See docs/DATABASE_TRANSPORT.md.
+
 Subsequent milestone: authenticated library boundary implemented in
 services/worker/library_session.py. 17 new real local Auth/PostgREST assertions
 pass: forged JWT blocks work, verified owner propagation, duplicate import,

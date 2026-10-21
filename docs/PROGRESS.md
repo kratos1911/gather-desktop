@@ -1,5 +1,16 @@
 # Rebuild progress
 
+## 21 October: real bounded database driver
+
+Implemented actual Psycopg connection behind the existing repository, with
+role-separated function admission, transaction-local owner, TLS-required hosted
+config and parent-enforced deadlines. Eight new tests plus existing controls
+(24 total), five real-driver integration groups and frontend build pass. First
+integration exposed lease datetime serialization; fixed and regression-tested.
+Both disposable test databases removed. No hosted Supabase link found locally;
+browser inventory unavailable. No dependency installs, cloud/model calls or
+protected API changes. See DATABASE_TRANSPORT.md for evidence and remaining gates.
+
 ## 21 October: authenticated library application boundary
 
 LibrarySession now verifies Auth before admission and derives the owner from that

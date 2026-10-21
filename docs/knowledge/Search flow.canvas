@@ -12,7 +12,7 @@
     {
       "id": "source",
       "type": "text",
-      "text": "Save file or link\nLibrarySession verifies real local Auth before TXT admission\nOwner comes from verified session; no owner payload\nNEXT: production DB/HTTP composition + desktop",
+      "text": "Save file or link\nLibrarySession: owner from verified Auth\nReal bounded DB driver tested with restricted logins\nNEXT: application HTTP + hosted config + desktop",
       "x": 0,
       "y": 0,
       "width": 330,

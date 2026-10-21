@@ -1,5 +1,13 @@
 # Current project state
 
+21 October latest: bounded DatabaseRepository now uses real Psycopg connections
+and reuses PostgresRepository. Restricted login/role, verified-owner transaction
+context, five-second whole-operation deadline and forced helper cleanup verified.
+24 focused checks, disposable real-driver integration and frontend build pass.
+See DATABASE_TRANSPORT.md. Hosted Supabase project not linked locally; browser
+inventory unavailable. Hosted TLS/driver packaging remains unverified. Next:
+application HTTP admission around LibrarySession, then hosted setup and desktop.
+
 21 October latest: authenticated LibrarySession boundary verified with two real
 local Supabase Auth sessions. Import owner comes from Auth; fixed session RPCs
 provide status/open/delete and existing search verifies Auth before inference.

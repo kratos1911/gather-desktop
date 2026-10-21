@@ -1,5 +1,10 @@
 # Architecture: how the product works
 
+Database composition: DatabaseRepository wraps the existing PostgresRepository
+in bounded per-operation helpers with real Psycopg connections and transaction-
+local ownership. Local restricted-login tests pass; hosted TLS/configuration and
+production driver packaging remain open. See DATABASE_TRANSPORT.md.
+
 Authenticated internal application boundary: LibrarySession verifies Supabase
 Auth before privileged admission, binds the resulting owner through a trusted
 repository factory, and retains the same user bearer for search/status/open/delete.
