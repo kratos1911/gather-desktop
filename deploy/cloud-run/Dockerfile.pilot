@@ -1,0 +1,6 @@
+FROM gather-inference:release-candidate@sha256:fa60e15879e583c9bff8e04b78f774ebd7fd65eb8b9022304d249d125fb291fc
+USER 0:0
+RUN mkdir /config && chmod 0555 /config
+COPY --chown=0:0 --chmod=0444 identity.json deployment-policy.json /config/
+USER 65532:65532
+CMD ["--identity", "/config/identity.json", "--deployment-policy", "/config/deployment-policy.json"]

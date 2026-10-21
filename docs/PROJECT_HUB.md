@@ -3,6 +3,9 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Pilot identity: [[deploy/cloud-run/identity.json|Verified caller configuration]];
+[[deploy/cloud-run/Dockerfile.pilot|Local configured image]]. Upload pending.
+
 Real release checkpoint: [[docs/RELEASE_AND_PILOT|Baked Qwen image passed local HTTP smoke]].
 Next: personal Gather CLI sign-in and final pilot approval; no deployment yet.
 

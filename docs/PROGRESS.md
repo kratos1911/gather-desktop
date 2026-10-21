@@ -1,5 +1,17 @@
 # Rebuild progress
 
+## 21 October: configure verified pilot identities
+
+User created Gather-only runtime/caller service accounts and Mumbai repository.
+Read actual caller uniqueId 106616966652927668188 using the personal account;
+verified Docker Standard repository in asia-south1. Prepared public identity/policy
+metadata for the documented deterministic service URL and built a tiny layer over
+the verified release digest. Initial permission probe caught /config missing
+traverse access; explicitly created root-owned 0555 directory and 0444 files,
+then non-root/read-only validation and frontend build passed. Release filesystem
+layers unchanged; no model rerun. No tokens, keys, uploads, agent IAM grants or
+deployment. Existing work-account defaults and protected projects unchanged.
+
 ## 21 October: local model-bearing release verified
 
 Previous 20 October attempt never executed: automatic approval review hit a usage

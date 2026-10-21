@@ -1,5 +1,14 @@
 # Delivery tasks
 
+## 21 October: real pilot identity configured locally
+
+Verified Gather caller uniqueId and repository location through personal account.
+Created identity/deployment-policy files and digest-pinned Dockerfile.pilot.
+A 128 MiB network-none non-root container validates readable, immutable config;
+frontend build passes. Found and fixed missing traverse permission on the initially
+created /config directory before any upload. Model layers reused. Evidence:
+tests/inference/results/pilot-configured-20261021.json. Next: private image upload.
+
 ## 21 October: real baked-image release check complete
 
 Exact release candidate passed four real Qwen HTTP requests plus unauthorized,

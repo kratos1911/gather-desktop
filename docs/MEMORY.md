@@ -1,5 +1,12 @@
 # Current project state
 
+21 October: personal-account CLI access now verified for Gather caller and
+Mumbai Docker repository. Caller numeric subject confirmed; identity/policy files
+validated and baked into pilot-configured image. Non-root/read-only config check
+and frontend build pass. Release/model layers unchanged; no new model run. Next:
+explicitly approved private image upload, then Cloud Run deployment/IAM pilot.
+No agent upload, IAM grant or deployment has occurred.
+
 21 October: real baked-model release smoke passed. Startup 18.55 s; four requests
 0.86–7.76 s, peak 4.09 GiB under 5 GiB; valid vectors, rejection/recovery and cleanup.
 Evidence: qwen-release-http-20261021.json. Host stderr locale failure corrected to

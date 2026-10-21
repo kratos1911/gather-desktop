@@ -1,0 +1,7 @@
+{
+  "audience": "https://gather-inference-pilot-119730530113.asia-south1.run.app",
+  "invoker_members": [
+    "serviceAccount:gather-pilot-caller@gather-development-511211.iam.gserviceaccount.com"
+  ],
+  "invoker_check_required": true
+}

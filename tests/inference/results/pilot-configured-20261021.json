@@ -1,0 +1,13 @@
+{
+  "image": "sha256:b1e299dee4ca949a8b8c10424fffad3c6850f482444addfa15b76f185ecff5e4",
+  "release_base": "sha256:fa60e15879e583c9bff8e04b78f774ebd7fd65eb8b9022304d249d125fb291fc",
+  "same_release_layers": true,
+  "caller_subject_verified_from_google": "106616966652927668188",
+  "audience": "https://gather-inference-pilot-119730530113.asia-south1.run.app",
+  "scope": "Public identity metadata only; no tokens/keys, model rerun or deployment",
+  "verification": {
+    "identity_policy_valid": true,
+    "nonroot": true,
+    "config_readonly": true
+  }
+}

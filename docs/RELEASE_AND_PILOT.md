@@ -1,7 +1,7 @@
 # Model release and Gather pilot
 
 Updated 21 October 2026. **Local release build and real-model verification are
-complete. Cloud account access and final security/resource approval remain pending.
+complete. Personal Gather CLI access is verified; final Cloud Run/IAM approval remains pending.
 No upload, API enablement, IAM change or deployment has occurred.**
 
 ## Milestone 1: release image
@@ -150,7 +150,20 @@ explain the limitation instead of deploying.
 
 ## Remaining handoff
 
-1. Personal-account CLI sign-in and read-only verification of Gather.
+1. Completed: personal-account read-only verification of Gather caller/repository.
 2. Reuse the completed real-image test unless relevant inputs change.
 3. Review the concrete IAM/registry/service/cleanup changes and remaining security
    findings with the user; only then request deployment approval.
+
+## Configured pilot image, 21 October
+
+Gather caller uniqueId confirmed from Google: 106616966652927668188. Identity and
+intended policy are saved in deploy/cloud-run; the expected deterministic audience
+is https://gather-inference-pilot-119730530113.asia-south1.run.app. Actual deployed
+audience acceptance remains a pilot check. The configured image digest is in
+pilot.json and pilot-configured-20261021.json; its release/model layers exactly
+match the tested candidate. Config is root-owned, non-writable and readable by
+UID 65532, verified in a 128 MiB network-disabled container. No credentials baked.
+Repository confirmed DOCKER/STANDARD in Mumbai. User-created accounts/repository
+exist; image upload, Cloud Run and invoker grants remain next. Old sign-in blockers
+above are historical. Work-account defaults were not changed.

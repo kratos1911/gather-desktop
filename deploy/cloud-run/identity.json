@@ -1,0 +1,9 @@
+{
+  "audience": "https://gather-inference-pilot-119730530113.asia-south1.run.app",
+  "callers": [
+    {
+      "email": "gather-pilot-caller@gather-development-511211.iam.gserviceaccount.com",
+      "subject": "106616966652927668188"
+    }
+  ]
+}

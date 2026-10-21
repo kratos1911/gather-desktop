@@ -33,8 +33,8 @@
   "identities": {
     "runtime_account_name": "gather-inference",
     "caller_account_name": "gather-pilot-caller",
-    "caller_subject": null,
-    "audience": null,
+    "caller_subject": "106616966652927668188",
+    "audience": "https://gather-inference-pilot-119730530113.asia-south1.run.app",
     "download_service_account_keys": false
   },
   "candidate_image": "sha256:fa60e15879e583c9bff8e04b78f774ebd7fd65eb8b9022304d249d125fb291fc",
@@ -45,11 +45,12 @@
     "automatic_retries": 0
   },
   "deployment_blocks": [
-    "Personal Gather account is not yet signed in to local gcloud",
-    "Actual project number, service-account subject and deployed audience must be verified",
-    "Final security-risk and resource-creation approval is outstanding"
+    "Actual deployed IAM, audience routing and cold start require pilot verification",
+    "Cloud Run deployment/IAM grants and remaining security risk require final approval"
   ],
   "forbidden_project_ids": [
     "primeval-splice-467909-k5"
-  ]
+  ],
+  "project_number": "119730530113",
+  "configured_image": "sha256:b1e299dee4ca949a8b8c10424fffad3c6850f482444addfa15b76f185ecff5e4"
 }
