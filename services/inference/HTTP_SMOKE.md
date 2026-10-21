@@ -1,5 +1,12 @@
 # Real-model HTTP smoke
 
+21 October: baked-model release candidate also passed, using `--release` with no
+host model mount. Evidence: tests/inference/results/qwen-release-http-20261021.json.
+Startup 18.55 s, four successful requests, peak 4.09 GiB under unchanged bounds.
+The run's Windows diagnostic decode warning and focused binary-capture correction
+are recorded; no second model run. Local ephemeral bearer, not Google IAM.
+Earlier results below remain historical; no cloud cold-start claim.
+
 Status, 17 October: **real local Linux HTTP smoke passed** in auth image
 554ccb8a9d25ce960dbe1d61c1521a0413277f474172927d6f9891b9fb9bb7a8.
 Evidence: tests/inference/results/qwen-http-20261017.json.

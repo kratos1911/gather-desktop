@@ -1,5 +1,13 @@
 # Current project state
 
+21 October: real baked-model release smoke passed. Startup 18.55 s; four requests
+0.86–7.76 s, peak 4.09 GiB under 5 GiB; valid vectors, rejection/recovery and cleanup.
+Evidence: qwen-release-http-20261021.json. Host stderr locale failure corrected to
+binary capture; six focused harness checks and frontend build pass, no model rerun.
+Technical local release verification complete; no cloud-readiness claim. Next:
+personal Gather account CLI sign-in, verify gather-development-511211 access,
+then final pilot/security approval within INR 500/Mumbai. Intrixshield excluded.
+
 20 October: model-bearing release candidate built; see RELEASE_AND_PILOT.md and
 deploy/cloud-run/pilot.json. Correct target is gather-development-511211 (Gather
 Development), Mumbai; INR 500 total ceiling. Intrixshield is forbidden. Browser

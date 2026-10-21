@@ -46,9 +46,10 @@
   },
   "deployment_blocks": [
     "Personal Gather account is not yet signed in to local gcloud",
-    "Real baked-image model test requires at least 4 GiB free RAM",
     "Actual project number, service-account subject and deployed audience must be verified",
     "Final security-risk and resource-creation approval is outstanding"
   ],
-  "forbidden_project_ids": ["primeval-splice-467909-k5"]
+  "forbidden_project_ids": [
+    "primeval-splice-467909-k5"
+  ]
 }

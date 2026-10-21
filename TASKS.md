@@ -1,5 +1,14 @@
 # Delivery tasks
 
+## 21 October: real baked-image release check complete
+
+Exact release candidate passed four real Qwen HTTP requests plus unauthorized,
+token-limit/recovery, readiness, process reuse and cleanup checks; no model mount.
+Startup 18.55 s, peak 4.09 GiB, no OOM/outer timeout. Kept the run's Windows stderr
+capture warning in evidence; corrected capture and passed two pipe/four synthetic
+HTTP tests plus frontend build. No repeated benchmark. Local image verification
+complete; cloud IAM/cold-start and final approval remain pending personal login.
+
 ## 20 October: release image and Gather-only pilot preparation
 
 Partial milestones 1/2: built baked-model candidate, native notice collection,

@@ -1,5 +1,28 @@
 # Rebuild progress
 
+## 21 October: local model-bearing release verified
+
+Previous 20 October attempt never executed: automatic approval review hit a usage
+limit after Chrome closure freed RAM. On resume, preflight found 1.91 GiB; Chrome
+was already closed. User-authorized transient WSL clean-cache release plus closing
+the unused Ollama UI (empty model list, server retained) reached 3.42 GiB. Explicit
+approval then closed WhatsApp, Phone Link and NVIDIA settings, reaching 4.20 GiB.
+No driver/overlay, Docker setting, protected API or persistent cache-policy changes.
+
+One guarded baked-image smoke passed at existing 2 CPU/5 GiB/no-extra-swap bounds.
+Startup 18.551 s, successful requests 0.858/1.179/7.761/1.021 s, peak 4.09 GiB.
+All vector/identity/rejection/recovery/readiness/cleanup checks true; exit zero,
+no OOM/outer timeout. The Windows cp1252 stderr reader raised during diagnostic
+capture; model stdout and container status were intact. Fixed capture to binary,
+retained raw stderr for future runs, and verified two actual subprocess encoding
+checks plus four synthetic HTTP checks and frontend build. No model rerun.
+
+mailflow-rules-api/email-api restart counts rose 10 to 12 while testing; no
+mutation commands were issued to them, both running afterward, cause uninvestigated.
+Personal Gather account is still absent from local gcloud. No cloud operation
+attempted with the work account; no upload, deployment or push. Evidence and pilot
+gate updated without implying production/security approval.
+
 ## 19–20 October: release artifact and pilot plan prepared
 
 Collected 439 hash-pinned crate source notice sets from wheel SBOMs, with six

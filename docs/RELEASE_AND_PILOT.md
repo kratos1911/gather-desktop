@@ -1,7 +1,8 @@
 # Model release and Gather pilot
 
-Updated 20 October 2026. **Prepared locally; neither milestone is claimed fully
-complete yet. No upload, API enablement, IAM change or deployment has occurred.**
+Updated 21 October 2026. **Local release build and real-model verification are
+complete. Cloud account access and final security/resource approval remain pending.
+No upload, API enablement, IAM change or deployment has occurred.**
 
 ## Milestone 1: release image
 
@@ -48,10 +49,21 @@ remain dated evidence; the added model/notice layers have not received a fresh s
 The scanner still reports the locally patched zlib CVE plus other findings. No
 blanket security waiver is implied.
 
-**Remaining:** one real-model check of this baked image. Last preflight found
-3.09 GiB free RAM on 20 October; the established threshold is 4 GiB. Do not lower
-it, repeatedly retry unchanged conditions, close apps, or stop protected APIs.
-When RAM is available, use the existing guarded harness:
+**Real-image check passed, 21 October:** all four HTTP requests and required
+rejection/recovery/cleanup checks passed on the exact baked candidate. Startup
+18.551 s; requests 0.858/1.179/7.761/1.021 s; peak 4,388,347,904 bytes (4.09 GiB),
+below 5 GiB. No OOM or outer timeout. Host preflight reached 4.20 GiB after the
+authorized cache/app cleanup; the 4 GiB threshold was not lowered.
+Evidence: tests/inference/results/qwen-release-http-20261021.json.
+
+The host stderr reader hit a Windows locale-decoding error; valid model JSON and
+container exit zero were retained. The harness now captures raw bytes and keeps
+stderr logs. Two subprocess encoding tests and four synthetic HTTP tests passed;
+the model was not rerun for this diagnostic-only fix. Two protected API restart
+counts increased during the run; no API mutation commands were issued and no
+cause is inferred. All detailed caveats remain in the evidence.
+
+Reproduce only after relevant changes, with sufficient RAM:
 
 ```powershell
 .\output\model-benchmark\venv\Scripts\python.exe -B -m scripts.check_inference_container --candidate --profile http --release
@@ -139,6 +151,6 @@ explain the limitation instead of deploying.
 ## Remaining handoff
 
 1. Personal-account CLI sign-in and read-only verification of Gather.
-2. Free RAM for the single guarded real-image test.
+2. Reuse the completed real-image test unless relevant inputs change.
 3. Review the concrete IAM/registry/service/cleanup changes and remaining security
    findings with the user; only then request deployment approval.

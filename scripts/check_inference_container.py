@@ -75,6 +75,13 @@ def command(*args):
     return subprocess.run(['docker', *args], check=True, capture_output=True, text=True, timeout=30).stdout
 
 
+def captured_process(argv):
+    # Capture bytes: Windows' locale decoder can fail on Docker's UTF-8 progress
+    # output in a reader thread while the actual model request still succeeds.
+    return subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--controls', action='store_true')
@@ -158,12 +165,11 @@ def main():
         assert 'ALL' in host['CapDrop'] and 'no-new-privileges' in host['SecurityOpt']
         assert all(not mount['RW'] for mount in config['Mounts'])
         started = time.perf_counter()
-        process = subprocess.Popen(['docker', 'start', '-ai', identifier], stdin=subprocess.PIPE,
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process = captured_process(['docker', 'start', '-ai', identifier])
         outer_timeout = False
         try:
             # More sequential fixtures, not a longer per-inference deadline.
-            stdout, stderr = process.communicate(payload, timeout=900 if args.profile == 'retrieval' else 300)
+            stdout, stderr = process.communicate(payload.encode('utf-8'), timeout=900 if args.profile == 'retrieval' else 300)
         except subprocess.TimeoutExpired:
             outer_timeout = True
             command('kill', identifier)
@@ -177,7 +183,7 @@ def main():
                   'oom_killed': state['OOMKilled'], 'outer_timeout': outer_timeout,
                   'passed': not (outer_timeout or process.returncode or state['ExitCode'] or state['OOMKilled'])}
         if args.controls:
-            print(stderr)
+            print(stderr.decode('utf-8', errors='replace'))
         elif args.profile == 'http':
             try:
                 evidence = json.loads(stdout)
@@ -213,6 +219,7 @@ def main():
         if args.release:
             destination = ROOT/'output/inference-results/release'
         destination.mkdir(parents=True, exist_ok=True)
+        (destination / (args.profile+'-stderr.log')).write_bytes(stderr)
         if not args.controls and args.profile == 'compatibility':
             # Synthetic-only diagnostic vectors stay ignored; never export user text.
             (destination / 'compatibility-vectors.json').write_text(json.dumps([r['result'] for r in results]))

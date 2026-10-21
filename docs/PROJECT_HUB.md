@@ -3,6 +3,9 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Real release checkpoint: [[docs/RELEASE_AND_PILOT|Baked Qwen image passed local HTTP smoke]].
+Next: personal Gather CLI sign-in and final pilot approval; no deployment yet.
+
 Release/pilot: [[docs/RELEASE_AND_PILOT|Built candidate, Gather project, INR 500 plan and blockers]].
 No deployment; personal CLI sign-in and real-image RAM prerequisite remain.
 
