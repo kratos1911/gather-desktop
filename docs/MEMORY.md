@@ -1,5 +1,14 @@
 # Current project state
 
+21 October latest: developer backend cloud integration passes: TXT submission ->
+real cloud embedding -> atomic publication -> real query -> source open -> delete.
+Two model requests, disposable local SQL with test-only Auth shim. See
+CLOUD_INGESTION_PILOT.md for exact evidence and the initial cold-start failure.
+Production metadata remains default; pilot token is explicit/in-memory only.
+Next: authenticated application/session boundary and production DB composition,
+then desktop wiring. Hosted ownership and cold-start UX remain open. The following
+upload/deployment-pending entries are historical: the user completed both and IAM.
+
 Manual upload helper ready: scripts/upload-pilot-image.ps1. Preview checked;
 live upload remains user action via explicit -Account and -Upload. No image sent.
 

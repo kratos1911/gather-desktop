@@ -1,5 +1,11 @@
 # Security requirements
 
+21 October: private inference is now deployed by the user; anonymous rejection
+and real authorized cloud embedding are observed. CLOUD_INGESTION_PILOT.md
+records the limited evidence. Hosted user authorization, full negative IAM/header
+matrix and release findings remain open. Historical deployment-blocked notes
+below are superseded only for that private pilot, not public release.
+
 Managed refresh now uses fixed Google HTTPS certificates, bounded transport and
 cache freshness; request key IDs never fetch. Only fresh snapshots authorize and
 startup/shutdown own the refresh thread. Locally mocked evidence is recorded in

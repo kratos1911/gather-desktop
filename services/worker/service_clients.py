@@ -1,4 +1,4 @@
-"""Server-only fixed-service adapters. No hosted inference endpoint is deployed."""
+"""Server-only fixed-service adapters; never expose service credentials to UI."""
 import base64
 import time
 from uuid import UUID
@@ -89,13 +89,19 @@ class InferenceClient:
 
 class CloudInferenceClient(InferenceClient):
     """Explicit managed identity client; no local secret or credential fallback."""
-    def __init__(self, identity, count_tokens):
+    def __init__(self, identity, count_tokens, *, token_provider=None):
         from services.worker.cloud_identity import IdentityConfig, MetadataTokenProvider
         if not isinstance(identity,IdentityConfig) or not callable(count_tokens):
             raise TransportError('invalid_identity_configuration')
         self._base = identity.audience
         self.count_tokens = count_tokens
-        self._identity = MetadataTokenProvider(identity)
+        if token_provider is not None and (
+                getattr(token_provider, 'config', None) != identity
+                or not callable(getattr(token_provider, 'get', None))
+                or not callable(getattr(token_provider, 'invalidate', None))):
+            raise TransportError('invalid_identity_configuration')
+        # Trusted composition only; never select credentials from request data.
+        self._identity = token_provider if token_provider is not None else MetadataTokenProvider(identity)
 
     def _send(self, request, *, cancel):
         deadline = time.monotonic()+15

@@ -681,3 +681,12 @@ per source without silently evicting idempotency records. These are initial loca
 scheduler bounds, not new inference limits or production allowances. Publication,
 original admission, rate/byte quotas and a dispatcher remain separate gates.
 See INGESTION_JOBS.md for implementation and evidence.
+## 21 October: explicit developer identity, metadata remains production default
+
+Reuse CloudInferenceClient and ingestion/search contracts rather than a second
+HTTP pipeline. Trusted composition may inject a provider bound to the identical
+IdentityConfig; production defaults to metadata. Keep the short-lived operator
+token provider exclusively in the opt-in pilot script, fed through stdin. Verify
+tokenizer bytes before parsing and load no local weights. Check readiness before
+pilot ingestion without extending the 15-second client/model limits. This does
+not resolve cold-start UX or replace hosted user authentication.

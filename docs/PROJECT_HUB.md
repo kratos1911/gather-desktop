@@ -3,6 +3,11 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Current: [[docs/CLOUD_INGESTION_PILOT|Real cloud-vector backend pilot and boundaries]].
+User deployed private inference; developer SQL flow passes. Next is authenticated
+application/database composition, then desktop wiring. Earlier pending-deployment
+entries below describe prior checkpoints.
+
 Upload instructions: [[docs/RELEASE_AND_PILOT|User-run private registry upload]].
 
 Pilot identity: [[deploy/cloud-run/identity.json|Verified caller configuration]];

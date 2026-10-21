@@ -1492,3 +1492,13 @@ TASK-005 remains partial. Next: a private local serving container with measured
 CPU/RAM/concurrency limits, token/request bounds, readiness and failure behavior;
 verify Docker storage is on D: before large builds. Retrieval weaknesses and
 independent real-world relevance review remain open before release claims.
+## 21 October: first real cloud-backed ingestion/search pilot
+
+User completed registry upload, private Cloud Run deployment and scoped IAM grants.
+Implemented tokenizer-only backend composition and explicit opt-in pilot identity;
+two real cloud requests drove TXT -> ready -> search -> open -> delete against
+disposable migrated SQL. Exact verification, initial failures and limitations:
+[CLOUD_INGESTION_PILOT.md](CLOUD_INGESTION_PILOT.md). 57 focused tests, three tokenizer
+parity checks and frontend build pass. No model load, new cloud resources, API
+changes or GitHub push. Pilot SQL identity is simulated; production auth/DB and
+desktop remain next. Temporary database removal independently confirmed.

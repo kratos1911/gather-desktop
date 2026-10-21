@@ -1,5 +1,11 @@
 # Architecture: how the product works
 
+21 October: cloud_provider.py now composes the existing cloud client and verified
+tokenizer for ingestion/search. A real cloud-vector backend pilot passes against
+disposable local SQL; see CLOUD_INGESTION_PILOT.md. User deployed the private
+inference service. Production application/session/DB wiring remains absent;
+older statements of no inference deployment below are historical.
+
 19 October current update: explicit cloud startup and managed-identity public-bind
 guard implemented; see CLOUD_STARTUP.md. Local mode remains loopback. Host checks
 pass; Linux packaging and deployed IAM remain unverified. Historical notes below

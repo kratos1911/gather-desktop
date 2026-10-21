@@ -639,3 +639,16 @@ synthetic success/error jobs and selected runtime restrictions. Full local check
 Still open: transitive/base-image locking, enforced public-only egress, actual tool
 invocation, browser dependencies and live compatibility tests. No semantic results
 or end-to-end desktop ingestion claimed.
+## 21 October: cloud ingestion composition
+
+Done for developer pilot only: cloud_provider.py loads a hash-verified tokenizer,
+CloudInferenceClient accepts a trusted identity-matching provider (metadata default
+unchanged), and check_cloud_ingestion.py reuses the coordinator and search against
+real cloud embeddings and disposable SQL. Two model requests; duplicate/ready/
+search/open/foreign-owner SQL read/deletion checks pass. 22 composition/identity
+and 35 ingestion/search/transport tests pass, three tokenizer parity checks and
+frontend build pass. Initial restricted-loopback tests failed then passed with
+owning-user access. First pilot failed with a 35.98 s cloud request; separate
+bounded readiness preflight precedes successful repeat. No limits raised.
+Evidence/boundaries: docs/CLOUD_INGESTION_PILOT.md. Not hosted JWT/DB, desktop,
+quality evaluation or cold-start resolution. No pushes or protected API changes.

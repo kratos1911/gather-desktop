@@ -48,7 +48,7 @@
     {
       "id": "vector",
       "type": "text",
-      "text": "Bounded source context implemented\nKnown-case coverage recovered via saved vectors\nNEXT: backend import/index/search/delete flow\nOwnership integration + release gates pending",
+      "text": "Real cloud vectors -> SQL publication -> search/open/delete pilot passes\nTwo model calls; one synthetic TXT source\nLocal SQL identity shim, NOT hosted JWT\nSee docs/CLOUD_INGESTION_PILOT.md",
       "x": 800,
       "y": 220,
       "width": 330,
@@ -57,7 +57,7 @@
     {
       "id": "results",
       "type": "text",
-      "text": "Published search + exact-version context\nLinux ASGI + receiving/outbound identity synthetically tested; SIGTERM cleanup checked\nReal local model HTTP + paired caller startup verified; artifact startup Linux-verified; live public keys verified; actual token/IAM and security gates open\nDesktop/cloud deployment pending",
+      "text": "Published search + exact-version context\nPrivate cloud inference deployed by user; real caller request passes\nDeveloper backend pilot passes; hosted app/session/DB and desktop wiring remain\nCold-start UX and remaining security gates open",
       "x": 600,
       "y": 440,
       "width": 330,

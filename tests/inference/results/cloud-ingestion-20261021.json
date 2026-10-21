@@ -1,0 +1,10 @@
+{
+  "ready": true,
+  "duplicate_safe": true,
+  "search_open_delete": true,
+  "owner_sql_isolation": true,
+  "cloud_requests": 2,
+  "authentication_scope": "real cloud IAM; local SQL Auth shim, not user JWT",
+  "quality_scope": "one synthetic source; not retrieval-quality evaluation",
+  "observed_at_utc": "2026-10-21T13:46:34Z"
+}
