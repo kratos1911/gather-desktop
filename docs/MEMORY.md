@@ -1,5 +1,8 @@
 # Current project state
 
+Manual upload helper ready: scripts/upload-pilot-image.ps1. Preview checked;
+live upload remains user action via explicit -Account and -Upload. No image sent.
+
 21 October: personal-account CLI access now verified for Gather caller and
 Mumbai Docker repository. Caller numeric subject confirmed; identity/policy files
 validated and baked into pilot-configured image. Non-root/read-only config check

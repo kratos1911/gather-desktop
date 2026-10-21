@@ -167,3 +167,16 @@ UID 65532, verified in a 128 MiB network-disabled container. No credentials bake
 Repository confirmed DOCKER/STANDARD in Mumbai. User-created accounts/repository
 exist; image upload, Cloud Run and invoker grants remain next. Old sign-in blockers
 above are historical. Work-account defaults were not changed.
+
+## User-run registry upload
+
+Preview: `./scripts/upload-pilot-image.ps1`. To upload, provide the personal
+account with `-Account` and explicitly add `-Upload`. The fixed target is Gather's
+Mumbai repository, image inference:pilot-20261021. Only run after approving its
+storage costs. The helper verifies the local image digest and engine, captures
+a short-lived user access token without printing it, restricts a temporary Docker
+auth directory to the Windows user, and removes the token file in finally.
+Global gcloud/Docker account and helper settings are not changed. The default
+preview and missing-account guard were checked; live upload has not been run.
+Keep Docker running and allow the command to finish; share the final digest or
+error text, never credentials. It does not deploy Cloud Run or grant invoker IAM.

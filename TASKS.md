@@ -1,5 +1,13 @@
 # Delivery tasks
 
+## Manual pilot upload helper
+
+Added scripts/upload-pilot-image.ps1 for user-run upload. Preview verifies the
+exact image and local Linux engine; -Upload requires an explicit account, uses
+a restricted temporary Docker auth directory and removes its token file in
+finally. Preview and missing-account rejection checked; frontend build passes.
+Actual authentication/push not executed or claimed verified.
+
 ## 21 October: real pilot identity configured locally
 
 Verified Gather caller uniqueId and repository location through personal account.

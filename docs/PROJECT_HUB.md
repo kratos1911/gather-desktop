@@ -3,6 +3,8 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Upload instructions: [[docs/RELEASE_AND_PILOT|User-run private registry upload]].
+
 Pilot identity: [[deploy/cloud-run/identity.json|Verified caller configuration]];
 [[deploy/cloud-run/Dockerfile.pilot|Local configured image]]. Upload pending.
 

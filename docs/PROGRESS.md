@@ -1,5 +1,14 @@
 # Rebuild progress
 
+## Manual upload instructions prepared
+
+User requested steps rather than agent upload. Added a preview-first upload
+helper with explicit personal account, fixed Gather destination, pinned local
+image check and isolated Docker credential config. This avoids gcloud credential
+helper dependence on the active work account and avoids overwriting global
+registry credentials. Preview/missing-account guard and frontend build pass.
+No token obtained or cloud upload performed; live push remains user action.
+
 ## 21 October: configure verified pilot identities
 
 User created Gather-only runtime/caller service accounts and Mumbai repository.
