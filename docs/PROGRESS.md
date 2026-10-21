@@ -1,5 +1,17 @@
 # Rebuild progress
 
+## 21 October: authenticated library application boundary
+
+LibrarySession now verifies Auth before admission and derives the owner from that
+response; the original bearer remains attached to search/status/open/delete RPCs.
+The existing coordinator, SQL quotas, publication and tombstone functions are
+reused. Six new unit tests plus existing ingestion/search/transport checks pass
+(41 distinct tests). The full disposable Supabase run passes, including 17 new
+real JWT/two-user library assertions; its users/data/containers were removed.
+Frontend build passes. Vectors were synthetic; no model/cloud call or paid resource
+was needed. Production DB connection, HTTP admission and desktop remain pending.
+See LIBRARY_SESSION.md. No protected API changes or GitHub push.
+
 ## Manual upload instructions prepared
 
 User requested steps rather than agent upload. Added a preview-first upload

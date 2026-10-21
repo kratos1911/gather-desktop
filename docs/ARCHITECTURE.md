@@ -1,5 +1,11 @@
 # Architecture: how the product works
 
+Authenticated internal application boundary: LibrarySession verifies Supabase
+Auth before privileged admission, binds the resulting owner through a trusted
+repository factory, and retains the same user bearer for search/status/open/delete.
+Real local Auth/PostgREST isolation passes; production driver/HTTP composition
+remains pending. See LIBRARY_SESSION.md.
+
 21 October: cloud_provider.py now composes the existing cloud client and verified
 tokenizer for ingestion/search. A real cloud-vector backend pilot passes against
 disposable local SQL; see CLOUD_INGESTION_PILOT.md. User deployed the private

@@ -12,7 +12,7 @@
     {
       "id": "source",
       "type": "text",
-      "text": "Save file or link\nInternal TXT/MD coordinator + durable original handoff\nPLANNED: authenticated API + desktop ingestion",
+      "text": "Save file or link\nLibrarySession verifies real local Auth before TXT admission\nOwner comes from verified session; no owner payload\nNEXT: production DB/HTTP composition + desktop",
       "x": 0,
       "y": 0,
       "width": 330,
@@ -57,7 +57,7 @@
     {
       "id": "results",
       "type": "text",
-      "text": "Published search + exact-version context\nPrivate cloud inference deployed by user; real caller request passes\nDeveloper backend pilot passes; hosted app/session/DB and desktop wiring remain\nCold-start UX and remaining security gates open",
+      "text": "Published search + exact-version context\nCloud-vector pilot passes separately\nTwo real local Auth sessions: search/open/delete isolation passes with synthetic vectors\nHosted DB/HTTP + desktop and cold-start UX remain",
       "x": 600,
       "y": 440,
       "width": 330,

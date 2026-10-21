@@ -641,6 +641,15 @@ invocation, browser dependencies and live compatibility tests. No semantic resul
 or end-to-end desktop ingestion claimed.
 ## 21 October: cloud ingestion composition
 
+Subsequent milestone: authenticated library boundary implemented in
+services/worker/library_session.py. 17 new real local Auth/PostgREST assertions
+pass: forged JWT blocks work, verified owner propagation, duplicate import,
+queued/ready status, two-user isolation, exact reads, foreign replacement rejection
+and immediate deletion visibility. Existing stack checks also pass and clean up.
+41 distinct focused checks (30 library/ingestion/search + 11 transport) and frontend
+build pass. Synthetic vectors, test-only admission transport; no hosted DB driver,
+public HTTP API, signup or desktop wiring claim. See docs/LIBRARY_SESSION.md.
+
 Done for developer pilot only: cloud_provider.py loads a hash-verified tokenizer,
 CloudInferenceClient accepts a trusted identity-matching provider (metadata default
 unchanged), and check_cloud_ingestion.py reuses the coordinator and search against

@@ -1,5 +1,13 @@
 # Current project state
 
+21 October latest: authenticated LibrarySession boundary verified with two real
+local Supabase Auth sessions. Import owner comes from Auth; fixed session RPCs
+provide status/open/delete and existing search verifies Auth before inference.
+17 new local integration assertions pass within the existing stack; 41 distinct
+focused unit/transport tests and frontend build pass. Synthetic vectors and test
+psql admission only; no cloud inference rerun. See LIBRARY_SESSION.md. Next:
+bounded production DB composition and application HTTP admission, then desktop.
+
 21 October latest: developer backend cloud integration passes: TXT submission ->
 real cloud embedding -> atomic publication -> real query -> source open -> delete.
 Two model requests, disposable local SQL with test-only Auth shim. See

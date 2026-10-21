@@ -1,5 +1,11 @@
 # Architecture decisions
 
+21 October: use one internal LibrarySession bound to the original user bearer.
+Resolve import ownership through actual Supabase Auth and keep published reads,
+job status and deletion under that same session. Do not substitute a service key
+or accept an owner field. Reuse existing private admission and public owner-scoped
+RPCs. Hosted connection/HTTP admission remains a separate composition gate.
+
 ## 20 October: isolated Gather pilot and bounded release artifact
 
 Use gather-development-511211, asia-south1, INR 500 maximum total pilot budget.

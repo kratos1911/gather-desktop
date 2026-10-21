@@ -108,6 +108,9 @@ def main(config):
         from services.worker.service_clients import SessionClient
         check_published_api(api, request, sql, check, sources,
             lambda token: SessionClient(BASE, anon, token, _test_loopback=True))
+        from check_library_session import check_library_sessions
+        check_library_sessions(sql, check, sources,
+            lambda token: SessionClient(BASE, anon, token, _test_loopback=True))
         path = objects[0]
         read_path = f'/storage/v1/object/authenticated/{BUCKET}/{path}'
         check(api('POST', '/rest/v1/rpc/save_source', token, params) == source, 'RPC retry is idempotent')

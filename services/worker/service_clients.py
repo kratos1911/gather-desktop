@@ -26,7 +26,7 @@ def _claims(token, role):
 
 
 class SessionClient:
-    """One bearer session, three read-only endpoints, five-second I/O deadline."""
+    """One bearer session, fixed owner-scoped routes, five-second I/O deadline."""
     def __init__(self, base, public_key, token, *, cancel=None, _test_loopback=False):
         self._base = origin(base, test_loopback=_test_loopback)
         credential(public_key)
@@ -43,6 +43,8 @@ class SessionClient:
             '/rest/v1/rpc/search_published_text': ('POST',
                 {'p_query','p_model','p_revision','p_dimensions','p_limit'}),
             '/rest/v1/rpc/open_published_text': ('POST', {'p_source','p_version'}),
+            '/rest/v1/rpc/source_processing_status': ('POST', {'p_source'}),
+            '/rest/v1/rpc/request_source_deletion': ('POST', {'p_source_id'}),
         }
         if path not in routes:
             raise TransportError('invalid_request')
