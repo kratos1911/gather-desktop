@@ -144,6 +144,7 @@ def google_token():
 def ready_child():
     """Separate startup probe: fixed HTTPS target, no inference or redirects."""
     from urllib.request import Request, build_opener, ProxyHandler
+    from urllib.error import HTTPError
     from services.worker.embedding_client import _NoRedirect
     try:
         token = sys.stdin.buffer.read(7169).decode('ascii')
@@ -156,6 +157,11 @@ def ready_child():
             require(response.status==200 and len(raw)<=4096,'readiness_response')
         require(strict_json(raw)=={'ready':True},'cloud_not_ready')
         print('{"ready":true}')
+    except HTTPError as error:
+        # Status only: never read or print platform/provider error bodies.
+        print(json.dumps({'ready':False,'http_status':error.code}))
+        error.close()
+        sys.exit(1)
     except Exception:
         sys.exit(1)
 
@@ -166,8 +172,16 @@ def wait_for_startup(identity):
         f'import sys; sys.path.insert(0,{str(ROOT)!r}); from scripts.check_hosted_flow import ready_child; ready_child()'],
         input=identity.get().encode('ascii'),stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,
         cwd=ROOT,env={k:os.environ[k] for k in ('SYSTEMROOT','WINDIR') if k in os.environ},timeout=60)
-    require(result.returncode==0 and len(result.stdout)<=4096 and strict_json(result.stdout)=={'ready':True},
-            'cloud_startup_probe_failed')
+    require(len(result.stdout)<=4096,'cloud_startup_probe_failed')
+    try:
+        reply = strict_json(result.stdout)
+    except Exception:
+        raise PilotFailure('cloud_startup_probe_failed') from None
+    if isinstance(reply,dict) and reply.get('ready') is False:
+        status = reply.get('http_status')
+        if type(status) is int and 400<=status<=599:
+            raise PilotFailure('cloud_startup_http_'+str(status))
+    require(result.returncode==0 and reply=={'ready':True},'cloud_startup_probe_failed')
 
 
 def sign_in_clients(key):
@@ -201,7 +215,16 @@ def main():
     action = parser.add_mutually_exclusive_group()
     action.add_argument('--run',action='store_true')
     action.add_argument('--check-auth',action='store_true',help='Check hidden test-user logins only; no imports or model calls')
+    action.add_argument('--check-startup',action='store_true',help='One cloud readiness probe; no user passwords, imports or embeddings')
     args = parser.parse_args()
+    if args.check_startup:
+        identity = google_token()
+        try:
+            wait_for_startup(identity)
+            print('Cloud startup verified. No embeddings or document operations requested.')
+        finally:
+            identity.invalidate()
+        return
     if not args.run and not args.check_auth:
         print('Preview: one synthetic hosted TXT, two real Auth sessions, at most 3 model calls; deletion hides content, operator finalizes physical cleanup.')
         return

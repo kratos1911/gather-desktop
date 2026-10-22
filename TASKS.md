@@ -641,6 +641,12 @@ invocation, browser dependencies and live compatibility tests. No semantic resul
 or end-to-end desktop ingestion claimed.
 ## 21 October: cloud ingestion composition
 
+22 October startup diagnostic: actual platform /ready 429 "no available instance"
+preceded completed startup; subsequent readiness-only probe passes. Both Auth users
+already verified by operator. Added safe status/startup-only mode; 11 runner checks
+and frontend build pass. Full hosted flow and physical cleanup remain unverified;
+no capacity or inference-limit changes. See docs/HOSTED_FLOW_PILOT.md.
+
 22 October diagnostic: hosted run failed before import at A sign-in. Email
 confirmation/provider verified; cause unknown. Auth-only mode and bounded fixed
 Auth error codes implemented. 25 focused checks and frontend build pass; operator

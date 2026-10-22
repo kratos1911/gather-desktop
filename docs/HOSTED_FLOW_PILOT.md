@@ -1,5 +1,18 @@
 # Authenticated hosted text-flow pilot
 
+Latest startup checkpoint: operator auth-only check passed both sessions. The
+subsequent full run failed before admission at cloud readiness. Actual Cloud Run
+request log shows GET /ready -> 429, zero reported request latency, with platform
+message "no available instance". Startup TCP checks completed later. Agent then
+made one readiness-only request against the changed state; it succeeded without
+inference. No hosted receipt/source was created by the failed full run.
+
+Runner now supports --check-startup without user passwords/Auth/DB operations and
+reports safe cloud_startup_http_NNN statuses without reading error bodies. No
+automatic retries or capacity/timeout changes. Eleven runner tests and frontend
+build pass. Cold-start admission remains a production concern; this is diagnosis
+and a verified warm-state handoff, not a permanent availability fix.
+
 Latest diagnostic checkpoint: operator run stopped at A sign-in, before document
 admission or model calls. Both emails are confirmed in the operator's SQL result.
 Agent read-only settings check confirms signup disabled and email/password enabled.

@@ -1,5 +1,12 @@
 # Current project state
 
+22 October latest: both hosted user logins passed operator --check-auth. Full
+run then hit platform 429 "no available instance" on /ready during cold startup,
+before import. Logs showed startup completed afterward; one agent readiness-only
+probe now passes. Added --check-startup and safe HTTP status reporting, 11 runner
+tests pass. Next: operator full run once against ready service. Cold-start UX
+remains open; no deployed settings changed. See HOSTED_FLOW_PILOT.md.
+
 22 October latest: first hosted run stopped at A sign-in before imports/inference.
 Both emails confirmed; read-only settings show email/password enabled and public
 signup disabled. Added safe Auth error codes and --check-auth to isolate the cause

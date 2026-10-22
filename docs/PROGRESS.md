@@ -1,5 +1,15 @@
 # Rebuild progress
 
+## 22 October: identify Cloud Run readiness rejection
+
+Operator confirmed both real Auth sessions; full runner stopped at readiness.
+Read-only Gather logs prove platform HTTP 429 because no instance was available;
+model startup completed later. No hosted receipt exists. Added startup-only mode
+and safe HTTP status reporting. One authenticated readiness-only probe passed on
+the changed ready state; no inference, source/job writes or cloud settings changes.
+11 runner tests and frontend build pass. Cold-start availability remains unresolved
+for production. Next is one operator full-run attempt; no automatic retry loop.
+
 ## 22 October: isolate hosted sign-in failure
 
 Operator reports generic A-login failure; confirmed-email SQL rules out unconfirmed

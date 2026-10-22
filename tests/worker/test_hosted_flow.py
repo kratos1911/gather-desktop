@@ -7,6 +7,26 @@ from services.worker.service_transport import TransportError
 
 
 class HostedFlowTests(unittest.TestCase):
+    def test_startup_http_status_is_safe_and_not_retried(self):
+        result = Mock(returncode=1,stdout=b'{"ready":false,"http_status":429}')
+        with patch('scripts.check_hosted_flow.subprocess.run',return_value=result) as run, patch('builtins.print'):
+            with self.assertRaisesRegex(PilotFailure,'^cloud_startup_http_429$'):
+                wait_for_startup(Mock(get=Mock(return_value='synthetic')))
+        self.assertEqual(run.call_count,1)
+
+    def test_startup_only_never_authenticates_users_or_imports(self):
+        identity = Mock()
+        with patch('sys.argv',['pilot','--check-startup']), patch(
+                'scripts.check_hosted_flow.google_token',return_value=identity), patch(
+                'scripts.check_hosted_flow.wait_for_startup') as ready, patch(
+                'scripts.check_hosted_flow.sign_in_clients') as signin, patch(
+                'scripts.check_hosted_flow.database_config') as db, patch('builtins.print'):
+            main()
+        ready.assert_called_once_with(identity)
+        signin.assert_not_called()
+        db.assert_not_called()
+        identity.invalidate.assert_called_once()
+
     def test_signin_preserves_safe_code_and_never_returns_error_body(self):
         with patch('scripts.check_hosted_flow.getpass.getpass',return_value='synthetic-password'), patch(
                 'scripts.check_hosted_flow.request_json',side_effect=TransportError('auth_invalid_credentials')):
