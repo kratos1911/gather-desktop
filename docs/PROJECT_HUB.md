@@ -3,6 +3,8 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Latest: [[docs/HOSTED_FLOW_PILOT|Scaling gate verified; min0 confirmed; fresh operator run next]].
+
 CURRENT: [[docs/HOSTED_FLOW_PILOT|Clean cancelled fixture, then start new guarded run]].
 Minimum zero restored; future full runs release temporary warmth on exit.
 

@@ -1,5 +1,27 @@
 # Authenticated hosted text-flow pilot
 
+CURRENT next run: operator reported cleaned=true for the old cancelled fixture.
+The next --run --new-after-cleanup attempt stopped while enabling warmth, before
+receipt archival/import. Original receipt is still intact; no new source/model
+request. Do not repeat the old cleanup SQL as a new prerequisite.
+
+Scaling diagnostic: Google audit records show min1 update accepted at 12:41:57 UTC
+and min0 cleanup submitted ~45 seconds later; no failed Google API audit entry was
+found. Timing fits the local 45-second synchronous CLI wait. Warm updates now use
+--async; restoration stays synchronous. During the EXISTING 60-second startup
+window, up to 12 read-only service-status observations require the correct target,
+min1/max1, Ready=true and observedGeneration>=generation. Only then is one model
+/ready request made using the REMAINING same startup budget. These administrative
+observations are not inference or workflow retries. No total startup-budget increase.
+
+Live scoped verification now passes: accepted warm update -> observed service ready
+-> authenticated /ready -> minimum-zero restoration. Actual min0/max1 was verified
+afterward. No user login, document/job operation or embedding request was used in
+that verification. This is not a worst-case cold-start guarantee. 61 focused checks
+and frontend build pass, including stale-generation rejection, bounded polling,
+shared startup deadline and existing restoration guards. Operator may run the same
+--run --new-after-cleanup command once. Hosted document completion remains pending.
+
 CURRENT handoff: cancelled fixture still needs administrator physical cleanup.
 Do not resume it. Run this exact source-specific query in the dashboard:
 

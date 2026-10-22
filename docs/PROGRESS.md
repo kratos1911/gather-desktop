@@ -1,5 +1,16 @@
 # Rebuild progress
 
+## 22 October: separate scaling acceptance from readiness
+
+Operator confirms old fixture physically cleaned. Subsequent new-run attempt failed
+inside warming; min0 restoration and unchanged import receipt verified. Audit records
+show accepted min1 then rollback ~45s later, consistent with local synchronous wait
+timeout. Added async warm update, bounded control-plane generation/Ready checks and
+one HTTP probe within shared existing 60s startup window; restore stays synchronous.
+61 focused checks and frontend build pass. Actual scoped warm/readiness test passes
+and actual min0/max1 verified afterward. No embedding, Auth login, document/job write
+or hosted full-run retry by agent. Operator new-after-cleanup run is next.
+
 ## 22 October: pilot handshake profile and bounded warm lifecycle
 
 Operator pooler logs show client socket closures during handshake near failed run,

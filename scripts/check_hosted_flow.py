@@ -200,13 +200,20 @@ def ready_child():
         sys.exit(1)
 
 
-def wait_for_startup(identity):
+def wait_for_startup(identity, *, wait_for_capacity=False):
     print('Checking cloud startup: one readiness probe, at most 60 seconds. Inference remains limited to 15 seconds.')
+    timeout = 60
+    if wait_for_capacity:
+        from scripts.pilot_capacity import wait_ready
+        deadline = time.monotonic()+60
+        wait_ready(deadline)
+        timeout = deadline-time.monotonic()
+        require(timeout>0,'cloud_startup_deadline_exceeded')
     try:
         result = subprocess.run([sys.executable,'-I','-B','-c',
             f'import sys; sys.path.insert(0,{str(ROOT)!r}); from scripts.check_hosted_flow import ready_child; ready_child()'],
             input=identity.get().encode('ascii'),stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,
-            cwd=ROOT,env={k:os.environ[k] for k in ('SYSTEMROOT','WINDIR') if k in os.environ},timeout=60)
+            cwd=ROOT,env={k:os.environ[k] for k in ('SYSTEMROOT','WINDIR') if k in os.environ},timeout=timeout)
     except subprocess.TimeoutExpired:
         raise PilotFailure('cloud_startup_deadline_exceeded') from None
     require(len(result.stdout)<=4096,'cloud_startup_probe_failed')
@@ -335,7 +342,7 @@ def main():
         real = BoundedProvider(cloud_provider(IDENTITY,ROOT/'output/inference-model',token_provider=identity))
         provider = QueryCapture(real)
         capacity.enter_context(warm_instance())
-        wait_for_startup(identity)
+        wait_for_startup(identity,wait_for_capacity=True)
         print('Operator pilot database allowance: 15 seconds total, up to 10 seconds for connection; SQL and inference limits unchanged.')
         libraries = [LibrarySession(client,lambda owner:DatabaseRepository(admission_config,owner=owner,operation_timeout=15),provider)
                      for client in clients]

@@ -641,6 +641,12 @@ invocation, browser dependencies and live compatibility tests. No semantic resul
 or end-to-end desktop ingestion claimed.
 ## 21 October: cloud ingestion composition
 
+22 October scaling gate: old fixture cleaned by operator. New run failed pre-import
+while synchronous warm update waited45s; audit acceptance/rollback timing inspected.
+Async update + bounded generation/Ready observation + HTTP probe share startup60s.
+61 focused checks/build pass; actual scoped warm/ready/restore test passes, min0/max1
+confirmed. No new document/model requests. Operator new-after-cleanup attempt next.
+
 22 October current: pilot handshake connect10 inside approved total15 and scoped
 warm-capacity cleanup implemented. Actual worker readonly TLS/role check and 56
 focused tests/preview/frontend build pass. Min0/max1 restored after long manual gap;

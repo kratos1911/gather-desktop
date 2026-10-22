@@ -1,10 +1,60 @@
 import unittest
+import json
+from copy import deepcopy
 from unittest.mock import patch, Mock
 
-from scripts.pilot_capacity import warm_instance, set_minimum, CapacityError
+from scripts.pilot_capacity import warm_instance, set_minimum, CapacityError, ready_state, wait_ready
 
 
 class CapacityTests(unittest.TestCase):
+    def service(self):
+        return dict(metadata=dict(name='gather-inference-pilot',namespace='119730530113',generation=5,
+            annotations={'run.googleapis.com/minScale':'1','run.googleapis.com/maxScale':'1'}),
+            status=dict(observedGeneration=5,conditions=[{'type':'Ready','status':'True'}]))
+
+    def test_observed_generation_and_target_scaling_must_match(self):
+        ready = self.service()
+        self.assertTrue(ready_state(ready))
+        stale = deepcopy(ready)
+        stale['status']['observedGeneration']=4
+        self.assertFalse(ready_state(stale))
+        cold = deepcopy(ready)
+        cold['metadata']['annotations']['run.googleapis.com/minScale']='0'
+        self.assertFalse(ready_state(cold))
+        foreign = deepcopy(ready)
+        foreign['metadata']['namespace']='protected-project'
+        with self.assertRaises(CapacityError):
+            ready_state(foreign)
+
+    def test_warm_update_is_async_but_restore_is_acknowledged(self):
+        with patch('scripts.pilot_capacity.shutil.which',return_value='gcloud.cmd'), patch(
+                'scripts.pilot_capacity.subprocess.run',return_value=Mock(returncode=0)) as run:
+            set_minimum(1)
+            set_minimum(0)
+        self.assertIn('--async',run.call_args_list[0].args[0])
+        self.assertNotIn('--async',run.call_args_list[1].args[0])
+
+    def test_controlplane_wait_observes_progress_then_stops(self):
+        ready = self.service()
+        pending = deepcopy(ready)
+        pending['status']['observedGeneration']=4
+        responses = [Mock(returncode=0,stdout=json.dumps(v).encode()) for v in (pending,ready)]
+        with patch('scripts.pilot_capacity.shutil.which',return_value='gcloud.cmd'), patch(
+                'scripts.pilot_capacity.subprocess.run',side_effect=responses) as run, patch(
+                'scripts.pilot_capacity.time.monotonic',return_value=0), patch('scripts.pilot_capacity.time.sleep'):
+            wait_ready(60)
+        self.assertEqual(run.call_count,2)
+
+    def test_controlplane_poll_count_is_bounded(self):
+        pending = self.service()
+        pending['status']['observedGeneration']=4
+        with patch('scripts.pilot_capacity.shutil.which',return_value='gcloud.cmd'), patch(
+                'scripts.pilot_capacity.subprocess.run',return_value=Mock(returncode=0,stdout=json.dumps(pending).encode())) as run, patch(
+                'scripts.pilot_capacity.time.monotonic',return_value=0), patch('scripts.pilot_capacity.time.sleep'):
+            with self.assertRaisesRegex(CapacityError,'^pilot_capacity_ready_timeout$'):
+                wait_ready(60)
+        self.assertEqual(run.call_count,12)
+
     def test_success_restores_minimum_zero(self):
         with patch('scripts.pilot_capacity.record') as record, patch('scripts.pilot_capacity.set_minimum') as minimum, patch('builtins.print'):
             with warm_instance():

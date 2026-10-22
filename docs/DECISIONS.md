@@ -1,5 +1,11 @@
 # Architecture decisions
 
+22 October: separate Cloud Run scaling acceptance from readiness. Submit min1 with
+--async, observe the target's current generation/Ready state under the existing
+startup deadline, then make one authenticated /ready request with its remaining
+budget. Acknowledged min0 restore remains synchronous. Avoid a second independent
+long wait or inference retry; retain operator-only scoped capacity and rollback.
+
 22 October: make pilot warmth a run-scoped lease after hidden prompts, restored
 to minimum zero in finally. Keeping minimum one across manual handoffs caused
 hours of idle reservation; the operator runner must release it on success/failure

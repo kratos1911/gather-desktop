@@ -12,7 +12,7 @@
     {
       "id": "source",
       "type": "text",
-      "text": "Save file or link\nPilot connection=10 seconds inside approved total=15\nCancelled fixture physical cleanup next, then NEW guarded run\nModel warmth now run-scoped; current minimum zero",
+      "text": "Save file or link\nOld fixture physically cleaned; no new source yet\nAsync warm/generation-ready gate verified; min0 restored\nOperator NEW guarded run next; HTTP + desktop remain",
       "x": 0,
       "y": 0,
       "width": 330,

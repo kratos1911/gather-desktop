@@ -13,6 +13,16 @@ from scripts.check_hosted_flow import reviewed_cleanup_receipt
 
 
 class HostedFlowTests(unittest.TestCase):
+    def test_controlplane_wait_and_http_probe_share_startup_deadline(self):
+        result = Mock(returncode=0,stdout=b'{"ready":true}')
+        identity = Mock(get=Mock(return_value='synthetic'))
+        with patch('scripts.pilot_capacity.wait_ready') as wait, patch(
+                'scripts.check_hosted_flow.time.monotonic',side_effect=[100,145]), patch(
+                'scripts.check_hosted_flow.subprocess.run',return_value=result) as run, patch('builtins.print'):
+            wait_for_startup(identity,wait_for_capacity=True)
+        wait.assert_called_once_with(160)
+        self.assertEqual(run.call_args.kwargs['timeout'],15)
+
     def test_cleanup_restart_requires_cancelled_zero_inference_fixture(self):
         original = dict(project=PROJECT,request_id='69c36bc2-dd02-4a44-98b0-43055e9d3f38',
             source_id='5a4c1c59-9313-4982-a1b4-c8dd73dd30c1',

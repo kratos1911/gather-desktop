@@ -1,5 +1,13 @@
 # Current project state
 
+22 October CURRENT: old cancelled fixture cleaned=true per operator. New run stopped
+in warm scaling before new receipt/import; original evidence intact. API audit timing
+fits local 45s synchronous update wait. Warm command now async, followed by target/
+generation-ready observation and one HTTP probe sharing the existing startup60s.
+Live scoped warm/readiness/restore verification passes, actual min0/max1 confirmed.
+61 focused checks/build pass. Next: operator --run --new-after-cleanup once; no new
+fixture needs cleanup yet and no complete hosted workflow claim. See HOSTED_FLOW_PILOT.
+
 22 October CURRENT: Gather minimum restored to 0/max1 after warm setting remained
 active through ~4h44 operator gap. New full-run capacity guard restores min0 in
 finally; no permanent timer/hard cap claimed. Supavisor handshake closures fit
