@@ -12,7 +12,7 @@
     {
       "id": "source",
       "type": "text",
-      "text": "Save file or link\nAuth/startup verified; DB setup measured ~9 seconds\nUser approved 15-second pilot DB bound; production stays 5\nGuarded import resume next; hosted completion/cleanup remain",
+      "text": "Save file or link\nPilot connection=10 seconds inside approved total=15\nCancelled fixture physical cleanup next, then NEW guarded run\nModel warmth now run-scoped; current minimum zero",
       "x": 0,
       "y": 0,
       "width": 330,

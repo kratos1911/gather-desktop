@@ -1,5 +1,14 @@
 # Current project state
 
+22 October CURRENT: Gather minimum restored to 0/max1 after warm setting remained
+active through ~4h44 operator gap. New full-run capacity guard restores min0 in
+finally; no permanent timer/hard cap claimed. Supavisor handshake closures fit
+inner connect=3 cutoff; pilot now connect=10 within approved total15, defaults
+unchanged. Read-only hosted profile check, 56 tests, preview/build pass. Cancelled
+source 5a4c1c59-9313-4982-a1b4-c8dd73dd30c1 needs dashboard finish_source_cleanup.
+After cleaned=true, guarded --new-after-cleanup creates new request and archives
+old evidence. No new import/inference yet. See HOSTED_FLOW_PILOT.md.
+
 22 October latest: import acknowledged, processing failed before staging/inference.
 Receipt queued/temporarily_unavailable, then failure cleanup tombstoned source.
 Operator confirms job cancelled/deleted, attempts=1, no staged text/passages.

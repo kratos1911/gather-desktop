@@ -9,9 +9,26 @@ from scripts.check_hosted_flow import QueryCapture, ExpectedWorker, PilotFailure
 from services.worker.service_transport import TransportError
 from services.worker.library_session import LibraryError
 from services.worker.ingestion_repository import RepositoryError
+from scripts.check_hosted_flow import reviewed_cleanup_receipt
 
 
 class HostedFlowTests(unittest.TestCase):
+    def test_cleanup_restart_requires_cancelled_zero_inference_fixture(self):
+        original = dict(project=PROJECT,request_id='69c36bc2-dd02-4a44-98b0-43055e9d3f38',
+            source_id='5a4c1c59-9313-4982-a1b4-c8dd73dd30c1',
+            job_id='7ecced47-982e-45fb-ad77-301f56a46ffe',
+            version_id='d81c5f32-674b-48fd-b6d0-9a12973844a2',
+            passed=False,stage='processing',tombstoned=True,real_model_requests=0)
+        for changes in ({},{'passed':True},{'tombstoned':False},{'real_model_requests':1},
+                        {'project':'foreign'},{'source_id':'bad'},{'stage':'search_open'}):
+            path = MagicMock()
+            path.open.return_value.__enter__.return_value = io.BytesIO(json.dumps(original|changes).encode())
+            if changes:
+                with self.assertRaises(PilotFailure):
+                    reviewed_cleanup_receipt(path)
+            else:
+                self.assertEqual(reviewed_cleanup_receipt(path)['source_id'],original['source_id'])
+
     def test_readiness_http_error_has_status_without_body_or_token(self):
         error = HTTPError('https://fixture.run.app/ready',429,'private description',{},io.BytesIO(b'private body'))
         error.read = Mock(side_effect=AssertionError('must not read error body'))

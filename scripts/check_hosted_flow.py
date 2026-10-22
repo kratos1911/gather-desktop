@@ -13,6 +13,9 @@ import sys
 import time
 import uuid
 import warnings
+from dataclasses import replace
+from contextlib import ExitStack
+from scripts.pilot_capacity import warm_instance, CapacityError
 
 from scripts.check_cloud_ingestion import IDENTITY, PilotToken, BoundedProvider
 from services.worker.cloud_provider import cloud_provider
@@ -266,15 +269,37 @@ def reviewed_import_receipt(path):
         raise PilotFailure('invalid_resume_receipt') from None
 
 
+def reviewed_cleanup_receipt(path):
+    """Operator must first finalize this exact cancelled source in the dashboard."""
+    try:
+        with path.open('rb') as stream:
+            raw = stream.read(16385)
+        require(len(raw)<=16384,'invalid_cleanup_receipt')
+        value = strict_json(raw)
+        require(value.get('project')==PROJECT and value.get('passed') is False
+            and value.get('stage')=='processing' and value.get('tombstoned') is True
+            and type(value.get('real_model_requests')) is int and value['real_model_requests']==0,
+            'cleanup_receipt_not_eligible')
+        for field in ('request_id','source_id','job_id','version_id'):
+            require(str(uuid.UUID(value[field]))==value[field],'invalid_cleanup_identity')
+        return value
+    except PilotFailure:
+        raise
+    except Exception:
+        raise PilotFailure('invalid_cleanup_receipt') from None
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     action = parser.add_mutually_exclusive_group()
     action.add_argument('--run',action='store_true')
     action.add_argument('--check-auth',action='store_true',help='Check hidden test-user logins only; no imports or model calls')
     action.add_argument('--check-startup',action='store_true',help='One cloud readiness probe; no user passwords, imports or embeddings')
-    parser.add_argument('--resume-import',action='store_true',help='Explicitly reuse a reviewed failed import receipt; requires --run')
+    restart = parser.add_mutually_exclusive_group()
+    restart.add_argument('--resume-import',action='store_true',help='Explicitly reuse a reviewed failed import receipt; requires --run')
+    restart.add_argument('--new-after-cleanup',action='store_true',help='Attest administrator cleanup of cancelled zero-inference fixture; start new request with --run')
     args = parser.parse_args()
-    require(not args.resume_import or args.run,'resume_requires_run')
+    require(not (args.resume_import or args.new_after_cleanup) or args.run,'restart_requires_run')
     if args.check_startup:
         identity = google_token()
         try:
@@ -284,12 +309,14 @@ def main():
             identity.invalidate()
         return
     if not args.run and not args.check_auth:
-        print('Preview: one synthetic hosted TXT, two real Auth sessions, at most 3 model calls; deletion hides content, operator finalizes physical cleanup.')
+        print('Preview: one synthetic hosted TXT, two Auth sessions, at most 3 model calls; temporary warm capacity restores minimum zero on exit; operator finalizes physical cleanup.')
         return
     previous = None
     if args.run:
         if args.resume_import:
             previous = reviewed_import_receipt(RECEIPT)
+        elif args.new_after_cleanup:
+            previous = reviewed_cleanup_receipt(RECEIPT)
         else:
             require(not RECEIPT.exists(),'existing_pilot_receipt_review_required')
     key = configuration()
@@ -299,19 +326,24 @@ def main():
     if args.check_auth:
         print('Both pilot user sessions verified. No document, worker or model operations performed.')
         return
-    admission_config, worker_config = database_config('gather_admission'),database_config('gather_worker')
+    admission_config, worker_config = [replace(database_config(role),connect_timeout=10)
+                                        for role in ('gather_admission','gather_worker')]
     identity = google_token()
     receipt = None
+    capacity = ExitStack()
     try:
         real = BoundedProvider(cloud_provider(IDENTITY,ROOT/'output/inference-model',token_provider=identity))
         provider = QueryCapture(real)
+        capacity.enter_context(warm_instance())
         wait_for_startup(identity)
-        print('Operator pilot database allowance: 15 seconds per operation; SQL and inference limits unchanged.')
+        print('Operator pilot database allowance: 15 seconds total, up to 10 seconds for connection; SQL and inference limits unchanged.')
         libraries = [LibrarySession(client,lambda owner:DatabaseRepository(admission_config,owner=owner,operation_timeout=15),provider)
                      for client in clients]
         worker = DatabaseRepository(worker_config,operation_timeout=15)
-        receipt = dict(project=PROJECT,request_id=previous['request_id'] if previous else str(uuid.uuid4()),passed=False,stage='preflight_complete',
-            resumed_import=previous is not None,database_operation_timeout_seconds=15,
+        receipt = dict(project=PROJECT,request_id=previous['request_id'] if previous and not args.new_after_cleanup else str(uuid.uuid4()),passed=False,stage='preflight_complete',
+            resumed_import=previous is not None and not args.new_after_cleanup,
+            previous_cleanup_operator_confirmed=args.new_after_cleanup,
+            database_operation_timeout_seconds=15,database_connect_timeout_seconds=10,
             cleanup_pending=False,started_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()))
         RECEIPT.parent.mkdir(parents=True,exist_ok=True)
         def save(value):
@@ -333,14 +365,19 @@ def main():
         print(json.dumps(receipt,indent=2))
         print('Physical cleanup remains pending for the source ID in this receipt. Do not rerun automatically.')
     finally:
-        identity.invalidate()
-        if receipt is not None:
-            print('Safe receipt: '+str(RECEIPT))
+        try:
+            identity.invalidate()
+        finally:
+            try:
+                capacity.close()
+            finally:
+                if receipt is not None:
+                    print('Safe receipt: '+str(RECEIPT))
 
 
 if __name__=='__main__':
     try:
         main()
     except Exception as error:
-        code = str(error) if isinstance(error,PilotFailure) else 'hosted_pilot_failed'
+        code = str(error) if isinstance(error,(PilotFailure,CapacityError)) else 'hosted_pilot_failed'
         raise SystemExit(code+'. No automatic retry; send the safe receipt/output, never passwords or tokens.') from None

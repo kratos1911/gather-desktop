@@ -3,6 +3,9 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+CURRENT: [[docs/HOSTED_FLOW_PILOT|Clean cancelled fixture, then start new guarded run]].
+Minimum zero restored; future full runs release temporary warmth on exit.
+
 Current: [[docs/HOSTED_FLOW_PILOT|Processing failed before staging; Postgres log needed]].
 Source is tombstoned, physical cleanup pending; warm min=1 still active.
 

@@ -1,10 +1,21 @@
 import unittest
+from dataclasses import replace
 from unittest.mock import patch, MagicMock
 
 from scripts.check_hosted_database import check_role, ProbeError
+from services.worker.database_transport import DatabaseConfig
 
 
 class ProbeTests(unittest.TestCase):
+    def test_pilot_probe_selects_ten_second_handshake(self):
+        config = DatabaseConfig('127.0.0.1',5432,'gather_worker','fixture',test_loopback=True)
+        connection = MagicMock()
+        connection.cursor.return_value.__enter__.return_value.fetchone.return_value = ('gather_ingestion_worker',)
+        with patch('services.worker.local_credentials.database_config',return_value=config), patch(
+                'services.worker.database_transport.connect',return_value=connection) as connect:
+            check_role('gather_worker',pilot_profile=True)
+        self.assertEqual(connect.call_args.args[0],replace(config,connect_timeout=10))
+
     def test_authentication_error_is_redacted(self):
         error = RuntimeError('private password/details')
         error.pgcode = '28P01'

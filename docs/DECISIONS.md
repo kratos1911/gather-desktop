@@ -1,5 +1,13 @@
 # Architecture decisions
 
+22 October: make pilot warmth a run-scoped lease after hidden prompts, restored
+to minimum zero in finally. Keeping minimum one across manual handoffs caused
+hours of idle reservation; the operator runner must release it on success/failure
+and expose uncertain rollback. Keep explicit personal/Gather CLI scope and no
+public/IAM/image/resource changes. OS-kill recovery remains an operator obligation.
+Pilot handshake allowance is ten seconds inside the approved fifteen-second total;
+production connect/operation defaults and SQL/model limits remain unchanged.
+
 21 October: keep existing transaction/function contracts and add an isolated
 Psycopg helper per DB operation. A socket timeout alone cannot bound DNS or commit;
 the parent enforces five seconds plus one-second cleanup. Separate admission and

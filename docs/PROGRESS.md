@@ -1,5 +1,20 @@
 # Rebuild progress
 
+## 22 October: pilot handshake profile and bounded warm lifecycle
+
+Operator pooler logs show client socket closures during handshake near failed run,
+spaced three seconds. Found connect_timeout=3 inside the previously approved total15.
+Added explicit pilot connect10/total15; production/SQL/model defaults unchanged.
+Actual read-only hosted worker TLS/role check passes. Prepared cleanup-attested new
+fixture mode, preserving old receipt and new request identity. Fifty-six focused
+checks, preview and frontend build pass. No import/model retry performed.
+
+Inspected warm capacity still active after ~4h44 gap; restored min0/max1 and verified
+actual annotations. Added Gather-only scoped warm context after prompts, restoring
+min0 in finally on normal/error/interrupt exits and surfacing rollback failure.
+No guaranteed timer/instant termination/cost figure claimed. Cancelled fixture's
+physical cleanup still requires operator dashboard action; old source cannot resume.
+
 ## 22 October: processing stopped before staging; safe diagnostics retained
 
 Operator SQL confirms failure cancellation/tombstone, one attempt and zero staged

@@ -1,5 +1,12 @@
 # Bounded PostgreSQL connection
 
+22 October handshake correction: DatabaseConfig defaults to connect_timeout=3,
+with an explicit operator-pilot choice of 10 permitted only when repository total
+timeout=15. Both values cross the private helper wire and validate in the child.
+The whole-call parent deadline remains final. Supavisor's three-second handshake
+disconnects motivated this targeted profile; read-only hosted TLS/role probe passes.
+This is not permission to extend production, SQL/model deadlines or retry loops.
+
 22 October pilot exception, explicitly approved by user: DatabaseRepository keeps
 its five-second default and accepts an explicit 15-second trusted override. Only
 the supervised hosted pilot selects it. SQL statement/lock/connect settings and

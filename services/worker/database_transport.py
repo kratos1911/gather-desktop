@@ -33,11 +33,13 @@ class DatabaseConfig:
     password: str = field(repr=False)
     root_certificate: str = ''
     test_loopback: bool = False
+    connect_timeout: int = 3
 
     def __post_init__(self):
         local = self.test_loopback is True and self.host == '127.0.0.1'
         hostname = r'[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?'
         if (type(self.test_loopback) is not bool or type(self.port) is not int
+                or type(self.connect_timeout) is not int or self.connect_timeout not in (3,10)
                 or not 1 <= self.port <= 65535
                 or not isinstance(self.host,str) or not re.fullmatch(hostname,self.host)
                 or (self.test_loopback and not local)
@@ -57,6 +59,8 @@ class DatabaseRepository:
             raise ValueError('invalid_database_configuration')
         if type(operation_timeout) is not int or operation_timeout not in (DEADLINE,15):
             raise ValueError('invalid_database_deadline')
+        if config.connect_timeout==10 and operation_timeout!=15:
+            raise ValueError('pilot_connection_requires_pilot_deadline')
         if owner is not None and (not isinstance(owner,str) or str(UUID(owner)) != owner):
             raise ValueError('invalid_database_owner')
         expected = 'gather_admission' if owner else 'gather_worker'
@@ -72,7 +76,7 @@ class DatabaseRepository:
             raise ValueError('unsupported_repository_operation')
         values = [{'bytes_hex':a.hex()} if type(a) is bytes else a for a in args]
         wire = json.dumps({'config':asdict(self._config),'owner':self._owner,
-                           'function':function,'args':values},allow_nan=False).encode()
+                           'function':function,'args':values,'operation_timeout':self.operation_timeout},allow_nan=False).encode()
         if len(wire) > MAX_WIRE:
             raise RepositoryError('invalid_input')
         if not SLOTS.acquire(blocking=False):
@@ -119,7 +123,7 @@ class DatabaseRepository:
 def connect(config, owner):
     import psycopg2
     kwargs = dict(host=config.host,port=config.port,user=config.user,password=config.password,
-        dbname='postgres',connect_timeout=3,options='-c search_path= -c statement_timeout=5000 -c lock_timeout=3000',
+        dbname='postgres',connect_timeout=config.connect_timeout,options='-c search_path= -c statement_timeout=5000 -c lock_timeout=3000',
         application_name='gather-worker' if owner is None else 'gather-admission',
         sslmode='disable' if config.test_loopback else 'verify-full',gssencmode='disable')
     if not config.test_loopback:
@@ -156,7 +160,7 @@ def child_main():
             raise ValueError()
         value = strict_json(raw)
         config = DatabaseConfig(**value['config'])
-        validated = DatabaseRepository(config,owner=value['owner'])
+        validated = DatabaseRepository(config,owner=value['owner'],operation_timeout=value.get('operation_timeout',DEADLINE))
         function, args = value['function'], value['args']
         allowed = {'submit_text'} if validated._owner else set(FUNCTIONS)-{'submit_text'}
         if function not in allowed or len(args)!=FUNCTIONS[function]:

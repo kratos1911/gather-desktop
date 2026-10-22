@@ -4,6 +4,7 @@ import json
 import os
 import subprocess
 import sys
+from dataclasses import replace
 
 from services.worker.local_credentials import ROLES
 
@@ -12,11 +13,13 @@ class ProbeError(Exception):
     pass
 
 
-def check_role(role):
+def check_role(role, *, pilot_profile=False):
     from services.worker.local_credentials import database_config
     from services.worker.database_transport import connect
     try:
         config = database_config(role)
+        if pilot_profile:
+            config = replace(config,connect_timeout=10)
     except Exception:
         raise ProbeError('local_credentials_unavailable') from None
     expected = 'gather_ingestion_coordinator' if role=='gather_admission' else 'gather_ingestion_worker'
@@ -46,11 +49,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--run',action='store_true')
     parser.add_argument('--role',choices=ROLES)
+    parser.add_argument('--pilot-profile',action='store_true',help='Use the approved 15-second total / 10-second connect pilot profile')
     parser.add_argument('--child-role',choices=ROLES,help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.child_role:
         try:
-            print(json.dumps(check_role(args.child_role)))
+            print(json.dumps(check_role(args.child_role,pilot_profile=args.pilot_profile)))
         except Exception as error:
             code = str(error) if isinstance(error,ProbeError) else 'connection_policy_check_failed'
             print(json.dumps({'role':args.child_role,'connected':False,'error':code}))
@@ -64,8 +68,8 @@ def main():
         try:
             result = subprocess.run([sys.executable,'-I','-B','-c',
                 f'import sys; sys.path.insert(0,{str(ROOT)!r}); from scripts.check_hosted_database import main; main()',
-                '--child-role',role],stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,cwd=ROOT,
-                env={k:os.environ[k] for k in ('SYSTEMROOT','WINDIR') if k in os.environ},timeout=5)
+                '--child-role',role,*(['--pilot-profile'] if args.pilot_profile else [])],stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,cwd=ROOT,
+                env={k:os.environ[k] for k in ('SYSTEMROOT','WINDIR') if k in os.environ},timeout=15 if args.pilot_profile else 5)
             if len(result.stdout)>4096:
                 raise ValueError()
             value = json.loads(result.stdout)

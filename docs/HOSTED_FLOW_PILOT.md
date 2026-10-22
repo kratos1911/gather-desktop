@@ -1,5 +1,42 @@
 # Authenticated hosted text-flow pilot
 
+CURRENT handoff: cancelled fixture still needs administrator physical cleanup.
+Do not resume it. Run this exact source-specific query in the dashboard:
+
+```sql
+select gather_private.finish_source_cleanup(
+  '5a4c1c59-9313-4982-a1b4-c8dd73dd30c1'::uuid
+) as cleaned;
+```
+
+After the operator reports cleaned=true, use --run --new-after-cleanup for a new
+request ID, keeping the failed receipt as an archive. The flag is an explicit
+operator attestation, not independent proof of physical cleanup. It accepts only
+this project's failed processing fixture with tombstoned=true, zero model calls
+and valid IDs; it does not resurrect the old source. Do not use before cleanup.
+
+Connection correction: operator Supavisor logs show client disconnects during
+handshake, with three-second spacing near the failed run. This is consistent with
+the connect_timeout=3 still inside the pilot's 15-second outer budget; it does not
+alone prove every worker failure's cause. Pilot now selects connect_timeout=10
+within the same approved total=15. Default connect=3/total=5, SQL limits and model
+deadline stay unchanged. Child wire carries the explicit outer bound and rejects
+the ten-second profile without total=15. One real read-only worker-role TLS check
+with this profile passes; no new import/model call. Fifty-six focused checks,
+preview and frontend build pass; full hosted flow remains unverified.
+
+CAPACITY CLEANUP: warm min=1 remained active across the operator gap (~4h44 from
+activation to inspection). Agent restored min=0/max=1 and verified the service
+configuration. Actual billed cost was not measured. Scale-to-zero is enabled;
+this does not promise immediate instance termination or a hard spending cap.
+The full runner now acquires temporary warm capacity only after hidden prompts
+and preflight, and restores minimum zero in finally after success/error/Ctrl+C.
+Restoration failure is explicit and leaves the safe scaling receipt pending.
+An OS/process kill can bypass finally; no failproof timer is claimed. Manual
+minimum-zero fallback command is retained below. Auth/startup-only modes do not
+change minimum instances. Existing authorization covers this Gather-only capacity;
+no new resource type, IAM, image or CPU/memory changes.
+
 Current processing checkpoint: source 5a4c1c59-9313-4982-a1b4-c8dd73dd30c1 was
 acknowledged, job 7ecced47-982e-45fb-ad77-301f56a46ffe returned queued /
 temporarily_unavailable before any inference. Failure handler tombstoned it.

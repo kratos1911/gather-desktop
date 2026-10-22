@@ -641,6 +641,12 @@ invocation, browser dependencies and live compatibility tests. No semantic resul
 or end-to-end desktop ingestion claimed.
 ## 21 October: cloud ingestion composition
 
+22 October current: pilot handshake connect10 inside approved total15 and scoped
+warm-capacity cleanup implemented. Actual worker readonly TLS/role check and 56
+focused tests/preview/frontend build pass. Min0/max1 restored after long manual gap;
+cost not measured. Cancelled fixture needs admin physical cleanup, then explicit
+--new-after-cleanup; no cancelled-job resurrection or hosted retry. Defaults intact.
+
 22 October worker diagnostic milestone: hosted pilot source acknowledged then
 cancelled/tombstoned after temporary pre-staging failure (operator SQL: one attempt,
 no staged text/passages; receipt: zero inference). Added safe worker step/reason

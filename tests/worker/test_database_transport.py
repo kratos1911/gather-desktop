@@ -1,4 +1,6 @@
 import json
+import io
+from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 import subprocess
@@ -7,13 +9,50 @@ import time
 import unittest
 from unittest.mock import Mock, patch, MagicMock
 
-from services.worker.database_transport import DatabaseConfig, DatabaseRepository, connect, encode_result
+from services.worker.database_transport import DatabaseConfig, DatabaseRepository, connect, encode_result, child_main
 from services.worker.ingestion_repository import RepositoryError
 
 OWNER = '00000000-0000-0000-0000-000000000001'
 
 
 class DatabaseTransportTests(unittest.TestCase):
+    def test_child_accepts_explicit_pilot_profile_with_same_total(self):
+        config = self.config(connect_timeout=10)
+        wire = dict(config=asdict(config),owner=None,function='claim_text_job',args=[],operation_timeout=15)
+        output = io.BytesIO()
+        with patch('services.worker.database_transport.sys.stdin',Mock(buffer=io.BytesIO(json.dumps(wire).encode()))), patch(
+                'services.worker.database_transport.sys.stdout',Mock(buffer=output)), patch(
+                'services.worker.database_transport.PostgresRepository') as repository:
+            repository.return_value.call.return_value = None
+            child_main()
+        self.assertEqual(json.loads(output.getvalue()),{'result':None})
+        repository.return_value.call.assert_called_once_with('claim_text_job')
+
+    def test_longer_handshake_requires_explicit_pilot_total(self):
+        config = self.config(connect_timeout=10)
+        with self.assertRaises(ValueError):
+            DatabaseRepository(config)
+        self.assertEqual(DatabaseRepository(config,operation_timeout=15).operation_timeout,15)
+        for invalid in (0,5,11,True,'10'):
+            with self.assertRaises(ValueError):
+                self.config(connect_timeout=invalid)
+
+    def test_pilot_handshake_reaches_driver_and_child_wire(self):
+        config = self.config(connect_timeout=10)
+        connection = MagicMock()
+        connection.cursor.return_value.__enter__.return_value.fetchone.return_value = (False,)*5
+        with patch('psycopg2.connect',return_value=connection) as driver:
+            connect(config,None)
+        self.assertEqual(driver.call_args.kwargs['connect_timeout'],10)
+        child = Mock(returncode=0)
+        child.poll.return_value = 0
+        child.communicate.return_value = (b'{"result":null}',None)
+        with patch('services.worker.database_transport.subprocess.Popen',return_value=child):
+            DatabaseRepository(config,operation_timeout=15).call('claim_text_job')
+        value = json.loads(child.communicate.call_args_list[0].kwargs['input'])
+        self.assertEqual(value['operation_timeout'],15)
+        self.assertEqual(value['config']['connect_timeout'],10)
+
     def test_production_default_and_explicit_pilot_bounds(self):
         default = DatabaseRepository(self.config())
         pilot = DatabaseRepository(self.config(),operation_timeout=15)
