@@ -3,6 +3,8 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Next operator action: [[docs/HOSTED_FLOW_PILOT|Run the authenticated hosted text pilot once]].
+
 Latest: [[docs/HOSTED_SUPABASE_SETUP|Encrypted credentials and hosted TLS logins verified]].
 Next: public project API key and real pilot Auth session before hosted flow testing.
 

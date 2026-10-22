@@ -1,5 +1,18 @@
 # Rebuild progress
 
+## 22 October: hosted flow runner prepared
+
+Operator created two synthetic Auth accounts and quota rows. Prepared one fixed
+TXT workflow through existing real Auth/DB/cloud components. Reuse matching query
+vectors for isolation/deletion checks, cap model requests, persist safe stages,
+guard unexpected jobs and tombstone on failure. A dedicated startup probe is
+explicitly separate from inference deadlines. 13 control/regression checks, preview,
+three runtime tokenizer parity cases and frontend build pass. Initial control tests
+caught missing startup-helper imports; corrected before handoff. Model venv lacked
+psycopg2; project launcher already has both packages, no installation performed.
+Live execution awaits hidden operator passwords. Physical cleanup remains admin-only.
+See HOSTED_FLOW_PILOT.md. No model call, deployment or protected workload changes.
+
 ## 22 October: encrypted credentials and hosted connection verified
 
 Operator saved the credential bundle. Agent verified user-scoped decryption and

@@ -12,7 +12,7 @@
     {
       "id": "source",
       "type": "text",
-      "text": "Save file or link\nLibrarySession: owner from verified Auth\nEncrypted local credentials + hosted restricted TLS logins verified\nNEXT: hosted pilot Auth/key + HTTP application + desktop",
+      "text": "Save file or link\nHosted credentials, public key and two Auth test users ready\nBounded hosted TXT runner prepared; operator execution pending\nPhysical cleanup requires admin; HTTP + desktop remain",
       "x": 0,
       "y": 0,
       "width": 330,

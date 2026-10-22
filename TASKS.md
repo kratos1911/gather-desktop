@@ -641,6 +641,13 @@ invocation, browser dependencies and live compatibility tests. No semantic resul
 or end-to-end desktop ingestion claimed.
 ## 21 October: cloud ingestion composition
 
+22 October hosted-runner milestone prepared: check_hosted_flow.py reuses real
+Auth, LibrarySession, DB transport and cloud provider. Seven new controls + six
+session regressions pass; preview, tokenizer parity (3 cases) and frontend build
+pass. Live execution awaits operator user-password prompts. Cleanup finalizer is
+admin-only and must follow visibility deletion; no completed hosted flow claim.
+See docs/HOSTED_FLOW_PILOT.md.
+
 22 October current checkpoint: credential helpers/read-only probe verified.
 14 focused checks and frontend build pass; operator stored DPAPI bundle, both
 restricted hosted logins and decryption now checked by agent. Public project key

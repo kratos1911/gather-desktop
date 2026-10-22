@@ -1,5 +1,12 @@
 # Current project state
 
+22 October latest: user created both hosted Auth pilot accounts and confirmed two
+slots each, unused. One-source hosted flow runner now prepared: real sessions,
+bounded DB/cloud provider, query-vector replay for isolation/deletion, safe receipt
+and failure tombstones. 13 focused checks, preview and frontend build pass. Operator
+must run with hidden user passwords; no hosted-flow success claim. Physical cleanup
+needs dashboard admin after tombstoning. See HOSTED_FLOW_PILOT.md.
+
 22 October latest: stored encrypted credentials decrypt under owning Windows user;
 both hosted restricted-role TLS logins now verified by agent. Read-only probe uses
 no source/job functions. 14 focused checks and frontend build pass; earlier approval
