@@ -641,6 +641,13 @@ invocation, browser dependencies and live compatibility tests. No semantic resul
 or end-to-end desktop ingestion claimed.
 ## 21 October: cloud ingestion composition
 
+22 October import blocker: no save receipt found by operator; measured connection
+setup ~9 s cannot fit five-second whole-call bound. Explicit user-approved pilot
+override 15 s implemented; production default, SQL and model limits unchanged.
+Guarded request-ID-preserving resume + safe diagnostic codes added. 40 focused
+checks, non-mutating hosted function lookup (55000, 5.703 s) and frontend build pass.
+Full hosted flow and administrator cleanup remain pending. See HOSTED_FLOW_PILOT.md.
+
 22 October startup diagnostic: actual platform /ready 429 "no available instance"
 preceded completed startup; subsequent readiness-only probe passes. Both Auth users
 already verified by operator. Added safe status/startup-only mode; 11 runner checks

@@ -1,5 +1,37 @@
 # Authenticated hosted text-flow pilot
 
+Latest import checkpoint: failed receipt stage=import, zero model calls, no source
+acknowledged. Operator queried the exact request ID and reported no save receipt.
+Read-only EXPLAIN resolved the actual function signature (not function execution):
+10.422 s total, 8.922 s connection/setup. Second sample separated credential loading
+(0.0 s), TLS/login (7.562 s) and full connection/role setup (9.046 s). These are
+samples from this operator's network, not production latency guarantees. This
+establishes a blocker to the fresh-connection five-second deadline; it does not
+prove every possible import failure is resolved.
+
+User explicitly approved a 15-second DB-operation allowance for this pilot only.
+Production defaults stay at five seconds; SQL's five-second statement and three-
+second lock limits and inference's 15-second limit are unchanged. Pilot Lease
+cleanup wait now follows the explicit repository bound (at most 16 seconds).
+An actual non-mutating all-zero job/lease lookup reached the hosted function and
+returned expected stale_lease / SQLSTATE 55000 in 5.703 s using the approved bound.
+40 focused checks and frontend build pass; no hosted import was rerun by agent.
+
+After the operator's no-row check, resume once with:
+
+```powershell
+.\scripts\python.ps1 -m scripts.check_hosted_flow --run --resume-import
+```
+
+This explicitly attests that the failed import was reviewed. It accepts only the
+same project's failed, unacknowledged import with zero model calls and a canonical
+request ID. It refuses an acknowledged source, later stage, successful run or an
+already resumed import. Old receipt is archived under ignored output/hosted-pilot
+before reuse of the SAME request ID, preserving server idempotency and evidence.
+There is no automatic retry. Safe receipt now retains fixed LibraryError/database
+codes and allowlisted SQLSTATE/deadline reasons through the private exception
+chain, never raw SQL/server messages. Physical cleanup remains administrator-only.
+
 Latest startup checkpoint: operator auth-only check passed both sessions. The
 subsequent full run failed before admission at cloud readiness. Actual Cloud Run
 request log shows GET /ready -> 429, zero reported request latency, with platform

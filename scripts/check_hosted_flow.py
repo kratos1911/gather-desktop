@@ -18,7 +18,9 @@ from scripts.check_cloud_ingestion import IDENTITY, PilotToken, BoundedProvider
 from services.worker.cloud_provider import cloud_provider
 from services.worker.database_transport import DatabaseRepository, ROOT
 from services.worker.ingestion import run_once
+from services.worker.ingestion_repository import RepositoryError
 from services.worker.library_session import LibrarySession
+from services.worker.library_session import LibraryError
 from services.worker.local_credentials import database_config, PROJECT
 from services.worker.service_clients import SessionClient
 from services.worker.service_transport import request_json, strict_json, credential
@@ -60,6 +62,7 @@ class QueryCapture:
 class ExpectedWorker:
     def __init__(self, worker, job_id):
         self.worker, self.job_id = worker, job_id
+        self.cleanup_wait_seconds = getattr(worker,'cleanup_wait_seconds',6)
 
     def call(self, function, *args):
         value = self.worker.call(function,*args)
@@ -113,6 +116,21 @@ def exercise(first, second, worker, provider, receipt, save):
         require(all(w['source_id']!=sid for w in first.search(QUERY)['windows']),'deleted_search')
         receipt.update(passed=True,stage='complete')
         save(receipt)
+    except Exception as error:
+        if isinstance(error,(LibraryError,PilotFailure)):
+            receipt['failure_code'] = str(error)
+        context = error
+        for _ in range(4):
+            if isinstance(context,RepositoryError):
+                receipt['database_error'] = context.code
+                if context.reason is not None:
+                    receipt['database_reason'] = context.reason
+                break
+            context = context.__context__
+            if context is None:
+                break
+        save(receipt)
+        raise
     finally:
         if item and not receipt.get('tombstoned'):
             try:
@@ -210,13 +228,34 @@ def sign_in_clients(key):
     return clients
 
 
+def reviewed_import_receipt(path):
+    """Explicit operator resume only, after checking no matching hosted receipt."""
+    try:
+        with path.open('rb') as stream:
+            raw = stream.read(16385)
+        require(len(raw)<=16384,'invalid_resume_receipt')
+        value = strict_json(raw)
+        require(value.get('project')==PROJECT and value.get('passed') is False
+            and value.get('stage')=='import' and 'source_id' not in value
+            and type(value.get('real_model_requests')) is int and value['real_model_requests']==0
+            and value.get('resumed_import',False) is False,'resume_receipt_not_eligible')
+        require(str(uuid.UUID(value['request_id']))==value['request_id'],'invalid_resume_request')
+        return value
+    except PilotFailure:
+        raise
+    except Exception:
+        raise PilotFailure('invalid_resume_receipt') from None
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     action = parser.add_mutually_exclusive_group()
     action.add_argument('--run',action='store_true')
     action.add_argument('--check-auth',action='store_true',help='Check hidden test-user logins only; no imports or model calls')
     action.add_argument('--check-startup',action='store_true',help='One cloud readiness probe; no user passwords, imports or embeddings')
+    parser.add_argument('--resume-import',action='store_true',help='Explicitly reuse a reviewed failed import receipt; requires --run')
     args = parser.parse_args()
+    require(not args.resume_import or args.run,'resume_requires_run')
     if args.check_startup:
         identity = google_token()
         try:
@@ -228,8 +267,12 @@ def main():
     if not args.run and not args.check_auth:
         print('Preview: one synthetic hosted TXT, two real Auth sessions, at most 3 model calls; deletion hides content, operator finalizes physical cleanup.')
         return
+    previous = None
     if args.run:
-        require(not RECEIPT.exists(),'existing_pilot_receipt_review_required')
+        if args.resume_import:
+            previous = reviewed_import_receipt(RECEIPT)
+        else:
+            require(not RECEIPT.exists(),'existing_pilot_receipt_review_required')
     key = configuration()
     settings = request_json(BASE,'/auth/v1/settings',{'apikey':key},None,timeout=5)
     require(settings.get('disable_signup') is True,'disable_public_signup_first')
@@ -244,17 +287,25 @@ def main():
         real = BoundedProvider(cloud_provider(IDENTITY,ROOT/'output/inference-model',token_provider=identity))
         provider = QueryCapture(real)
         wait_for_startup(identity)
-        libraries = [LibrarySession(client,lambda owner:DatabaseRepository(admission_config,owner=owner),provider)
+        print('Operator pilot database allowance: 15 seconds per operation; SQL and inference limits unchanged.')
+        libraries = [LibrarySession(client,lambda owner:DatabaseRepository(admission_config,owner=owner,operation_timeout=15),provider)
                      for client in clients]
-        worker = DatabaseRepository(worker_config)
-        receipt = dict(project=PROJECT,request_id=str(uuid.uuid4()),passed=False,stage='preflight_complete',
+        worker = DatabaseRepository(worker_config,operation_timeout=15)
+        receipt = dict(project=PROJECT,request_id=previous['request_id'] if previous else str(uuid.uuid4()),passed=False,stage='preflight_complete',
+            resumed_import=previous is not None,database_operation_timeout_seconds=15,
             cleanup_pending=False,started_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()))
         RECEIPT.parent.mkdir(parents=True,exist_ok=True)
         def save(value):
             RECEIPT.write_text(json.dumps(value,indent=2),encoding='utf-8')
-        # Exclusive creation stops automatic reruns against an uncertain prior submission.
-        with RECEIPT.open('x',encoding='utf-8') as stream:
-            json.dump(receipt,stream)
+        if previous:
+            history = RECEIPT.with_name('receipt-'+previous['request_id']+'-'+uuid.uuid4().hex+'.json')
+            with history.open('x',encoding='utf-8') as stream:
+                json.dump(previous,stream,indent=2)
+            save(receipt)
+        else:
+            # Exclusive creation stops automatic reruns against an uncertain prior submission.
+            with RECEIPT.open('x',encoding='utf-8') as stream:
+                json.dump(receipt,stream)
         try:
             exercise(*libraries,worker,provider,receipt,save)
         finally:

@@ -4,11 +4,14 @@ No driver, credentials or authentication is selected here. Context ownership mus
 come from a verified server session, never a field in a desktop submission.
 """
 import json
+import re
 
 
 class RepositoryError(Exception):
-    def __init__(self, code):
+    def __init__(self, code, *, reason=None):
         self.code = code
+        self.reason = reason if isinstance(reason,str) and (
+            reason=='operation_deadline_exceeded' or re.fullmatch(r'sqlstate_[0-9A-Z]{5}',reason)) else None
         super().__init__(code)
 
 
@@ -51,7 +54,7 @@ class PostgresRepository:
             state = getattr(error, 'sqlstate', None) or getattr(error, 'pgcode', None)
             code = 'stale_lease' if state == '55000' else (
                 'invalid_input' if state and state[:2] in ('22', '23', '42') else 'temporarily_unavailable')
-            raise RepositoryError(code) from None
+            raise RepositoryError(code,reason='sqlstate_'+state if isinstance(state,str) else None) from None
         finally:
             if connection is not None:
                 try:

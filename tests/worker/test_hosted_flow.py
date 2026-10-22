@@ -1,12 +1,45 @@
 import threading
+import io
+import json
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, MagicMock
 
-from scripts.check_hosted_flow import QueryCapture, ExpectedWorker, PilotFailure, exercise, RAW, wait_for_startup, sign_in_clients, main
+from scripts.check_hosted_flow import QueryCapture, ExpectedWorker, PilotFailure, exercise, RAW, wait_for_startup, sign_in_clients, main, reviewed_import_receipt, PROJECT
 from services.worker.service_transport import TransportError
+from services.worker.library_session import LibraryError
+from services.worker.ingestion_repository import RepositoryError
 
 
 class HostedFlowTests(unittest.TestCase):
+    def test_resume_reuses_only_eligible_unacknowledged_import(self):
+        original = dict(project=PROJECT,request_id='69c36bc2-dd02-4a44-98b0-43055e9d3f38',
+                        passed=False,stage='import',real_model_requests=0)
+        for changes in ({},{'stage':'processing'},{'source_id':'acknowledged'},
+                        {'real_model_requests':1},{'passed':True},{'resumed_import':True}):
+            path = MagicMock()
+            path.open.return_value.__enter__.return_value = io.BytesIO(json.dumps(original|changes).encode())
+            if changes:
+                with self.assertRaises(PilotFailure):
+                    reviewed_import_receipt(path)
+            else:
+                self.assertEqual(reviewed_import_receipt(path)['request_id'],original['request_id'])
+
+    def test_private_database_reason_survives_only_as_safe_receipt_metadata(self):
+        first,second = self.fixtures()
+        error = LibraryError('import_failed')
+        error.__context__ = RepositoryError('temporarily_unavailable',reason='operation_deadline_exceeded')
+        first.import_text.side_effect = error
+        receipt = {'request_id':'request','passed':False}
+        with self.assertRaises(LibraryError):
+            exercise(first,second,Mock(),Mock(),receipt,Mock())
+        self.assertEqual(receipt['database_reason'],'operation_deadline_exceeded')
+        self.assertEqual(receipt['failure_code'],'import_failed')
+        first.delete.assert_not_called()
+
+    def test_worker_wrapper_preserves_explicit_cleanup_bound(self):
+        wrapped = ExpectedWorker(Mock(cleanup_wait_seconds=16),'job')
+        self.assertEqual(wrapped.cleanup_wait_seconds,16)
+
     def test_startup_http_status_is_safe_and_not_retried(self):
         result = Mock(returncode=1,stdout=b'{"ready":false,"http_status":429}')
         with patch('scripts.check_hosted_flow.subprocess.run',return_value=result) as run, patch('builtins.print'):

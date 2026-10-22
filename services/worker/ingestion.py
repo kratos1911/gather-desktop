@@ -99,7 +99,10 @@ class Lease:
         self.stopped.set()
         self.cancelled.set()
         if self.thread.ident is not None:
-            self.thread.join(6)  # Repository operations have a five-second deadline.
+            wait = getattr(self.repository,'cleanup_wait_seconds',6)
+            if type(wait) is not int or not 6<=wait<=16:
+                wait = 6
+            self.thread.join(wait)  # Includes the explicitly selected repository bound.
 
 
 def run_once(repository, provider):

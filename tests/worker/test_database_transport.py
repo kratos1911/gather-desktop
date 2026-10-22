@@ -14,6 +14,15 @@ OWNER = '00000000-0000-0000-0000-000000000001'
 
 
 class DatabaseTransportTests(unittest.TestCase):
+    def test_production_default_and_explicit_pilot_bounds(self):
+        default = DatabaseRepository(self.config())
+        pilot = DatabaseRepository(self.config(),operation_timeout=15)
+        self.assertEqual((default.operation_timeout,default.cleanup_wait_seconds),(5,6))
+        self.assertEqual((pilot.operation_timeout,pilot.cleanup_wait_seconds),(15,16))
+        for invalid in (0,10,16,True,'15',15.0):
+            with self.assertRaises(ValueError):
+                DatabaseRepository(self.config(),operation_timeout=invalid)
+
     def test_lease_timestamp_result_preserves_timezone(self):
         value = datetime(2026,10,21,tzinfo=timezone.utc)
         self.assertEqual(json.loads(json.dumps({'result':value},default=encode_result)),
@@ -63,10 +72,11 @@ class DatabaseTransportTests(unittest.TestCase):
             processes.append(process)
             return process
         started = time.monotonic()
-        with patch('services.worker.database_transport.subprocess.Popen',side_effect=stalled), patch(
-                'services.worker.database_transport.DEADLINE',.15):
+        repository = DatabaseRepository(self.config())
+        with patch('services.worker.database_transport.subprocess.Popen',side_effect=stalled), patch.object(
+                repository,'operation_timeout',.15):
             with self.assertRaisesRegex(RepositoryError,'^temporarily_unavailable$'):
-                DatabaseRepository(self.config()).call('claim_text_job')
+                repository.call('claim_text_job')
         self.assertLess(time.monotonic()-started,3)
         self.assertIsNotNone(processes[0].poll())
 

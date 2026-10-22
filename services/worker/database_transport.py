@@ -52,15 +52,19 @@ class DatabaseConfig:
 
 
 class DatabaseRepository:
-    def __init__(self, config, *, owner=None):
+    def __init__(self, config, *, owner=None, operation_timeout=DEADLINE):
         if not isinstance(config,DatabaseConfig):
             raise ValueError('invalid_database_configuration')
+        if type(operation_timeout) is not int or operation_timeout not in (DEADLINE,15):
+            raise ValueError('invalid_database_deadline')
         if owner is not None and (not isinstance(owner,str) or str(UUID(owner)) != owner):
             raise ValueError('invalid_database_owner')
         expected = 'gather_admission' if owner else 'gather_worker'
         if config.user.split('.')[0] != expected:
             raise ValueError('database_role_mismatch')
         self._config, self._owner = config, owner
+        self.operation_timeout = operation_timeout
+        self.cleanup_wait_seconds = operation_timeout+1
 
     def call(self, function, *args):
         allowed = {'submit_text'} if self._owner else set(FUNCTIONS)-{'submit_text'}
@@ -74,7 +78,7 @@ class DatabaseRepository:
         if not SLOTS.acquire(blocking=False):
             raise RepositoryError('temporarily_unavailable')
         process = None
-        deadline = time.monotonic()+DEADLINE
+        deadline = time.monotonic()+self.operation_timeout
         try:
             code = f'import sys; sys.path.insert(0,{str(ROOT)!r}); from services.worker.database_transport import child_main; child_main()'
             env = {k:os.environ[k] for k in ('SYSTEMROOT','WINDIR') if k in os.environ}
@@ -89,9 +93,11 @@ class DatabaseRepository:
             value = strict_json(output)
             if set(value)=={'result'}:
                 return value['result']
-            if set(value)=={'error'} and value['error'] in ('stale_lease','invalid_input','temporarily_unavailable'):
-                raise RepositoryError(value['error'])
+            if set(value) in ({'error'},{'error','reason'}) and value['error'] in ('stale_lease','invalid_input','temporarily_unavailable'):
+                raise RepositoryError(value['error'],reason=value.get('reason'))
             raise RepositoryError('temporarily_unavailable')
+        except subprocess.TimeoutExpired:
+            raise RepositoryError('temporarily_unavailable',reason='operation_deadline_exceeded') from None
         except RepositoryError:
             raise
         except Exception:
@@ -160,6 +166,8 @@ def child_main():
         output = {'result':result}
     except RepositoryError as error:
         output = {'error':error.code}
+        if error.reason is not None:
+            output['reason'] = error.reason
     except Exception:
         pass
     try:

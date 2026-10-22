@@ -1,5 +1,13 @@
 # Current project state
 
+22 October latest: failed import has no hosted save receipt per operator check.
+Measured TLS/login 7.56 s; connection+role setup 9.05 s, beyond five-second adapter
+bound. User approved explicit 15-second DB allowance for operator pilot only;
+production/SQL/model defaults unchanged. Guarded --resume-import preserves history
+and request ID. 40 focused checks, real non-mutating hosted lookup and frontend
+build pass. Operator resumed run next; no hosted-flow completion claim. See
+HOSTED_FLOW_PILOT.md for evidence, semantics and remaining cleanup requirement.
+
 22 October latest: both hosted user logins passed operator --check-auth. Full
 run then hit platform 429 "no available instance" on /ready during cold startup,
 before import. Logs showed startup completed afterward; one agent readiness-only

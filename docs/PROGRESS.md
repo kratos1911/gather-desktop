@@ -1,5 +1,17 @@
 # Rebuild progress
 
+## 22 October: measured database setup delay and approved pilot allowance
+
+Receipt stopped at import, zero model calls; operator's exact-ID query found no
+save receipt. Two read-only measurements resolved function plan and isolated
+7.562 s TLS/login / 9.046 s setup from local credential loading. User approved
+15 seconds for supervised pilot DB operations only. Implemented explicit bound,
+matching heartbeat cleanup wait, safe SQLSTATE/deadline diagnostics, and guarded
+resume that archives prior evidence and reuses request ID. 40 focused checks and
+frontend build pass. Non-mutating impossible-lease lookup reaches hosted function
+in 5.703 s and returns expected 55000. No import/model call, quota change, public
+settings or protected workload mutation. Operator resume remains pending.
+
 ## 22 October: identify Cloud Run readiness rejection
 
 Operator confirmed both real Auth sessions; full runner stopped at readiness.

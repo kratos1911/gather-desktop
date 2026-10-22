@@ -40,6 +40,15 @@ class MemoryRepository:
 
 
 class IngestionTests(unittest.TestCase):
+    def test_lease_cleanup_uses_bounded_explicit_repository_timeout(self):
+        for selected,expected in ((6,6),(16,16),(999,6)):
+            repo = MemoryRepository()
+            repo.cleanup_wait_seconds = selected
+            lease = Lease(repo,repo.job)
+            lease.thread = Mock(ident=1)
+            lease.__exit__()
+            lease.thread.join.assert_called_once_with(expected)
+
     def test_success_connects_all_steps(self):
         repo = MemoryRepository()
         self.assertEqual(run_once(repo,SyntheticProvider())['state'],'ready')

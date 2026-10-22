@@ -1,5 +1,13 @@
 # Bounded PostgreSQL connection
 
+22 October pilot exception, explicitly approved by user: DatabaseRepository keeps
+its five-second default and accepts an explicit 15-second trusted override. Only
+the supervised hosted pilot selects it. SQL statement/lock/connect settings and
+model deadlines are unchanged. Cleanup waits include the selected DB bound plus
+one second; Lease accepts at most 16 seconds and otherwise retains six seconds.
+Safe SQLSTATE/deadline reasons can cross the private helper boundary; raw messages
+and document/credential values cannot. See HOSTED_FLOW_PILOT.md for measured need.
+
 21 October 2026. `services/worker/database_transport.py` composes the existing
 PostgresRepository with an actual Psycopg DB-API connection. Local integration
 passes. Hosted Supabase configuration, TLS connectivity, deployment and HTTP

@@ -12,7 +12,7 @@
     {
       "id": "source",
       "type": "text",
-      "text": "Save file or link\nHosted users/key ready; first run stopped at A sign-in\nBoth emails confirmed; auth-only safe diagnostic is next\nHosted flow, physical cleanup, HTTP + desktop remain",
+      "text": "Save file or link\nAuth/startup verified; DB setup measured ~9 seconds\nUser approved 15-second pilot DB bound; production stays 5\nGuarded import resume next; hosted completion/cleanup remain",
       "x": 0,
       "y": 0,
       "width": 330,
