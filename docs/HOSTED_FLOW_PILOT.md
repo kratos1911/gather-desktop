@@ -1,5 +1,38 @@
 # Authenticated hosted text-flow pilot
 
+Current cloud state: user approved temporarily keeping one warm instance for the
+pilot. Agent applied service-level min=1/max=1 at 2026-10-22T07:11:44Z only to
+Gather. Image and resource limits compare unchanged; authenticated /ready passes.
+Actual invoker policy contains only the dedicated pilot caller, no public member.
+Safe local receipt: output/pilot-warm-scaling.json. Idle billing is now active.
+RESTORE MINIMUM ZERO immediately after the pilot (or if the operator stops).
+This is a pending cleanup obligation, not completed work. No automatic timer or
+hard spending cap is claimed. Original import receipt remains unchanged/eligible;
+operator should run the guarded --run --resume-import command once while warm.
+
+Latest retry checkpoint: explicit resume stopped at readiness before receipt
+archival/import. Original request receipt is unchanged (zero model calls). New
+platform log at 07:03:05 UTC shows /ready -> 429, no available instance; new instances
+began starting ~5 seconds later and TCP startup passed at ~07:03:48 UTC. This is
+consistent with scale-to-zero between operator steps. No further request was sent
+by the agent. Repeated full-run warm handoffs should stop until capacity is decided.
+
+Historical proposal (now approved/applied above): service-level minimum=1/maximum=1 for
+gather-inference-pilot during the supervised pilot, retaining image/CPU/memory/IAM.
+Explicit personal account and Gather project only. This adds idle billed time under
+the INR 500 pilot budget until restored to minimum=0.
+Concrete commands for approved execution/rollback:
+
+```powershell
+gcloud run services update gather-inference-pilot --min=1 --max=1 --region=asia-south1 --project=gather-development-511211 --account=kpanigrahi5602@gmail.com
+gcloud run services update gather-inference-pilot --min=0 --max=1 --region=asia-south1 --project=gather-development-511211 --account=kpanigrahi5602@gmail.com
+```
+
+Local readiness diagnostics now report safe DNS/TLS/connection/network/deadline
+categories as well as HTTP statuses; bodies and tokens remain hidden. Sixteen
+runner checks and frontend build pass. Capacity was changed only after explicit
+approval, as recorded above; no live inference was requested by the agent.
+
 Latest import checkpoint: failed receipt stage=import, zero model calls, no source
 acknowledged. Operator queried the exact request ID and reported no save receipt.
 Read-only EXPLAIN resolved the actual function signature (not function execution):

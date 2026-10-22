@@ -1,16 +1,37 @@
 import threading
 import io
 import json
+from urllib.error import HTTPError, URLError
 import unittest
 from unittest.mock import Mock, patch, MagicMock
 
-from scripts.check_hosted_flow import QueryCapture, ExpectedWorker, PilotFailure, exercise, RAW, wait_for_startup, sign_in_clients, main, reviewed_import_receipt, PROJECT
+from scripts.check_hosted_flow import QueryCapture, ExpectedWorker, PilotFailure, exercise, RAW, wait_for_startup, sign_in_clients, main, reviewed_import_receipt, PROJECT, ready_child
 from services.worker.service_transport import TransportError
 from services.worker.library_session import LibraryError
 from services.worker.ingestion_repository import RepositoryError
 
 
 class HostedFlowTests(unittest.TestCase):
+    def test_readiness_http_error_has_status_without_body_or_token(self):
+        error = HTTPError('https://fixture.run.app/ready',429,'private description',{},io.BytesIO(b'private body'))
+        error.read = Mock(side_effect=AssertionError('must not read error body'))
+        output = Mock(buffer=io.BytesIO())
+        with patch('sys.stdin',Mock(buffer=io.BytesIO(b'synthetic-token'))), patch('sys.stdout',output), patch(
+                'urllib.request.build_opener') as opener, patch('builtins.print') as printed:
+            opener.return_value.open.side_effect = error
+            with self.assertRaises(SystemExit):
+                ready_child()
+        self.assertEqual(json.loads(printed.call_args.args[0]),{'ready':False,'http_status':429})
+        error.read.assert_not_called()
+
+    def test_readiness_network_timeout_is_specific_and_private(self):
+        with patch('sys.stdin',Mock(buffer=io.BytesIO(b'synthetic-token'))), patch(
+                'urllib.request.build_opener') as opener, patch('builtins.print') as printed:
+            opener.return_value.open.side_effect = URLError(TimeoutError('private details'))
+            with self.assertRaises(SystemExit):
+                ready_child()
+        self.assertEqual(json.loads(printed.call_args.args[0]),{'ready':False,'error':'network_timeout'})
+
     def test_resume_reuses_only_eligible_unacknowledged_import(self):
         original = dict(project=PROJECT,request_id='69c36bc2-dd02-4a44-98b0-43055e9d3f38',
                         passed=False,stage='import',real_model_requests=0)

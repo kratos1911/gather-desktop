@@ -1,5 +1,18 @@
 # Current project state
 
+22 October CURRENT CLOUD OBLIGATION: user approved min=1/max=1 for Gather's active
+pilot; applied and authenticated readiness passes. Image/resources unchanged;
+actual invoker policy still only pilot caller. Idle billing active. Restore min=0
+after pilot completion or operator stop; NOT done yet. Original import receipt
+unchanged; guarded resume next. 16 runner checks and frontend build pass.
+
+22 October latest: resumed run again failed at readiness, before receipt/history
+change. Cloud logs confirm another 429/no-instance followed by startup; original
+import receipt remains unchanged with zero model calls. Proposed temporary min=1
+to avoid repeated cold handoffs; user decision pending, no scaling change made.
+Safe readiness IO error categories added; 16 runner checks and frontend build pass.
+Do not request another full run before addressing capacity. See HOSTED_FLOW_PILOT.md.
+
 22 October latest: failed import has no hosted save receipt per operator check.
 Measured TLS/login 7.56 s; connection+role setup 9.05 s, beyond five-second adapter
 bound. User approved explicit 15-second DB allowance for operator pilot only;

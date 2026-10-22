@@ -162,7 +162,9 @@ def google_token():
 def ready_child():
     """Separate startup probe: fixed HTTPS target, no inference or redirects."""
     from urllib.request import Request, build_opener, ProxyHandler
-    from urllib.error import HTTPError
+    from urllib.error import HTTPError, URLError
+    import socket
+    import ssl
     from services.worker.embedding_client import _NoRedirect
     try:
         token = sys.stdin.buffer.read(7169).decode('ascii')
@@ -180,16 +182,30 @@ def ready_child():
         print(json.dumps({'ready':False,'http_status':error.code}))
         error.close()
         sys.exit(1)
+    except (TimeoutError,socket.timeout):
+        print('{"ready":false,"error":"network_timeout"}')
+        sys.exit(1)
+    except URLError as error:
+        reason = error.reason
+        code = ('tls_failed' if isinstance(reason,ssl.SSLError) else
+                'dns_failed' if isinstance(reason,socket.gaierror) else
+                'network_timeout' if isinstance(reason,TimeoutError) else 'connection_failed')
+        print(json.dumps({'ready':False,'error':code}))
+        sys.exit(1)
     except Exception:
+        print('{"ready":false,"error":"readiness_probe_failed"}')
         sys.exit(1)
 
 
 def wait_for_startup(identity):
     print('Checking cloud startup: one readiness probe, at most 60 seconds. Inference remains limited to 15 seconds.')
-    result = subprocess.run([sys.executable,'-I','-B','-c',
-        f'import sys; sys.path.insert(0,{str(ROOT)!r}); from scripts.check_hosted_flow import ready_child; ready_child()'],
-        input=identity.get().encode('ascii'),stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,
-        cwd=ROOT,env={k:os.environ[k] for k in ('SYSTEMROOT','WINDIR') if k in os.environ},timeout=60)
+    try:
+        result = subprocess.run([sys.executable,'-I','-B','-c',
+            f'import sys; sys.path.insert(0,{str(ROOT)!r}); from scripts.check_hosted_flow import ready_child; ready_child()'],
+            input=identity.get().encode('ascii'),stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,
+            cwd=ROOT,env={k:os.environ[k] for k in ('SYSTEMROOT','WINDIR') if k in os.environ},timeout=60)
+    except subprocess.TimeoutExpired:
+        raise PilotFailure('cloud_startup_deadline_exceeded') from None
     require(len(result.stdout)<=4096,'cloud_startup_probe_failed')
     try:
         reply = strict_json(result.stdout)
@@ -199,6 +215,9 @@ def wait_for_startup(identity):
         status = reply.get('http_status')
         if type(status) is int and 400<=status<=599:
             raise PilotFailure('cloud_startup_http_'+str(status))
+        code = reply.get('error')
+        if code in ('network_timeout','tls_failed','dns_failed','connection_failed','readiness_probe_failed'):
+            raise PilotFailure('cloud_startup_'+code)
     require(result.returncode==0 and reply=={'ready':True},'cloud_startup_probe_failed')
 
 

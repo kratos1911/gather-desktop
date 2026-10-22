@@ -641,6 +641,17 @@ invocation, browser dependencies and live compatibility tests. No semantic resul
 or end-to-end desktop ingestion claimed.
 ## 21 October: cloud ingestion composition
 
+22 October cloud action approved/applied: Gather min=1/max=1 temporarily; image,
+resource limits and private caller policy verified, authenticated readiness passes.
+16 runner tests and frontend build pass. Original import receipt unchanged;
+operator guarded resume next. Restore min=0 after pilot is still pending and must
+be completed. Idle billing disclosed; no automatic cost cap/timer claimed.
+
+22 October recurring startup block: resumed import not reached; unchanged receipt.
+Second platform 429 followed by startup verified in logs. Warm-instance proposal
+is concrete but awaits cost/capacity approval; no scaling changes. Sixteen runner
+checks and frontend build pass for safe readiness IO diagnostics. Full flow pending.
+
 22 October import blocker: no save receipt found by operator; measured connection
 setup ~9 s cannot fit five-second whole-call bound. Explicit user-approved pilot
 override 15 s implemented; production default, SQL and model limits unchanged.

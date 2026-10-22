@@ -1,5 +1,23 @@
 # Rebuild progress
 
+## 22 October: approved warm instance applied
+
+After explicit user approval, set Gather service min=1/max=1 at 07:11:44 UTC.
+Compared image/resource limits unchanged and verified dedicated-caller-only IAM
+policy. One authenticated readiness request passes, no inference or document/job
+operations. Idle billed time disclosed; restore min=0 remains required after pilot.
+Safe scaling receipt stored under ignored output. Earlier pending proposal below
+is superseded. Local readiness IO improvements: 16 runner tests/build pass.
+
+## 22 October: recurring cold-start capacity block
+
+Operator resume stopped before import. Read-only logs confirm a second platform
+429/no available instance, then new startup/TCP success; receipt remains unchanged.
+Prepared concrete temporary min=1/max=1 and rollback min=0 commands for approval,
+with explicit Gather project/personal account and idle billing disclosed. No change
+applied. Added safe readiness network/TLS/DNS/deadline reporting; 16 runner checks
+and frontend build pass. No inference, data writes or protected workload changes.
+
 ## 22 October: measured database setup delay and approved pilot allowance
 
 Receipt stopped at import, zero model calls; operator's exact-ID query found no

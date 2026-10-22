@@ -3,6 +3,9 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+ACTIVE PILOT: [[docs/HOSTED_FLOW_PILOT|Warm min=1 verified; guarded resume next]].
+Restore minimum zero after testing or operator stop; idle billing active.
+
 Latest: [[docs/HOSTED_FLOW_PILOT|Measured DB setup delay; approved pilot-only bound and guarded resume]].
 
 Latest: [[docs/HOSTED_FLOW_PILOT|Cold-start 429 diagnosed; readiness now verified]].
