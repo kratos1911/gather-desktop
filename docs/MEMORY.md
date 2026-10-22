@@ -1,5 +1,30 @@
 # Current project state
 
+22 October latest: stored encrypted credentials decrypt under owning Windows user;
+both hosted restricted-role TLS logins now verified by agent. Read-only probe uses
+no source/job functions. 14 focused checks and frontend build pass; earlier approval
+block resolved. Public API configuration/hosted Auth users remain unavailable via
+current CLI login; operator dashboard input needed before a real-session hosted
+flow. See HOSTED_SUPABASE_SETUP.md. No new model calls or public deployment.
+
+22 October latest: user reports both hosted restricted passwords committed and
+logins verified. Local Windows-user DPAPI loading/helper prepared; 12 checks and
+real synthetic memory roundtrip pass. Operator must run store helper before the
+backend can load credentials. No hosted flow rerun. Exposed-password rotation
+explicitly deferred by user. Build pending from prior approval-review usage limit;
+changes uncommitted. See HOSTED_SUPABASE_SETUP.md; older failure notes are history.
+
+Password helper follow-up: generic failure reported after hidden prompts; cause
+and hosted outcome unconfirmed. Added safe per-role validation messages and
+--check-input (no network). Eight tests pass. Operator input-only check next;
+required build still blocked/unrun, changes remain uncommitted.
+
+22 October: hosted Sydney project fatolholcjxpwocnpzws retained by user. Seven
+migrations and restricted-login creation reported successful; CA inspected.
+Password helper prepared with hidden local prompts; six checks and preview pass.
+No hosted password update/login performed. Required build blocked by automatic
+approval-review usage limit; changes uncommitted. See HOSTED_SUPABASE_SETUP.md.
+
 21 October latest: bounded DatabaseRepository now uses real Psycopg connections
 and reuses PostgresRepository. Restricted login/role, verified-owner transaction
 context, five-second whole-operation deadline and forced helper cleanup verified.

@@ -3,6 +3,11 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Latest: [[docs/HOSTED_SUPABASE_SETUP|Encrypted credentials and hosted TLS logins verified]].
+Next: public project API key and real pilot Auth session before hosted flow testing.
+
+Hosted setup: [[docs/HOSTED_SUPABASE_SETUP|Sydney project, migrations and private password prompts]].
+
 Current connection milestone: [[docs/DATABASE_TRANSPORT|Real driver, restricted roles and deadlines]].
 Local verification passes; next is application HTTP admission and hosted setup.
 

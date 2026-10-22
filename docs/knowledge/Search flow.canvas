@@ -12,7 +12,7 @@
     {
       "id": "source",
       "type": "text",
-      "text": "Save file or link\nLibrarySession: owner from verified Auth\nReal bounded DB driver tested with restricted logins\nNEXT: application HTTP + hosted config + desktop",
+      "text": "Save file or link\nLibrarySession: owner from verified Auth\nEncrypted local credentials + hosted restricted TLS logins verified\nNEXT: hosted pilot Auth/key + HTTP application + desktop",
       "x": 0,
       "y": 0,
       "width": 330,

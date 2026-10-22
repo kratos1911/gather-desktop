@@ -1,5 +1,36 @@
 # Rebuild progress
 
+## 22 October: encrypted credentials and hosted connection verified
+
+Operator saved the credential bundle. Agent verified user-scoped decryption and
+TLS role checks for both hosted logins. Initial combined worker probe failed with
+insufficient diagnostic detail; focused safe-code probe passed with unchanged
+five-second limit. No cause asserted and no source/job mutations. Added read-only
+probe and two tests; 14 focused checks and previously blocked frontend build pass.
+CLI could not retrieve Gather API configuration; hosted Auth users/session flow
+remain unverified. Exposed password rotation is still user-deferred. No model call,
+protected API change, cloud provisioning or GitHub push.
+
+## 22 October: encrypted local backend credentials prepared
+
+User-reported hosted setup now succeeds for both logins. Added hidden-prompt,
+network-free Windows DPAPI storage and fixed-target DatabaseConfig loading.
+Only ciphertext persists in ignored D: output; current-user protection, no
+machine-wide flag and exclusive creation. 12 focused tests and actual DPAPI
+memory roundtrip pass with synthetic data. No operator secrets stored/read by
+agent. Password rotation remains deferred by user; hosted flow awaits credential
+storage. Build remains pending after earlier approval-review usage limit; no commit.
+
+## 22 October: hosted password handoff prepared
+
+User reports seven hosted migrations, expected access checks and two restricted
+login creations. Inspected downloaded CA. Added operator-only hidden-password
+helper, permission preflight, atomic SCRAM update and separate login checks.
+Six local/mocked tests and no-network preview pass. Hosted execution awaits the
+operator. Frontend build not executed: automatic approval review hit a usage
+limit. No alternate mechanism used; changes remain uncommitted. Details and
+non-secret target: HOSTED_SUPABASE_SETUP.md.
+
 ## 21 October: real bounded database driver
 
 Implemented actual Psycopg connection behind the existing repository, with

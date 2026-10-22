@@ -641,6 +641,23 @@ invocation, browser dependencies and live compatibility tests. No semantic resul
 or end-to-end desktop ingestion claimed.
 ## 21 October: cloud ingestion composition
 
+22 October current checkpoint: credential helpers/read-only probe verified.
+14 focused checks and frontend build pass; operator stored DPAPI bundle, both
+restricted hosted logins and decryption now checked by agent. Public project key
+and hosted Auth session remain missing; no hosted document/model calls performed.
+See docs/HOSTED_SUPABASE_SETUP.md. Supersedes earlier build-blocked notes below.
+
+22 October latest partial: operator reports hosted password setup success. Added
+local Windows DPAPI credential store/loader with hidden-prompt command; 12 tests
+and synthetic real DPAPI roundtrip pass. User must store credentials locally;
+no hosted import/search evidence yet. Password rotation deferred by user. Required
+build still pending after approval-review usage-limit rejection; uncommitted.
+
+22 October follow-up partial: operator password setup helper prepared for the
+user-created Sydney roles. Six local checks and preview pass. Live TLS/password
+update/login unverified; frontend build blocked by approval-review usage limit.
+No commit yet. See docs/HOSTED_SUPABASE_SETUP.md.
+
 Latest prerequisite complete locally: bounded database driver with separate
 admission/worker identities and fixed role/function selection. Eight new tests
 plus ingestion/library regressions (24 total), five disposable real-driver
