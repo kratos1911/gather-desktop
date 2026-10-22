@@ -1,5 +1,11 @@
 # Current project state
 
+22 October latest: first hosted run stopped at A sign-in before imports/inference.
+Both emails confirmed; read-only settings show email/password enabled and public
+signup disabled. Added safe Auth error codes and --check-auth to isolate the cause
+without DB/model work. 25 focused checks and frontend build pass. Operator auth-only
+run is next; hosted workflow remains unverified. See HOSTED_FLOW_PILOT.md.
+
 22 October latest: user created both hosted Auth pilot accounts and confirmed two
 slots each, unused. One-source hosted flow runner now prepared: real sessions,
 bounded DB/cloud provider, query-vector replay for isolation/deletion, safe receipt

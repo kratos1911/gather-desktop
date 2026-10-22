@@ -1,5 +1,22 @@
 # Authenticated hosted text-flow pilot
 
+Latest diagnostic checkpoint: operator run stopped at A sign-in, before document
+admission or model calls. Both emails are confirmed in the operator's SQL result.
+Agent read-only settings check confirms signup disabled and email/password enabled.
+Actual cause remains unknown; do not assert a wrong password from the old generic
+message. Use `./scripts/python.ps1 -m scripts.check_hosted_flow --check-auth` next.
+This prompts for the same two test-user passwords and verifies actual Auth sessions
+without loading DB credentials, acquiring Google tokens or importing/calling models.
+It stops after the first failed login, with no automatic retry.
+
+The bounded transport now extracts only five known Auth error codes from <=4096
+bytes of identity-encoded JSON at the exact password-grant route. Other error
+descriptions/bodies stay private; malformed/unknown/oversized errors fall back to
+safe generic transport codes. Existing deadlines, no-proxy/no-redirect rules and
+generic endpoint behavior are preserved. 25 focused checks (including actual local
+HTTP error handoff and auth-only no-work assertions) and frontend build pass.
+Reference: https://supabase.com/docs/guides/auth/debugging/error-codes
+
 Prepared 22 October 2026. The operator created pilot A/B Auth accounts and showed
 both quotas as source_limit=2, used=0. Public project key was verified/saved under
 ignored output, and public signup was disabled by the operator. This runner is

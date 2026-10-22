@@ -2,10 +2,30 @@ import threading
 import unittest
 from unittest.mock import Mock, patch
 
-from scripts.check_hosted_flow import QueryCapture, ExpectedWorker, PilotFailure, exercise, RAW, wait_for_startup
+from scripts.check_hosted_flow import QueryCapture, ExpectedWorker, PilotFailure, exercise, RAW, wait_for_startup, sign_in_clients, main
+from services.worker.service_transport import TransportError
 
 
 class HostedFlowTests(unittest.TestCase):
+    def test_signin_preserves_safe_code_and_never_returns_error_body(self):
+        with patch('scripts.check_hosted_flow.getpass.getpass',return_value='synthetic-password'), patch(
+                'scripts.check_hosted_flow.request_json',side_effect=TransportError('auth_invalid_credentials')):
+            with self.assertRaisesRegex(PilotFailure,'^pilot_a_auth_invalid_credentials$'):
+                sign_in_clients('synthetic-public-key')
+
+    def test_auth_only_does_not_access_db_or_cloud_or_import(self):
+        with patch('sys.argv',['pilot','--check-auth']), patch(
+                'scripts.check_hosted_flow.configuration',return_value='fixture'), patch(
+                'scripts.check_hosted_flow.request_json',return_value={'disable_signup':True}), patch(
+                'scripts.check_hosted_flow.sign_in_clients',return_value=[Mock(),Mock()]), patch(
+                'scripts.check_hosted_flow.database_config') as db, patch(
+                'scripts.check_hosted_flow.google_token') as google, patch(
+                'scripts.check_hosted_flow.exercise') as run, patch('builtins.print'):
+            main()
+            db.assert_not_called()
+            google.assert_not_called()
+            run.assert_not_called()
+
     def test_startup_probe_keeps_token_off_arguments_and_has_separate_deadline(self):
         identity = Mock()
         identity.get.return_value = 'synthetic-token'

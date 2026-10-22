@@ -3,6 +3,8 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Current blocker: [[docs/HOSTED_FLOW_PILOT|Auth-only diagnostic for hosted pilot A sign-in]].
+
 Next operator action: [[docs/HOSTED_FLOW_PILOT|Run the authenticated hosted text pilot once]].
 
 Latest: [[docs/HOSTED_SUPABASE_SETUP|Encrypted credentials and hosted TLS logins verified]].

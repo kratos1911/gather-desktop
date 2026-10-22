@@ -1,5 +1,15 @@
 # Rebuild progress
 
+## 22 October: isolate hosted sign-in failure
+
+Operator reports generic A-login failure; confirmed-email SQL rules out unconfirmed
+email. Agent settings check also verifies email/password provider enabled and closed
+signup. Added bounded allowlisted Auth error codes and auth-only runner mode that
+avoids DB configuration, Google tokens, imports and inference. 25 focused tests and
+frontend build pass, including actual loopback HTTP rejection/handoff and no-work
+assertions. No password reset, hosted login retry or model call by agent. Actual
+login failure cause remains unknown until operator diagnostic. Docs/Obsidian updated.
+
 ## 22 October: hosted flow runner prepared
 
 Operator created two synthetic Auth accounts and quota rows. Prepared one fixed

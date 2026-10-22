@@ -1,5 +1,12 @@
 # Bounded service clients
 
+22 October Auth diagnostics: password-grant errors alone may read <=4096 bytes of
+uncompressed JSON to extract fixed allowlisted codes (invalid credentials, email
+confirmation/provider, banned user or CAPTCHA). Descriptions and other fields
+never cross the helper boundary. Unknown, malformed or large bodies retain the
+generic error. All non-Auth error bodies remain unread. HTTP/cleanup deadlines
+and redirect/proxy policy are unchanged. See HOSTED_FLOW_PILOT.md for evidence.
+
 16 October 2026. Server-side adapters in `services/worker/service_clients.py`;
 shared fixed-process HTTP boundary in `service_transport.py`. No dependencies,
 credentials, public routes or hosted resources were added. Evidence: TASKS.md.

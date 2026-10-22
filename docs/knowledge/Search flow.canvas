@@ -12,7 +12,7 @@
     {
       "id": "source",
       "type": "text",
-      "text": "Save file or link\nHosted credentials, public key and two Auth test users ready\nBounded hosted TXT runner prepared; operator execution pending\nPhysical cleanup requires admin; HTTP + desktop remain",
+      "text": "Save file or link\nHosted users/key ready; first run stopped at A sign-in\nBoth emails confirmed; auth-only safe diagnostic is next\nHosted flow, physical cleanup, HTTP + desktop remain",
       "x": 0,
       "y": 0,
       "width": 330,

@@ -22,6 +22,8 @@ MAX_REQUEST = 65536
 MAX_RESPONSE = 4 * 1024 * 1024
 ROOT = Path(__file__).resolve().parents[2]
 _SLOT = threading.BoundedSemaphore(1)
+AUTH_CODES = {b'auth_'+code.encode() for code in (
+    'invalid_credentials','email_not_confirmed','user_banned','email_provider_disabled','captcha_failed')}
 
 
 class TransportError(Exception):
@@ -134,7 +136,7 @@ def _exchange(wire, *, timeout, cancel):
             except (ValueError, UnicodeError, RecursionError):
                 raise TransportError('invalid_response') from None
         codes = {b'authentication_failed', b'rate_limited', b'response_too_large',
-                 b'invalid_response', b'service_unavailable'}
+                 b'invalid_response', b'service_unavailable'} | AUTH_CODES
         if output.startswith(b'ERR\n') and output[4:] in codes:
             raise TransportError(output[4:].decode())
         raise TransportError('service_unavailable')
@@ -150,6 +152,28 @@ def _exchange(wire, *, timeout, cancel):
             raise TransportError('cleanup_failed') from None
         finally:
             _SLOT.release()
+
+
+def auth_error_code(url, error):
+    """Only fixed Auth codes escape a bounded password-grant error response."""
+    try:
+        target = urlsplit(url)
+        if (target.path!='/auth/v1/token' or target.query!='grant_type=password'
+                or error.code not in (400,401,403,422)
+                or error.headers.get('Content-Type','').split(';')[0].strip().lower()!='application/json'
+                or error.headers.get('Content-Encoding','identity').lower()!='identity'):
+            return None
+        raw = error.read(4097)
+        if len(raw)>4096:
+            return None
+        value = strict_json(raw)
+        code = value.get('error_code',value.get('code'))
+        if not isinstance(code,str):
+            return None
+        encoded = b'auth_'+code.encode('ascii')
+        return encoded if encoded in AUTH_CODES else None
+    except Exception:
+        return None
 
 
 def child_main():
@@ -183,9 +207,12 @@ def child_main():
                 data = response.read(MAX_RESPONSE + 1)
                 output = b'ERR\nresponse_too_large' if len(data) > MAX_RESPONSE else b'OK\n'+data
     except HTTPError as error:
-        output = b'ERR\n' + (b'authentication_failed' if error.code in (401,403) else
-                  b'rate_limited' if error.code == 429 else b'service_unavailable')
-        error.close()  # Do not read or log remote error bodies.
+        try:
+            safe_code = auth_error_code(args.get('url',''),error)
+            output = b'ERR\n' + (safe_code or (b'authentication_failed' if error.code in (401,403) else
+                      b'rate_limited' if error.code == 429 else b'service_unavailable'))
+        finally:
+            error.close()  # Auth reads only bounded known codes; never logs bodies.
     except Exception:
         pass
     sys.stdout.buffer.write(output)

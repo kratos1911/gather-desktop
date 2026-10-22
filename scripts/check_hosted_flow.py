@@ -170,42 +170,56 @@ def wait_for_startup(identity):
             'cloud_startup_probe_failed')
 
 
+def sign_in_clients(key):
+    warnings.simplefilter('error',getpass.GetPassWarning)
+    clients, owners = [], []
+    for index,email in enumerate(EMAILS):
+        password = getpass.getpass('Password for '+email+' (hidden): ')
+        try:
+            try:
+                session = request_json(BASE,'/auth/v1/token?grant_type=password',{'apikey':key},
+                    {'email':email,'password':password},timeout=5)
+            except Exception as error:
+                from services.worker.service_transport import AUTH_CODES
+                safe = {code.decode() for code in AUTH_CODES} | {'timeout','rate_limited','authentication_failed','service_unavailable'}
+                code = str(error) if str(error) in safe else 'signin_failed'
+                raise PilotFailure('pilot_'+('a' if index==0 else 'b')+'_'+code) from None
+        finally:
+            del password
+        client = SessionClient(BASE,key,session['access_token'])
+        del session
+        user = client('GET','/auth/v1/user')
+        require(user['email']==email and str(uuid.UUID(user['id']))==user['id'],'pilot_user_identity')
+        owners.append(user['id'])
+        clients.append(client)
+    require(len(set(owners))==2,'distinct_users_required')
+    return clients
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--run',action='store_true')
+    action = parser.add_mutually_exclusive_group()
+    action.add_argument('--run',action='store_true')
+    action.add_argument('--check-auth',action='store_true',help='Check hidden test-user logins only; no imports or model calls')
     args = parser.parse_args()
-    if not args.run:
+    if not args.run and not args.check_auth:
         print('Preview: one synthetic hosted TXT, two real Auth sessions, at most 3 model calls; deletion hides content, operator finalizes physical cleanup.')
         return
-    require(not RECEIPT.exists(),'existing_pilot_receipt_review_required')
+    if args.run:
+        require(not RECEIPT.exists(),'existing_pilot_receipt_review_required')
     key = configuration()
-    admission_config, worker_config = database_config('gather_admission'),database_config('gather_worker')
     settings = request_json(BASE,'/auth/v1/settings',{'apikey':key},None,timeout=5)
     require(settings.get('disable_signup') is True,'disable_public_signup_first')
+    clients = sign_in_clients(key)
+    if args.check_auth:
+        print('Both pilot user sessions verified. No document, worker or model operations performed.')
+        return
+    admission_config, worker_config = database_config('gather_admission'),database_config('gather_worker')
     identity = google_token()
     receipt = None
     try:
         real = BoundedProvider(cloud_provider(IDENTITY,ROOT/'output/inference-model',token_provider=identity))
         provider = QueryCapture(real)
-        warnings.simplefilter('error',getpass.GetPassWarning)
-        clients, owners = [], []
-        for email in EMAILS:
-            password = getpass.getpass('Password for '+email+' (hidden): ')
-            try:
-                try:
-                    session = request_json(BASE,'/auth/v1/token?grant_type=password',{'apikey':key},
-                        {'email':email,'password':password},timeout=5)
-                except Exception:
-                    raise PilotFailure('pilot_'+('a' if email==EMAILS[0] else 'b')+'_signin_failed') from None
-            finally:
-                del password
-            client = SessionClient(BASE,key,session['access_token'])
-            del session
-            user = client('GET','/auth/v1/user')
-            require(user['email']==email and str(uuid.UUID(user['id']))==user['id'],'pilot_user_identity')
-            owners.append(user['id'])
-            clients.append(client)
-        require(len(set(owners))==2,'distinct_users_required')
         wait_for_startup(identity)
         libraries = [LibrarySession(client,lambda owner:DatabaseRepository(admission_config,owner=owner),provider)
                      for client in clients]

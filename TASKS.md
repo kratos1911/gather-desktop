@@ -641,6 +641,11 @@ invocation, browser dependencies and live compatibility tests. No semantic resul
 or end-to-end desktop ingestion claimed.
 ## 21 October: cloud ingestion composition
 
+22 October diagnostic: hosted run failed before import at A sign-in. Email
+confirmation/provider verified; cause unknown. Auth-only mode and bounded fixed
+Auth error codes implemented. 25 focused checks and frontend build pass; operator
+must run --check-auth before another full pilot. No model or credential changes.
+
 22 October hosted-runner milestone prepared: check_hosted_flow.py reuses real
 Auth, LibrarySession, DB transport and cloud provider. Seven new controls + six
 session regressions pass; preview, tokenizer parity (3 cases) and frontend build
