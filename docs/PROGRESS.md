@@ -1,3 +1,5 @@
+22 October: operator hosted pilot completed with two real embedding calls and two exact-query response replays; final cleanup confirmed true. Added internal ASGI library adapter with strict JSON/import bounds, five routes, per-request sessions and cancellation-aware concurrency. Synthetic API/session checks and desktop build pass. Not deployed or connected to desktop; see LIBRARY_API.md.
+
 # Rebuild progress
 
 ## 22 October: separate scaling acceptance from readiness

@@ -1,3 +1,5 @@
+22 October final result: operator run f360993f-7764-484c-a043-9f59c9e29d70 passed, job ready, source tombstoned, two real model requests/two compatible query replays. Source e80b0aa5-dac1-4f75-9be0-5bb42b5a9d39 physically cleaned=true per operator after the receipt. Runner reports minimum zero restored. Receipt cleanup_pending=true is historical at run exit; preserve it unchanged. This proves one synthetic text flow, not broad quality or production readiness. Do not rerun automatically.
+
 # Authenticated hosted text-flow pilot
 
 CURRENT next run: operator reported cleaned=true for the old cancelled fixture.

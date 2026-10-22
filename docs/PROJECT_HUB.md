@@ -3,6 +3,10 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Current implementation: [[docs/LIBRARY_API|Bounded library HTTP adapter; server composition next]]. Hosted pilot passed; final cleanup confirmed by operator. Earlier pilot-status entries below are historical.
+
+
+
 Latest: [[docs/HOSTED_FLOW_PILOT|Scaling gate verified; min0 confirmed; fresh operator run next]].
 
 CURRENT: [[docs/HOSTED_FLOW_PILOT|Clean cancelled fixture, then start new guarded run]].

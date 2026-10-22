@@ -1,3 +1,5 @@
+22 October: reuse LibrarySession behind a dependency-free ASGI adapter. Keep worker execution separate from queued HTTP admission, and retain the operation slot until its thread finishes after timeout/disconnect. Do not confuse cancelling a response with rolling back a committed database write. No public listener until composition, rate/security and privacy gates are verified.
+
 # Architecture decisions
 
 22 October: separate Cloud Run scaling acceptance from readiness. Submit min1 with

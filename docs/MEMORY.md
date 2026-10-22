@@ -1,3 +1,5 @@
+22 October CURRENT: hosted pilot passed import/publication/search/open/delete with real Auth and two real cloud model calls. Operator confirmed final physical cleanup=true; runner reported min0 restored. Internal application ASGI adapter now implements five fixed library routes; synthetic checks pass. No listener, worker scheduler, desktop wiring or public upload release. See LIBRARY_API.md for limits and remaining gates.
+
 # Current project state
 
 22 October CURRENT: old cancelled fixture cleaned=true per operator. New run stopped

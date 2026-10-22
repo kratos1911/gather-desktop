@@ -1,3 +1,5 @@
+22 October current: internal five-route application ASGI adapter reuses LibrarySession; see LIBRARY_API.md. Hosted Auth/DB/cloud pilot passed and operator confirmed cleanup. Server/worker lifecycle, actual HTTP integration and desktop wiring remain pending. Earlier pending hosted-evidence statements below are historical.
+
 # Architecture: how the product works
 
 Database composition: DatabaseRepository wraps the existing PostgresRepository

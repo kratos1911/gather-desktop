@@ -1,3 +1,7 @@
+## 22 October: bounded application API adapter
+
+Implemented five fixed ASGI library routes and trusted per-bearer composition. Validation, safe errors, disconnect/deadline cancellation and retained single-flight slot verified: 17 focused API/session tests pass (exit 0). Hosted pilot receipt passes separately; operator reports physical cleanup=true. Frontend build passes; no model/Docker/cloud runs. See docs/LIBRARY_API.md. Server launch, real HTTP integration and worker lifecycle remain next.
+
 # Delivery tasks
 
 ## Manual pilot upload helper
