@@ -1,5 +1,25 @@
 # Authenticated hosted text-flow pilot
 
+Current processing checkpoint: source 5a4c1c59-9313-4982-a1b4-c8dd73dd30c1 was
+acknowledged, job 7ecced47-982e-45fb-ad77-301f56a46ffe returned queued /
+temporarily_unavailable before any inference. Failure handler tombstoned it.
+Operator SQL confirms cancelled, attempts=1, deleted, source_hidden=true,
+text_staged=false, passages_staged=0. Physical cleanup remains pending. Do NOT
+resume this cancelled/deleted source or delete the receipt to force another run.
+
+Offline replay with the actual pinned tokenizer and injected fixture vectors
+reaches ready; no local model/network used. This rules out an obvious deterministic
+tokenizer-wrapper failure in that replay, not all possible hosted failures. The
+original error lacks step/reason; deletion's code=deleted is cleanup, not root cause.
+Need existing Postgres ERROR/WARNING logs for 22 October ~07:15–07:30 UTC
+(12:45–13:00 IST). Do not request another full run simply to collect missing logs.
+
+Worker now emits fixed internal diagnostic.step and sanitized database reason on
+failure/abandonment, and the runner preserves them. Thirty worker/runner tests and
+frontend build pass. No hosted retry, limit increase or inference was performed.
+Warm min=1 remains active under the prior approval; restore min=0 after pilot or
+operator stop. Rotation of exposed DB passwords remains user-deferred.
+
 Current cloud state: user approved temporarily keeping one warm instance for the
 pilot. Agent applied service-level min=1/max=1 at 2026-10-22T07:11:44Z only to
 Gather. Image and resource limits compare unchanged; authenticated /ready passes.

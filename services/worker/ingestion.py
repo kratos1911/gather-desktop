@@ -66,22 +66,24 @@ class Lease:
     def __init__(self, repository, job):
         self.repository, self.job = repository, job
         self.cancelled = threading.Event()
+        self.failure_reason = None
         self.stopped = threading.Event()
         self.lock = threading.Lock()
         self.thread = threading.Thread(target=self._heartbeat, daemon=True)
 
     def check(self):
         if self.cancelled.is_set():
-            raise RepositoryError('stale_lease')
+            raise RepositoryError('stale_lease',reason=self.failure_reason)
 
     def renew(self):
         with self.lock:
             self.check()
             try:
                 self.repository.call('renew_text_job', self.job['id'], self.job['lease_token'])
-            except Exception:
+            except Exception as error:
+                self.failure_reason = error.reason if isinstance(error,RepositoryError) else None
                 self.cancelled.set()
-                raise RepositoryError('stale_lease') from None
+                raise RepositoryError('stale_lease',reason=self.failure_reason) from None
 
     def _heartbeat(self):
         while not self.stopped.wait(10):
@@ -116,12 +118,16 @@ def run_once(repository, provider):
     if job is None:
         return {'state': 'idle'}
     args = (job['id'], job['lease_token'])
+    step = 'renew_lease'
     try:
         with Lease(repository, job) as lease:
+            step = 'validate_manifest'
             if (job['parser_version'],job['chunker_version'],job['model_id'],job['model_revision'],job['dimensions']) != (
                     PARSER_VERSION,VERSION,MODEL,REVISION,DIMENSIONS):
                 raise ValueError('invalid_input')
+            step = 'read_original'
             raw = bytes.fromhex(repository.call('read_job_original', *args))
+            step = 'parse_original'
             document = parse(raw, job['media_type'])
             if len(raw) != job['input_bytes'] or document['source_sha256'] != job['content_sha256']:
                 raise ValueError('invalid_input')
@@ -130,16 +136,21 @@ def run_once(repository, provider):
                 lease.check()
                 return provider.count_tokens(text)
 
+            step = 'chunk_original'
             chunks = chunk_document(raw.decode('utf-8'), count_tokens)
             if len(chunks) > MAX_JOB_REQUESTS or sum(c['tokens'] for c in chunks) > MAX_JOB_TOKENS:
                 raise ValueError('invalid_input')
+            step = 'renew_lease'
             lease.renew()
+            step = 'stage_text'
             repository.call('stage_text', *args, raw, job['media_type'],
                             [{k: c[k] for k in ('id','start','end')} for c in chunks])
+            step = 'read_completed_passages'
             completed = set(repository.call('completed_passages', *args))
             for chunk in chunks:
                 if chunk['id'] in completed:
                     continue
+                step = 'renew_lease'
                 lease.renew()
 
                 def send(body):
@@ -156,20 +167,27 @@ def run_once(repository, provider):
                         raise EmbeddingError('Invalid provider identity')
                     return result
 
+                step = 'embed_passage'
                 result = embed_texts([chunk['text']], model=MODEL,
                     limits=Limits(DIMENSIONS,MAX_TOKENS,MAX_TOKENS,1,1), count_tokens=count_tokens, send=send)
+                step = 'renew_lease'
                 lease.renew()
+                step = 'stage_vectors'
                 repository.call('stage_vectors', *args, MODEL, REVISION, DIMENSIONS,
                                 [{'id':chunk['id'],'vector':result['vectors'][0]}])
             # Prevent heartbeat racing a successful ready transition.
             with lease.lock:
                 lease.check()
+                step = 'publish'
                 version = repository.call('publish_text', *args)
                 lease.stopped.set()
             return {'state':'ready','job_id':job['id'],'version_id':version}
     except Exception as error:
+        diagnostic = {'step':step}
+        if isinstance(error,RepositoryError) and error.reason is not None:
+            diagnostic['reason'] = error.reason
         if isinstance(error, RepositoryError) and error.code == 'stale_lease':
-            return {'state':'abandoned','job_id':job['id']}
+            return {'state':'abandoned','job_id':job['id'],'diagnostic':diagnostic}
         code = 'invalid_input' if isinstance(error, (ValueError, EmbeddingError)) else 'temporarily_unavailable'
         if isinstance(error, RepositoryError):
             code = error.code
@@ -179,8 +197,8 @@ def run_once(repository, provider):
             code = 'timeout'
         try:
             state = repository.call('fail_text_job', *args, code)
-            return {'state':state,'job_id':job['id'],'error_code':code}
+            return {'state':state,'job_id':job['id'],'error_code':code,'diagnostic':diagnostic}
         except RepositoryError:
             # Unknown commit outcome or lost database connection: lease recovery
             # resolves it. Never overwrite another attempt or report false failure.
-            return {'state':'abandoned','job_id':job['id']}
+            return {'state':'abandoned','job_id':job['id'],'diagnostic':diagnostic}

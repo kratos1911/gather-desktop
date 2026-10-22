@@ -1,5 +1,15 @@
 # Rebuild progress
 
+## 22 October: processing stopped before staging; safe diagnostics retained
+
+Operator SQL confirms failure cancellation/tombstone, one attempt and zero staged
+text/passages for the acknowledged pilot source. Receipt records zero model calls.
+Offline coordinator replay with actual pinned tokenizer and fixture vectors passes.
+Added fixed step/sanitized reason to internal worker failure results and pilot
+receipt; lease fencing unchanged. 30 worker/runner checks and frontend build pass.
+Old exact cause still needs Postgres logs; no blind hosted rerun, limit change or
+model call. Physical fixture cleanup and warm-instance rollback remain pending.
+
 ## 22 October: approved warm instance applied
 
 After explicit user approval, set Gather service min=1/max=1 at 07:11:44 UTC.

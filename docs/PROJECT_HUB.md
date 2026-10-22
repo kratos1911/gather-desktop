@@ -3,6 +3,9 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Current: [[docs/HOSTED_FLOW_PILOT|Processing failed before staging; Postgres log needed]].
+Source is tombstoned, physical cleanup pending; warm min=1 still active.
+
 ACTIVE PILOT: [[docs/HOSTED_FLOW_PILOT|Warm min=1 verified; guarded resume next]].
 Restore minimum zero after testing or operator stop; idle billing active.
 

@@ -40,6 +40,44 @@ class MemoryRepository:
 
 
 class IngestionTests(unittest.TestCase):
+    def test_staging_failure_has_safe_reason_and_never_embeds_or_publishes(self):
+        repo = MemoryRepository()
+        original = repo.call
+        def fail(name,*args):
+            if name=='stage_text':
+                raise RepositoryError('temporarily_unavailable',reason='sqlstate_55P03')
+            return original(name,*args)
+        repo.call = fail
+        provider = SyntheticProvider()
+        provider.infer = Mock()
+        result = run_once(repo,provider)
+        self.assertEqual(result['diagnostic'],{'step':'stage_text','reason':'sqlstate_55P03'})
+        provider.infer.assert_not_called()
+        self.assertNotIn('publish_text',[name for name,args in repo.calls])
+
+    def test_read_failure_preserves_safe_step_and_reason(self):
+        repo = MemoryRepository()
+        original = repo.call
+        def fail(name,*args):
+            if name=='read_job_original':
+                raise RepositoryError('temporarily_unavailable',reason='operation_deadline_exceeded')
+            return original(name,*args)
+        repo.call = fail
+        result = run_once(repo,SyntheticProvider())
+        self.assertEqual(result['state'],'queued')
+        self.assertEqual(result['diagnostic'],{'step':'read_original','reason':'operation_deadline_exceeded'})
+
+    def test_lease_failure_keeps_fencing_and_safe_reason(self):
+        repo = MemoryRepository()
+        original = repo.call
+        def fail(name,*args):
+            if name=='renew_text_job':
+                raise RepositoryError('temporarily_unavailable',reason='sqlstate_57014')
+            return original(name,*args)
+        repo.call = fail
+        result = run_once(repo,SyntheticProvider())
+        self.assertEqual(result['state'],'abandoned')
+        self.assertEqual(result['diagnostic'],{'step':'renew_lease','reason':'sqlstate_57014'})
     def test_lease_cleanup_uses_bounded_explicit_repository_timeout(self):
         for selected,expected in ((6,6),(16,16),(999,6)):
             repo = MemoryRepository()

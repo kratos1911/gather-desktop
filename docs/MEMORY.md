@@ -1,5 +1,14 @@
 # Current project state
 
+22 October latest: import acknowledged, processing failed before staging/inference.
+Receipt queued/temporarily_unavailable, then failure cleanup tombstoned source.
+Operator confirms job cancelled/deleted, attempts=1, no staged text/passages.
+Do not resume this source; original bytes still need admin physical cleanup.
+Added safe worker-step/reason diagnostics; 30 tests/build pass. Need existing
+Postgres error/warning log around 07:15–07:30 UTC for old root cause. Offline pinned-
+tokenizer/fixture replay passes but does not prove hosted behavior. Warm min=1
+still active; no agent inference or hosted retry. See HOSTED_FLOW_PILOT.md.
+
 22 October CURRENT CLOUD OBLIGATION: user approved min=1/max=1 for Gather's active
 pilot; applied and authenticated readiness passes. Image/resources unchanged;
 actual invoker policy still only pilot caller. Idle billing active. Restore min=0

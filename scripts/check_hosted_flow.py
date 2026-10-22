@@ -95,7 +95,7 @@ def exercise(first, second, worker, provider, receipt, save):
         receipt['stage'] = 'processing'
         save(receipt)
         result = run_once(ExpectedWorker(worker,item['job_id']),provider)
-        receipt['job_outcome'] = {k:result[k] for k in ('state','error_code') if k in result}
+        receipt['job_outcome'] = {k:result[k] for k in ('state','error_code','diagnostic') if k in result}
         save(receipt)
         require(result['state']=='ready' and result['version_id']==vid,'processing_not_ready')
         require(first.status(sid)[0]['state']=='ready','published_status')

@@ -1,5 +1,13 @@
 # Trusted ingestion coordinator
 
+22 October diagnostics: failed/abandoned internal results now include a fixed
+worker step and optional sanitized SQLSTATE/deadline reason. Lease renewal failure
+keeps its safe reason while preserving cancellation/fencing behavior. No exception
+message, document, vector or credential is returned. The hosted pilot retains this
+diagnostic in its safe receipt; public status RPC fields are unchanged. Thirty
+worker/runner checks and frontend build pass. This does not diagnose old failures
+whose details were already discarded. See HOSTED_FLOW_PILOT.md.
+
 16 October 2026. Internal backend slice; public uploads, real JWT verification,
 cloud inference and desktop wiring remain separate gates.
 

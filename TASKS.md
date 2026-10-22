@@ -641,6 +641,13 @@ invocation, browser dependencies and live compatibility tests. No semantic resul
 or end-to-end desktop ingestion claimed.
 ## 21 October: cloud ingestion composition
 
+22 October worker diagnostic milestone: hosted pilot source acknowledged then
+cancelled/tombstoned after temporary pre-staging failure (operator SQL: one attempt,
+no staged text/passages; receipt: zero inference). Added safe worker step/reason
+retention; 30 worker/runner checks and frontend build pass. Offline pinned-tokenizer
+fixture replay reaches ready. Old root cause needs existing Postgres error logs;
+no hosted retry. Cancelled source must not resume; admin physical cleanup pending.
+
 22 October cloud action approved/applied: Gather min=1/max=1 temporarily; image,
 resource limits and private caller policy verified, authenticated readiness passes.
 16 runner tests and frontend build pass. Original import receipt unchanged;
