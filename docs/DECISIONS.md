@@ -1,3 +1,5 @@
+24 October: wrap injected/default fetch in a plain function invocation; storing native fetch as a client method changes its receiver and fails in Chromium. Keep a receiver-sensitive regression because permissive Node mocks missed this. Network error text alone is not evidence the API is stopped.
+
 24 October: expose the first UI connection only as a development-browser operator pilot, restricted server-side to existing test users and fixed synthetic content. Keep public/native connected mode gated. Use explicit loopback Host and one-origin CORS, separate bounded worker invocation, session-only tokens and immutable retry payloads. Cancellation leaves durable recovery intact and does not claim rollback. No permanent warm capacity or automatic cloud retries.
 
 22 October: reuse LibrarySession behind a dependency-free ASGI adapter. Keep worker execution separate from queued HTTP admission, and retain the operation slot until its thread finishes after timeout/disconnect. Do not confuse cancelling a response with rolling back a committed database write. No public listener until composition, rate/security and privacy gates are verified.

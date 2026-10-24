@@ -1,5 +1,7 @@
 # Restricted operator library pilot
 
+24 October browser follow-up: sign-in reached the connected screen, but native fetch was incorrectly called as a LibraryClient method. Chrome rejected it before IO. Plain-function wrapping fixes the receiver; real Chrome now reaches the local API with a synthetic invalid bearer. 25 frontend tests/build/lint/format pass. Production assets unchanged; native build reused. Refresh the existing page and sign in again to replace its old in-memory client, then attempt the synthetic import once. No API restart needed; hosted import through the corrected UI remains pending.
+
 24 October 2026. Implementation and local verification complete. Live use of the
 new browser screen with hosted credentials remains unverified. The separate
 22 October hosted operator-script success remains valid evidence, not proof that

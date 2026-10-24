@@ -3,6 +3,8 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Latest: [[docs/OPERATOR_LIBRARY_PILOT|Chrome connection bug fixed; refresh/sign-in before live import]].
+
 Current: [[docs/OPERATOR_LIBRARY_PILOT|Restricted operator UI and loopback backend locally verified]]. Hosted acceptance through the new UI remains pending; stop at this milestone per user.
 
 Current implementation: [[docs/LIBRARY_API|Bounded library HTTP adapter; server composition next]]. Hosted pilot passed; final cleanup confirmed by operator. Earlier pilot-status entries below are historical.

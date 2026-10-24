@@ -141,7 +141,10 @@ export class LibraryClient {
       throw new LibraryClientError("invalid_configuration");
     }
     this.base = url.origin;
-    this.send = options.fetch ?? fetch;
+    // Keep native fetch as a plain function call. Calling it as this.send()
+    // with a LibraryClient receiver causes Illegal invocation in Chromium.
+    const transport = options.fetch ?? fetch;
+    this.send = (input, init) => transport(input, init);
   }
 
   setSession(token: string | null): void {

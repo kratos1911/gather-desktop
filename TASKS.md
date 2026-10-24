@@ -1,3 +1,7 @@
+## 24 October: Chrome fetch receiver fix
+
+Reproduced default client network_unavailable versus wrapped client receiving HTTP failure from local API; direct browser request also reached API. Fixed transport invocation and added receiver-sensitive regression. 25 frontend tests, build, lint/format pass; production asset hashes identical. Temporary credential-free diagnostic pages removed. No model or hosted document operations performed by diagnostics. Existing operator page needs refresh/new sign-in before the live import check.
+
 ## 24 October: restricted operator library pilot
 
 Implemented loopback HTTP serving, bounded worker stop/recovery, typed browser transport and session-scoped state, plus development-only fixed-content UI. 49 backend checks and 24 frontend checks pass; lint, formatting, frontend and native debug builds pass. Signed-out layout/focus verified; authenticated hosted UI acceptance is pending. Exact evidence and commands: docs/OPERATOR_LIBRARY_PILOT.md. No paid resources, model calls, Docker work or public release. User requested stopping after this ongoing milestone.

@@ -15,9 +15,25 @@ const setup = (send = vi.fn<typeof fetch>()) => {
   client.setSession("test-user-session");
   return { client, send };
 };
-afterEach(() => vi.useRealTimers());
+afterEach(() => {
+  vi.useRealTimers();
+  vi.unstubAllGlobals();
+});
 
 describe("library HTTP client (synthetic responses)", () => {
+  it("calls the native transport without using the client as its receiver", async () => {
+    const transport = vi.fn(function (this: unknown) {
+      // Model Chromium's receiver-sensitive native fetch, which Node mocks
+      // otherwise allow to be called as a method on an arbitrary object.
+      expect(this).toBeUndefined();
+      return Promise.resolve(respond([]));
+    });
+    vi.stubGlobal("fetch", transport);
+    const client = new LibraryClient("https://library.example.invalid");
+    client.setSession("synthetic-session");
+    await expect(client.status(ID)).resolves.toEqual([]);
+    expect(transport).toHaveBeenCalledTimes(1);
+  });
   it("retries an uncertain import with the same immutable ID and exact bytes", async () => {
     const { client, send } = setup();
     send.mockRejectedValueOnce(new Error("private transport detail"));
