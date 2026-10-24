@@ -1,3 +1,5 @@
+24 October current: LIBRARY_API now has a bounded loopback server, separate cancellable WorkerRun, typed frontend client/state and development-only restricted operator screen. See OPERATOR_LIBRARY_PILOT.md. Local synthetic HTTP/UI integration verified; new UI hosted acceptance and production/native connection remain pending. Historical statuses below are superseded only to that extent.
+
 22 October current: internal five-route application ASGI adapter reuses LibrarySession; see LIBRARY_API.md. Hosted Auth/DB/cloud pilot passed and operator confirmed cleanup. Server/worker lifecycle, actual HTTP integration and desktop wiring remain pending. Earlier pending hosted-evidence statements below are historical.
 
 # Architecture: how the product works

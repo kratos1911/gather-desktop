@@ -12,7 +12,7 @@
     {
       "id": "source",
       "type": "text",
-      "text": "Save file or link\nHosted text pilot passed; cleanup confirmed\nBounded ASGI library routes tested synthetically\nServer lifecycle + desktop remain",
+      "text": "Save file or link\nHosted text pilot passed; cleanup confirmed\nLoopback HTTP + operator UI implemented\nLocal synthetic checks pass; live UI acceptance pending",
       "x": 0,
       "y": 0,
       "width": 330,

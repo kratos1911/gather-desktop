@@ -8,6 +8,7 @@ import base64
 import binascii
 import json
 import threading
+import time
 
 from services.worker.library_session import LibrarySession, LibraryError, identifier
 from services.worker.service_transport import strict_json, credential
@@ -53,8 +54,36 @@ class LibraryAPI:
             raise ValueError('invalid_configuration')
         self.factory = session_factory
         self.slot = threading.BoundedSemaphore(1)
+        self.stopping = threading.Event()
+        self._active = set()
+        self._operations = set()
+
+    def stop(self):
+        """Called on the server event loop; retain slots until work returns."""
+        self.stopping.set()
+        for event in tuple(self._active):
+            event.set()
+
+    async def drain(self):
+        self.stop()
+        if self._operations:
+            _, pending = await asyncio.wait(tuple(self._operations), timeout=17)
+            if pending:
+                raise RuntimeError('library_shutdown_incomplete')
 
     async def __call__(self, scope, receive, send):
+        if scope['type'] == 'lifespan':
+            while True:
+                event = await receive()
+                if event['type'] == 'lifespan.startup':
+                    await send({'type':'lifespan.startup.complete'})
+                elif event['type'] == 'lifespan.shutdown':
+                    try:
+                        await self.drain()
+                        await send({'type':'lifespan.shutdown.complete'})
+                    except RuntimeError:
+                        await send({'type':'lifespan.shutdown.failed', 'message':'library_shutdown_incomplete'})
+                    return
         if scope['type'] != 'http':
             raise ValueError('http_only')
 
@@ -71,6 +100,8 @@ class LibraryAPI:
             await send({'type':'http.response.body', 'body':raw})
 
         path = scope.get('path')
+        if self.stopping.is_set():
+            return await reply(503, {'error':'server_stopping'})
         if path not in ROUTES:
             return await reply(404, {'error':'not_found'})
         if scope['method'] != 'POST':
@@ -104,6 +135,7 @@ class LibraryAPI:
         if not self.slot.acquire(blocking=False):
             return await reply(429, {'error':'busy'})
         cancel = threading.Event()
+        self._active.add(cancel)
         operation = watcher = None
         try:
             async def read():
@@ -121,7 +153,9 @@ class LibraryAPI:
                     raise ValueError()
                 return validate(path, strict_json(bytes(raw)))
             try:
-                value = await asyncio.wait_for(read(), 5)
+                remaining = min(5, scope.get('gather.deadline', time.monotonic()+5)-time.monotonic())
+                value = await asyncio.wait_for(read(), max(.001, remaining))
+                scope.get('gather.body_complete', lambda: None)()
             except (ValueError, TypeError, KeyError, binascii.Error, UnicodeError, RecursionError):
                 return await reply(400, {'error':'invalid_request'})
             except asyncio.TimeoutError:
@@ -144,6 +178,7 @@ class LibraryAPI:
                 cancel.set()
 
             operation = asyncio.create_task(asyncio.to_thread(invoke))
+            self._operations.add(operation)
             watcher = asyncio.create_task(disconnected())
             done, _ = await asyncio.wait([operation, watcher], timeout=30,
                                          return_when=asyncio.FIRST_COMPLETED)
@@ -168,11 +203,14 @@ class LibraryAPI:
                 # Cancelling a thread await does not kill its thread. Retain the
                 # slot until the bounded dependency has actually returned.
                 def release(task):
+                    self._operations.discard(task)
+                    self._active.discard(cancel)
                     if not task.cancelled():
                         task.exception()
                     self.slot.release()
                 operation.add_done_callback(release)
             else:
+                self._active.discard(cancel)
                 self.slot.release()
 
 

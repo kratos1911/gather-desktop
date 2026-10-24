@@ -1,0 +1,102 @@
+.operator-pilot {
+  max-width: 1000px;
+}
+.operator-pilot .screen-heading {
+  display: block;
+}
+.pilot-disclosure {
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: 76ch;
+}
+.pilot-form {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 460px;
+  margin-block: var(--space-8);
+}
+.pilot-form input,
+.pilot-form select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid var(--control-line);
+  border-radius: var(--radius-control);
+  padding: var(--space-3);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+.pilot-form select:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+}
+.pilot-action {
+  width: fit-content;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-control);
+  color: var(--citron);
+  background: var(--forest);
+  font-weight: 700;
+}
+.pilot-action:hover {
+  background: var(--forest-hover);
+}
+.operator-pilot button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.pilot-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+  justify-content: space-between;
+  margin-block: var(--space-6);
+}
+.pilot-toolbar span,
+.pilot-job code {
+  overflow-wrap: anywhere;
+}
+.pilot-step {
+  border-top: 1px solid var(--line);
+  padding-block: var(--space-6);
+}
+.pilot-step h2 {
+  margin-bottom: var(--space-3);
+}
+.pilot-step > p {
+  max-width: 76ch;
+  line-height: 1.65;
+}
+.pilot-job {
+  background: var(--citron-soft);
+  padding: var(--space-4);
+  margin-top: var(--space-4);
+  border-left: 3px solid var(--forest);
+}
+.pilot-job > code {
+  display: block;
+  margin-bottom: var(--space-4);
+}
+.pilot-results {
+  padding: 0;
+  list-style: none;
+}
+.pilot-results li {
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+.pilot-results p,
+.pilot-reader p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.pilot-results small {
+  display: block;
+  margin-bottom: var(--space-3);
+  color: var(--muted);
+}
+.pilot-reader {
+  margin-top: var(--space-4);
+}

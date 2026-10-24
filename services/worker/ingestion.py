@@ -6,6 +6,7 @@ retry/backoff and publication correctness remain in existing PostgreSQL function
 import base64
 import json
 import threading
+import time
 from uuid import UUID
 
 from services.inference.chunking import chunk_document, VERSION, MAX_TOKENS
@@ -62,10 +63,32 @@ def submit(repository, *, request_id, title, original, media, source_id=None):
                            PARSER_VERSION, VERSION, MODEL, REVISION, DIMENSIONS, source_id)
 
 
+class Cancellation:
+    """Combine worker shutdown with lease loss without a forwarding thread."""
+    def __init__(self, external=None):
+        self.local = threading.Event()
+        self.external = external
+
+    def is_set(self):
+        return self.local.is_set() or (self.external is not None and self.external.is_set())
+
+    def set(self):
+        self.local.set()
+
+    def wait(self, timeout=None):
+        deadline = None if timeout is None else time.monotonic()+timeout
+        while not self.is_set():
+            remaining = .05 if deadline is None else min(.05, deadline-time.monotonic())
+            if remaining <= 0:
+                break
+            self.local.wait(remaining)
+        return self.is_set()
+
+
 class Lease:
-    def __init__(self, repository, job):
+    def __init__(self, repository, job, cancel=None):
         self.repository, self.job = repository, job
-        self.cancelled = threading.Event()
+        self.cancelled = Cancellation(cancel)
         self.failure_reason = None
         self.stopped = threading.Event()
         self.lock = threading.Lock()
@@ -93,6 +116,7 @@ class Lease:
                 return
 
     def __enter__(self):
+        self.check()
         self.renew()
         self.thread.start()
         return self
@@ -107,20 +131,22 @@ class Lease:
             self.thread.join(wait)  # Includes the explicitly selected repository bound.
 
 
-def run_once(repository, provider):
+def run_once(repository, provider, *, cancel=None):
     """Provider supplies count_tokens(text), infer(request, cancel=event).
 
     The tokenizer must match the pinned Qwen revision. An already-started Runtime
     can supply infer; a future cloud adapter must honor the same cancellation and
     request deadlines. Test providers are injected only from tests.
     """
+    if cancel is not None and cancel.is_set():
+        return {'state':'stopped'}
     job = repository.call('claim_text_job')
     if job is None:
         return {'state': 'idle'}
     args = (job['id'], job['lease_token'])
     step = 'renew_lease'
     try:
-        with Lease(repository, job) as lease:
+        with Lease(repository, job, cancel) as lease:
             step = 'validate_manifest'
             if (job['parser_version'],job['chunker_version'],job['model_id'],job['model_revision'],job['dimensions']) != (
                     PARSER_VERSION,VERSION,MODEL,REVISION,DIMENSIONS):
@@ -184,6 +210,10 @@ def run_once(repository, provider):
             return {'state':'ready','job_id':job['id'],'version_id':version}
     except Exception as error:
         diagnostic = {'step':step}
+        if cancel is not None and cancel.is_set():
+            # Leave an interrupted claim to expire; do not turn shutdown into
+            # a provider failure or overwrite an uncertain publication result.
+            return {'state':'abandoned','job_id':job['id'],'diagnostic':diagnostic}
         if isinstance(error,RepositoryError) and error.reason is not None:
             diagnostic['reason'] = error.reason
         if isinstance(error, RepositoryError) and error.code == 'stale_lease':

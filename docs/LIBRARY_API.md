@@ -1,3 +1,5 @@
+24 October update: the internal adapter now has an operator-only loopback server and a restricted development UI. See OPERATOR_LIBRARY_PILOT.md for actual HTTP evidence, scoped CORS, lifecycle and remaining live verification. Earlier no-listener statements below describe the 22 October checkpoint.
+
 # Application HTTP adapter
 
 22 October 2026. Internal ASGI implementation: services/worker/library_api.py.

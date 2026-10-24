@@ -1,3 +1,5 @@
+24 October CURRENT: restricted operator-library milestone implemented and locally verified. Loopback API, cancellable worker, typed desktop client/state and development-only synthetic pilot UI are connected in code. 49 Python/24 frontend tests, lint/format/frontend build and native debug build pass. Signed-out screen visually checked; live new-UI hosted sign-in/flow remains unverified. No cloud changes/calls or model/Docker runs. Stop here per user; see OPERATOR_LIBRARY_PILOT.md for runbook and precise limits.
+
 22 October CURRENT: hosted pilot passed import/publication/search/open/delete with real Auth and two real cloud model calls. Operator confirmed final physical cleanup=true; runner reported min0 restored. Internal application ASGI adapter now implements five fixed library routes; synthetic checks pass. No listener, worker scheduler, desktop wiring or public upload release. See LIBRARY_API.md for limits and remaining gates.
 
 # Current project state

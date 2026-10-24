@@ -1,3 +1,5 @@
+24 October: completed implementation/local verification of the restricted operator library pilot; see OPERATOR_LIBRARY_PILOT.md for four slice statuses, 49/24 test evidence and build/visual scope. No new cloud calls. Actual new-UI hosted run remains pending operator credentials. User narrowed the multi-milestone request to finish only the ongoing milestone; stopped at this checkpoint.
+
 22 October: operator hosted pilot completed with two real embedding calls and two exact-query response replays; final cleanup confirmed true. Added internal ASGI library adapter with strict JSON/import bounds, five routes, per-request sessions and cancellation-aware concurrency. Synthetic API/session checks and desktop build pass. Not deployed or connected to desktop; see LIBRARY_API.md.
 
 # Rebuild progress

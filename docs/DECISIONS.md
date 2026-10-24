@@ -1,3 +1,5 @@
+24 October: expose the first UI connection only as a development-browser operator pilot, restricted server-side to existing test users and fixed synthetic content. Keep public/native connected mode gated. Use explicit loopback Host and one-origin CORS, separate bounded worker invocation, session-only tokens and immutable retry payloads. Cancellation leaves durable recovery intact and does not claim rollback. No permanent warm capacity or automatic cloud retries.
+
 22 October: reuse LibrarySession behind a dependency-free ASGI adapter. Keep worker execution separate from queued HTTP admission, and retain the operation slot until its thread finishes after timeout/disconnect. Do not confuse cancelling a response with rolling back a committed database write. No public listener until composition, rate/security and privacy gates are verified.
 
 # Architecture decisions

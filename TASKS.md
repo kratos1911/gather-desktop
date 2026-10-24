@@ -1,3 +1,7 @@
+## 24 October: restricted operator library pilot
+
+Implemented loopback HTTP serving, bounded worker stop/recovery, typed browser transport and session-scoped state, plus development-only fixed-content UI. 49 backend checks and 24 frontend checks pass; lint, formatting, frontend and native debug builds pass. Signed-out layout/focus verified; authenticated hosted UI acceptance is pending. Exact evidence and commands: docs/OPERATOR_LIBRARY_PILOT.md. No paid resources, model calls, Docker work or public release. User requested stopping after this ongoing milestone.
+
 ## 22 October: bounded application API adapter
 
 Implemented five fixed ASGI library routes and trusted per-bearer composition. Validation, safe errors, disconnect/deadline cancellation and retained single-flight slot verified: 17 focused API/session tests pass (exit 0). Hosted pilot receipt passes separately; operator reports physical cleanup=true. Frontend build passes; no model/Docker/cloud runs. See docs/LIBRARY_API.md. Server launch, real HTTP integration and worker lifecycle remain next.
