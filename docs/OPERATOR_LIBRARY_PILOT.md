@@ -109,6 +109,10 @@ package install or model download occurs. Temporary files remain under output/.
   unknown outcomes still need idempotent lookup/retry. Unobserved process termination
   relies on durable lease recovery, not the local cancellation event.
 
+## 25 October: search error diagnosis
+
+The operator UI showed the search-database category. A read-only Cloud Run error-log query found no corresponding inference error; the exact PostgREST/storage exception remains unknown. Search orchestration now distinguishes session unavailable, model unavailable, library unavailable and citation/context failure using fixed safe codes only. The current local operator API must restart before this Python update takes effect. Then the operator can run one search and use the resulting category. The agent has not repeated an embedding call.
+
 ## Checks performed
 
 - 49 focused Python tests pass (exit0), covering API/session, actual loopback HTTP,

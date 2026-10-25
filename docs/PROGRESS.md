@@ -1,3 +1,5 @@
+25 October: preserved safe session/model/database search errors through query coordinator, API and UI. Built and tested locally. The observed database error remains unexplained; read-only Cloud Run error logs had no matching entry. No model reattempt. Restart the local API and collect the newly classified error on one UI search.
+
 25 October: improved search failure reporting after operator screenshot showed a generic backend message. Recent inference log query returned no matching errors, so cause of that attempt is still unknown. Added fixed session/model/library categories and focused tests; no retry/model call. Restart current API to load changes, then one user-directed diagnostic search.
 
 25 October: fixed desktop launcher discovery for ordinary PowerShell, which saw only Node22.7 despite existing Node24.22.1. Restricted-PATH build and unsupported override rejection verified. No dependency install. Also read successful operator worker receipt: ready with one model request; no repeat processing run.

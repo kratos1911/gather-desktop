@@ -3,6 +3,8 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Current: [[docs/OPERATOR_LIBRARY_PILOT|Search failures now identify session, model or database stage; restart API before one diagnostic UI search]].
+
 Latest: [[docs/OPERATOR_LIBRARY_PILOT|Search failures now report safe dependency categories; restart API before one UI recheck]].
 
 Latest: [[docs/OPERATOR_LIBRARY_PILOT|Worker ready; frontend runtime discovery fixed; UI search/open next]].

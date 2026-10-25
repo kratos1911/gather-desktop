@@ -1,3 +1,5 @@
+25 October: report safe search-stage categories to the operator instead of one generic backend 503. This supports targeted diagnosis without reading or logging upstream body text. The previous database-category incident remains unconfirmed; do not infer its cause from an empty Cloud Run error log.
+
 25 October: keep search dependency errors as separate fixed codes (session, model, database) because one generic 503 misled operator debugging. Never forward raw third-party error bodies. No automatic inference retry after a startup failure.
 
 25 October: frontend developer scripts may use an explicitly selected GATHER_NODE runtime or the existing Codex-bundled Node path when ordinary PATH lacks a supported version. Keep version checks, avoid global PATH mutation/software installation, and surface a precise missing-runtime error.

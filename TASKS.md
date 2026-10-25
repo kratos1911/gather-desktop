@@ -1,3 +1,7 @@
+## 25 October: distinguish operator search failures
+
+Implemented safe error categories end-to-end for session, model and search database failures. The user's latest screenshot was the database category; no matching Cloud Run log, so exact underlying PostgREST/database error is unconfirmed. 34 focused backend tests,25 frontend tests,frontend/native builds,lint/format pass. Python operator service must restart to load the change; then one search provides a specific failure type. Agent sent no model query.
+
 ## 25 October: safe search error categories
 
 Added truthful failure categories for expired/unverifiable user session, model service and library/retrieval failures. API maps them to fixed 401/502/503; UI now tells operator which dependency to check. Recent Cloud Run error-log read returned no matching row; original search cause remains unconfirmed. 34 focused tests and frontend build pass. No model call or hosted document operation. Local operator API needs restart before one manual search. See docs/OPERATOR_LIBRARY_PILOT.md.
