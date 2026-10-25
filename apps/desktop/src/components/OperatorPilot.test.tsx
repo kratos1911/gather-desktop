@@ -173,3 +173,59 @@ it("completes status, search, exact source opening and deletion with cleanup not
   ).toBe(true);
   expect(send).toHaveBeenCalledTimes(5);
 });
+
+it("deletes a found note when the import receipt was lost on page refresh", async () => {
+  vi.stubEnv("VITE_GATHER_PILOT_PUBLIC_KEY", "sb_publishable_test");
+  vi.mocked(signInPilot).mockResolvedValue("test-token");
+  const title = "Saved synthetic note";
+  const body = "The saved database note";
+  const common = {
+    source_id: ID,
+    version_id: ID,
+    source_sha256: "0".repeat(64),
+    title,
+  };
+  const response = (value: unknown, status = 200) =>
+    new Response(JSON.stringify(value), {
+      status,
+      headers: { "Content-Type": "application/json" },
+    });
+  const send = vi
+    .fn<typeof fetch>()
+    .mockResolvedValueOnce(
+      response({
+        version: "source-neighbors-v1",
+        windows: [
+          {
+            ...common,
+            text: body,
+            start: 0,
+            end: body.length,
+            offset_unit: "unicode_code_point",
+            passage_ids: ["p1"],
+            seed_rank: 1,
+            similarity: 1,
+          },
+        ],
+        utf8_bytes: body.length,
+        omitted_sources: [],
+      }),
+    )
+    .mockResolvedValueOnce(response(true));
+  vi.stubGlobal("fetch", send);
+  render(<OperatorPilot />);
+  fireEvent.change(screen.getByLabelText("Test account password"), {
+    target: { value: "synthetic" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Sign in to pilot" }));
+  fireEvent.click(
+    await screen.findByRole("button", { name: "Search saved notes" }),
+  );
+  fireEvent.click(
+    await screen.findByRole("button", { name: "Delete Saved synthetic note" }),
+  );
+  await screen.findByText(/Removed from search/);
+  expect(screen.getByText(ID)).toBeTruthy();
+  expect(screen.queryByText(body)).toBeNull();
+  expect(send).toHaveBeenCalledTimes(2);
+});

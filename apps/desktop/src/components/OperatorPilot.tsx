@@ -248,6 +248,14 @@ export default function OperatorPilot() {
                   >
                     Open saved text
                   </button>
+                  <button
+                    className="back"
+                    aria-label={`Delete ${hit.title}`}
+                    disabled={state.busy}
+                    onClick={() => act(() => workspace.delete(hit.source_id))}
+                  >
+                    Delete saved note
+                  </button>
                 </li>
               ))}
             </ul>

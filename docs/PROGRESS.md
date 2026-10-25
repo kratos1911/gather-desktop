@@ -1,3 +1,5 @@
+25 October: user found no delete control after reopening the UI because it was conditional on an in-memory import receipt. Added delete to each current-user search result; verified live Chrome shows it beside Open. Tests and frontend/native builds pass. No hosted deletion executed by agent.
+
 25 October: user screenshot confirms connected Operator UI semantically searches and opens the saved synthetic source after identity refresh. Worker receipt was ready with one model request. The remaining vertical-flow checks are UI deletion/tombstone and administrator physical cleanup.
 
 25 October: local operator API now refreshes identity per model request and handles Ctrl+C without traceback. Search errors remain safely categorized. Focused backend/frontend tests and builds pass. Restart local API before the next user-directed search; no live model check by agent.

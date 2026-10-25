@@ -1,3 +1,7 @@
+## 25 October: persistent result deletion affordance
+
+Search-result rows now expose delete even when local imported state was lost on refresh; this fixes the user's missing-button issue. Current Chrome result visibly has Open and Delete. 26 frontend tests and frontend/native builds plus lint/format pass. No data was deleted by agent; user needs to choose delete, then preserve cleanup ID.
+
 ## 25 October: hosted Operator UI search/open confirmed
 
 User screenshot confirms the UI found the synthetic note and opened exact saved text. This completes search/open evidence for the hosted synthetic flow; delete/tombstone and physical cleanup remain. Worker was ready and ran once; no reimport or reprocessing.

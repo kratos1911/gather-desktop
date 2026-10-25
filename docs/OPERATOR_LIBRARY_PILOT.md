@@ -162,3 +162,11 @@ has old imported Python code; restart that local API server to pick up the categ
 Frontend production build and 34 focused search/session/HTTP tests pass. No live
 request was sent while adding classification. Next: restart local API once, sign in
 again if needed, then make one user-directed search attempt and use the category.
+
+25 October UI follow-up: each owned search result now has a Delete saved note action,
+so the synthetic pilot document can be tombstoned even when a refresh cleared the
+in-memory import receipt. The UI test covers search -> delete -> source cleanup ID.
+User's current Chrome page hot-reloaded and shows Delete Synthetic Gather pilot
+beside Open saved text. 26 frontend tests, build/lint/format and native debug build
+pass. The hosted deletion call has not yet been issued; physical cleanup remains
+operator-admin work after tombstoning.
