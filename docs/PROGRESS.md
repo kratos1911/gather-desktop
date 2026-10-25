@@ -1,3 +1,7 @@
+25 October: local operator API now refreshes identity per model request and handles Ctrl+C without traceback. Search errors remain safely categorized. Focused backend/frontend tests and builds pass. Restart local API before the next user-directed search; no live model check by agent.
+
+25 October: added fresh, request-scoped Google caller-token minting for the long-running development API. No cached token, no secret persistence, no retries. The terminal records only fixed failure categories. All focused checks and frontend/native builds pass. Live search failure diagnosis still needs API restart followed by one user search; no query/model request by agent.
+
 25 October: preserved safe session/model/database search errors through query coordinator, API and UI. Built and tested locally. The observed database error remains unexplained; read-only Cloud Run error logs had no matching entry. No model reattempt. Restart the local API and collect the newly classified error on one UI search.
 
 25 October: improved search failure reporting after operator screenshot showed a generic backend message. Recent inference log query returned no matching errors, so cause of that attempt is still unknown. Added fixed session/model/library categories and focused tests; no retry/model call. Restart current API to load changes, then one user-directed diagnostic search.

@@ -1,3 +1,11 @@
+## 25 October: identity and operator shutdown follow-up
+
+Added per-request Google caller-token minting to long-running operator API and clean Ctrl+C exit; search diagnostics keep safe session/model/database categories. 45 backend/25 frontend tests, frontend/native builds, lint/format pass. Old search failure root remains unconfirmed. Restart server then one diagnostic UI search. No inference retry by agent.
+
+## 25 October: operator model identity refresh
+
+Long-running API now obtains a new Google ID token via pinned gcloud account/project/caller/audience for each embedding request. Tokens are not cached or logged; no automatic inference retry. 45 focused backend and25 frontend checks, production build, lint, format, native build pass. Search UI safe categories distinguish session/model/library; exact prior database failure stays unconfirmed. Restart API before one diagnostic search.
+
 ## 25 October: distinguish operator search failures
 
 Implemented safe error categories end-to-end for session, model and search database failures. The user's latest screenshot was the database category; no matching Cloud Run log, so exact underlying PostgREST/database error is unconfirmed. 34 focused backend tests,25 frontend tests,frontend/native builds,lint/format pass. Python operator service must restart to load the change; then one search provides a specific failure type. Agent sent no model query.

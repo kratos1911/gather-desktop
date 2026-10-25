@@ -6,7 +6,7 @@ from contextlib import redirect_stdout, nullcontext, contextmanager
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from scripts.operator_library import PilotSession, PilotWorker, PILOT_USERS, main, RAW, QUERY, run_ready_worker
+from scripts.operator_library import PilotSession, PilotWorker, PILOT_USERS, RefreshingPilotToken, main, RAW, QUERY, run_ready_worker
 from services.worker.library_session import LibraryError
 from services.worker.service_clients import SessionClient
 from services.worker.worker_lifecycle import WorkerRun, WorkerStartError
@@ -14,6 +14,28 @@ from services.worker.database_transport import DatabaseConfig, ROOT
 
 
 class OperatorTests(unittest.TestCase):
+    def test_api_token_is_minted_and_discarded_for_each_request(self):
+        cancel = __import__('threading').Event()
+        first,second=Mock(),Mock()
+        first.get.return_value='token-one'
+        second.get.return_value='token-two'
+        with patch('scripts.operator_library.google_token',side_effect=[first,second]) as mint:
+            provider=RefreshingPilotToken()
+            self.assertEqual(provider.get(cancel=cancel,timeout=4),'token-one')
+            self.assertEqual(provider.get(cancel=cancel,timeout=4),'token-two')
+        self.assertEqual(mint.call_count,2)
+        for token in (first,second):
+            token.get.assert_called_once_with(cancel=cancel,timeout=4)
+            token.invalidate.assert_called_once_with()
+        self.assertEqual(provider.invalidate(),None)
+
+    def test_api_token_does_not_mint_after_cancellation(self):
+        cancel=__import__('threading').Event(); cancel.set()
+        with patch('scripts.operator_library.google_token') as mint:
+            with self.assertRaisesRegex(Exception,'cancelled'):
+                RefreshingPilotToken().get(cancel=cancel)
+            mint.assert_not_called()
+
     def test_readiness_precedes_claim_and_restores_capacity(self):
         events = []
         @contextmanager

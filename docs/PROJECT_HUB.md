@@ -3,6 +3,10 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Latest: [[docs/OPERATOR_LIBRARY_PILOT|Per-request token refresh, categorized search diagnostics, and clean operator shutdown]].
+
+Latest: [[docs/OPERATOR_LIBRARY_PILOT|Per-request operator identity refresh and safe search diagnostics; restart API before one UI check]].
+
 Current: [[docs/OPERATOR_LIBRARY_PILOT|Search failures now identify session, model or database stage; restart API before one diagnostic UI search]].
 
 Latest: [[docs/OPERATOR_LIBRARY_PILOT|Search failures now report safe dependency categories; restart API before one UI recheck]].

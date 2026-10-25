@@ -1,3 +1,7 @@
+25 October: the development operator API should fetch a fresh short-lived pinned Google caller token per inference request rather than keep an hour-long token for its process lifetime. On shutdown, print a fixed clean-stop message rather than a Python traceback. Do not cache refresh credentials or auto-retry model calls.
+
+25 October: the operator API lives longer than an access token. Mint Google caller identity per inference request using the fixed operator account, project, audience and service account; never cache it across requests or expose it to the browser. Keep inference timeout and no-automatic-retry limits unchanged.
+
 25 October: report safe search-stage categories to the operator instead of one generic backend 503. This supports targeted diagnosis without reading or logging upstream body text. The previous database-category incident remains unconfirmed; do not infer its cause from an empty Cloud Run error log.
 
 25 October: keep search dependency errors as separate fixed codes (session, model, database) because one generic 503 misled operator debugging. Never forward raw third-party error bodies. No automatic inference retry after a startup failure.

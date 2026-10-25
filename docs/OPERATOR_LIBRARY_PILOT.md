@@ -1,3 +1,5 @@
+25 October latest: operator API now mints a fresh pinned Google caller token per inference request, so an hour-old startup token cannot stale a later search. Fixed safe terminal diagnostic per failed request. No cache, token file or automatic retry. 45 backend and25 frontend checks plus lint/format/frontend/native builds pass. Restart the running API before the next search so this change loads; then inspect its safe terminal category. The earlier database-class search failure remains otherwise unexplained.
+
 # Restricted operator library pilot
 
 25 October latest: operator worker completed requested job as ready (version5842b025-e9f5-4c79-bb0a-05a0d417f719), one model request, min0 restore reported. Do not process it again. Next is UI search/open. The frontend launcher now detects the existing bundled Node24 outside ordinary PATH; GATHER_NODE can explicitly select another supported executable. No Node installation needed on this operator machine.
@@ -96,9 +98,11 @@ package install or model download occurs. Temporary files remain under output/.
   Inference remains15s. Worker mode now uses the scoped warm-capacity guard described above; server mode does not.
   Cloud cold starts may still require diagnosis/readiness checking; do not blindly
   retry the whole flow or leave a warm instance running across manual handoffs.
-- Google caller token is not automatically refreshed. Restart explicitly after
-  expiry. Supabase browser access tokens are in memory only; refresh tokens are
-  discarded. Disconnect clears local state, not server records or other sessions.
+- Operator API obtains a new Google caller token through explicitly pinned
+  gcloud account/project/caller/audience arguments for each inference request;
+  it does not cache tokens. Supabase browser access tokens remain memory only;
+  refresh tokens are discarded. Disconnect clears local UI state, not records or
+  other sessions.
 - Navigation/reload loses the session-only view. No persistent catalog or refresh
   recovery is claimed. Keep acknowledged IDs until cleanup. There is no automatic
   hosted cleanup worker in this milestone.
@@ -111,7 +115,7 @@ package install or model download occurs. Temporary files remain under output/.
 
 ## 25 October: search error diagnosis
 
-The operator UI showed the search-database category. A read-only Cloud Run error-log query found no corresponding inference error; the exact PostgREST/storage exception remains unknown. Search orchestration now distinguishes session unavailable, model unavailable, library unavailable and citation/context failure using fixed safe codes only. The current local operator API must restart before this Python update takes effect. Then the operator can run one search and use the resulting category. The agent has not repeated an embedding call.
+The operator UI showed the search-database category. A read-only Cloud Run error-log query found no corresponding inference error; the exact PostgREST/storage exception remains unknown. Search orchestration now distinguishes session unavailable, model unavailable, library unavailable and citation/context failure using fixed safe codes only. The local operator API must restart to load the search error categories and per-request token refresh. Its terminal emits only safe failure codes. Then the operator can run one search and use the resulting category. The agent has not repeated an embedding call.
 
 ## Checks performed
 
@@ -145,8 +149,8 @@ or infer success from empty logs.
 
 The internal search coordinator now preserves only fixed failure categories:
 - session unavailable -> HTTP401, ask for sign-in again
-- query model/inference unavailable -> HTTP502, tell the operator to check the
-  Cloud Run readiness and long-lived operator API token
+- query model/inference unavailable -> HTTP502, check the safe API-terminal code
+  and Cloud Run readiness
 - ranking/source database unavailable -> HTTP503, point to operator diagnostics
 - cancellation, invalid query and citation/context failures retain safe outcomes
 

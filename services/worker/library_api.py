@@ -7,6 +7,7 @@ import asyncio
 import base64
 import binascii
 import json
+import sys
 import threading
 import time
 
@@ -193,6 +194,9 @@ class LibraryAPI:
                 status = 401 if code == 'session_unavailable' else 503
                 if code == 'model_unavailable': status = 502
                 elif code == 'library_unavailable': status = 503
+                safe_codes = {'session_unavailable','model_unavailable','library_unavailable',
+                              'search_failed','invalid_query','cancelled','operation_failed'}
+                print('Operator request failed: '+(code if code in safe_codes else 'operation_failed'),file=sys.stderr,flush=True)
                 return await reply(status, {'error': 'session_unavailable' if status == 401 else 'operation_failed'})
             except Exception:
                 return await reply(503, {'error':'operation_failed'})

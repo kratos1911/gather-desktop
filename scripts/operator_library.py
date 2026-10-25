@@ -60,6 +60,29 @@ class PilotWorker(ExpectedWorker):
         return value
 
 
+class RefreshingPilotToken:
+    """Mint a fresh, explicitly scoped invoker token for each model request.
+
+    The long-running localhost API must not keep one hour-long CLI token in its
+    memory for the lifetime of the browser session. Tokens are not cached or
+    written to disk; gcloud account/project/caller/audience remain pinned.
+    """
+    config = IDENTITY
+
+    def get(self, *, cancel=None, timeout=5):
+        if cancel is not None and cancel.is_set():
+            raise PilotFailure('cancelled')
+        token = google_token()
+        try:
+            return token.get(cancel=cancel,timeout=timeout)
+        finally:
+            token.invalidate()
+
+    def invalidate(self):
+        # No token is cached across requests.
+        return None
+
+
 def run_ready_worker(worker, identity):
     """Use the approved run-scoped capacity guard before spending a job attempt."""
     with warm_instance():
@@ -88,7 +111,7 @@ def main():
     role = 'gather_worker' if args.work else 'gather_admission'
     config = replace(database_config(role),connect_timeout=10)
     key = configuration()
-    identity = google_token()
+    identity = RefreshingPilotToken() if args.serve else google_token()
     try:
         provider = BoundedProvider(cloud_provider(IDENTITY,ROOT/'output/inference-model',token_provider=identity))
         if args.work:
@@ -126,6 +149,8 @@ def main():
 if __name__ == '__main__':
     try:
         raise SystemExit(main())
+    except KeyboardInterrupt:
+        raise SystemExit('Operator process stopped.') from None
     except Exception as error:
         code = str(error) if isinstance(error,(CapacityError,PilotFailure)) else 'operator_library_failed'
         raise SystemExit(code+'. No automatic retry; no secrets or provider details printed.') from None
