@@ -1,3 +1,5 @@
+25 October: diagnosed embedding failure as Cloud Run HTTP429/no available instance from read-only Gather logs. Connected the established warm/readiness guard to exact-job worker entry, before claim. Tests verify ordering and restore on startup/worker failure. 19 checks/build pass; no live retry by agent. User's failed attempt remains queued with its saved receipt.
+
 25 October: applied migration8 to Gather with explicit user approval after prior review block. Verified function installation and restricted permissions. No worker execution/model calls; next action is the same acknowledged job, once. See EXACT_JOB_CLAIM.md and local output/operator-pilot screenshot evidence.
 
 25 October: resumed after approval-usage block; Docker started by user. Implemented/tested exact-job claim repair. Local PostgreSQL suite and 41 unit checks pass. Hosted Run was rejected by automatic approval review pending action-time confirmation for function/permission changes; staged only. No model calls or hosted processing attempts. See EXACT_JOB_CLAIM.md.

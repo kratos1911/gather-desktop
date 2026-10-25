@@ -1,5 +1,12 @@
 # Restricted operator library pilot
 
+25 October worker update: the exact requested job reached embedding but Cloud Run
+returned429/no available instance. Worker mode now reuses the approved scoped
+warm/readiness guard BEFORE claiming a job, then restores min0 on exit. Startup
+failure consumes no job attempt; inference stays15s. Warming bills during the
+bounded run within the existing pilot budget; there is no permanent warm setting.
+19 focused tests and frontend build pass; corrected live worker run remains pending.
+
 24 October browser follow-up: sign-in reached the connected screen, but native fetch was incorrectly called as a LibraryClient method. Chrome rejected it before IO. Plain-function wrapping fixes the receiver; real Chrome now reaches the local API with a synthetic invalid bearer. 25 frontend tests/build/lint/format pass. Production assets unchanged; native build reused. Refresh the existing page and sign in again to replace its old in-memory client, then attempt the synthetic import once. No API restart needed; hosted import through the corrected UI remains pending.
 
 24 October 2026. Implementation and local verification complete. Live use of the
@@ -84,7 +91,7 @@ package install or model download occurs. Temporary files remain under output/.
   failed calls. Worker execution and query service have separate process budgets.
   Restarting resets a process budget; this is not an account-wide spend cap.
 - Existing pilot-only DB allowances: connect10s inside total15s, SQL unchanged.
-  Inference remains15s. No warm-capacity update is made by these entry points.
+  Inference remains15s. Worker mode now uses the scoped warm-capacity guard described above; server mode does not.
   Cloud cold starts may still require diagnosis/readiness checking; do not blindly
   retry the whole flow or leave a warm instance running across manual handoffs.
 - Google caller token is not automatically refreshed. Restart explicitly after

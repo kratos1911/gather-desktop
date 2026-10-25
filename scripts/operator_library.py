@@ -10,7 +10,8 @@ import signal
 import json
 from uuid import uuid4
 
-from scripts.check_hosted_flow import configuration, google_token, BASE, RAW, QUERY, ExpectedWorker
+from scripts.check_hosted_flow import configuration, google_token, wait_for_startup, PilotFailure, BASE, RAW, QUERY, ExpectedWorker
+from scripts.pilot_capacity import warm_instance, CapacityError
 from scripts.check_cloud_ingestion import IDENTITY, BoundedProvider
 from services.worker.cloud_provider import cloud_provider
 from services.worker.database_transport import DatabaseRepository, ROOT
@@ -59,6 +60,13 @@ class PilotWorker(ExpectedWorker):
         return value
 
 
+def run_ready_worker(worker, identity):
+    """Use the approved run-scoped capacity guard before spending a job attempt."""
+    with warm_instance():
+        wait_for_startup(identity,wait_for_capacity=True)
+        return worker.run()
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     action = parser.add_mutually_exclusive_group()
@@ -71,7 +79,7 @@ def main():
     elif args.job_id:
         parser.error('--job-id requires --work')
     if not args.serve and not args.work:
-        print('Preview: --serve binds 127.0.0.1:8765; --work --job-id UUID handles one claimed pilot job. Synthetic pilot users/content only; each process permits at most 3 real model calls. No automatic warm capacity or retries.')
+        print('Preview: --serve binds 127.0.0.1:8765; --work --job-id UUID warms and checks readiness before claiming one exact pilot job, then restores minimum zero. Synthetic pilot users/content only; at most 3 real model calls per process. No automatic retry.')
         return
     # Fail before secrets or cloud identity if the runtime is unsuitable.
     if args.serve and (version('uvicorn')!='0.54.0' or version('h11')!='0.16.0'):
@@ -90,7 +98,7 @@ def main():
             try:
                 for sig in previous:
                     signal.signal(sig,lambda *_:worker.stop())
-                result = worker.run()
+                result = run_ready_worker(worker,identity)
                 print('Worker states: '+','.join(r['state'] for r in result['outcomes']))
                 receipt = {'requested_job_id':args.job_id, 'result':result,
                            'real_model_requests':provider.calls}
@@ -118,5 +126,6 @@ def main():
 if __name__ == '__main__':
     try:
         raise SystemExit(main())
-    except Exception:
-        raise SystemExit('operator_library_failed. No automatic retry; no secrets or provider details printed.') from None
+    except Exception as error:
+        code = str(error) if isinstance(error,(CapacityError,PilotFailure)) else 'operator_library_failed'
+        raise SystemExit(code+'. No automatic retry; no secrets or provider details printed.') from None

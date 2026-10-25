@@ -1,3 +1,7 @@
+## 25 October: worker cold-start guard
+
+Real receipt for efea703e-22e5-4663-b4e3-c9280c650a88 confirms exact-job routing reached embedding; cloud log identifies 429/no available instance. Reused existing scoped warm/readiness guard before WorkerRun, keeping inference15s and retry limits unchanged. 19 focused guard/operator checks plus frontend build pass. No new live claim/model call or capacity change made during fix; live retry remains pending.
+
 ## 25 October: exact-job repair deployed
 
 User approved the hosted migration at action time. SQL editor returned Success; read-only function/ACL query returned true,true,false,false,false,false for installation, worker, client, anonymous, admission and private core. No hosted processing or model call. Source/old-job data unchanged by this function-only migration. Exact-job fix is deployed; live worker outcome remains pending.

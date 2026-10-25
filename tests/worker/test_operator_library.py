@@ -2,11 +2,11 @@ import unittest
 import io
 import json
 import tempfile
-from contextlib import redirect_stdout
+from contextlib import redirect_stdout, nullcontext, contextmanager
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from scripts.operator_library import PilotSession, PilotWorker, PILOT_USERS, main, RAW, QUERY
+from scripts.operator_library import PilotSession, PilotWorker, PILOT_USERS, main, RAW, QUERY, run_ready_worker
 from services.worker.library_session import LibraryError
 from services.worker.service_clients import SessionClient
 from services.worker.worker_lifecycle import WorkerRun, WorkerStartError
@@ -14,6 +14,33 @@ from services.worker.database_transport import DatabaseConfig, ROOT
 
 
 class OperatorTests(unittest.TestCase):
+    def test_readiness_precedes_claim_and_restores_capacity(self):
+        events = []
+        @contextmanager
+        def warm():
+            events.append('warm')
+            try: yield
+            finally: events.append('restore')
+        worker = Mock()
+        worker.run.side_effect = lambda: events.append('claim') or {'outcomes':[{'state':'ready'}]}
+        with patch('scripts.operator_library.warm_instance',warm), patch('scripts.operator_library.wait_for_startup',side_effect=lambda *a,**kw:events.append('ready')):
+            run_ready_worker(worker,Mock())
+        self.assertEqual(events,['warm','ready','claim','restore'])
+
+    def test_startup_and_worker_failures_both_restore_capacity(self):
+        for startup_failure in (True,False):
+            restored=[]
+            @contextmanager
+            def warm():
+                try: yield
+                finally: restored.append(True)
+            worker=Mock()
+            worker.run.side_effect=RuntimeError('synthetic failure')
+            with patch('scripts.operator_library.warm_instance',warm), patch('scripts.operator_library.wait_for_startup',side_effect=RuntimeError('not ready') if startup_failure else None):
+                with self.assertRaises(RuntimeError): run_ready_worker(worker,Mock())
+            self.assertEqual(restored,[True])
+            if startup_failure: worker.run.assert_not_called()
+
     def test_worker_refuses_foreign_owner_and_nonfixture_original(self):
         repo = Mock()
         worker = PilotWorker(repo,'job')
@@ -38,7 +65,7 @@ class OperatorTests(unittest.TestCase):
     def test_worker_receipt_and_failure_exit_code(self):
         job = '00000000-0000-0000-0000-000000000001'
         config = DatabaseConfig('127.0.0.1',5432,'gather_worker','synthetic',test_loopback=True)
-        with tempfile.TemporaryDirectory(dir=ROOT/'output') as folder:
+        with tempfile.TemporaryDirectory(dir=ROOT/'output') as folder, patch('scripts.operator_library.warm_instance',return_value=nullcontext()), patch('scripts.operator_library.wait_for_startup'):
             with patch('scripts.operator_library.ROOT',Path(folder)), patch('scripts.operator_library.database_config',return_value=config), patch('scripts.operator_library.configuration',return_value='public'), patch('scripts.operator_library.google_token') as token, patch('scripts.operator_library.cloud_provider'), patch('scripts.operator_library.WorkerRun') as run, patch('sys.argv',['operator_library','--work','--job-id',job]):
                 for state,expected in (('unavailable',1),('ready',0)):
                     run.return_value.run.return_value={'stopped':False,'outcomes':[{'state':state}]}

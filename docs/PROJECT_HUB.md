@@ -3,6 +3,8 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Latest: [[docs/OPERATOR_LIBRARY_PILOT|Worker startup readiness now precedes exact-job claim]]. Live retry pending; no new model call by agent.
+
 Current: [[docs/EXACT_JOB_CLAIM|Exact-job repair applied and permissions verified]].
 
 Latest: [[docs/OPERATOR_LIBRARY_PILOT|Chrome connection bug fixed; refresh/sign-in before live import]].

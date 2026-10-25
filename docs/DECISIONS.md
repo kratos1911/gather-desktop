@@ -1,3 +1,5 @@
+25 October: gate operator worker claiming on model startup readiness under the existing approved run-scoped warm-capacity context. Do not increase inference deadlines or consume job attempts during scale-from-zero admission failures. Restore min0 after the bounded worker run, never hold warmth across interactive UI handoffs.
+
 25 October: select an operator's requested job inside the database claim transaction, not after a FIFO claim. Share the existing single-flight/lease implementation so targeted work cannot consume an unrelated job's attempt budget. Keep idle/claim-failure distinct and emit fixed safe receipt diagnostics; never reset retries or remove unrelated work to unblock a pilot.
 
 24 October: wrap injected/default fetch in a plain function invocation; storing native fetch as a client method changes its receiver and fails in Chromium. Keep a receiver-sensitive regression because permissive Node mocks missed this. Network error text alone is not evidence the API is stopped.
