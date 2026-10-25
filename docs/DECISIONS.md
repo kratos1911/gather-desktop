@@ -1,3 +1,5 @@
+25 October: frontend developer scripts may use an explicitly selected GATHER_NODE runtime or the existing Codex-bundled Node path when ordinary PATH lacks a supported version. Keep version checks, avoid global PATH mutation/software installation, and surface a precise missing-runtime error.
+
 25 October: gate operator worker claiming on model startup readiness under the existing approved run-scoped warm-capacity context. Do not increase inference deadlines or consume job attempts during scale-from-zero admission failures. Restore min0 after the bounded worker run, never hold warmth across interactive UI handoffs.
 
 25 October: select an operator's requested job inside the database claim transaction, not after a FIFO claim. Share the existing single-flight/lease implementation so targeted work cannot consume an unrelated job's attempt budget. Keep idle/claim-failure distinct and emit fixed safe receipt diagnostics; never reset retries or remove unrelated work to unblock a pilot.

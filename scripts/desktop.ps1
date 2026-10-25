@@ -1,12 +1,23 @@
 param([ValidateSet('preview', 'desktop', 'build', 'test', 'install', 'lint', 'typecheck', 'format-check')][string]$Action = 'preview')
 $ErrorActionPreference = 'Stop'
 $appPath = Join-Path $PSScriptRoot '../apps/desktop'
-$nodeCandidates = @(Get-Command node.exe -All -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source)
+$nodeCandidates = @()
+if ($env:GATHER_NODE) {
+    $nodeCandidates = @($env:GATHER_NODE)
+} else {
+    $nodeCandidates = @(Get-Command node.exe -All -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source)
+    if ($env:USERPROFILE) {
+        $nodeCandidates += Join-Path $env:USERPROFILE '.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe'
+    }
+}
+$nodeCandidates = @($nodeCandidates | Select-Object -Unique | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf })
 $nodePath = $nodeCandidates | Where-Object {
-    $version = [version]((& $_ --version).TrimStart('v'))
-    $version.Major -ge 24 -or ($version.Major -eq 22 -and $version.Minor -ge 12)
+    try {
+        $version = [version]((& $_ --version).TrimStart('v'))
+        $LASTEXITCODE -eq 0 -and ($version.Major -ge 24 -or ($version.Major -eq 22 -and $version.Minor -ge 12))
+    } catch { $false }
 } | Select-Object -First 1
-if (-not $nodePath) { throw 'Install Node.js 24 LTS, then run this script again.' }
+if (-not $nodePath) { throw 'No supported Node runtime found. Set GATHER_NODE to an existing Node 24 LTS (or Node 22.12+) node.exe path, then retry.' }
 $npmCandidates = @($nodeCandidates | ForEach-Object { Join-Path (Split-Path $_) 'node_modules/npm/bin/npm-cli.js' })
 $npmCli = $npmCandidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
 $previousPath = $env:PATH

@@ -1,5 +1,7 @@
 # Restricted operator library pilot
 
+25 October latest: operator worker completed requested job as ready (version5842b025-e9f5-4c79-bb0a-05a0d417f719), one model request, min0 restore reported. Do not process it again. Next is UI search/open. The frontend launcher now detects the existing bundled Node24 outside ordinary PATH; GATHER_NODE can explicitly select another supported executable. No Node installation needed on this operator machine.
+
 25 October worker update: the exact requested job reached embedding but Cloud Run
 returned429/no available instance. Worker mode now reuses the approved scoped
 warm/readiness guard BEFORE claiming a job, then restores min0 on exit. Startup
