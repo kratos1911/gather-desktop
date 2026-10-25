@@ -46,6 +46,7 @@ def search(query, *, api, provider, limit=20, cancel=None):
         active()
         return result
 
+    stage = 'session'
     try:
         active()
         if type(limit) is not int or not 1 <= limit <= MAX_CANDIDATES:
@@ -70,11 +71,13 @@ def search(query, *, api, provider, limit=20, cancel=None):
 
         # Count the exact query template, but send RAW text with role=query so
         # Runtime applies that template once. Preserve its 2048-token ceiling.
+        stage = 'model'
         vector = embed_texts([templated], model=MODEL,
             limits=Limits(DIMENSIONS, 2048, 2048, 1, 1),
             count_tokens=provider.count_tokens, send=send)['vectors'][0]
         if abs(math.hypot(*vector) - 1) > .001:
             raise ValueError('invalid_vector_norm')
+        stage = 'retrieval'
         rows = call('POST', '/rest/v1/rpc/search_published_text', {
             'p_query': vector, 'p_model': MODEL, 'p_revision': REVISION,
             'p_dimensions': DIMENSIONS, 'p_limit': limit,
@@ -110,6 +113,7 @@ def search(query, *, api, provider, limit=20, cancel=None):
 
         snapshots, metadata = [], {}
         for sid, candidates in selected.items():
+            stage = 'source_open'
             seed = candidates[0]
             docs = call('POST', '/rest/v1/rpc/open_published_text', {
                 'p_source': sid, 'p_version': seed['version_id'],
@@ -138,6 +142,7 @@ def search(query, *, api, provider, limit=20, cancel=None):
             metadata[sid] = {'title': seed['title'], 'similarity': seed['similarity']}
         active()
         # Preserve original ranking even when several hits share one source.
+        stage = 'context'
         visible = {source.source_id for source in snapshots}
         hits = [Hit(owner, row['source_id'], row['version_id'], row['passage_id'])
                 for row in rows if row['source_id'] in visible]
@@ -154,4 +159,7 @@ def search(query, *, api, provider, limit=20, cancel=None):
     except Exception:
         if cancel.is_set():
             raise SearchError('cancelled') from None
-        raise SearchError('search_failed') from None
+        code = {'session':'session_unavailable','model':'model_unavailable',
+                'retrieval':'library_unavailable','source_open':'library_unavailable',
+                'context':'search_failed'}.get(stage,'search_failed')
+        raise SearchError(code) from None

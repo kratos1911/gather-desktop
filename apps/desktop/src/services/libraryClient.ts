@@ -374,6 +374,8 @@ export class LibraryClient {
               403: "access_denied",
               408: "timeout",
               429: "busy",
+              502: "model_unavailable",
+              503: "library_unavailable",
               504: "timeout",
             } as Record<number, string>
           )[response.status] ?? "service_unavailable",

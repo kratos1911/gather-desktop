@@ -131,3 +131,24 @@ Evidence screenshot: output/operator-pilot/signin-20261024.png (local, ignored).
 The sample workspace stays distinct. Stop at this checkpoint; next work requires
 an operator live UI acceptance run, then a separately scoped production/real-file
 integration milestone with the outstanding privacy/security gates addressed.
+## 25 October: distinguish operator search failures
+
+The operator screen showed the same generic backend message for an expired user
+session, a cloud-model failure, or a database/retrieval error. Local Cloud Run logs
+for the reported search window returned no matching errors; the root cause of that
+attempt is therefore unconfirmed. It remains incorrect to blame model readiness
+or infer success from empty logs.
+
+The internal search coordinator now preserves only fixed failure categories:
+- session unavailable -> HTTP401, ask for sign-in again
+- query model/inference unavailable -> HTTP502, tell the operator to check the
+  Cloud Run readiness and long-lived operator API token
+- ranking/source database unavailable -> HTTP503, point to operator diagnostics
+- cancellation, invalid query and citation/context failures retain safe outcomes
+
+No exception text, auth body, query content or model response crosses the boundary.
+Search still performs no automatic retry. Any already-running operator API process
+has old imported Python code; restart that local API server to pick up the categories.
+Frontend production build and 34 focused search/session/HTTP tests pass. No live
+request was sent while adding classification. Next: restart local API once, sign in
+again if needed, then make one user-directed search attempt and use the category.

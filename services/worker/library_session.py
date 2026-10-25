@@ -7,7 +7,7 @@ it must never be supplied by a desktop request. Hosted DB composition is separat
 from uuid import UUID
 
 from services.worker.ingestion import submit
-from services.worker.search import search
+from services.worker.search import search, SearchError
 from services.worker.service_clients import SessionClient
 
 
@@ -47,6 +47,11 @@ class LibrarySession:
         try:
             # Existing search verifies Auth before embedding; no cached identity.
             return search(query, api=self._api, provider=self._provider, limit=limit, cancel=cancel)
+        except SearchError as error:
+            if str(error) in ('cancelled','invalid_query','session_unavailable',
+                              'model_unavailable','library_unavailable','search_failed'):
+                raise LibraryError(str(error)) from None
+            raise LibraryError('search_failed') from None
         except Exception:
             raise LibraryError('search_failed') from None
 

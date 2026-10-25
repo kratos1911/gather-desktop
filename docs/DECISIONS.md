@@ -1,3 +1,5 @@
+25 October: keep search dependency errors as separate fixed codes (session, model, database) because one generic 503 misled operator debugging. Never forward raw third-party error bodies. No automatic inference retry after a startup failure.
+
 25 October: frontend developer scripts may use an explicitly selected GATHER_NODE runtime or the existing Codex-bundled Node path when ordinary PATH lacks a supported version. Keep version checks, avoid global PATH mutation/software installation, and surface a precise missing-runtime error.
 
 25 October: gate operator worker claiming on model startup readiness under the existing approved run-scoped warm-capacity context. Do not increase inference deadlines or consume job attempts during scale-from-zero admission failures. Restore min0 after the bounded worker run, never hold warmth across interactive UI handoffs.

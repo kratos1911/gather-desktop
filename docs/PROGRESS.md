@@ -1,3 +1,5 @@
+25 October: improved search failure reporting after operator screenshot showed a generic backend message. Recent inference log query returned no matching errors, so cause of that attempt is still unknown. Added fixed session/model/library categories and focused tests; no retry/model call. Restart current API to load changes, then one user-directed diagnostic search.
+
 25 October: fixed desktop launcher discovery for ordinary PowerShell, which saw only Node22.7 despite existing Node24.22.1. Restricted-PATH build and unsupported override rejection verified. No dependency install. Also read successful operator worker receipt: ready with one model request; no repeat processing run.
 
 25 October: diagnosed embedding failure as Cloud Run HTTP429/no available instance from read-only Gather logs. Connected the established warm/readiness guard to exact-job worker entry, before claim. Tests verify ordering and restore on startup/worker failure. 19 checks/build pass; no live retry by agent. User's failed attempt remains queued with its saved receipt.

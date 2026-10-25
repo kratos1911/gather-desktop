@@ -1,3 +1,7 @@
+## 25 October: safe search error categories
+
+Added truthful failure categories for expired/unverifiable user session, model service and library/retrieval failures. API maps them to fixed 401/502/503; UI now tells operator which dependency to check. Recent Cloud Run error-log read returned no matching row; original search cause remains unconfirmed. 34 focused tests and frontend build pass. No model call or hosted document operation. Local operator API needs restart before one manual search. See docs/OPERATOR_LIBRARY_PILOT.md.
+
 ## 25 October: terminal-independent Node discovery
 
 Found installed Node24.22.1 outside ordinary terminal PATH; D:/NodeJS is22.7. Added exact known runtime fallback and GATHER_NODE override, without drive scans or installs. Frontend build passes with restricted PATH and invalid/unsupported runtime handling remains fail-closed. Native production assets unchanged. Existing successful worker receipt verified separately; live UI search/open pending.

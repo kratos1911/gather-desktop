@@ -144,9 +144,13 @@ describe("library HTTP client (synthetic responses)", () => {
         code: "invalid_response",
       });
     }
+    send.mockResolvedValueOnce(respond({ error: "private details" }, 502));
+    await expect(client.status(ID)).rejects.toMatchObject({
+      code: "model_unavailable",
+    });
     send.mockResolvedValueOnce(respond({ error: "private details" }, 503));
     await expect(client.status(ID)).rejects.toMatchObject({
-      code: "service_unavailable",
+      code: "library_unavailable",
     });
   });
 

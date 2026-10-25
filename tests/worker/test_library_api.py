@@ -78,6 +78,16 @@ class APITests(unittest.IsolatedAsyncioTestCase):
         self.session.status.side_effect = LibraryError('session_unavailable')
         self.assertEqual((await self.request())[0]['status'],401)
 
+    async def test_search_dependency_failures_use_safe_distinct_statuses(self):
+        for code,status in (('session_unavailable',401),('model_unavailable',502),
+                            ('library_unavailable',503),('search_failed',503)):
+            self.session.search.side_effect = LibraryError(code)
+            result = await self.request('/v1/search',{'query':'synthetic'})
+            self.assertEqual(result[0]['status'],status)
+            self.assertEqual(json.loads(result[1]['body']),{'error':'session_unavailable' if status==401 else 'operation_failed'})
+            if code != 'session_unavailable':
+                self.assertNotIn(code,result[1]['body'].decode())
+
     async def test_unknown_route_and_method(self):
         self.assertEqual((await self.request('/nope'))[0]['status'],404)
         self.assertEqual((await self.request(method='GET'))[0]['status'],405)

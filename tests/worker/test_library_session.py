@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from services.worker.library_session import LibrarySession, LibraryError
+from services.worker.search import SearchError
 from services.worker.service_clients import SessionClient
 
 OWNER = '00000000-0000-0000-0000-000000000001'
@@ -18,10 +19,19 @@ class LibraryTests(unittest.TestCase):
         self.api.side_effect = RuntimeError('private credential details')
         with self.assertRaisesRegex(LibraryError, '^session_unavailable$'):
             self.session.import_text(request_id=SOURCE,title='test',original=b'x',media='text/plain')
-        with self.assertRaisesRegex(LibraryError, '^search_failed$'):
+        with self.assertRaisesRegex(LibraryError, '^session_unavailable$'):
             self.session.search('query')
         self.factory.assert_not_called()
         self.provider.infer.assert_not_called()
+
+    def test_search_preserves_only_allowlisted_dependency_diagnostic(self):
+        for code in ('session_unavailable','model_unavailable','library_unavailable','search_failed'):
+            with patch('services.worker.library_session.search',side_effect=SearchError(code)):
+                with self.assertRaisesRegex(LibraryError,'^'+code+'$'):
+                    self.session.search('query')
+        with patch('services.worker.library_session.search',side_effect=SearchError('secret document text')):
+            with self.assertRaisesRegex(LibraryError,'^search_failed$'):
+                self.session.search('query')
 
     def test_import_owner_comes_from_auth_not_payload(self):
         with patch('services.worker.library_session.submit', return_value={'queued':True}) as submit:

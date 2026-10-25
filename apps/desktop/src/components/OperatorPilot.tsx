@@ -14,6 +14,10 @@ const messages: Record<string, string> = {
     "The local API is unavailable. Start the operator server, then retry the same action.",
   service_unavailable:
     "The backend could not complete this action. Inspect the operator output before retrying.",
+  model_unavailable:
+    "The model service or its operator token is unavailable. Restart the API server and check Cloud Run readiness before trying again.",
+  library_unavailable:
+    "The search database could not complete the request. Check the operator output.",
   busy: "An operation is still finishing. Wait before trying again.",
   timeout:
     "The deadline was reached. An import may still have been saved; use Retry same import.",

@@ -191,6 +191,8 @@ class LibraryAPI:
             except LibraryError as error:
                 code = str(error)
                 status = 401 if code == 'session_unavailable' else 503
+                if code == 'model_unavailable': status = 502
+                elif code == 'library_unavailable': status = 503
                 return await reply(status, {'error': 'session_unavailable' if status == 401 else 'operation_failed'})
             except Exception:
                 return await reply(503, {'error':'operation_failed'})

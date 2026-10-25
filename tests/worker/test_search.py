@@ -92,9 +92,27 @@ class SearchTests(unittest.TestCase):
         def denied(*args):
             raise RuntimeError('SECRET token body')
         self.api = denied
-        with self.assertRaisesRegex(SearchError, '^search_failed$'):
+        with self.assertRaisesRegex(SearchError, '^session_unavailable$'):
             self.run_search()
         self.assertEqual(self.provider.calls, [])
+
+    def test_model_and_library_failures_are_distinguishable_and_not_retried(self):
+        self.provider.infer = lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError('private model details'))
+        with self.assertRaisesRegex(SearchError, '^model_unavailable$'):
+            self.run_search()
+        self.assertEqual(self.api.calls[0][1],'/auth/v1/user')
+        self.setUp()
+        session_api = self.api
+        calls=[]
+        def rejected(method,path,payload):
+            calls.append((method,path,payload))
+            if path.endswith('search_published_text'):
+                raise RuntimeError('private database detail')
+            return session_api(method,path,payload)
+        self.api = rejected
+        with self.assertRaisesRegex(SearchError,'^library_unavailable$'):
+            self.run_search()
+        self.assertEqual([call[1] for call in calls],['/auth/v1/user','/rest/v1/rpc/search_published_text'])
 
     def test_bad_embeddings_never_reach_search(self):
         mutations = [dict(revision='wrong'), dict(model='wrong'), dict(dimensions=256),
@@ -114,7 +132,7 @@ class SearchTests(unittest.TestCase):
             self.provider.calls.append('attempt')
             raise RuntimeError('private document')
         self.provider.infer = failed
-        with self.assertRaisesRegex(SearchError, '^search_failed$'):
+        with self.assertRaisesRegex(SearchError, '^model_unavailable$'):
             self.run_search()
         self.assertEqual(self.provider.calls, ['attempt'])
 
@@ -137,7 +155,7 @@ class SearchTests(unittest.TestCase):
                        dict(model_revision='wrong'), dict(body='changed'), dict(passages=[])):
             self.setUp()
             next(iter(self.api.docs.values()))[0].update(change)
-            with self.assertRaisesRegex(SearchError, '^search_failed$'):
+            with self.assertRaisesRegex(SearchError, '^library_unavailable$'):
                 self.run_search()
 
     def test_candidate_corruption_is_rejected(self):
@@ -145,11 +163,11 @@ class SearchTests(unittest.TestCase):
                        dict(body='changed'), dict(passage_id='missing'), dict(source_sha256='0'*64)):
             self.setUp()
             self.api.rows[0].update(change)
-            with self.assertRaises(SearchError):
+            with self.assertRaisesRegex(SearchError,'^library_unavailable$'):
                 self.run_search()
         self.setUp()
         self.api.rows *= 2
-        with self.assertRaises(SearchError):
+        with self.assertRaisesRegex(SearchError,'^library_unavailable$'):
             self.run_search()
 
     def test_bounded_fetches_and_all_candidate_validation(self):
