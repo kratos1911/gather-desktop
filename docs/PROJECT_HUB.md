@@ -2,6 +2,8 @@
 tags: [gather, project]
 ---
 # Gather project hub
+CURRENT: [[docs/OPERATOR_LIBRARY_PILOT|Hosted synthetic TXT flow complete through physical cleanup=true]]. Next is real-session library retrieval and broader release gates.
+
 
 Latest: [[docs/OPERATOR_LIBRARY_PILOT|Delete control added to search results and verified in current UI]].
 

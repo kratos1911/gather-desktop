@@ -1,3 +1,6 @@
+## 25 October: hosted TXT flow complete
+
+User screenshots confirm semantic search and exact-version open. User then authorized final physical cleanup for source7a7993cc-67fc-4da7-8707-0bfa79176350; Supabase finalizer returned true. Worker was exact-job targeted and readiness guarded, restored min0, one real embedding. No repeated import/worker. Evidence: docs/OPERATOR_LIBRARY_PILOT.md and output/operator-pilot/cleanup-verified-20261025.png.
 ## 25 October: persistent result deletion affordance
 
 Search-result rows now expose delete even when local imported state was lost on refresh; this fixes the user's missing-button issue. Current Chrome result visibly has Open and Delete. 26 frontend tests and frontend/native builds plus lint/format pass. No data was deleted by agent; user needs to choose delete, then preserve cleanup ID.

@@ -1,3 +1,4 @@
+25 October: closed the hosted synthetic TXT flow end to end: imported, worker-ready, queried with real embeddings, opened exact version, tombstoned and physically finalized. User confirmed UI search/open and approved final deletion; cleanup returned true. Cloud Run minimum zero restored. No re-run. Scope one synthetic text, not broad semantic-quality or production-readiness evidence.
 25 October: user found no delete control after reopening the UI because it was conditional on an in-memory import receipt. Added delete to each current-user search result; verified live Chrome shows it beside Open. Tests and frontend/native builds pass. No hosted deletion executed by agent.
 
 25 October: user screenshot confirms connected Operator UI semantically searches and opens the saved synthetic source after identity refresh. Worker receipt was ready with one model request. The remaining vertical-flow checks are UI deletion/tombstone and administrator physical cleanup.
