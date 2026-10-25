@@ -7,6 +7,8 @@ import argparse
 from dataclasses import replace
 from importlib.metadata import version
 import signal
+import json
+from uuid import uuid4
 
 from scripts.check_hosted_flow import configuration, google_token, BASE, RAW, QUERY, ExpectedWorker
 from scripts.check_cloud_ingestion import IDENTITY, BoundedProvider
@@ -16,7 +18,7 @@ from services.worker.local_credentials import database_config
 from services.worker.library_api import LibraryAPI
 from services.worker.library_session import LibrarySession, LibraryError, identifier
 from services.worker.service_clients import SessionClient
-from services.worker.worker_lifecycle import WorkerRun
+from services.worker.worker_lifecycle import WorkerRun, WorkerStartError
 
 PILOT_USERS = frozenset(('8b8de9a3-6600-465d-9ae6-8a0f2271c1dc',
                          '903b7ed0-9d21-467c-907a-4032d589f4c4'))
@@ -43,9 +45,15 @@ class PilotSession(LibrarySession):
 
 class PilotWorker(ExpectedWorker):
     def call(self, function, *args):
-        value = super().call(function,*args)
-        if function == 'claim_text_job' and value.get('owner_id') not in PILOT_USERS:
-            raise ValueError('pilot_user_only')
+        value = (self.worker.call('claim_target_text_job',self.job_id)
+                 if function == 'claim_text_job' else self.worker.call(function,*args))
+        if function == 'claim_text_job':
+            if value is None:
+                return None  # No eligible claim is idle, not a transport error.
+            if value.get('id') != self.job_id:
+                raise WorkerStartError('different_job_claimed')
+            if value.get('owner_id') not in PILOT_USERS:
+                raise WorkerStartError('pilot_user_only')
         if function == 'read_job_original' and value != RAW.hex():
             raise ValueError('pilot_fixture_only')
         return value
@@ -83,8 +91,16 @@ def main():
                 for sig in previous:
                     signal.signal(sig,lambda *_:worker.stop())
                 result = worker.run()
-                # Only fixed state values cross the operator log boundary.
                 print('Worker states: '+','.join(r['state'] for r in result['outcomes']))
+                receipt = {'requested_job_id':args.job_id, 'result':result,
+                           'real_model_requests':provider.calls}
+                target = ROOT/'output/operator-pilot'/('worker-'+args.job_id+'-'+uuid4().hex+'.json')
+                target.parent.mkdir(parents=True,exist_ok=True)
+                with target.open('x',encoding='utf-8') as stream:
+                    json.dump(receipt,stream,indent=2)
+                print(json.dumps(receipt))
+                print('Safe worker receipt: '+str(target))
+                return 0 if result['outcomes'] and result['outcomes'][-1]['state']=='ready' else 1
             finally:
                 for sig,handler in previous.items(): signal.signal(sig,handler)
         else:
@@ -101,6 +117,6 @@ def main():
 
 if __name__ == '__main__':
     try:
-        main()
+        raise SystemExit(main())
     except Exception:
         raise SystemExit('operator_library_failed. No automatic retry; no secrets or provider details printed.') from None

@@ -20,6 +20,7 @@ FUNCTIONS = {
     'renew_text_job': 2, 'fail_text_job': 3, 'stage_text': 5,
     'stage_vectors': 6, 'publish_text': 2,
     'completed_passages': 2,
+    'claim_target_text_job': 1,
 }
 
 

@@ -5,6 +5,7 @@ from unittest.mock import Mock
 
 from services.worker.ingestion import run_once
 from services.worker.worker_lifecycle import WorkerRun
+from services.worker.ingestion_repository import RepositoryError
 from tests.worker.test_ingestion import MemoryRepository, SyntheticProvider
 
 
@@ -88,7 +89,16 @@ class LifecycleTests(unittest.TestCase):
         run = WorkerRun(repo,SyntheticProvider())
         self.assertEqual(len(run.run(max_jobs=2)['outcomes']),2)
         repo.call = Mock(side_effect=RuntimeError('secret database details'))
-        self.assertEqual(run.run(max_jobs=3)['outcomes'],[{'state':'unavailable'}])
+        self.assertEqual(run.run(max_jobs=3)['outcomes'],[{'state':'unavailable',
+            'error_code':'worker_start_failed','diagnostic':{'step':'claim_text_job'}}])
         self.assertEqual(repo.call.call_count,1)
         for value in (0,4,True):
             with self.assertRaises(ValueError): run.run(max_jobs=value)
+
+    def test_claim_error_preserves_only_safe_database_reason(self):
+        repo = Mock()
+        repo.call.side_effect = RepositoryError('temporarily_unavailable',reason='operation_deadline_exceeded')
+        result = WorkerRun(repo,SyntheticProvider()).run()['outcomes'][0]
+        self.assertEqual(result['diagnostic'],{'step':'claim_text_job','reason':'operation_deadline_exceeded'})
+        self.assertEqual(result['error_code'],'temporarily_unavailable')
+        self.assertEqual(repo.call.call_count,1)

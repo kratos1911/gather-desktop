@@ -3,6 +3,8 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Current: [[docs/EXACT_JOB_CLAIM|Exact-job repair verified locally; hosted approval pending]].
+
 Latest: [[docs/OPERATOR_LIBRARY_PILOT|Chrome connection bug fixed; refresh/sign-in before live import]].
 
 Current: [[docs/OPERATOR_LIBRARY_PILOT|Restricted operator UI and loopback backend locally verified]]. Hosted acceptance through the new UI remains pending; stop at this milestone per user.

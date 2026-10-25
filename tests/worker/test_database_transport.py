@@ -16,6 +16,19 @@ OWNER = '00000000-0000-0000-0000-000000000001'
 
 
 class DatabaseTransportTests(unittest.TestCase):
+    def test_targeted_claim_is_worker_only_and_preserves_job_parameter(self):
+        child = Mock(returncode=0)
+        child.poll.return_value = 0
+        child.communicate.return_value = (b'{"result":null}',None)
+        with patch('services.worker.database_transport.subprocess.Popen',return_value=child):
+            self.assertIsNone(DatabaseRepository(self.config()).call('claim_target_text_job',OWNER))
+        wire = json.loads(child.communicate.call_args_list[0].kwargs['input'])
+        self.assertEqual((wire['function'],wire['args']),('claim_target_text_job',[OWNER]))
+        with patch('services.worker.database_transport.subprocess.Popen') as spawn:
+            with self.assertRaises(ValueError):
+                DatabaseRepository(self.config(user='gather_admission'),owner=OWNER).call('claim_target_text_job',OWNER)
+            spawn.assert_not_called()
+
     def test_child_accepts_explicit_pilot_profile_with_same_total(self):
         config = self.config(connect_timeout=10)
         wire = dict(config=asdict(config),owner=None,function='claim_text_job',args=[],operation_timeout=15)

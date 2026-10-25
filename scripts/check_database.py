@@ -47,6 +47,8 @@ def main():
                 print(line)
         concurrency_checks(name)
         ingestion_concurrency_checks(name)
+        from check_targeted_claim import targeted_claim_checks
+        targeted_claim_checks(name, run)
         from check_publication import publication_checks
         publication_checks(name, run)
         from check_ingestion import coordinator_checks

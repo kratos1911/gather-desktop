@@ -1,3 +1,7 @@
+## 25 October: exact-job claim repair
+
+Local complete, hosted application pending explicit approval: shared claim core plus restricted targeted entry point, operator routing, safe diagnostic receipts and truthful exit status. 41 focused checks, existing SQL regressions/new targeted cases and frontend build pass. No unrelated jobs processed/deleted or attempts reset. See docs/EXACT_JOB_CLAIM.md for cause, evidence and deployment gate.
+
 ## 24 October: Chrome fetch receiver fix
 
 Reproduced default client network_unavailable versus wrapped client receiving HTTP failure from local API; direct browser request also reached API. Fixed transport invocation and added receiver-sensitive regression. 25 frontend tests, build, lint/format pass; production asset hashes identical. Temporary credential-free diagnostic pages removed. No model or hosted document operations performed by diagnostics. Existing operator page needs refresh/new sign-in before the live import check.

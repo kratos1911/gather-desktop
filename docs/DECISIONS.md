@@ -1,3 +1,5 @@
+25 October: select an operator's requested job inside the database claim transaction, not after a FIFO claim. Share the existing single-flight/lease implementation so targeted work cannot consume an unrelated job's attempt budget. Keep idle/claim-failure distinct and emit fixed safe receipt diagnostics; never reset retries or remove unrelated work to unblock a pilot.
+
 24 October: wrap injected/default fetch in a plain function invocation; storing native fetch as a client method changes its receiver and fails in Chromium. Keep a receiver-sensitive regression because permissive Node mocks missed this. Network error text alone is not evidence the API is stopped.
 
 24 October: expose the first UI connection only as a development-browser operator pilot, restricted server-side to existing test users and fixed synthetic content. Keep public/native connected mode gated. Use explicit loopback Host and one-origin CORS, separate bounded worker invocation, session-only tokens and immutable retry payloads. Cancellation leaves durable recovery intact and does not claim rollback. No permanent warm capacity or automatic cloud retries.
