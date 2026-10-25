@@ -1,5 +1,10 @@
 # Hosted Supabase operator setup
 
+25 October: migration8 (202610250001_targeted_claim.sql) applied manually through
+Gather SQL Editor after explicit user approval. Installation and role permissions
+verified read-only. Earlier seven-migration descriptions below are historical.
+Manual application still does not populate CLI migration history.
+
 Current checkpoint: operator saved DPAPI credentials. Agent verified decryption
 under the owning Windows user and both actual restricted hosted logins over TLS.
 Read-only check_hosted_database.py performs only connection policy/current-role

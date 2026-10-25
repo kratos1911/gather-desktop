@@ -1,3 +1,5 @@
+25 October: applied migration8 to Gather with explicit user approval after prior review block. Verified function installation and restricted permissions. No worker execution/model calls; next action is the same acknowledged job, once. See EXACT_JOB_CLAIM.md and local output/operator-pilot screenshot evidence.
+
 25 October: resumed after approval-usage block; Docker started by user. Implemented/tested exact-job claim repair. Local PostgreSQL suite and 41 unit checks pass. Hosted Run was rejected by automatic approval review pending action-time confirmation for function/permission changes; staged only. No model calls or hosted processing attempts. See EXACT_JOB_CLAIM.md.
 
 24 October: fixed the operator client's native fetch receiver after live Chrome exposed a gap in Node/mock testing. Browser comparison verified the corrected client reaches the API. No service restart, model test or cloud change; 25 frontend checks and build/quality checks pass. See OPERATOR_LIBRARY_PILOT.md; complete hosted UI flow remains unverified.

@@ -3,7 +3,7 @@ tags: [gather, project]
 ---
 # Gather project hub
 
-Current: [[docs/EXACT_JOB_CLAIM|Exact-job repair verified locally; hosted approval pending]].
+Current: [[docs/EXACT_JOB_CLAIM|Exact-job repair applied and permissions verified]].
 
 Latest: [[docs/OPERATOR_LIBRARY_PILOT|Chrome connection bug fixed; refresh/sign-in before live import]].
 

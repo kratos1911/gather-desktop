@@ -1,8 +1,9 @@
 # Exact-job claim repair
 
-25 October 2026. Local implementation and verification complete; hosted migration
-is staged and awaits action-time approval. Do not run the updated operator worker
-against the hosted database before the migration is applied and verified.
+25 October 2026. Local implementation and verification complete. After explicit
+user approval, migration8 was applied successfully to Gather's hosted database.
+Metadata checks confirm installed=true, worker_allowed=true, and client/anonymous/
+admission/private-core access=false. No hosted job claim or model request was run.
 
 ## Cause and scope
 
@@ -50,8 +51,8 @@ nonzero unless its requested work reached ready. No automatic retry was added.
 - Frontend build passes. No frontend/native assets changed; native rebuild not needed.
 - No new model requests, production job claims or cloud scaling changes.
 
-Automatic approval review blocked hosted Run because it changes database functions
-and execution permissions. Explicit approval is pending; do not bypass this via
-another tool or connection. Gather target is fatolholcjxpwocnpzws only.
-After approval: apply the tested migration once, verify function/ACL metadata,
-then retry the same acknowledged job only as an explicit pilot action.
+Automatic approval review initially blocked hosted Run pending action-time
+confirmation. User explicitly approved; the same staged SQL then returned Success.
+Read-only metadata verification passed in fatolholcjxpwocnpzws. Screenshot evidence:
+output/operator-pilot/targeted-claim-applied-20261025.png. The next action is one
+explicit retry of the same acknowledged job; processing success is not yet claimed.

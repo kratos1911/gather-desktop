@@ -1,3 +1,7 @@
+## 25 October: exact-job repair deployed
+
+User approved the hosted migration at action time. SQL editor returned Success; read-only function/ACL query returned true,true,false,false,false,false for installation, worker, client, anonymous, admission and private core. No hosted processing or model call. Source/old-job data unchanged by this function-only migration. Exact-job fix is deployed; live worker outcome remains pending.
+
 ## 25 October: exact-job claim repair
 
 Local complete, hosted application pending explicit approval: shared claim core plus restricted targeted entry point, operator routing, safe diagnostic receipts and truthful exit status. 41 focused checks, existing SQL regressions/new targeted cases and frontend build pass. No unrelated jobs processed/deleted or attempts reset. See docs/EXACT_JOB_CLAIM.md for cause, evidence and deployment gate.
