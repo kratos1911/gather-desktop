@@ -1,3 +1,5 @@
+25 October: user screenshot confirms connected Operator UI semantically searches and opens the saved synthetic source after identity refresh. Worker receipt was ready with one model request. The remaining vertical-flow checks are UI deletion/tombstone and administrator physical cleanup.
+
 25 October: local operator API now refreshes identity per model request and handles Ctrl+C without traceback. Search errors remain safely categorized. Focused backend/frontend tests and builds pass. Restart local API before the next user-directed search; no live model check by agent.
 
 25 October: added fresh, request-scoped Google caller-token minting for the long-running development API. No cached token, no secret persistence, no retries. The terminal records only fixed failure categories. All focused checks and frontend/native builds pass. Live search failure diagnosis still needs API restart followed by one user search; no query/model request by agent.

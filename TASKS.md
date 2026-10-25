@@ -1,3 +1,7 @@
+## 25 October: hosted Operator UI search/open confirmed
+
+User screenshot confirms the UI found the synthetic note and opened exact saved text. This completes search/open evidence for the hosted synthetic flow; delete/tombstone and physical cleanup remain. Worker was ready and ran once; no reimport or reprocessing.
+
 ## 25 October: identity and operator shutdown follow-up
 
 Added per-request Google caller-token minting to long-running operator API and clean Ctrl+C exit; search diagnostics keep safe session/model/database categories. 45 backend/25 frontend tests, frontend/native builds, lint/format pass. Old search failure root remains unconfirmed. Restart server then one diagnostic UI search. No inference retry by agent.

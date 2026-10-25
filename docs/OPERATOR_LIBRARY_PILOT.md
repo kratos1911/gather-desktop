@@ -1,3 +1,5 @@
+25 October USER CONFIRMATION: after API/identity/search diagnostics were updated, the user's browser screenshot shows the fixed query returning 'Synthetic Gather pilot' (source characters0-117, exact saved version) and the open pane displaying its full text. This is live hosted search/open UI evidence. Deletion and physical cleanup remain outstanding. Do not reimport or rerun the completed worker.
+
 25 October latest: operator API now mints a fresh pinned Google caller token per inference request, so an hour-old startup token cannot stale a later search. Fixed safe terminal diagnostic per failed request. No cache, token file or automatic retry. 45 backend and25 frontend checks plus lint/format/frontend/native builds pass. Restart the running API before the next search so this change loads; then inspect its safe terminal category. The earlier database-class search failure remains otherwise unexplained.
 
 # Restricted operator library pilot

@@ -3,6 +3,8 @@ tags: [gather, project]
 ---
 # Gather project hub
 
+Latest: [[docs/OPERATOR_LIBRARY_PILOT|Hosted UI search/open confirmed by user; deletion and cleanup remain]].
+
 Latest: [[docs/OPERATOR_LIBRARY_PILOT|Per-request token refresh, categorized search diagnostics, and clean operator shutdown]].
 
 Latest: [[docs/OPERATOR_LIBRARY_PILOT|Per-request operator identity refresh and safe search diagnostics; restart API before one UI check]].
