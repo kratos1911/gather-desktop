@@ -11,6 +11,9 @@
 /temp/
 /output/
 /documents.json
+# Old console-capture names are not project inputs; diagnostics belong in output/.
+/error.txt
+/output.txt
 __pycache__/
 *.py[cod]
 .venv/

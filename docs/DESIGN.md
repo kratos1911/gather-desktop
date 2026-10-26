@@ -10,7 +10,7 @@ highlights and light reading surfaces. Named color/spacing/radius tokens, solid
 controls and explicit focus feedback. See DESIGN_DIRECTION.md for provenance
 and DESIGN_REVIEW_20261015.md for verified checks and remaining native QA.
 
-Required screens/states: library, processing queue, search results, reader, selected-source chat, model setup, account/settings and policies. Empty/loading/error/offline/permission/quota states need recovery actions. Only the fixture library, reader, model/policy screens exist today.
+Required screens/states: library, processing queue, search results, reader, selected-source chat, model setup, account/settings and policies. Empty/loading/error/offline/permission/quota states need recovery actions. Current code includes the sample library/reader/model/policy screens and a separate development-only operator panel for selected text files, owned listing and model diagnostics. Other general-user screens remain planned; see MEMORY.md for verified scope.
 
 Use keyboard-operable controls, visible focus, meaningful labels, reduced-motion support, and preserved reading position. Windows narrow/normal/wide windows and 200% scaling must be checked. Optional Lenis remains reader-only and off by default. Thinking Orbs must not imply work that is not happening.
 

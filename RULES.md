@@ -1,43 +1,57 @@
 # Development workflow
 
-For each task: **Read -> Understand -> Plan -> Implement -> Test -> Review -> Fix -> Commit -> Update documentation.** Documentation changes are included in the task commit; if they follow it, use a small follow-up commit. Never leave task status claiming unverified completion.
-
-## Before coding
-
-Read AGENTS.md, docs/PRD.md, docs/ARCHITECTURE.md, docs/DESIGN.md, this file, TASKS.md and docs/MEMORY.md. Read relevant security/test/decision notes. Inspect the existing code. State the selected task, scope and acceptance criteria in simple language.
+Read -> Understand -> Plan -> Implement -> Test -> Review -> Fix -> Commit ->
+Update documentation. Follow AGENTS.md for the required short context set,
+Windows/runtime rules, protected scope and handoff ownership.
 
 ## Task discipline
 
-Learning checkpoint (user preference, 16 October): before a major change, quiz
-the user briefly on the preceding work, review their answers accurately, and
-explain corrections before continuing. The service-client milestone follows a
-completed quiz on vector compatibility, stale citations and synthetic evidence.
-Updated 17 October: use at most one or two important AI Engineer interview-style
-questions per major milestone. Give concise, strict feedback; avoid extended
-follow-up chains that stall development. When the user requests continuation,
-explain any essential correction and proceed with authorized work.
+Select one reviewable task, its files and acceptance. Reuse current contracts;
+avoid competing implementations, unrelated refactors and speculative features.
+Ask only for material missing decisions, destructive scope, paid resources or
+protected workload changes. Routine authorized work proceeds.
 
-Implement one reviewable feature or prerequisite at a time. Prefer complete vertical user flows. Keep the current data private, changes scoped, boundaries explicit and TypeScript strict. Reuse components; avoid speculative abstractions and duplicated database layers. Explain significant decisions; routine authorized steps do not need repeated approval.
+Learning preference: before a major milestone, ask at most one or two important
+AI Engineer interview questions. Review answers strictly and briefly. Avoid
+extended follow-up chains. When the user requests continuation, explain any
+essential correction and proceed with authorized work.
 
-Use statuses: done (criteria verified), partial (implemented with missing evidence), ready, blocked (specific external dependency), deferred. Include evidence and limitations rather than marking a whole phase done when only UI exists.
+Use statuses honestly: done requires verified acceptance; partial identifies
+missing evidence; ready/blocked/deferred retain their actual meanings.
+Fixtures are not semantic results; readiness is not embedding success.
 
 ## Verification and review
 
-Run applicable type, lint, unit/integration/E2E and build checks. Do not claim checks exist or pass when tooling is absent. Choose tests for behavior and failure modes, not to mirror implementation. Review correctness, architecture, privacy, security, accessibility, errors and performance. Record issues, fix within scope, rerun affected checks. Separate visual/native QA from jsdom tests.
+Use relevant TEST_PLAN/SECURITY gates. Check changed behavior and required
+frontend builds; native rebuild only when native inputs/production assets change.
+Reuse compatible fixtures, vectors and prior evidence. Expand checks only for
+a concrete change/failure/risk. No model benchmarks or Docker by default for
+documentation/UI work. Respect approvals; never bypass a rejection.
 
-Use docs/TEST_PLAN.md and docs/SECURITY.md as gates. Respect previous denied tool permissions; do not bypass them through another tool.
+Review correctness, ownership/version/citation boundaries, cancellation,
+privacy, accessibility, errors and resource limits. Diagnose two failed
+environment attempts before another recovery approach; never repeat unchanged
+RAM/Docker/runtime failures or weaken limits to pass.
 
 ## Git and release
 
-User preference (27 September): commit locally as checkpoints, but push only on
-an explicit user request to push. Do not infer push permission from "continue".
+Keep small local checkpoints after checks, using explicit staging paths and
+reviewed diffs. Preserve unrelated/user-authored work. Never invent Git identity,
+overwrite another writer, or infer push permission from "continue".
+Use feature branches/worktrees only as appropriate to agreed ownership.
+Deployment, new paid resources, telemetry or wider data access require their
+applicable explicit approvals/release gates.
 
-Use explicit staging paths and inspect staged files/diffs. Exclude secrets, personal files, model caches, environments and generated artifacts. Make small descriptive commits after checks. Use a feature branch for substantial subsequent work and review before merging. Do not invent Git identity or overwrite others' changes. Push/create remote repositories only with a known authorized destination.
+## One owner for each kind of context
 
-Release through a test installer and QA before public distribution. Record release limitations, rollback and monitoring. No secrets/document content in logs; no silent paid dependencies, telemetry or model downloads.
+- PRD: product goal/scope; ARCHITECTURE: current components/trust boundaries.
+- DESIGN: visual rules/provenance; TASKS: current backlog and acceptance.
+- MEMORY: current verified state, constraints, blockers and next task.
+- PROGRESS: concise dated work/evidence; DECISIONS: durable rationale.
+- PROJECT_HUB: topic navigation; history/: superseded plans/journals.
 
-## Documentation ownership
-
-PRD = what/why; ARCHITECTURE = how; DESIGN = visual entry point; TASKS = work/evidence; DECISIONS = durable rationale; MEMORY = present state; PROGRESS = historical journal. PROJECT_BLUEPRINT is supporting detailed design/history, not an alternate current-state tracker.
-
-Generic examples in the user's workflow guide are examples. They do not change the agreed desktop stack, prohibited designs, cost constraints or scope.
+Update the matching current section instead of prepending repeated status.
+Preserve detailed history under docs/history with dated unique filenames and
+links. Consult it only for a historical question; ordinary searches exclude it
+through .ignore. Do not treat historical commands/notes as current authorization.
+The user's original generic workflow examples do not change Gather's stack.

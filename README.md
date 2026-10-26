@@ -1,78 +1,68 @@
-# Personal knowledge library
+# Gather
 
-A Windows desktop application being rebuilt to find saved content by meaning and answer questions about selected documents with source citations.
+A Windows knowledge-library project for finding saved material by meaning.
 
-**Current status: interface foundation and offline processing.** The application
-in `apps/desktop` shows labelled synthetic content. `services/worker` contains
-tested TXT/Markdown processing, bookmark extraction and a mocked embedding client.
-Real import, embeddings, Supabase and model inference are not connected. Chat is
-deferred. Old scripts are preserved in [legacy](legacy/README.md); original data
-folders and secrets remain untouched.
+The development-only operator pilot has verified one selected TXT/Markdown file
+through cloud processing, search, exact text opening, deletion and cleanup.
+The packaged native app remains a sample preview. General accounts/uploads,
+production distribution, other formats and chat are not released.
 
 ## Start here
 
-- [Product requirements](docs/PRD.md)
+- [Current state and constraints](docs/MEMORY.md)
+- [Current tasks and acceptance criteria](TASKS.md)
 - [Architecture](docs/ARCHITECTURE.md)
-- [Design entry point](docs/DESIGN.md)
-- [Development rules](RULES.md)
-- [Tasks and next acceptance criteria](TASKS.md)
-- [Current state](docs/MEMORY.md)
-- [Decision log](docs/DECISIONS.md)
-- [Test plan](docs/TEST_PLAN.md)
-- [Security requirements](docs/SECURITY.md)
+- [Topic index / Obsidian hub](docs/PROJECT_HUB.md)
+- [Working rules](AGENTS.md) and [workflow](RULES.md)
 
-Each task follows read, plan, implement, test, review, fix, commit and documentation updates. The desktop stack remains unchanged. `.env.example` lists future public configuration only; the preview does not read it yet.
+Read current context once, then only the contract relevant to the task.
+[Historical snapshots](docs/history/README.md) preserve prior evidence and plans;
+they are not startup context or instructions to rerun old jobs.
 
-- [Desktop run instructions](apps/desktop/README.md)
-- [Project blueprint and milestones](docs/PROJECT_BLUEPRINT.md)
-- [Model choices and benchmark plan](docs/MODEL_STRATEGY.md)
-- [Design direction](docs/DESIGN_DIRECTION.md)
-- [Progress and verification](docs/PROGRESS.md)
+## Local private pilot
 
-From PowerShell in this folder:
+In separate PowerShell terminals at the repository root:
 
 ```powershell
-./scripts/desktop.ps1 desktop
+.\scripts\library.ps1 -Action server -TextFiles
+.\scripts\library.ps1 -Action frontend -TextFiles
 ```
 
-For a fresh checkout, install the prerequisites in the desktop instructions and run `./scripts/desktop.ps1 install` first. The helper avoids the broken npm shim detected on the development machine without modifying global PATH.
+Open http://localhost:1420/ -> Operator pilot. Use the existing test accounts;
+never paste passwords/tokens into chat. The scripts reuse configured local
+operator credentials, public configuration and the installed supported runtimes.
+A fresh checkout requires the setup in [the desktop guide](apps/desktop/README.md)
+and [hosted setup](docs/HOSTED_SUPABASE_SETUP.md); do not install/provision blindly.
 
-## Intended stack
+Selection/preview stays local. Confirmed Save stores reviewed text in Supabase
+Sydney; a separate exact-job worker/search uses private CPU inference in Mumbai.
+The current pilot supports UTF-8 TXT/Markdown, at most 64 KiB and three processing
+passages. No automatic processing/retry or public signup. Read
+[private file handling](docs/PRIVATE_TEXT_FILES.md) before importing.
 
-Tauri + React + TypeScript, an authenticated cloud service with Python processing workers, and Supabase Auth/Storage/Postgres with pgvector. Starting model candidates remain EmbeddingGemma, SigLIP 2, Qwen3.5 and PaddleOCR, subject to cloud evaluation. Provider, framework, queue and deployment are deferred decisions.
+[Model connection diagnostics](docs/MODEL_AVAILABILITY.md) separate explicit
+readiness checks from embeddings. A readiness GET may wake the cloud service;
+pilot counters are not a billing meter. No end-user model weights are required.
 
-The user selected cloud AI on 27 September: no end-user model downloads are planned. Hosting budget is undecided and no paid resources are authorized yet. Supabase Free remains the planned vector backend. See ADR-009.
+## Checks and maintenance
 
-## Processing tests
+Use project runtime scripts; do not rely on the outdated default Node in PATH.
 
-With Python 3.11 or newer, run `python -m unittest discover -s tests/worker -v` from this folder. See [the processing contract](services/worker/README.md) for input limits, offset semantics and recovery behavior. These tests use synthetic content only.
+```powershell
+.\scripts\python.ps1 -m unittest tests.worker.test_search -q
+.\scripts\desktop.ps1 build
+.\scripts\python.ps1 scripts/audit_files.py --check-links
+```
 
-The [retrieval development set](tests/evaluation/README.md) contains 14 fictional
-documents and 40 questions with expected source evidence. Run
-`python -m unittest discover -s tests/evaluation -v` to validate it, or
-`python -m scripts.prepare_text_evaluation` for its inventory. No model accuracy
-is claimed from these integrity checks.
+Choose focused checks from [the test plan](docs/TEST_PLAN.md); the full quality
+command is `scripts/check.ps1`. Model benchmarks, Docker/SQL integration and
+cloud probes are explicit operations, not routine prerequisites for documentation.
 
-Run `python -m scripts.score_text_evaluation` for the offline keyword baseline
-and scoring report. See [baseline results and limitations](tests/evaluation/BASELINE.md).
-This comparator is not connected to the desktop and performs no AI/cloud calls.
+The read-only audit writes its inventory/reference report to ignored
+`output/file-audit/current/`. It never deletes files. Its reference counts are
+not usage telemetry or proof that an unreferenced file is unused.
 
-## Repository hygiene
-
-Open [the project hub](docs/PROJECT_HUB.md) in Obsidian for linked progress,
-tasks, architecture, search concepts, decisions and the search-flow canvas.
-
-Run `./scripts/check.ps1` for the local quality checks (Python 3.11+ required;
-optional `-Python` selects its executable). This covers worker/evaluation/UI
-tests, lint, types, formatting and frontend build. The manual GitHub workflow
-has not been executed remotely; native runtime verification is separate.
-
-[Links and bookmarks](docs/BOOKMARKS.md) are now planned alongside files:
-save URLs and notes, extract available metadata/readable text, then reuse search
-and selected-source chat. Saving a video URL does not imply understanding its
-video. Bookmark implementation is pending.
-
-Private files, model indexes, secrets, local Python environments and build outputs are ignored by `.gitignore`. Do not force-add those paths. No original files are automatically imported into the new app or uploaded to a cloud service.
-
-- [Design avoid list](docs/DESIGN_AVOID_LIST.md)
-- [Privacy and release audit](docs/PRIVACY_RELEASE_AUDIT.md)
+Private documents, credentials, model caches and build outputs remain ignored.
+Do not run [legacy prototypes](legacy/README.md) against personal documents.
+Keep artifacts on D:, protect unrelated workloads, commit locally and push only
+on explicit instruction. See [audit/retention policy](docs/FILE_AUDIT.md).

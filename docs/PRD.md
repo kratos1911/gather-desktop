@@ -1,6 +1,9 @@
 # Product requirements
 
-Status: agreed direction; implementation is still a synthetic desktop preview.
+Status: agreed product direction. A restricted browser operator pilot has verified
+one selected TXT/Markdown lifecycle through cleanup. The packaged native app
+remains a sample preview; the general MVP/release is incomplete. Current evidence
+and limitations are in MEMORY.md and TASKS.md, not the historical snapshots.
 
 ## What and why
 

@@ -1,0 +1,3 @@
+# Search defaults only; these files remain tracked and explicitly accessible.
+# Historical snapshots are not ordinary implementation context.
+/docs/history/
