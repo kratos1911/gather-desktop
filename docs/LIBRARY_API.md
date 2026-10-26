@@ -16,7 +16,7 @@ All five routes use POST and application/json with one Content-Length:
 
 | Route | Required JSON fields | Optional fields |
 | --- | --- | --- |
-| /v1/import | request_id (UUID), title, media, content_base64 | source_id for replacement |
+| /v1/import | request_id (UUID), title, media, content_base64 | source_id for replacement; confirm_cloud_storage (strict boolean, private operator extension) |
 | /v1/search | query | limit, integer 1..20 |
 | /v1/status | source_id | none |
 | /v1/open | source_id, version_id | none |

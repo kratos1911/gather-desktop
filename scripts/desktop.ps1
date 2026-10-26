@@ -21,7 +21,13 @@ if (-not $nodePath) { throw 'No supported Node runtime found. Set GATHER_NODE to
 $npmCandidates = @($nodeCandidates | ForEach-Object { Join-Path (Split-Path $_) 'node_modules/npm/bin/npm-cli.js' })
 $npmCli = $npmCandidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
 $previousPath = $env:PATH
+$previousTemp = $env:TEMP
+$previousTmp = $env:TMP
 try {
+    $taskTemp = Join-Path $PSScriptRoot '../output/desktop-build-temp'
+    New-Item -ItemType Directory -Force -Path $taskTemp | Out-Null
+    $env:TEMP = [IO.Path]::GetFullPath($taskTemp)
+    $env:TMP = $env:TEMP
     $env:PATH = (Split-Path $nodePath) + ';' + (Join-Path $env:USERPROFILE '.cargo/bin') + ';' + $env:PATH
     Push-Location $appPath
     switch ($Action) {
@@ -35,4 +41,9 @@ try {
         'format-check' { & $nodePath node_modules/prettier/bin/prettier.cjs --check src scripts '*.ts' '*.json' '*.mjs' index.html }
     }
     if ($LASTEXITCODE -ne 0) { throw "Desktop task failed with exit code $LASTEXITCODE" }
-} finally { Pop-Location; $env:PATH = $previousPath }
+} finally {
+    Pop-Location
+    $env:PATH = $previousPath
+    $env:TEMP = $previousTemp
+    $env:TMP = $previousTmp
+}

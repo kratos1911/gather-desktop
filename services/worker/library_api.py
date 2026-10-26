@@ -18,7 +18,7 @@ from services.worker.text_processing import MAX_REQUEST_BYTES, MAX_RESPONSE_BYTE
 from services.worker.source_listing import parameters
 
 ROUTES = {
-    '/v1/import': ({'request_id', 'title', 'media', 'content_base64'}, {'source_id'}),
+    '/v1/import': ({'request_id', 'title', 'media', 'content_base64'}, {'source_id','confirm_cloud_storage'}),
     '/v1/search': ({'query'}, {'limit'}),
     '/v1/status': ({'source_id'}, set()),
     '/v1/open': ({'source_id', 'version_id'}, set()),
@@ -37,6 +37,8 @@ def validate(path, value):
     if path == '/v1/list':
         parameters(**value)
     if path == '/v1/import':
+        if 'confirm_cloud_storage' in value and type(value['confirm_cloud_storage']) is not bool:
+            raise ValueError()
         title = value['title']
         if not isinstance(title, str) or not title.strip() or len(title) > 500:
             raise ValueError()
@@ -198,6 +200,8 @@ class LibraryAPI:
                 status = 401 if code == 'session_unavailable' else 503
                 if code == 'model_unavailable': status = 502
                 elif code == 'library_unavailable': status = 503
+                elif code in ('file_import_disabled','file_confirmation_required'): status = 403
+                elif code in ('file_invalid','file_exceeds_pilot_budget'): status = 400
                 safe_codes = {'session_unavailable','model_unavailable','library_unavailable',
                               'search_failed','invalid_query','cancelled','operation_failed'}
                 print('Operator request failed: '+(code if code in safe_codes else 'operation_failed'),file=sys.stderr,flush=True)

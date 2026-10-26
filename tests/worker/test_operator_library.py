@@ -14,6 +14,49 @@ from services.worker.database_transport import DatabaseConfig, ROOT
 
 
 class OperatorTests(unittest.TestCase):
+    def test_file_pilot_requires_server_opt_in_and_per_file_confirmation(self):
+        api = Mock(spec=SessionClient,return_value={'id':next(iter(PILOT_USERS))})
+        factory,provider = Mock(),Mock()
+        provider.count_tokens.side_effect = lambda text: len(text)
+        values = dict(original=b'# Synthetic file\r\nNotes.',media='text/markdown',request_id='id',title='note.md')
+        for enabled,confirmed,code in ((False,True,'file_import_disabled'),(True,False,'file_confirmation_required')):
+            with self.assertRaisesRegex(LibraryError,'^'+code+'$'):
+                PilotSession(api,factory,provider,text_files=enabled).import_text(**values,confirm_cloud_storage=confirmed)
+        factory.assert_not_called()
+        provider.infer.assert_not_called()
+        with patch('services.worker.library_session.submit',return_value={'state':'queued'}) as submit:
+            PilotSession(api,factory,provider,text_files=True).import_text(**values,confirm_cloud_storage=True)
+            self.assertEqual(submit.call_args.kwargs['original'],values['original'])
+            self.assertNotIn('confirm_cloud_storage',submit.call_args.kwargs)
+        provider.infer.assert_not_called()
+
+    def test_private_file_validation_and_pilot_budget_run_before_admission(self):
+        api = Mock(spec=SessionClient,return_value={'id':next(iter(PILOT_USERS))})
+        factory,provider = Mock(),Mock()
+        provider.count_tokens.side_effect = lambda text: len(text)
+        library = PilotSession(api,factory,provider,text_files=True)
+        for raw,media,code in ((b'\x00binary','text/plain','file_invalid'),(b'\xff','text/plain','file_invalid'),
+            (b'valid','text/html','file_invalid'),(b'x'*65537,'text/plain','file_invalid'),
+            (b'word '*500,'text/markdown','file_exceeds_pilot_budget')):
+            with self.subTest(code=code),self.assertRaisesRegex(LibraryError,'^'+code+'$'):
+                library.import_text(original=raw,media=media,title='test',request_id='id',confirm_cloud_storage=True)
+        factory.assert_not_called()
+        provider.infer.assert_not_called()
+
+    def test_enabled_file_mode_keeps_owner_and_worker_target_guards(self):
+        api = Mock(spec=SessionClient,return_value={'id':'00000000-0000-0000-0000-000000000001'})
+        provider = Mock()
+        with self.assertRaisesRegex(LibraryError,'session_unavailable'):
+            PilotSession(api,Mock(),provider,text_files=True).import_text(original=b'file',media='text/plain',title='t',request_id='id',confirm_cloud_storage=True)
+        provider.count_tokens.assert_not_called()
+        repo = Mock()
+        repo.call.return_value = {'id':'other-job','owner_id':next(iter(PILOT_USERS))}
+        with self.assertRaisesRegex(WorkerStartError,'different_job_claimed'):
+            PilotWorker(repo,'job',text_files=True).call('claim_text_job')
+        repo.call.return_value = {'id':'job','owner_id':'foreign'}
+        with self.assertRaisesRegex(WorkerStartError,'pilot_user_only'):
+            PilotWorker(repo,'job',text_files=True).call('claim_text_job')
+
     def test_api_token_is_minted_and_discarded_for_each_request(self):
         cancel = __import__('threading').Event()
         first,second=Mock(),Mock()
@@ -119,7 +162,7 @@ class OperatorTests(unittest.TestCase):
         api = Mock(spec=SessionClient,return_value={'id':next(iter(PILOT_USERS))})
         factory,provider = Mock(),Mock()
         library = PilotSession(api,factory,provider)
-        with self.assertRaises(LibraryError): library.import_text(original=b'personal',media='text/plain')
+        with self.assertRaises(LibraryError): library.import_text(original=b'personal',media='text/plain',request_id='id',title='Synthetic refusal')
         with self.assertRaises(LibraryError): library.search('arbitrary query')
         factory.assert_not_called()
         provider.infer.assert_not_called()

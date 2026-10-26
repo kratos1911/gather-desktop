@@ -89,7 +89,13 @@ export default function App() {
           <div>
             {screen === "pilot" ? (
               <>
-                Operator pilot<small>Restricted synthetic test workspace</small>
+                Operator pilot
+                <small>
+                  {import.meta.env.DEV &&
+                  import.meta.env.VITE_GATHER_PILOT_TEXT_FILES === "1"
+                    ? "Private TXT/Markdown test workspace"
+                    : "Restricted synthetic test workspace"}
+                </small>
               </>
             ) : (
               <>

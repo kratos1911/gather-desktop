@@ -10,9 +10,18 @@
       "height": 200
     },
     {
+      "id": "private-text-files",
+      "type": "file",
+      "file": "docs/PRIVATE_TEXT_FILES.md",
+      "x": -420,
+      "y": 0,
+      "width": 330,
+      "height": 220
+    },
+    {
       "id": "source",
       "type": "text",
-      "text": "Save file or link\nHosted synthetic text flow completed and cleaned\nLibrary restoration: docs/SAVED_LIBRARY.md\nGeneral file selection remains gated",
+      "text": "Save file or link\nHosted synthetic text flow completed and cleaned\nPrivate TXT/MD selection: PRIVATE_TEXT_FILES.md\nGeneral release remains gated",
       "x": 0,
       "y": 0,
       "width": 330,
@@ -128,6 +137,13 @@
     }
   ],
   "edges": [
+    {
+      "id": "review-file",
+      "fromNode": "private-text-files",
+      "fromSide": "right",
+      "toNode": "source",
+      "toSide": "left"
+    },
     {
       "id": "library-restoration",
       "fromNode": "results",

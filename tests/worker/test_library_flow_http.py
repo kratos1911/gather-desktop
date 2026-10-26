@@ -84,8 +84,15 @@ class FixtureStore:
 
 class FlowTests(unittest.TestCase):
     def test_queued_then_worker_ready_then_search_open_delete_over_http(self):
+        self._exercise()
+
+    def test_opt_in_markdown_admission_uses_existing_flow_without_live_inference(self):
+        self._exercise(private_files=True)
+
+    def _exercise(self, private_files=False):
+        from scripts.operator_library import PILOT_USERS, PilotSession
         store, provider = FixtureStore(), Provider()
-        owners = {key:str(uuid4()) for key in ('a','b')}
+        owners = dict(zip(('a','b'),sorted(PILOT_USERS))) if private_files else {key:str(uuid4()) for key in ('a','b')}
         def session(token,cancel):
             api = Mock(spec=SessionClient)
             def request(method,path,payload=None):
@@ -97,7 +104,7 @@ class FlowTests(unittest.TestCase):
                 repo = Mock()
                 repo.call.side_effect = lambda name,*args:store.call(name,*args,owner=owner)
                 return repo
-            return LibrarySession(api,admission,provider)
+            return PilotSession(api,admission,provider,text_files=True) if private_files else LibrarySession(api,admission,provider)
         app = LibraryAPI(session)
         server = create_server(app,port=0)
         thread = threading.Thread(target=server.run,daemon=True)
@@ -117,6 +124,8 @@ class FlowTests(unittest.TestCase):
         try:
             original = '\ufeffSynthetic database note.\r\nOwnership protects records 🌟.'
             submission = dict(request_id=str(uuid4()),title='Synthetic flow',media='text/plain',content_base64=base64.b64encode(original.encode()).decode())
+            if private_files:
+                submission.update(media='text/markdown',confirm_cloud_storage=True)
             item = call('import',submission)
             self.assertEqual(call('import',submission),item)
             sid,vid = item['source_id'],item['version_id']

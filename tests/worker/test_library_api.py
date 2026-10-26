@@ -65,6 +65,19 @@ class APITests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual((await self.request(path,value))[0]['status'],400)
         self.factory.assert_not_called()
 
+    async def test_file_confirmation_is_a_strict_optional_boolean(self):
+        body = {'request_id':ID,'title':'note.md','media':'text/markdown','content_base64':'eA=='}
+        for value in ('true',1,None):
+            self.assertEqual((await self.request('/v1/import',dict(body,confirm_cloud_storage=value)))[0]['status'],400)
+        self.factory.assert_not_called()
+        self.assertEqual((await self.request('/v1/import',dict(body,confirm_cloud_storage=True)))[0]['status'],202)
+        self.assertIs(self.session.import_text.call_args.kwargs['confirm_cloud_storage'],True)
+        for code,status in (('file_import_disabled',403),('file_confirmation_required',403),('file_invalid',400),('file_exceeds_pilot_budget',400)):
+            self.session.import_text.side_effect = LibraryError(code)
+            result = await self.request('/v1/import',dict(body,confirm_cloud_storage=True))
+            self.assertEqual(result[0]['status'],status)
+            self.assertNotIn(code,result[1]['body'].decode())
+
     async def test_missing_and_duplicate_auth(self):
         for headers in ([],[(b'authorization',b'Bearer a'),(b'authorization',b'Bearer b')]):
             self.assertEqual((await self.request(headers=headers))[0]['status'],401)

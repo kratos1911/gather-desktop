@@ -1,5 +1,12 @@
 # Privacy and release audit
 
+26 October implementation addendum: [PRIVATE_TEXT_FILES.md](PRIVATE_TEXT_FILES.md)
+records the restricted two-account, nonsensitive-file operator pilot and its
+review/confirmation, actual processors/regions, storage and manual-cleanup limits.
+Those controls do not close public-upload/account release gates. Historical
+"no external processor connected" findings below describe the September build;
+the production native sample and development operator modes are now distinct.
+
 27 September architecture update: cloud-hosted inference is planned under
 ADR-009, but no external processor is connected. Before enabling uploads, review
 the chosen provider's retention, logging, regions and subprocessors, publish

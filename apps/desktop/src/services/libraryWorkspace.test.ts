@@ -17,6 +17,32 @@ const setup = () => {
   return { workspace, send };
 };
 describe("library workspace (synthetic transport)", () => {
+  it("corrects a definite first refusal but preserves an earlier uncertain file submission", async () => {
+    const { workspace, send } = setup();
+    send.mockResolvedValueOnce(reply({}, 400));
+    await workspace.importText(
+      "bad.md",
+      new Uint8Array([65]),
+      "text/markdown",
+      true,
+    );
+    expect(workspace.getSnapshot().pendingImport).toBeNull();
+    send.mockRejectedValueOnce(new Error("connection lost"));
+    await workspace.importText(
+      "reviewed.md",
+      new Uint8Array([66]),
+      "text/markdown",
+      true,
+    );
+    const key = workspace.getSnapshot().pendingImport?.request_id;
+    send.mockResolvedValueOnce(reply({}, 403));
+    await workspace.retryImport();
+    expect(workspace.getSnapshot().pendingImport?.request_id).toBe(key);
+    expect(workspace.getSnapshot().pendingImport?.confirm_cloud_storage).toBe(
+      true,
+    );
+    expect(send.mock.calls[1][1]?.body).toBe(send.mock.calls[2][1]?.body);
+  });
   const source = (n: number) => ({
     source_id: `00000000-0000-0000-0000-${String(n).padStart(12, "0")}`,
     title: `Saved ${n}`,

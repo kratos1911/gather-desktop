@@ -35,8 +35,15 @@ class LibrarySession:
         except Exception:
             raise LibraryError('session_unavailable') from None
 
-    def import_text(self, *, request_id, title, original, media, source_id=None):
+    def _validate_import_scope(self, original, media, confirm_cloud_storage):
+        # A browser acknowledgement cannot activate an operator-only feature.
+        if confirm_cloud_storage is not False:
+            raise LibraryError('file_import_disabled')
+
+    def import_text(self, *, request_id, title, original, media, source_id=None,
+                    confirm_cloud_storage=False):
         owner = self._owner()
+        self._validate_import_scope(original,media,confirm_cloud_storage)
         try:
             # No owner parameter exists on the user-facing method.
             return submit(self._admission(owner), request_id=request_id, title=title,

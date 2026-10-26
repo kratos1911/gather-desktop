@@ -1,6 +1,7 @@
 param(
     [ValidateSet('check','server','worker','frontend')][string]$Action = 'check',
-    [string]$JobId
+    [string]$JobId,
+    [switch]$TextFiles
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot
@@ -8,6 +9,7 @@ $previousPython = $env:GATHER_PYTHON
 $previousTemp = $env:TEMP
 $previousTmp = $env:TMP
 $previousKey = $env:VITE_GATHER_PILOT_PUBLIC_KEY
+$previousTextFiles = $env:VITE_GATHER_PILOT_TEXT_FILES
 $locationPushed = $false
 try {
     $taskTemp = Join-Path $root 'output/library-temp'
@@ -22,12 +24,14 @@ try {
             throw 'Invalid pilot public configuration.'
         }
         $env:VITE_GATHER_PILOT_PUBLIC_KEY = $config.publishable_key
+        $env:VITE_GATHER_PILOT_TEXT_FILES = if ($TextFiles) { '1' } else { '0' }
         & ./scripts/desktop.ps1 preview
     } else {
         $runtime = Join-Path $root 'output/asgi-checks/venv/Scripts/python.exe'
         if (-not (Test-Path -LiteralPath $runtime)) { throw 'Existing isolated HTTP runtime is missing. No installation or fallback attempted.' }
         $env:GATHER_PYTHON = $runtime
         $arguments = @('-m','scripts.operator_library')
+        if ($TextFiles) { $arguments += '--text-files' }
         if ($Action -eq 'server') { $arguments += '--serve' }
         if ($Action -eq 'worker') {
             if (-not $JobId) { throw 'Worker requires the exact acknowledged pilot JobId.' }
@@ -42,4 +46,5 @@ try {
     $env:TEMP = $previousTemp
     $env:TMP = $previousTmp
     $env:VITE_GATHER_PILOT_PUBLIC_KEY = $previousKey
+    $env:VITE_GATHER_PILOT_TEXT_FILES = $previousTextFiles
 }

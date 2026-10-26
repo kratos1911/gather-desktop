@@ -60,6 +60,7 @@ export type PreparedImport = Readonly<{
   media: "text/plain" | "text/markdown";
   content_base64: string;
   source_id?: string;
+  confirm_cloud_storage?: true;
 }>;
 
 const MAX_REPLY = 512 * 1024;
@@ -177,6 +178,7 @@ export class LibraryClient {
     bytes: Uint8Array,
     media: PreparedImport["media"],
     sourceId?: string,
+    confirmCloudStorage = false,
   ): PreparedImport {
     if (!this.token) throw new LibraryClientError("session_required");
     if (
@@ -200,6 +202,7 @@ export class LibraryClient {
       media,
       content_base64: btoa(binary),
       ...(sourceId ? { source_id: id(sourceId) } : {}),
+      ...(confirmCloudStorage ? { confirm_cloud_storage: true as const } : {}),
     });
     this.prepared.set(value, this.generation);
     return value;

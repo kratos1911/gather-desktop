@@ -1,3 +1,5 @@
+26 October: PRIVATE_TEXT_FILES.md adds explicitly enabled private operator file selection/admission through the existing parser, tokenizer, source/job/publication flow. No new database subsystem, migration or inference configuration.
+
 26 October: saved-library metadata listing and reauthentication restoration reuse the existing session/PostgREST boundaries. See SAVED_LIBRARY.md for the cursor, status and verification contracts.
 
 24 October current: LIBRARY_API now has a bounded loopback server, separate cancellable WorkerRun, typed frontend client/state and development-only restricted operator screen. See OPERATOR_LIBRARY_PILOT.md. Local synthetic HTTP/UI integration verified; new UI hosted acceptance and production/native connection remain pending. Historical statuses below are superseded only to that extent.

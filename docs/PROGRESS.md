@@ -1,3 +1,7 @@
+## 26 October: private TXT/Markdown picker and gated admission
+
+Local implementation complete; focused synthetic workflow/build checks pass as recorded in PRIVATE_TEXT_FILES.md. Actual browser selected and reviewed a local synthetic Markdown file with confirmation unchecked and Save disabled. No hosted upload, model call, Docker workload or deployment. Only Gather development servers restarted. Public release remains gated. See PRIVATE_TEXT_FILES.md for evidence, native reuse and the diagnosed D: temp-directory prerequisite.
+
 ## 26 October 2026: saved library restoration
 
 Implemented metadata listing through SQL/session/API/client and the existing operator UI. Focused local acceptance and hosted migration metadata pass; pilot-A hosted sign-in/list restoration and metadata refresh observed; no new hosted B/negative matrix. Source/grant evidence and commands are in SAVED_LIBRARY.md. Docker required tool access escalation; only the disposable task container was used. No model calls, cloud scaling or protected workload changes.

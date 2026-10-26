@@ -1,3 +1,5 @@
+26 October: choose a private two-account TextFiles pilot after the user delegated scope selection. Keep default fixed-content guards; a UI checkbox cannot enable the backend. Require review/confirmation, actual-byte validation and <=3 pinned-tokenizer passages before storage to fit the unchanged provider budget. Never clear a request ID after any earlier uncertain send. General upload release gates remain open; see PRIVATE_TEXT_FILES.md.
+
 26 October: use an unsigned versioned position cursor, immutable creation time plus UUID ordering and independent auth.uid() ownership on every page. Keep published and processing versions separate; restore data after authentication without persisting browser credentials. Listing must never initiate inference or processing. See SAVED_LIBRARY.md.
 
 25 October: the development operator API should fetch a fresh short-lived pinned Google caller token per inference request rather than keep an hour-long token for its process lifetime. On shutdown, print a fixed clean-stop message rather than a Python traceback. Do not cache refresh credentials or auto-retry model calls.

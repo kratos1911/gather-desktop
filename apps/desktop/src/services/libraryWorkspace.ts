@@ -44,6 +44,7 @@ export class LibraryWorkspace {
   private listeners = new Set<() => void>();
   private generation = 0;
   private request: AbortController | null = null;
+  private importUncertain = false;
   constructor(private readonly client: LibraryClient) {}
   getSnapshot = (): LibraryState => this.state;
   subscribe = (listener: () => void): (() => void) => {
@@ -60,6 +61,7 @@ export class LibraryWorkspace {
     this.client.setSession(token);
     this.request?.abort();
     this.generation++;
+    this.importUncertain = false;
     this.state = initial();
     this.update({ signedIn: token !== null });
   }
@@ -108,11 +110,19 @@ export class LibraryWorkspace {
     title: string,
     bytes: Uint8Array,
     media: PreparedImport["media"],
+    confirmCloudStorage = false,
   ): Promise<void> {
     if (this.state.busy) throw new LibraryClientError("busy");
     if (this.state.pendingImport)
       throw new LibraryClientError("pending_import_requires_resolution");
-    const prepared = this.client.prepareImport(title, bytes, media);
+    const prepared = this.client.prepareImport(
+      title,
+      bytes,
+      media,
+      undefined,
+      confirmCloudStorage,
+    );
+    this.importUncertain = false;
     this.update({ pendingImport: prepared });
     await this.retryImport();
   }
@@ -122,11 +132,29 @@ export class LibraryWorkspace {
     await this.perform(
       (signal) => this.client.importText(prepared, signal),
       (receipt) => {
+        this.importUncertain = false;
         this.update({
           pendingImport: null,
           imported: receipt,
           processing: null,
         });
+      },
+      () => {
+        // A first, definite pre-admission refusal can be corrected. Never
+        // discard an ID after an earlier ambiguous send, even if a retry is refused.
+        if (
+          !this.importUncertain &&
+          [
+            "invalid_request",
+            "access_denied",
+            "session_required",
+            "busy",
+          ].includes(this.state.error ?? "")
+        ) {
+          this.update({ pendingImport: null });
+        } else {
+          this.importUncertain = true;
+        }
       },
     );
   }

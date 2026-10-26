@@ -31,7 +31,9 @@ describe("preview workspace", () => {
       screen.getByRole("heading", { name: "Privacy in this preview" }),
     ).toBeTruthy();
     expect(
-      screen.getByText(/Supabase is planned, not currently connected/),
+      screen.getByText(
+        /development Operator pilot connects two existing test accounts/,
+      ),
     ).toBeTruthy();
     await user.click(screen.getByRole("button", { name: "Copyright" }));
     expect(screen.getByText("Reporting is not configured")).toBeTruthy();

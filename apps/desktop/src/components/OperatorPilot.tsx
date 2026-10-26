@@ -8,6 +8,7 @@ import {
   signInPilot,
 } from "../services/pilotAuth";
 import "./OperatorPilot.css";
+import { TextFileImport } from "./TextFileImport";
 
 const messages: Record<string, string> = {
   network_unavailable:
@@ -28,6 +29,10 @@ const messages: Record<string, string> = {
   pilot_signin_failed:
     "Sign-in failed. Check the test account password and configuration.",
   cancelled: "Request cancelled. A submitted import may still have been saved.",
+  access_denied:
+    "This action is not enabled for the private pilot. The server and frontend both need the explicit -TextFiles option for reviewed file imports.",
+  invalid_request:
+    "The file or request was rejected before saving. Check UTF-8, size and content. Files must also fit the pilot's three-passage processing budget.",
 };
 
 export default function OperatorPilot() {
@@ -44,6 +49,8 @@ export default function OperatorPilot() {
   const [email, setEmail] = useState<string>(PILOT_EMAILS[0]);
   const [signingIn, setSigningIn] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
+  const [query, setQuery] = useState(PILOT_QUERY);
+  const textFiles = import.meta.env.VITE_GATHER_PILOT_TEXT_FILES === "1";
   const password = useRef<HTMLInputElement>(null);
   const auth = useRef<AbortController | null>(null);
   const readerHeading = useRef<HTMLHeadingElement>(null);
@@ -100,14 +107,18 @@ export default function OperatorPilot() {
       <div className="screen-heading">
         <h1>Operator pilot</h1>
         <p className="subtitle">
-          Two test accounts. One synthetic note. Explicit actions use the hosted
-          database and cloud model; the sample library stays separate.
+          {textFiles
+            ? "Private TXT/Markdown testing with two existing accounts. Review each file before cloud storage; processing is a separate action."
+            : "Two test accounts. One synthetic note. Explicit actions use the hosted database and cloud model; the sample library stays separate."}
         </p>
       </div>
       <p className="pilot-disclosure">
         Authentication and stored test text use Supabase in Sydney. Embeddings
-        use Gather’s private CPU service in Mumbai. No personal files or signup
-        in this screen. Model calls count toward the pilot budget.
+        use Gather’s private CPU service in Mumbai.{" "}
+        {textFiles
+          ? "No public signup or general uploads. Use only your own nonsensitive test files."
+          : "No personal files or signup in this screen."}{" "}
+        Model calls count toward the pilot budget.
       </p>
       {!state.signedIn ? (
         <form className="pilot-form" onSubmit={(event) => void login(event)}>
@@ -149,6 +160,7 @@ export default function OperatorPilot() {
               className="back"
               onClick={() => {
                 workspace.setSession(null);
+                setQuery(PILOT_QUERY);
                 setLocalError(null);
               }}
             >
@@ -251,7 +263,36 @@ export default function OperatorPilot() {
             )}
           </section>
           <section className="pilot-step">
-            <h2>1. Import the test note</h2>
+            <h2>
+              {textFiles
+                ? "1. Import TXT or Markdown"
+                : "1. Import the test note"}
+            </h2>
+            {textFiles && (
+              <TextFileImport
+                disabled={
+                  state.busy ||
+                  !!state.pendingImport ||
+                  !!state.imported ||
+                  !!state.cleanupSourceId
+                }
+                onSave={async (file) => {
+                  setLocalError(null);
+                  await workspace.importText(
+                    file.title,
+                    file.bytes,
+                    file.media,
+                    true,
+                  );
+                  const current = workspace.getSnapshot();
+                  return (
+                    current.pendingImport === null &&
+                    current.imported !== null &&
+                    current.error === null
+                  );
+                }}
+              />
+            )}
             <p>{PILOT_NOTE}</p>
             <button
               className="pilot-action"
@@ -294,6 +335,7 @@ export default function OperatorPilot() {
                 <code>
                   .\scripts\library.ps1 -Action worker -JobId{" "}
                   {state.imported.job_id}
+                  {textFiles && " -TextFiles"}
                 </code>
                 <p>
                   Source: <code>{state.imported.source_id}</code>
@@ -315,11 +357,26 @@ export default function OperatorPilot() {
           </section>
           <section className="pilot-step">
             <h2>2. Search and open</h2>
-            <p>{PILOT_QUERY}</p>
+            {textFiles ? (
+              <>
+                <label htmlFor="pilot-query">Search your saved text</label>
+                <input
+                  id="pilot-query"
+                  className="pilot-query"
+                  value={query}
+                  disabled={state.busy}
+                  onChange={(event) => setQuery(event.target.value)}
+                />
+              </>
+            ) : (
+              <p>{PILOT_QUERY}</p>
+            )}
             <button
               className="pilot-action"
-              disabled={state.busy}
-              onClick={() => act(() => workspace.search(PILOT_QUERY))}
+              disabled={state.busy || (textFiles && !query.trim())}
+              onClick={() =>
+                act(() => workspace.search(textFiles ? query : PILOT_QUERY))
+              }
             >
               Search saved notes
             </button>
@@ -368,7 +425,11 @@ export default function OperatorPilot() {
           </section>
           {state.imported && (
             <section className="pilot-step">
-              <h2>3. Delete the test note</h2>
+              <h2>
+                {textFiles
+                  ? "3. Delete the imported source"
+                  : "3. Delete the test note"}
+              </h2>
               <p>
                 Deletion hides it immediately. The operator still finalizes
                 physical cleanup in the database. Keep the source ID until
@@ -382,7 +443,7 @@ export default function OperatorPilot() {
                   if (source) act(() => workspace.delete(source.source_id));
                 }}
               >
-                Delete synthetic note
+                {textFiles ? "Delete imported source" : "Delete synthetic note"}
               </button>
             </section>
           )}

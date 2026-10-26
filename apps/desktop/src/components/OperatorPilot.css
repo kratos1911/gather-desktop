@@ -100,3 +100,64 @@
 .pilot-reader {
   margin-top: var(--space-4);
 }
+.text-file-import {
+  display: grid;
+  gap: var(--space-3);
+  margin-block: var(--space-4) var(--space-6);
+}
+.text-file-import p {
+  max-width: 76ch;
+  line-height: 1.65;
+}
+.text-file-import input[type="file"] {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  color: var(--ink);
+  font: inherit;
+}
+.text-file-import input[type="file"]::file-selector-button {
+  min-height: 44px;
+  padding: var(--space-3) var(--space-4);
+  margin-right: var(--space-3);
+  border: 1px solid var(--control-line);
+  border-radius: var(--radius-control);
+  background: var(--citron-soft);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.text-file-import input[type="file"]:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+}
+.text-file-preview {
+  padding: var(--space-4);
+  max-height: 16rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.text-file-confirm {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  max-width: 76ch;
+}
+.text-file-confirm input {
+  flex-shrink: 0;
+  margin-top: 0.3em;
+}
+.pilot-query {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  max-width: 76ch;
+  padding: var(--space-3);
+  margin-block: var(--space-3);
+  border: 1px solid var(--control-line);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}

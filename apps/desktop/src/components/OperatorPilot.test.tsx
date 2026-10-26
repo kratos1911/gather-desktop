@@ -20,6 +20,48 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 describe("restricted operator screen", () => {
+  it("opt-in file mode submits reviewed bytes and exposes only a separate worker command", async () => {
+    vi.stubEnv("VITE_GATHER_PILOT_PUBLIC_KEY", "sb_publishable_test");
+    vi.stubEnv("VITE_GATHER_PILOT_TEXT_FILES", "1");
+    vi.mocked(signInPilot).mockResolvedValue("test-token");
+    const response = (value: unknown, status = 200) =>
+      new Response(JSON.stringify(value), {
+        status,
+        headers: { "Content-Type": "application/json" },
+      });
+    const send = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(response({ items: [], next_cursor: null }))
+      .mockResolvedValueOnce(
+        response({ source_id: ID, version_id: ID, job_id: ID }, 202),
+      );
+    vi.stubGlobal("fetch", send);
+    render(<OperatorPilot />);
+    fireEvent.change(screen.getByLabelText("Test account password"), {
+      target: { value: "synthetic" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Sign in to pilot" }));
+    await screen.findByText(/No saved sources are visible/);
+    fireEvent.change(screen.getByLabelText("Choose a TXT or Markdown file"), {
+      target: {
+        files: [new File(["# Selected\r\nExact bytes"], "selected.md")],
+      },
+    });
+    await screen.findByText("selected.md");
+    expect(send).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(screen.getByRole("button", { name: "Save selected file" }));
+    await screen.findByText("not checked");
+    const payload = JSON.parse(send.mock.calls[1][1]?.body as string);
+    expect(payload.confirm_cloud_storage).toBe(true);
+    expect(payload.media).toBe("text/markdown");
+    expect(atob(payload.content_base64)).toBe("# Selected\r\nExact bytes");
+    expect(screen.getByText(/-TextFiles/).textContent).toContain(ID);
+    expect(screen.getByLabelText("Search your saved text")).toBeTruthy();
+    expect(
+      send.mock.calls.map(([url]) => String(url).split("/").pop()),
+    ).toEqual(["list", "import"]);
+  });
   it("has labeled controls and makes no request without operator configuration", () => {
     vi.stubEnv("VITE_GATHER_PILOT_PUBLIC_KEY", "");
     const send = vi.fn();

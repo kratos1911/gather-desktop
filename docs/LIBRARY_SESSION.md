@@ -1,3 +1,5 @@
+26 October: import scope validation now runs after Auth and before admission. Only the trusted PilotSession with TextFiles opt-in accepts confirmed selected-file imports; generic LibrarySession rejects that extension. See PRIVATE_TEXT_FILES.md.
+
 26 October: list_sources verifies Auth on every page and preserves the same bearer for the metadata RPC. Cursors only carry position; SQL independently derives ownership. See SAVED_LIBRARY.md.
 
 # Authenticated library boundary

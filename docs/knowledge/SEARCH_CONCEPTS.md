@@ -3,6 +3,15 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## File names and confirmations are not trust boundaries
+
+Attackers can craft file names **and** contents. Validate bounded actual bytes,
+UTF-8 and the text contract on the backend. Hashing pins received bytes; it does
+not prove they are safe. A UI confirmation expresses intent but cannot activate
+server privileges: trusted operator configuration and verified ownership still
+control admission. A later HTTP refusal cannot erase an earlier uncertain send;
+retain its request ID until the outcome is resolved. See [[docs/PRIVATE_TEXT_FILES]].
+
 ## A cursor is a position, not permission
 
 A verified session identifies the caller; SQL must still restrict every page to

@@ -1,3 +1,7 @@
+## 26 October: private text-file import preparation
+
+Implemented real browser file selection, bounded UTF-8/plain preview, per-file cloud disclosure/confirmation, authoritative server opt-in, existing tokenizer budget preflight, explicit private queries/worker mode and safe uncertain retries. 37 backend and 43 frontend checks; build/lint/format pass. Browser local selection verified; hosted selected-file save/processing unverified. Fixed desktop TEMP/TMP on D: after a concrete C: temporary-file startup failure. Native assets unchanged. Evidence: docs/PRIVATE_TEXT_FILES.md.
+
 ## 26 October: saved library restoration
 
 Local acceptance complete: authenticated metadata listing, bounded keyset pages, status/publication separation and reauthentication restoration. 27 backend/HTTP, 28 SQL and 30 frontend checks; build/lint/format pass. Migration 9 applied and body/grants verified after approval. Pilot-A hosted sign-in/list restoration and metadata refresh observed; hosted B/negative matrix remains unverified. No inference. Native assets match existing build. See docs/SAVED_LIBRARY.md.
