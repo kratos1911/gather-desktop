@@ -15,6 +15,7 @@ from services.worker.embedding_client import embed_texts, Limits
 from services.worker.search_context import (
     MAX_CANDIDATES, MAX_SOURCES, Hit, Passage, Snapshot, assemble_context,
 )
+from services.worker.source_listing import page, parameters
 
 
 class SearchError(Exception):
@@ -28,7 +29,7 @@ def _uuid(value):
 
 
 def search(query, *, api, provider, limit=20, cancel=None):
-    """One query embedding, one ranking call, at most five version-bound reads.
+    """Owned metadata preflight, at most one embedding/ranking and five reads.
 
     No automatic retries, model startup, synthetic fallback or owner payload.
     Cancellation is checked between calls and forwarded to inference. Transport
@@ -58,6 +59,18 @@ def search(query, *, api, provider, limit=20, cancel=None):
             raise SearchError('invalid_query') from None
         # Auth verifies the bearer session before any inference is requested.
         owner = _uuid(call('GET', '/auth/v1/user')['id'])
+
+        # Reuse the owner-scoped metadata contract before spending inference.
+        # Only a complete page proves emptiness. If there may be more sources,
+        # preserve normal search rather than miss a publication on a later page.
+        stage = 'retrieval'
+        listing = page(call('POST','/rest/v1/rpc/list_library_sources',parameters()))
+        if listing['next_cursor'] is None and not any(
+                row['published_version_id'] is not None for row in listing['items']):
+            active()
+            context = assemble_context(owner,[],[])
+            active()
+            return context
 
         def send(_body):
             active()

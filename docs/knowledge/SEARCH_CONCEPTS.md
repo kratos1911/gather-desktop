@@ -3,6 +3,14 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## An empty catalogue needs no query embedding
+
+Verify the session and owned publication metadata before spending inference.
+If a complete bounded page proves no published documents, return empty without
+calling the model. This is an eligibility check, not a replacement for semantic
+ranking. An incomplete first page cannot prove emptiness; a publication may be
+later. Database failure is not an empty catalogue. See [[docs/EMPTY_LIBRARY_SEARCH]].
+
 ## Cleanup can retain a replay guard without retaining document content
 
 Tombstoning hides a source; final cleanup removes its active content and jobs.

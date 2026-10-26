@@ -1,3 +1,5 @@
+26 October: query coordination now checks bounded owner-scoped publication metadata before inference. Empty complete pages return no results without model work; see EMPTY_LIBRARY_SEARCH.md.
+
 26 October: PRIVATE_TEXT_FILES.md adds explicitly enabled private operator file selection/admission through the existing parser, tokenizer, source/job/publication flow. No new database subsystem, migration or inference configuration.
 
 26 October: saved-library metadata listing and reauthentication restoration reuse the existing session/PostgREST boundaries. See SAVED_LIBRARY.md for the cursor, status and verification contracts.

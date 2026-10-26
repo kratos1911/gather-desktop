@@ -42,11 +42,17 @@ class Session:
             self.docs[sid] = [dict(common, body=text, passages=passages)]
             self.rows.append(dict(common, passage_id='p2', start_offset=8, end_offset=17,
                                   body=text[8:17], similarity=1 - i * .01))
+        self.listing = [dict(source_id=sid,title='Synthetic text',kind='file',
+            created_at='2026-10-26T01:00:00.000001Z',published_version_id=docs[0]['version_id'],
+            processing_version_id=docs[0]['version_id'],job_id=docs[0]['version_id'],state='ready',attempts=1,error_code=None)
+            for sid,docs in sorted(self.docs.items(),reverse=True)]
 
     def __call__(self, method, path, payload):
         self.calls.append((method, path, copy.deepcopy(payload)))
         if path == '/auth/v1/user':
             return {'id': OWNER}
+        if path.endswith('list_library_sources'):
+            return copy.deepcopy(self.listing[:payload['p_limit']+1])
         if path.endswith('search_published_text'):
             return copy.deepcopy(self.rows)
         return copy.deepcopy(self.docs[payload['p_source']])
@@ -69,7 +75,8 @@ class SearchTests(unittest.TestCase):
         self.assertEqual(self.provider.counted, [QUERY_TEMPLATE.format(text='find stars')])
         self.assertEqual(self.provider.calls, [{'role': 'query', 'texts': ['find stars']}])
         self.assertEqual(self.api.calls[0][1], '/auth/v1/user')
-        self.assertNotIn('owner', self.api.calls[1][2])
+        self.assertEqual(self.api.calls[1][1],'/rest/v1/rpc/list_library_sources')
+        for call in self.api.calls[1:]: self.assertNotIn('owner',call[2])
 
     def test_invalid_queries_do_no_io(self):
         for query in ('', ' ', 'a' * 8193, '\ud800', None):
@@ -86,7 +93,7 @@ class SearchTests(unittest.TestCase):
         with self.assertRaises(SearchError):
             self.run_search()
         self.assertEqual(self.provider.calls, [])
-        self.assertEqual(len(self.api.calls), 1)
+        self.assertEqual(len(self.api.calls), 2)  # Auth + metadata, no inference.
 
     def test_auth_failure_prevents_inference_and_redacts(self):
         def denied(*args):
@@ -112,7 +119,7 @@ class SearchTests(unittest.TestCase):
         self.api = rejected
         with self.assertRaisesRegex(SearchError,'^library_unavailable$'):
             self.run_search()
-        self.assertEqual([call[1] for call in calls],['/auth/v1/user','/rest/v1/rpc/search_published_text'])
+        self.assertEqual([call[1] for call in calls],['/auth/v1/user','/rest/v1/rpc/list_library_sources','/rest/v1/rpc/search_published_text'])
 
     def test_bad_embeddings_never_reach_search(self):
         mutations = [dict(revision='wrong'), dict(model='wrong'), dict(dimensions=256),
@@ -125,7 +132,7 @@ class SearchTests(unittest.TestCase):
                 self.provider.result.update(change)
                 with self.assertRaises(SearchError):
                     self.run_search()
-                self.assertEqual(len(self.api.calls), 1)
+                self.assertEqual([call[1] for call in self.api.calls],['/auth/v1/user','/rest/v1/rpc/list_library_sources'])
 
     def test_provider_error_not_retried(self):
         def failed(*args, **kwargs):
@@ -139,7 +146,39 @@ class SearchTests(unittest.TestCase):
     def test_empty_search_does_not_fetch_snapshots(self):
         self.api.rows = []
         self.assertEqual(self.run_search()['windows'], [])
-        self.assertEqual(len(self.api.calls), 2)
+        self.assertEqual(len(self.api.calls), 3)  # Published data exists, but ranker found no hits.
+
+    def test_empty_or_unpublished_library_skips_tokenizer_and_model(self):
+        for count in (0,1):
+            self.api = Session(count)
+            for row in self.api.listing:
+                row.update(published_version_id=None,state='queued')
+            result = self.run_search()
+            self.assertEqual(result['windows'],[])
+            self.assertEqual(result['utf8_bytes'],0)
+            self.assertEqual(self.provider.calls,[])
+            self.assertEqual(self.provider.counted,[])
+            self.assertEqual([call[1] for call in self.api.calls],['/auth/v1/user','/rest/v1/rpc/list_library_sources'])
+
+    def test_unknown_or_invalid_metadata_is_not_treated_as_an_empty_library(self):
+        self.api.listing[0]['private_original']='must not be exposed'
+        with self.assertRaisesRegex(SearchError,'^library_unavailable$'): self.run_search()
+        self.assertEqual(self.provider.calls,[])
+        self.setUp()
+        session = self.api
+        def unavailable(method,path,payload):
+            if path.endswith('list_library_sources'): raise RuntimeError('private database details')
+            return session(method,path,payload)
+        self.api = unavailable
+        with self.assertRaisesRegex(SearchError,'^library_unavailable$'): self.run_search()
+        self.assertEqual(self.provider.calls,[])
+
+    def test_incomplete_first_page_does_not_hide_a_later_published_source(self):
+        self.api = Session(22)
+        for row in self.api.listing[:-1]: row.update(published_version_id=None,state='queued')
+        self.api.rows = self.api.rows[:1]  # This publication is beyond the first metadata page.
+        self.assertEqual(len(self.run_search()['windows']),1)
+        self.assertEqual(len(self.provider.calls),1)
 
     def test_reader_race_drops_stale_without_redirect_or_retry(self):
         for _reason in ('deleted', 'replaced'):
@@ -148,7 +187,7 @@ class SearchTests(unittest.TestCase):
             result = self.run_search()
             self.assertEqual(result['windows'], [])
             self.assertEqual(result['omitted_sources'][0]['reason'], 'no_longer_available')
-            self.assertEqual(len(self.api.calls), 3)
+            self.assertEqual(len(self.api.calls), 4)
 
     def test_reader_integrity_and_identity_fail_closed(self):
         for change in (dict(version_id=OWNER), dict(source_id=OWNER), dict(source_sha256='0'*64),
@@ -175,7 +214,7 @@ class SearchTests(unittest.TestCase):
         result = self.run_search()
         self.assertEqual(len(result['windows']), 5)
         self.assertEqual(len(result['omitted_sources']), 2)
-        self.assertEqual(len(self.api.calls), 7)  # Auth + rank + five reads.
+        self.assertEqual(len(self.api.calls), 8)  # Auth + metadata + rank + five reads.
         self.api.rows[-1]['model_revision'] = 'wrong'
         with self.assertRaises(SearchError):
             self.run_search()
@@ -194,7 +233,7 @@ class SearchTests(unittest.TestCase):
         self.provider.infer = cancelled
         with self.assertRaisesRegex(SearchError, '^cancelled$'):
             self.run_search(cancel=cancel)
-        self.assertEqual(len(self.api.calls), 1)
+        self.assertEqual(len(self.api.calls), 2)
 
     def test_seed_rank_retains_original_candidate_position(self):
         self.api = Session(2)

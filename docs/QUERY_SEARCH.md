@@ -1,12 +1,17 @@
 # Query-to-context coordinator
 
+26 October: [EMPTY_LIBRARY_SEARCH.md](EMPTY_LIBRARY_SEARCH.md) adds an existing
+owner-scoped metadata read before inference. A complete page without publication
+returns empty without model work; incomplete pages preserve ordinary search.
+
 16 October 2026. `services/worker/search.py` connects existing query inference,
 published RPCs and `source-neighbors-v1`. This is an internal callable, not a new
 HTTP route or deployed service. Completion evidence lives in TASKS.md.
 
 ## Flow
 
-Query -> validate -> verify session through Auth -> one query embedding ->
+Query -> validate -> verify session through Auth -> published metadata check ->
+empty if proven unpublished, otherwise one query embedding ->
 owner-scoped published vector search -> exact-version reads -> bounded citations.
 
 `search(query, api=..., provider=..., limit=20, cancel=...)` requires explicit

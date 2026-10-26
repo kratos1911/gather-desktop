@@ -102,6 +102,15 @@ export default function OperatorPilot() {
     }
   }
   const error = localError ?? state.error;
+  const readyImport =
+    state.imported !== null &&
+    state.processing?.state === "ready" &&
+    state.processing.version_id === state.imported.version_id;
+  const noPublishedSources =
+    !readyImport &&
+    state.libraryStatus === "ready" &&
+    state.nextCursor === null &&
+    state.sources.every((source) => source.published_version_id === null);
   return (
     <section className="content operator-pilot">
       <div className="screen-heading">
@@ -373,13 +382,22 @@ export default function OperatorPilot() {
             )}
             <button
               className="pilot-action"
-              disabled={state.busy || (textFiles && !query.trim())}
+              disabled={
+                state.busy || noPublishedSources || (textFiles && !query.trim())
+              }
               onClick={() =>
                 act(() => workspace.search(textFiles ? query : PILOT_QUERY))
               }
             >
               Search saved notes
             </button>
+            {noPublishedSources && (
+              <p role="status">
+                No published documents are available to search. Import a file
+                and finish processing it, then refresh its status or the saved
+                library. No model request is needed for an empty library.
+              </p>
+            )}
             {state.results && !state.results.windows.length && (
               <p role="status">
                 No matching published source is visible to this account.

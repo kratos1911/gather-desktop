@@ -20,6 +20,30 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 describe("restricted operator screen", () => {
+  it("blocks empty-library search without calling the search endpoint", async () => {
+    vi.stubEnv("VITE_GATHER_PILOT_PUBLIC_KEY", "sb_publishable_test");
+    vi.mocked(signInPilot).mockResolvedValue("test-token");
+    const send = vi.fn<typeof fetch>().mockResolvedValue(
+      new Response(JSON.stringify({ items: [], next_cursor: null }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+    vi.stubGlobal("fetch", send);
+    render(<OperatorPilot />);
+    fireEvent.change(screen.getByLabelText("Test account password"), {
+      target: { value: "synthetic" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Sign in to pilot" }));
+    await screen.findByText(/No published documents are available/);
+    const button = screen.getByRole("button", {
+      name: "Search saved notes",
+    }) as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+    fireEvent.click(button);
+    expect(send).toHaveBeenCalledTimes(1);
+    expect(String(send.mock.calls[0][0])).toMatch(/\/v1\/list$/);
+  });
   it("opt-in file mode submits reviewed bytes and exposes only a separate worker command", async () => {
     vi.stubEnv("VITE_GATHER_PILOT_PUBLIC_KEY", "sb_publishable_test");
     vi.stubEnv("VITE_GATHER_PILOT_TEXT_FILES", "1");
@@ -243,7 +267,25 @@ it("deletes a found note when the import receipt was lost on page refresh", asyn
     });
   const send = vi
     .fn<typeof fetch>()
-    .mockResolvedValueOnce(response({ items: [], next_cursor: null }))
+    .mockResolvedValueOnce(
+      response({
+        items: [
+          {
+            source_id: ID,
+            title,
+            kind: "file",
+            created_at: "2026-10-26T01:00:00.000001Z",
+            published_version_id: ID,
+            processing_version_id: ID,
+            job_id: ID,
+            state: "ready",
+            attempts: 1,
+            error_code: null,
+          },
+        ],
+        next_cursor: null,
+      }),
+    )
     .mockResolvedValueOnce(
       response({
         version: "source-neighbors-v1",
@@ -270,7 +312,7 @@ it("deletes a found note when the import receipt was lost on page refresh", asyn
     target: { value: "synthetic" },
   });
   fireEvent.click(screen.getByRole("button", { name: "Sign in to pilot" }));
-  await screen.findByText(/No saved sources are visible/);
+  await screen.findByRole("heading", { name: title });
   fireEvent.click(
     await screen.findByRole("button", { name: "Search saved notes" }),
   );

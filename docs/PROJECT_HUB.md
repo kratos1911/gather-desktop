@@ -2,7 +2,7 @@
 tags: [gather, project]
 ---
 # Gather project hub
-CURRENT: [[docs/PRIVATE_TEXT_FILES|Selected synthetic Markdown lifecycle verified through approved final cleanup; active content and processing rows removed, replay guard retained]]. Earlier entries below are historical checkpoints.
+CURRENT: [[docs/EMPTY_LIBRARY_SEARCH|Search skips inference when owned metadata proves no publication; actual empty-state UI verified]]. The selected-file lifecycle remains complete through cleanup in [[docs/PRIVATE_TEXT_FILES]]. Earlier entries below are historical checkpoints.
 
 
 Latest: [[docs/OPERATOR_LIBRARY_PILOT|Delete control added to search results and verified in current UI]].

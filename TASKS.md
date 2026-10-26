@@ -1,3 +1,7 @@
+## 26 October: empty-publication search guard
+
+Reused owned listing metadata before query inference and added an explanatory disabled search state. 41 backend/HTTP and 44 frontend checks pass; final search-only 18 checks, build/lint/format pass. Actual owned metadata refresh confirmed no publications and cleared the stale model error without inference. Incomplete pages remain searchable; failed metadata is not treated as empty. Underlying model-availability cause remains unconfirmed. Evidence: docs/EMPTY_LIBRARY_SEARCH.md.
+
 ## 26 October: private text-file pilot
 
 Implemented real browser file selection, bounded UTF-8/plain preview, per-file cloud disclosure/confirmation, authoritative server opt-in, existing tokenizer budget preflight, explicit private queries/worker mode and safe uncertain retries. 37 backend and 43 frontend checks; build/lint/format pass. One selected synthetic Markdown file now passed hosted save/publication, custom search and exact saved-text opening. Worker receipt records one real model call; no repeated inference during evidence update. User tombstoned this source and explicitly approved final cleanup. Finalizer=true and read-only content/processing absence checks pass; minimal replay guard retained. Selected-file lifecycle verified through cleanup. Fixed desktop TEMP/TMP on D: after a concrete C: temporary-file startup failure. Native assets unchanged. Evidence and IDs: docs/PRIVATE_TEXT_FILES.md.

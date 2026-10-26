@@ -1,3 +1,7 @@
+## 26 October: prevent inference after final publication cleanup
+
+The reported model error exposed confirmed embedding-before-availability ordering. Added a bounded owner-scoped publication preflight and UI empty state. Focused checks and actual metadata-only browser refresh pass. No new model, startup probe, warming, migration or Docker workload. Exact prior model failure not established by recent cloud status logs. See EMPTY_LIBRARY_SEARCH.md.
+
 ## 26 October: selected Markdown cleanup verified
 
 User screenshot confirms tombstone for e170c166-02e6-4733-9deb-30b83104c206, then user explicitly approved permanent cleanup. Existing Gather finalizer returned true once. Read-only checks confirm content and processing rows removed; minimal replay guard intentionally retained. Local test file and older unfinished job untouched. No code/test/model/worker rerun. Evidence: PRIVATE_TEXT_FILES.md.

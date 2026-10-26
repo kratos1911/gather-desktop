@@ -147,7 +147,9 @@ class FlowTests(unittest.TestCase):
             self.assertEqual(call('search',{'query':'database security'},'b')['windows'],[])
             self.assertTrue(call('delete',{'source_id':sid}))
             self.assertEqual(call('list',{'limit':20})['items'],[])
+            model_calls = len(provider.calls)
             self.assertEqual(call('search',{'query':'database security'})['windows'],[])
+            self.assertEqual(len(provider.calls),model_calls)
             self.assertEqual(WorkerRun(store,provider).run()['outcomes'],[{'state':'idle'}])
         finally:
             server.servers[0].get_loop().call_soon_threadsafe(app.stop)
