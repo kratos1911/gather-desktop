@@ -17,7 +17,7 @@ const messages: Record<string, string> = {
   model_unavailable:
     "The model service or its operator token is unavailable. Restart the API server and check Cloud Run readiness before trying again.",
   library_unavailable:
-    "The search database could not complete the request. Check the operator output.",
+    "The library database could not complete the request. Check the operator output; source listing also requires the approved listing migration.",
   busy: "An operation is still finishing. Wait before trying again.",
   timeout:
     "The deadline was reached. An import may still have been saved; use Retry same import.",
@@ -79,7 +79,10 @@ export default function OperatorPilot() {
     setLocalError(null);
     try {
       const token = await signInPilot(email, value, key, controller.signal);
-      if (!controller.signal.aborted) workspace.setSession(token);
+      if (!controller.signal.aborted) {
+        workspace.setSession(token);
+        await workspace.loadSources();
+      }
     } catch (error) {
       if (!controller.signal.aborted)
         setLocalError(
@@ -152,6 +155,101 @@ export default function OperatorPilot() {
               Disconnect
             </button>
           </div>
+          <section
+            className="pilot-step"
+            aria-labelledby="saved-library-heading"
+          >
+            <h2 id="saved-library-heading">Saved library</h2>
+            <p>
+              Saved sources reload after sign-in. Refreshing this list makes no
+              model requests.
+            </p>
+            <button
+              className="back"
+              disabled={state.busy}
+              onClick={() => act(() => workspace.loadSources())}
+            >
+              Refresh saved library
+            </button>
+            {state.libraryStatus === "loading" && (
+              <p role="status">Loading saved sources…</p>
+            )}
+            {state.libraryStatus === "error" && (
+              <p role="status">
+                The library could not load.{" "}
+                {state.nextCursor
+                  ? "Use Load more saved sources to retry this page, or refresh the library to start over."
+                  : "Use Refresh saved library to retry."}
+              </p>
+            )}
+            {state.libraryStatus === "ready" && !state.sources.length && (
+              <p role="status">No saved sources are visible to this account.</p>
+            )}
+            <ul className="pilot-results" aria-label="Saved sources">
+              {state.sources.map((source) => (
+                <li key={source.source_id}>
+                  <h3>{source.title}</h3>
+                  <p>
+                    {source.published_version_id
+                      ? "Published text available. "
+                      : "No published text. "}
+                    {source.published_version_id &&
+                    source.published_version_id !== source.processing_version_id
+                      ? "Replacement processing: "
+                      : "Processing: "}
+                    {source.state ?? "not started"}
+                    {source.attempts !== null &&
+                      ` · attempts ${source.attempts}/3`}
+                    {source.error_code && ` · ${source.error_code}`}
+                  </p>
+                  {source.job_id &&
+                    (source.state === "queued" ||
+                      source.state === "processing") && (
+                      <p>
+                        Operator job: <code>{source.job_id}</code>. Refresh the
+                        saved library before deciding whether to run a worker.
+                      </p>
+                    )}
+                  {source.published_version_id && (
+                    <button
+                      className="back"
+                      disabled={state.busy}
+                      aria-label={`Open saved ${source.title}`}
+                      onClick={() =>
+                        act(() =>
+                          workspace.open(
+                            source.source_id,
+                            source.published_version_id!,
+                          ),
+                        )
+                      }
+                    >
+                      Open published text
+                    </button>
+                  )}
+                  <button
+                    className="back"
+                    disabled={state.busy}
+                    aria-label={`Delete saved ${source.title}`}
+                    onClick={() =>
+                      act(() => workspace.delete(source.source_id))
+                    }
+                  >
+                    Delete source
+                  </button>
+                </li>
+              ))}
+            </ul>
+            {state.nextCursor && (
+              <button
+                className="back"
+                disabled={state.busy}
+                onClick={() => act(() => workspace.loadSources(true))}
+              >
+                Load more saved sources
+              </button>
+            )}
+          </section>
           <section className="pilot-step">
             <h2>1. Import the test note</h2>
             <p>{PILOT_NOTE}</p>
@@ -289,9 +387,10 @@ export default function OperatorPilot() {
             </section>
           )}
           <p className="pilot-disclosure">
-            This view keeps state only for the current connection. Disconnecting
-            clears local results; it does not delete server data or revoke other
-            sessions. No automatic model requests or processing retries.
+            Credentials and results stay in memory. After refresh, sign in again
+            to reload saved sources. Disconnecting clears local data; it does
+            not delete server data or revoke other sessions. No automatic model
+            requests or processing retries.
           </p>
         </>
       )}

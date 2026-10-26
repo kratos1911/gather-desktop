@@ -1,3 +1,5 @@
+26 October: list_sources verifies Auth on every page and preserves the same bearer for the metadata RPC. Cursors only carry position; SQL independently derives ownership. See SAVED_LIBRARY.md.
+
 # Authenticated library boundary
 
 `services/worker/library_session.py` is an internal application service, with no

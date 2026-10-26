@@ -1,3 +1,5 @@
+26 October: sixth POST route /v1/list accepts optional limit (1..20) and cursor (null or base64url <=256 characters). It returns validated owned metadata and next_cursor without inference. Existing admission/CORS/deadlines apply. See SAVED_LIBRARY.md.
+
 24 October update: the internal adapter now has an operator-only loopback server and a restricted development UI. See OPERATOR_LIBRARY_PILOT.md for actual HTTP evidence, scoped CORS, lifecycle and remaining live verification. Earlier no-listener statements below describe the 22 October checkpoint.
 
 # Application HTTP adapter

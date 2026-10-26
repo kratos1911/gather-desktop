@@ -1,3 +1,7 @@
+## 26 October 2026: saved library restoration
+
+Implemented metadata listing through SQL/session/API/client and the existing operator UI. Focused local acceptance and hosted migration metadata pass; pilot-A hosted sign-in/list restoration and metadata refresh observed; no new hosted B/negative matrix. Source/grant evidence and commands are in SAVED_LIBRARY.md. Docker required tool access escalation; only the disposable task container was used. No model calls, cloud scaling or protected workload changes.
+
 25 October: closed the hosted synthetic TXT flow end to end: imported, worker-ready, queried with real embeddings, opened exact version, tombstoned and physically finalized. User confirmed UI search/open and approved final deletion; cleanup returned true. Cloud Run minimum zero restored. No re-run. Scope one synthetic text, not broad semantic-quality or production-readiness evidence.
 25 October: user found no delete control after reopening the UI because it was conditional on an in-memory import receipt. Added delete to each current-user search result; verified live Chrome shows it beside Open. Tests and frontend/native builds pass. No hosted deletion executed by agent.
 

@@ -3,6 +3,15 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## A cursor is a position, not permission
+
+A verified session identifies the caller; SQL must still restrict every page to
+that caller's ownership. Copying another user's timestamp/UUID cursor can change
+the starting position, never the owner filter. Immutable timestamp plus UUID
+ordering avoids duplicate pages for unchanged data. A published version and a
+new processing target are different facts: replacement failure must not silently
+remove the already published text. See [[docs/SAVED_LIBRARY]].
+
 ## Intended policy is not deployed authorization
 
 Cloud startup can check that an operator's allowed callers match the token

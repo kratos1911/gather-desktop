@@ -9,6 +9,7 @@ from uuid import UUID
 from services.worker.ingestion import submit
 from services.worker.search import search, SearchError
 from services.worker.service_clients import SessionClient
+from services.worker.source_listing import parameters, page
 
 
 class LibraryError(Exception):
@@ -67,6 +68,14 @@ class LibrarySession:
 
     def status(self, source_id):
         return self._rpc('source_processing_status', {'p_source':source_id})
+
+    def list_sources(self, *, limit=20, cursor=None):
+        self._owner()
+        try:
+            rows = self._api('POST','/rest/v1/rpc/list_library_sources',parameters(limit,cursor))
+            return page(rows,limit,cursor)
+        except Exception:
+            raise LibraryError('library_unavailable') from None
 
     def open(self, source_id, version_id):
         return self._rpc('open_published_text', {'p_source':source_id,'p_version':version_id})

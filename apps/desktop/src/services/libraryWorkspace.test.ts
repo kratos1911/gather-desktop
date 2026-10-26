@@ -17,6 +17,95 @@ const setup = () => {
   return { workspace, send };
 };
 describe("library workspace (synthetic transport)", () => {
+  const source = (n: number) => ({
+    source_id: `00000000-0000-0000-0000-${String(n).padStart(12, "0")}`,
+    title: `Saved ${n}`,
+    kind: "file",
+    created_at: "2026-10-26T01:00:00.000001Z",
+    published_version_id: null,
+    processing_version_id: null,
+    job_id: null,
+    state: null,
+    attempts: null,
+    error_code: null,
+  });
+  it("loads bounded pages, retries the same cursor, and removes deleted rows after refresh", async () => {
+    const { workspace, send } = setup();
+    const items = Array.from({ length: 20 }, (_, i) => source(30 - i));
+    send.mockResolvedValueOnce(reply({ items, next_cursor: "fixture_cursor" }));
+    await workspace.loadSources();
+    send.mockRejectedValueOnce(new Error("offline"));
+    await workspace.loadSources(true);
+    expect(workspace.getSnapshot().libraryStatus).toBe("error");
+    expect(workspace.getSnapshot().sources).toHaveLength(20);
+    send.mockResolvedValueOnce(
+      reply({ items: [source(1)], next_cursor: null }),
+    );
+    await workspace.loadSources(true);
+    expect(send.mock.calls[1][1]?.body).toBe(send.mock.calls[2][1]?.body);
+    expect(workspace.getSnapshot().sources).toHaveLength(21);
+    send.mockResolvedValueOnce(reply(true));
+    await workspace.delete(source(30).source_id);
+    expect(
+      workspace
+        .getSnapshot()
+        .sources.some((s) => s.source_id === source(30).source_id),
+    ).toBe(false);
+    send.mockResolvedValueOnce(reply({ items: [], next_cursor: null }));
+    await workspace.loadSources();
+    expect(workspace.getSnapshot().sources).toEqual([]);
+  });
+  it("ignores old-account pages and cancelled replies before a subsequent deletion", async () => {
+    const { workspace, send } = setup();
+    let resolve!: (value: Response) => void;
+    send.mockImplementationOnce(
+      () =>
+        new Promise((done) => {
+          resolve = done;
+        }),
+    );
+    const pending = workspace.loadSources();
+    workspace.setSession("other-user-session");
+    resolve(reply({ items: [source(1)], next_cursor: null }));
+    await pending;
+    expect(workspace.getSnapshot().sources).toEqual([]);
+    send.mockImplementationOnce(
+      () =>
+        new Promise((done) => {
+          resolve = done;
+        }),
+    );
+    const cancelled = workspace.loadSources();
+    workspace.cancel();
+    resolve(reply({ items: [source(1)], next_cursor: null }));
+    await cancelled;
+    send.mockResolvedValueOnce(reply(true));
+    await workspace.delete(source(1).source_id);
+    expect(workspace.getSnapshot().sources).toEqual([]);
+    workspace.setSession(null);
+    expect(workspace.getSnapshot().nextCursor).toBeNull();
+  });
+  it("rejects oversized or inconsistent listing responses", async () => {
+    const { workspace, send } = setup();
+    for (const items of [
+      Array.from({ length: 21 }, (_, i) => source(i)),
+      [
+        {
+          ...source(1),
+          state: "ready",
+          job_id: ID,
+          processing_version_id: ID,
+          attempts: 1,
+        },
+      ],
+      [source(1), source(1)],
+    ]) {
+      send.mockResolvedValueOnce(reply({ items, next_cursor: null }));
+      await workspace.loadSources();
+      expect(workspace.getSnapshot().error).toBe("invalid_response");
+      expect(workspace.getSnapshot().sources).toEqual([]);
+    }
+  });
   it("retains uncertain import and retries the same ID before allowing a new one", async () => {
     const { workspace, send } = setup();
     send.mockRejectedValueOnce(new Error("network"));

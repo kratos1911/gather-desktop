@@ -41,6 +41,12 @@ describe("restricted operator screen", () => {
     vi.mocked(signInPilot).mockResolvedValue("test-token");
     const send = vi
       .fn<typeof fetch>()
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ items: [], next_cursor: null }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      )
       .mockResolvedValue(
         new Response(
           JSON.stringify({ source_id: ID, version_id: ID, job_id: ID }),
@@ -55,14 +61,15 @@ describe("restricted operator screen", () => {
     fireEvent.change(input, { target: { value: "synthetic-password" } });
     fireEvent.click(screen.getByRole("button", { name: "Sign in to pilot" }));
     await screen.findByRole("button", { name: "Import synthetic note" });
+    await screen.findByText(/No saved sources are visible/);
     expect(input.value).toBe("");
     fireEvent.click(
       screen.getByRole("button", { name: "Import synthetic note" }),
     );
     await screen.findByRole("button", { name: "Refresh status" });
     expect(screen.getByText("not checked")).toBeTruthy();
-    expect(send).toHaveBeenCalledTimes(1);
-    expect(JSON.parse(send.mock.calls[0][1]?.body as string).media).toBe(
+    expect(send).toHaveBeenCalledTimes(2);
+    expect(JSON.parse(send.mock.calls[1][1]?.body as string).media).toBe(
       "text/plain",
     );
     fireEvent.click(screen.getByRole("button", { name: "Disconnect" }));
@@ -91,6 +98,7 @@ it("completes status, search, exact source opening and deletion with cleanup not
     });
   const send = vi
     .fn<typeof fetch>()
+    .mockResolvedValueOnce(response({ items: [], next_cursor: null }))
     .mockResolvedValueOnce(
       response({ source_id: ID, version_id: ID, job_id: ID }, 202),
     )
@@ -143,6 +151,7 @@ it("completes status, search, exact source opening and deletion with cleanup not
     target: { value: "synthetic" },
   });
   fireEvent.click(screen.getByRole("button", { name: "Sign in to pilot" }));
+  await screen.findByText(/No saved sources are visible/);
   fireEvent.click(
     await screen.findByRole("button", { name: "Import synthetic note" }),
   );
@@ -171,7 +180,7 @@ it("completes status, search, exact source opening and deletion with cleanup not
       }) as HTMLButtonElement
     ).disabled,
   ).toBe(true);
-  expect(send).toHaveBeenCalledTimes(5);
+  expect(send).toHaveBeenCalledTimes(6);
 });
 
 it("deletes a found note when the import receipt was lost on page refresh", async () => {
@@ -192,6 +201,7 @@ it("deletes a found note when the import receipt was lost on page refresh", asyn
     });
   const send = vi
     .fn<typeof fetch>()
+    .mockResolvedValueOnce(response({ items: [], next_cursor: null }))
     .mockResolvedValueOnce(
       response({
         version: "source-neighbors-v1",
@@ -218,6 +228,7 @@ it("deletes a found note when the import receipt was lost on page refresh", asyn
     target: { value: "synthetic" },
   });
   fireEvent.click(screen.getByRole("button", { name: "Sign in to pilot" }));
+  await screen.findByText(/No saved sources are visible/);
   fireEvent.click(
     await screen.findByRole("button", { name: "Search saved notes" }),
   );
@@ -227,5 +238,98 @@ it("deletes a found note when the import receipt was lost on page refresh", asyn
   await screen.findByText(/Removed from search/);
   expect(screen.getByText(ID)).toBeTruthy();
   expect(screen.queryByText(body)).toBeNull();
+  expect(send).toHaveBeenCalledTimes(3);
+});
+
+it("restores published and failed-replacement metadata after remount, with explicit list retry", async () => {
+  vi.stubEnv("VITE_GATHER_PILOT_PUBLIC_KEY", "sb_publishable_test");
+  vi.mocked(signInPilot).mockResolvedValue("test-token");
+  const entry = {
+    source_id: ID,
+    title: "Restored note",
+    kind: "file",
+    created_at: "2026-10-26T01:00:00.000001Z",
+    published_version_id: ID,
+    processing_version_id: "00000000-0000-0000-0000-000000000002",
+    job_id: ID,
+    state: "failed",
+    attempts: 3,
+    error_code: "invalid_input",
+  };
+  const page = () =>
+    new Response(JSON.stringify({ items: [entry], next_cursor: null }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  const send = vi
+    .fn<typeof fetch>()
+    .mockResolvedValueOnce(page())
+    .mockRejectedValueOnce(new Error("offline"))
+    .mockResolvedValueOnce(page());
+  vi.stubGlobal("fetch", send);
+  const login = () => {
+    fireEvent.change(screen.getByLabelText("Test account password"), {
+      target: { value: "synthetic" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Sign in to pilot" }));
+  };
+  const view = render(<OperatorPilot />);
+  login();
+  await screen.findByRole("heading", { name: "Restored note" });
+  expect(screen.getByText(/Replacement processing: failed/)).toBeTruthy();
+  expect(
+    screen.getByRole("button", { name: "Open saved Restored note" }),
+  ).toBeTruthy();
+  view.unmount();
+  render(<OperatorPilot />);
+  expect(screen.queryByText("Restored note")).toBeNull();
+  login();
+  await screen.findByText(/The library could not load/);
   expect(send).toHaveBeenCalledTimes(2);
+  fireEvent.click(
+    screen.getByRole("button", { name: "Refresh saved library" }),
+  );
+  await screen.findByRole("heading", { name: "Restored note" });
+  expect(
+    send.mock.calls.every(([url]) => String(url).endsWith("/v1/list")),
+  ).toBe(true);
+  const response = (value: unknown) =>
+    new Response(JSON.stringify(value), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  send.mockResolvedValueOnce(
+    response([
+      {
+        source_id: ID,
+        version_id: ID,
+        title: "Restored note",
+        source_sha256: "0".repeat(64),
+        body: "Published text",
+        model_id: "synthetic",
+        model_revision: "fixture",
+        dimensions: 512,
+        passages: [{ id: "fixture", start: 0, end: 14 }],
+      },
+    ]),
+  );
+  fireEvent.click(
+    screen.getByRole("button", { name: "Open saved Restored note" }),
+  );
+  await screen.findByText("Published text");
+  expect(JSON.parse(send.mock.calls[3][1]?.body as string).version_id).toBe(ID);
+  send.mockResolvedValueOnce(response(true));
+  fireEvent.click(
+    screen.getByRole("button", { name: "Delete saved Restored note" }),
+  );
+  await screen.findByText(/Removed from search/);
+  expect(screen.queryByText("Published text")).toBeNull();
+  expect(screen.queryByRole("heading", { name: "Restored note" })).toBeNull();
+  send.mockResolvedValueOnce(response({ items: [], next_cursor: null }));
+  fireEvent.click(
+    screen.getByRole("button", { name: "Refresh saved library" }),
+  );
+  await screen.findByText(/No saved sources are visible/);
+  fireEvent.click(screen.getByRole("button", { name: "Disconnect" }));
+  expect(screen.queryByText("Restored note")).toBeNull();
 });

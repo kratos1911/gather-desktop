@@ -12,7 +12,7 @@
     {
       "id": "source",
       "type": "text",
-      "text": "Save file or link\nHosted text pilot passed; cleanup confirmed\nLoopback HTTP + operator UI implemented\nLocal synthetic checks pass; live UI acceptance pending",
+      "text": "Save file or link\nHosted synthetic text flow completed and cleaned\nLibrary restoration: docs/SAVED_LIBRARY.md\nGeneral file selection remains gated",
       "x": 0,
       "y": 0,
       "width": 330,
@@ -62,6 +62,15 @@
       "y": 440,
       "width": 330,
       "height": 135
+    },
+    {
+      "id": "saved-library",
+      "type": "file",
+      "file": "docs/SAVED_LIBRARY.md",
+      "x": 600,
+      "y": 700,
+      "width": 440,
+      "height": 220
     },
     {
       "id": "chat",
@@ -119,6 +128,13 @@
     }
   ],
   "edges": [
+    {
+      "id": "library-restoration",
+      "fromNode": "results",
+      "fromSide": "bottom",
+      "toNode": "saved-library",
+      "toSide": "top"
+    },
     {
       "id": "e0",
       "fromNode": "source",

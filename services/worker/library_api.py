@@ -15,6 +15,7 @@ from services.worker.library_session import LibrarySession, LibraryError, identi
 from services.worker.service_transport import strict_json, credential
 from services.worker.ingestion import parse
 from services.worker.text_processing import MAX_REQUEST_BYTES, MAX_RESPONSE_BYTES
+from services.worker.source_listing import parameters
 
 ROUTES = {
     '/v1/import': ({'request_id', 'title', 'media', 'content_base64'}, {'source_id'}),
@@ -22,6 +23,7 @@ ROUTES = {
     '/v1/status': ({'source_id'}, set()),
     '/v1/open': ({'source_id', 'version_id'}, set()),
     '/v1/delete': ({'source_id'}, set()),
+    '/v1/list': (set(), {'limit','cursor'}),
 }
 
 
@@ -32,6 +34,8 @@ def validate(path, value):
     for key in ('request_id', 'source_id', 'version_id'):
         if key in value:
             identifier(value[key])
+    if path == '/v1/list':
+        parameters(**value)
     if path == '/v1/import':
         title = value['title']
         if not isinstance(title, str) or not title.strip() or len(title) > 500:
@@ -168,7 +172,7 @@ class LibraryAPI:
                     raise ValueError('invalid_configuration')
                 if cancel.is_set():
                     raise LibraryError('cancelled')
-                method = getattr(session, {'/v1/import':'import_text'}.get(path, path[4:]))
+                method = getattr(session, {'/v1/import':'import_text','/v1/list':'list_sources'}.get(path, path[4:]))
                 if path == '/v1/search':
                     return method(**value, cancel=cancel)
                 return method(**value)

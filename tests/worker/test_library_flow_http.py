@@ -62,6 +62,11 @@ class FixtureStore:
             self.deleted = True
             return True
         if not visible: return []
+        if path.endswith('list_library_sources'):
+            return [dict(source_id=self.item['source_id'],title=self.title,kind='file',
+                created_at='2026-10-26T01:00:00.000001Z',job_id=self.job['id'],
+                processing_version_id=self.item['version_id'],state=self.job['state'],attempts=1,error_code=None,
+                published_version_id=self.item['version_id'] if self.job['state']=='ready' else None)]
         if path.endswith('source_processing_status'):
             if payload['p_source'] != self.item['source_id']: return []
             return [dict(job_id=self.job['id'],version_id=self.item['version_id'],state=self.job['state'],attempts=1,error_code=None)]
@@ -116,9 +121,12 @@ class FlowTests(unittest.TestCase):
             self.assertEqual(call('import',submission),item)
             sid,vid = item['source_id'],item['version_id']
             self.assertEqual(call('status',{'source_id':sid})[0]['state'],'queued')
+            self.assertEqual(call('list',{'limit':20})['items'][0]['state'],'queued')
+            self.assertEqual(call('list',{'limit':20},'b')['items'],[])
             self.assertEqual(call('search',{'query':'database security'})['windows'],[])
             self.assertEqual(WorkerRun(store,provider).run()['outcomes'][0]['state'],'ready')
             self.assertEqual(call('status',{'source_id':sid})[0]['state'],'ready')
+            self.assertEqual(call('list',{'limit':20})['items'][0]['published_version_id'],vid)
             found = call('search',{'query':'database security'})['windows'][0]
             self.assertEqual(found['text'],original)
             self.assertEqual(found['end'],len(original))
@@ -129,6 +137,7 @@ class FlowTests(unittest.TestCase):
                 self.assertEqual(call(route,payload,'b'),expected)
             self.assertEqual(call('search',{'query':'database security'},'b')['windows'],[])
             self.assertTrue(call('delete',{'source_id':sid}))
+            self.assertEqual(call('list',{'limit':20})['items'],[])
             self.assertEqual(call('search',{'query':'database security'})['windows'],[])
             self.assertEqual(WorkerRun(store,provider).run()['outcomes'],[{'state':'idle'}])
         finally:

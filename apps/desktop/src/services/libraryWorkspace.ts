@@ -7,6 +7,7 @@ import {
   type ProcessingStatus,
   type SearchResult,
   type SourceText,
+  type LibrarySource,
 } from "./libraryClient";
 
 export type LibraryState = Readonly<{
@@ -19,6 +20,9 @@ export type LibraryState = Readonly<{
   results: SearchResult | null;
   opened: SourceText | null;
   cleanupSourceId: string | null;
+  sources: LibrarySource[];
+  nextCursor: string | null;
+  libraryStatus: "idle" | "loading" | "ready" | "error";
 }>;
 const initial = (): LibraryState => ({
   signedIn: false,
@@ -30,6 +34,9 @@ const initial = (): LibraryState => ({
   results: null,
   opened: null,
   cleanupSourceId: null,
+  sources: [],
+  nextCursor: null,
+  libraryStatus: "idle",
 });
 
 export class LibraryWorkspace {
@@ -67,6 +74,7 @@ export class LibraryWorkspace {
   private async perform<T>(
     action: (signal: AbortSignal) => Promise<T>,
     commit: (result: T) => void,
+    failed?: () => void,
   ): Promise<void> {
     if (this.state.busy) throw new LibraryClientError("busy");
     if (!this.state.signedIn) throw new LibraryClientError("session_required");
@@ -79,13 +87,15 @@ export class LibraryWorkspace {
       if (generation === this.generation && !controller.signal.aborted)
         commit(value);
     } catch (error) {
-      if (generation === this.generation)
+      if (generation === this.generation) {
         this.update({
           error:
             error instanceof LibraryClientError
               ? error.code
               : "operation_failed",
         });
+        failed?.();
+      }
     } finally {
       if (generation === this.generation) {
         this.request = null;
@@ -128,6 +138,39 @@ export class LibraryWorkspace {
       (rows) => this.update({ processing: rows[0] ?? null }),
     );
   }
+  async loadSources(append = false): Promise<void> {
+    if (this.state.busy) throw new LibraryClientError("busy");
+    if (!this.state.signedIn) throw new LibraryClientError("session_required");
+    const cursor = append ? this.state.nextCursor : null;
+    if (append && cursor === null) return;
+    this.update({
+      libraryStatus: "loading",
+      ...(append
+        ? {}
+        : {
+            sources: [],
+            nextCursor: null,
+            opened: null,
+            results: null,
+          }),
+    });
+    await this.perform(
+      (signal) => this.client.listSources(cursor, signal),
+      (page) => {
+        const existing = append ? this.state.sources : [];
+        const known = new Set(existing.map((source) => source.source_id));
+        this.update({
+          sources: [
+            ...existing,
+            ...page.items.filter((source) => !known.has(source.source_id)),
+          ],
+          nextCursor: page.next_cursor,
+          libraryStatus: "ready",
+        });
+      },
+      () => this.update({ libraryStatus: "error" }),
+    );
+  }
   async search(query: string): Promise<void> {
     // Clear previous results immediately; do not display old hits under a new query.
     if (this.state.busy) throw new LibraryClientError("busy");
@@ -157,6 +200,9 @@ export class LibraryWorkspace {
         // Discard affected result set (byte/citation totals cannot be left stale).
         this.update({
           cleanupSourceId: sourceId,
+          sources: this.state.sources.filter(
+            (source) => source.source_id !== sourceId,
+          ),
           results: this.state.results?.windows.some(
             (w) => w.source_id === sourceId,
           )

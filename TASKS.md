@@ -1,3 +1,7 @@
+## 26 October: saved library restoration
+
+Local acceptance complete: authenticated metadata listing, bounded keyset pages, status/publication separation and reauthentication restoration. 27 backend/HTTP, 28 SQL and 30 frontend checks; build/lint/format pass. Migration 9 applied and body/grants verified after approval. Pilot-A hosted sign-in/list restoration and metadata refresh observed; hosted B/negative matrix remains unverified. No inference. Native assets match existing build. See docs/SAVED_LIBRARY.md.
+
 ## 25 October: hosted TXT flow complete
 
 User screenshots confirm semantic search and exact-version open. User then authorized final physical cleanup for source7a7993cc-67fc-4da7-8707-0bfa79176350; Supabase finalizer returned true. Worker was exact-job targeted and readiness guarded, restored min0, one real embedding. No repeated import/worker. Evidence: docs/OPERATOR_LIBRARY_PILOT.md and output/operator-pilot/cleanup-verified-20261025.png.

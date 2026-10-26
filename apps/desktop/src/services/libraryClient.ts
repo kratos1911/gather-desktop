@@ -11,6 +11,19 @@ export type ProcessingStatus = {
   attempts: number;
   error_code: string | null;
 };
+export type LibrarySource = {
+  source_id: string;
+  title: string;
+  kind: "file" | "bookmark";
+  created_at: string;
+  published_version_id: string | null;
+  processing_version_id: string | null;
+  job_id: string | null;
+  state: "queued" | "processing" | "ready" | "failed" | "cancelled" | null;
+  attempts: number | null;
+  error_code: string | null;
+};
+export type SourcePage = { items: LibrarySource[]; next_cursor: string | null };
 export type SearchWindow = {
   source_id: string;
   version_id: string;
@@ -232,6 +245,88 @@ export class LibraryClient {
         error_code: value.error_code === null ? null : text(value.error_code),
       };
     });
+  }
+
+  async listSources(
+    cursor: string | null = null,
+    signal?: AbortSignal,
+  ): Promise<SourcePage> {
+    if (
+      cursor !== null &&
+      (!/^[A-Za-z0-9_-]+$/.test(cursor) || cursor.length > 256)
+    )
+      throw new LibraryClientError("invalid_cursor");
+    const result = record(
+      await this.request("list", { limit: 20, cursor }, signal),
+    );
+    const next = result.next_cursor;
+    if (
+      next !== null &&
+      (typeof next !== "string" ||
+        next.length > 256 ||
+        !/^[A-Za-z0-9_-]+$/.test(next) ||
+        next === cursor)
+    )
+      throw new LibraryClientError("invalid_response");
+    const items = array(result.items, 20).map((row): LibrarySource => {
+      const value = record(row);
+      const title = text(value.title),
+        created = text(value.created_at);
+      const state = value.state as LibrarySource["state"];
+      if (
+        !title.trim() ||
+        Array.from(title).length > 500 ||
+        !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}Z$/.test(created) ||
+        !Number.isFinite(Date.parse(created)) ||
+        !["file", "bookmark"].includes(text(value.kind)) ||
+        (state !== null &&
+          !["queued", "processing", "ready", "failed", "cancelled"].includes(
+            state,
+          ))
+      )
+        throw new LibraryClientError("invalid_response");
+      const source: LibrarySource = {
+        source_id: id(value.source_id),
+        title,
+        kind: value.kind as LibrarySource["kind"],
+        created_at: created,
+        published_version_id:
+          value.published_version_id === null
+            ? null
+            : id(value.published_version_id),
+        processing_version_id:
+          value.processing_version_id === null
+            ? null
+            : id(value.processing_version_id),
+        job_id: value.job_id === null ? null : id(value.job_id),
+        state,
+        attempts: value.attempts === null ? null : integer(value.attempts),
+        error_code: value.error_code === null ? null : text(value.error_code),
+      };
+      if (
+        (source.job_id === null
+          ? [
+              source.processing_version_id,
+              state,
+              source.attempts,
+              source.error_code,
+            ].some((v) => v !== null)
+          : source.processing_version_id === null ||
+            state === null ||
+            source.attempts === null ||
+            source.attempts > 3) ||
+        (state === "ready" &&
+          source.published_version_id !== source.processing_version_id)
+      )
+        throw new LibraryClientError("invalid_response");
+      return source;
+    });
+    if (
+      new Set(items.map((item) => item.source_id)).size !== items.length ||
+      (next !== null && items.length !== 20)
+    )
+      throw new LibraryClientError("invalid_response");
+    return { items, next_cursor: next };
   }
 
   async search(query: string, signal?: AbortSignal): Promise<SearchResult> {

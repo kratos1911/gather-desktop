@@ -1,5 +1,6 @@
 """Disposable PostgreSQL ownership checks. No host ports, volumes or real data."""
 from pathlib import Path
+import argparse
 import subprocess
 import time
 import uuid
@@ -16,6 +17,9 @@ def run(*args, input=None, timeout=60):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--listing-only',action='store_true',help='Apply schema and run only source listing acceptance checks.')
+    args = parser.parse_args()
     # Fail clearly before creating anything if Docker is unavailable.
     run('info', '--format', '{{.ServerVersion}}', timeout=15)
     name = 'gather-db-check-' + uuid.uuid4().hex
@@ -36,15 +40,20 @@ def main():
             raise RuntimeError('Disposable database did not become ready')
         files = [ROOT / 'tests/database/bootstrap.sql',
                  *sorted((ROOT / 'supabase/migrations').glob('*.sql')),
+                 ROOT / 'tests/database/source_listing.sql']
+        files += ([] if args.listing_only else [
                  ROOT / 'tests/database/ownership.sql',
                  ROOT / 'tests/database/lifecycle.sql',
-                 ROOT / 'tests/database/ingestion_jobs.sql']
+                 ROOT / 'tests/database/ingestion_jobs.sql'])
         result = run('exec', '-i', name, 'psql', '-X', '-U', 'postgres',
                      '-v', 'ON_ERROR_STOP=1', input='\n'.join(
                          path.read_text(encoding='utf-8') for path in files))
         for line in result.stderr.splitlines():
             if 'PASS:' in line:
                 print(line)
+        if args.listing_only:
+            print('Listing SQL checks passed. Auth is a test-only claim shim; hosted Auth/PostgREST is unverified.')
+            return
         concurrency_checks(name)
         ingestion_concurrency_checks(name)
         from check_targeted_claim import targeted_claim_checks

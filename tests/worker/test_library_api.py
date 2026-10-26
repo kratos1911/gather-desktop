@@ -15,7 +15,7 @@ ID = '00000000-0000-0000-0000-000000000001'
 class APITests(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.session = Mock(spec=LibrarySession)
-        for name in ('import_text', 'search', 'status', 'open', 'delete'):
+        for name in ('import_text', 'search', 'status', 'open', 'delete', 'list_sources'):
             getattr(self.session, name).return_value = {'ok': True}
         self.factory = Mock(return_value=self.session)
         self.app = LibraryAPI(self.factory)
@@ -35,19 +35,25 @@ class APITests(unittest.IsolatedAsyncioTestCase):
         await asyncio.sleep(0)
         return output
 
-    async def test_all_five_routes(self):
+    async def test_all_library_routes(self):
         cases = [('/v1/import', {'request_id':ID,'title':'Note','media':'text/plain',
                   'content_base64':base64.b64encode(b'hello').decode()},202),
                  ('/v1/search',{'query':'security'},200),
                  ('/v1/status',{'source_id':ID},200),
                  ('/v1/open',{'source_id':ID,'version_id':ID},200),
-                 ('/v1/delete',{'source_id':ID},200)]
+                 ('/v1/delete',{'source_id':ID},200),
+                 ('/v1/list',{'limit':20,'cursor':None},200)]
         for path, value, status in cases:
             with self.subTest(path=path):
                 result = await self.request(path,value)
                 self.assertEqual(result[0]['status'],status)
         self.assertEqual(self.session.import_text.call_args.kwargs['original'], b'hello')
         self.assertIn('cancel',self.session.search.call_args.kwargs)
+
+    async def test_listing_rejects_invalid_cursor_limits_and_owner_before_work(self):
+        for value in ({'owner':ID},{'limit':True},{'limit':21},{'cursor':'x'*257},{'cursor':'not-json'}):
+            self.assertEqual((await self.request('/v1/list',value=value))[0]['status'],400)
+        self.factory.assert_not_called()
 
     async def test_reject_owner_override_and_invalid_inputs_before_factory(self):
         cases = [('/v1/status',{'source_id':ID,'user_id':ID}),
