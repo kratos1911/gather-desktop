@@ -1,3 +1,5 @@
+26 October: CloudInferenceClient adds fixed /ready GET alongside /embed, preserving caller identity/headers and outbound limits. Safe known model reasons survive; unknown responses stay generic. See MODEL_AVAILABILITY.md.
+
 # Bounded service clients
 
 22 October Auth diagnostics: password-grant errors alone may read <=4096 bytes of

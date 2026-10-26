@@ -9,6 +9,7 @@ import {
   type SourceText,
   type LibrarySource,
 } from "./libraryClient";
+import type { ModelStatus } from "./modelAvailability";
 
 export type LibraryState = Readonly<{
   signedIn: boolean;
@@ -20,6 +21,7 @@ export type LibraryState = Readonly<{
   results: SearchResult | null;
   opened: SourceText | null;
   cleanupSourceId: string | null;
+  modelStatus: ModelStatus | null;
   sources: LibrarySource[];
   nextCursor: string | null;
   libraryStatus: "idle" | "loading" | "ready" | "error";
@@ -34,6 +36,7 @@ const initial = (): LibraryState => ({
   results: null,
   opened: null,
   cleanupSourceId: null,
+  modelStatus: null,
   sources: [],
   nextCursor: null,
   libraryStatus: "idle",
@@ -164,6 +167,12 @@ export class LibraryWorkspace {
     await this.perform(
       (signal) => this.client.status(source.source_id, signal),
       (rows) => this.update({ processing: rows[0] ?? null }),
+    );
+  }
+  async checkModel(): Promise<void> {
+    await this.perform(
+      (signal) => this.client.modelStatus(signal),
+      (modelStatus) => this.update({ modelStatus }),
     );
   }
   async loadSources(append = false): Promise<void> {

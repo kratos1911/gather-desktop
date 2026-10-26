@@ -7,6 +7,7 @@ from services.inference.runtime import validate_request, InferenceError
 from services.worker.service_transport import (
     TransportError, credential, origin, request_json, strict_json,
 )
+from services.worker.model_availability import ModelServiceError, transport_failure
 
 
 def _claims(token, role):
@@ -80,8 +81,7 @@ class InferenceClient:
         except InferenceError:
             raise
         except TransportError as error:
-            code = {'timeout':'deadline_exceeded', 'cancelled':'cancelled', 'busy':'busy'}.get(str(error), 'service_unavailable')
-            raise InferenceError(code) from None
+            raise transport_failure(str(error)) from None
         except Exception:
             raise InferenceError('service_unavailable') from None
 
@@ -107,21 +107,49 @@ class CloudInferenceClient(InferenceClient):
         self._identity = token_provider if token_provider is not None else MetadataTokenProvider(identity)
 
     def _send(self, request, *, cancel):
+        return self._authorized_request('/embed',request,cancel=cancel)
+
+    def _authorized_request(self, path, payload, *, cancel):
+        if path not in ('/embed','/ready'):
+            raise TransportError('invalid_request')
         deadline = time.monotonic()+15
-        token = self._identity.get(cancel=cancel,timeout=5)
+        if cancel is not None and cancel.is_set(): raise InferenceError('cancelled')
+        try:
+            token = self._identity.get(cancel=cancel,timeout=5)
+            if len(credential(token)) > 7168:
+                raise ValueError()
+        except Exception as error:
+            if cancel is not None and cancel.is_set(): raise InferenceError('cancelled') from None
+            legacy = 'deadline_exceeded' if str(error)=='timeout' else 'service_unavailable'
+            raise ModelServiceError(legacy,'model_identity_unavailable') from None
         # Two copies must fit the receiver's unchanged 16 KiB header budget,
         # leaving room for Host, content framing and platform forwarding headers.
-        if len(credential(token)) > 7168:
-            raise TransportError('invalid_identity_token')
         remaining = deadline-time.monotonic()
         if remaining <= 0:
             raise TransportError('timeout')
         try:
             headers = {'Authorization':'Bearer '+token,
                        'X-Serverless-Authorization':'Bearer '+token}
-            return request_json(self._base,'/embed',headers,
-                                request,timeout=remaining,cancel=cancel)
+            return request_json(self._base,path,headers,
+                                payload,timeout=remaining,cancel=cancel)
         except TransportError as error:
             if str(error)=='authentication_failed':
                 self._identity.invalidate()
             raise
+
+    def check_ready(self, *, cancel):
+        try:
+            value = self._authorized_request('/ready',None,cancel=cancel)
+            if type(value) is not dict or set(value)!={'ready'} or type(value['ready']) is not bool:
+                return 'model_unavailable'
+            return 'ready' if value['ready'] else 'model_not_ready'
+        except ModelServiceError as error:
+            return error.reason
+        except TransportError as error:
+            failure = transport_failure(str(error))
+            if str(failure)=='cancelled': raise failure from None
+            return failure.reason
+        except InferenceError:
+            raise
+        except Exception:
+            return 'model_unavailable'

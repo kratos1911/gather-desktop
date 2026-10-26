@@ -1,3 +1,7 @@
+## 26 October: explicit model availability and recovery
+
+Implemented fixed model failure codes through transport/embedding/search/API/client, authenticated manual readiness, unchanged three-attempt reporting and explicit recovery messages. 123 affected backend/HTTP checks and 48 frontend checks pass; build/lint/format pass. No live embeddings or new documents. Live identity acquisition failed once; isolated same-bound mint passed in 3.45s; the subsequent readiness check timed out. Matching cloud GET later logged HTTP200/30.99s, consistent with delayed readiness. Successful in-app ready retry/post-idle embedding still unverified. See docs/MODEL_AVAILABILITY.md.
+
 ## 26 October: empty-publication search guard
 
 Reused owned listing metadata before query inference and added an explanatory disabled search state. 41 backend/HTTP and 44 frontend checks pass; final search-only 18 checks, build/lint/format pass. Actual owned metadata refresh confirmed no publications and cleared the stale model error without inference. Incomplete pages remain searchable; failed metadata is not treated as empty. Underlying model-availability cause remains unconfirmed. Evidence: docs/EMPTY_LIBRARY_SEARCH.md.

@@ -66,7 +66,7 @@
     {
       "id": "results",
       "type": "text",
-      "text": "Auth -> owned publication metadata\nComplete unpublished page -> empty, no inference\nOtherwise pinned embedding -> ranking -> exact-version context\nSee EMPTY_LIBRARY_SEARCH.md",
+      "text": "Auth -> owned publication metadata\nEmpty -> no inference; otherwise pinned query -> rank/context\nExplicit readiness + fixed errors: MODEL_AVAILABILITY.md\nNo automatic inference retries",
       "x": 600,
       "y": 440,
       "width": 330,

@@ -94,7 +94,7 @@ class RefreshingPilotToken:
     def get(self, *, cancel=None, timeout=5):
         if cancel is not None and cancel.is_set():
             raise PilotFailure('cancelled')
-        token = google_token()
+        token = google_token(timeout=timeout)
         try:
             return token.get(cancel=cancel,timeout=timeout)
         finally:

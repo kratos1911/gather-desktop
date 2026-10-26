@@ -3,6 +3,15 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## A timeout has an unknown outcome; readiness is a separate observation
+
+The first request may still run or complete after the client stops waiting.
+Automatically resending can duplicate compute/charges. Check readiness explicitly
+without embedding, preserve fixed failure reasons, and retry only by deliberate
+user action. An identity failure, rejected caller, busy response, process budget
+and delayed readiness require different actions. HTTP200 readiness alone is not
+embedding success. See [[docs/MODEL_AVAILABILITY]] for measured evidence.
+
 ## An empty catalogue needs no query embedding
 
 Verify the session and owned publication metadata before spending inference.

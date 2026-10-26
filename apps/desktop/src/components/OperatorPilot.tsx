@@ -9,14 +9,15 @@ import {
 } from "../services/pilotAuth";
 import "./OperatorPilot.css";
 import { TextFileImport } from "./TextFileImport";
+import { ModelConnection } from "./ModelConnection";
+import { MODEL_MESSAGES } from "../services/modelAvailability";
 
 const messages: Record<string, string> = {
+  ...MODEL_MESSAGES,
   network_unavailable:
     "The local API is unavailable. Start the operator server, then retry the same action.",
   service_unavailable:
     "The backend could not complete this action. Inspect the operator output before retrying.",
-  model_unavailable:
-    "The model service or its operator token is unavailable. Restart the API server and check Cloud Run readiness before trying again.",
   library_unavailable:
     "The library database could not complete the request. Check the operator output; source listing also requires the approved listing migration.",
   busy: "An operation is still finishing. Wait before trying again.",
@@ -176,6 +177,11 @@ export default function OperatorPilot() {
               Disconnect
             </button>
           </div>
+          <ModelConnection
+            status={state.modelStatus}
+            busy={state.busy}
+            onCheck={() => act(() => workspace.checkModel())}
+          />
           <section
             className="pilot-step"
             aria-labelledby="saved-library-heading"
@@ -383,7 +389,10 @@ export default function OperatorPilot() {
             <button
               className="pilot-action"
               disabled={
-                state.busy || noPublishedSources || (textFiles && !query.trim())
+                state.busy ||
+                noPublishedSources ||
+                state.modelStatus?.state === "model_budget_exhausted" ||
+                (textFiles && !query.trim())
               }
               onClick={() =>
                 act(() => workspace.search(textFiles ? query : PILOT_QUERY))

@@ -92,6 +92,7 @@ class FlowTests(unittest.TestCase):
     def _exercise(self, private_files=False):
         from scripts.operator_library import PILOT_USERS, PilotSession
         store, provider = FixtureStore(), Provider()
+        provider.check_ready = Mock(return_value={'state':'ready','used':0,'limit':3})
         owners = dict(zip(('a','b'),sorted(PILOT_USERS))) if private_files else {key:str(uuid4()) for key in ('a','b')}
         def session(token,cancel):
             api = Mock(spec=SessionClient)
@@ -122,6 +123,8 @@ class FlowTests(unittest.TestCase):
                 return json.loads(response.read())
             finally: conn.close()
         try:
+            self.assertEqual(call('model-status',{})['state'],'ready')
+            self.assertEqual(provider.calls,[])
             original = '\ufeffSynthetic database note.\r\nOwnership protects records 🌟.'
             submission = dict(request_id=str(uuid4()),title='Synthetic flow',media='text/plain',content_base64=base64.b64encode(original.encode()).decode())
             if private_files:

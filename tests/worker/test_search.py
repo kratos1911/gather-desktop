@@ -121,6 +121,16 @@ class SearchTests(unittest.TestCase):
             self.run_search()
         self.assertEqual([call[1] for call in calls],['/auth/v1/user','/rest/v1/rpc/list_library_sources','/rest/v1/rpc/search_published_text'])
 
+    def test_known_model_reason_is_preserved_but_unknown_errors_stay_generic(self):
+        from services.worker.model_availability import MODEL_HTTP, ModelServiceError
+        for reason in MODEL_HTTP:
+            with self.subTest(reason=reason):
+                self.setUp()
+                def fail(*args,**kwargs):
+                    raise ModelServiceError('service_unavailable',reason)
+                self.provider.infer=fail
+                with self.assertRaisesRegex(SearchError,'^'+reason+'$'): self.run_search()
+
     def test_bad_embeddings_never_reach_search(self):
         mutations = [dict(revision='wrong'), dict(model='wrong'), dict(dimensions=256),
                      dict(data=[])]

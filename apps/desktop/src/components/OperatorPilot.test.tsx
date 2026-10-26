@@ -20,6 +20,43 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 describe("restricted operator screen", () => {
+  it("makes a readiness check only on click, retains empty-search guard and clears status on disconnect", async () => {
+    vi.stubEnv("VITE_GATHER_PILOT_PUBLIC_KEY", "sb_publishable_test");
+    vi.mocked(signInPilot).mockResolvedValue("test-token");
+    const response = (value: unknown) =>
+      new Response(JSON.stringify(value), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    const send = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(response({ items: [], next_cursor: null }))
+      .mockResolvedValueOnce(response({ state: "ready", used: 0, limit: 3 }));
+    vi.stubGlobal("fetch", send);
+    render(<OperatorPilot />);
+    fireEvent.change(screen.getByLabelText("Test account password"), {
+      target: { value: "synthetic" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Sign in to pilot" }));
+    await screen.findByText(/No published documents are available/);
+    expect(send).toHaveBeenCalledTimes(1);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Check model connection" }),
+    );
+    await screen.findByText(/service reported ready at this check/);
+    expect(send).toHaveBeenCalledTimes(2);
+    expect(
+      (
+        screen.getByRole("button", {
+          name: "Search saved notes",
+        }) as HTMLButtonElement
+      ).disabled,
+    ).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "Disconnect" }));
+    expect(
+      screen.queryByText(/service reported ready at this check/),
+    ).toBeNull();
+  });
   it("blocks empty-library search without calling the search endpoint", async () => {
     vi.stubEnv("VITE_GATHER_PILOT_PUBLIC_KEY", "sb_publishable_test");
     vi.mocked(signInPilot).mockResolvedValue("test-token");

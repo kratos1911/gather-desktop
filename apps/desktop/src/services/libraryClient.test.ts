@@ -21,6 +21,53 @@ afterEach(() => {
 });
 
 describe("library HTTP client (synthetic responses)", () => {
+  it("preserves only bounded known model-code/status pairs and never retries", async () => {
+    const { client, send } = setup();
+    for (const [status, body, expected] of [
+      [429, { error: "model_budget_exhausted" }, "model_budget_exhausted"],
+      [
+        502,
+        { error: "model_identity_unavailable" },
+        "model_identity_unavailable",
+      ],
+      [504, { error: "model_deadline" }, "model_deadline"],
+      [401, { error: "model_access_denied" }, "session_required"],
+      [502, { error: "private token details" }, "model_unavailable"],
+      [
+        502,
+        { error: "model_access_denied", secret: "private" },
+        "model_unavailable",
+      ],
+      [502, { error: "x".repeat(5000) }, "model_unavailable"],
+    ] as const) {
+      const count = send.mock.calls.length;
+      send.mockResolvedValueOnce(respond(body, status));
+      await expect(client.search("fixture")).rejects.toMatchObject({
+        code: expected,
+      });
+      expect(send.mock.calls.length).toBe(count + 1);
+    }
+  });
+  it("checks readiness only on request, with strict session-scoped counters", async () => {
+    const { client, send } = setup();
+    send.mockResolvedValueOnce(respond({ state: "ready", used: 0, limit: 3 }));
+    await expect(client.modelStatus()).resolves.toEqual({
+      state: "ready",
+      used: 0,
+      limit: 3,
+    });
+    expect(String(send.mock.calls[0][0])).toMatch(/\/v1\/model-status$/);
+    expect(send.mock.calls[0][1]?.body).toBe("{}");
+    for (const value of [
+      { state: "ready", used: 3, limit: 3 },
+      { state: "ready", used: 0, limit: 4 },
+      { state: "private details", used: 0, limit: 3 },
+      { state: "ready", used: 0, limit: 3, token: "private" },
+    ]) {
+      send.mockResolvedValueOnce(respond(value));
+      await expect(client.modelStatus()).rejects.toThrow("invalid_response");
+    }
+  });
   it("calls the native transport without using the client as its receiver", async () => {
     const transport = vi.fn(function (this: unknown) {
       // Model Chromium's receiver-sensitive native fetch, which Node mocks

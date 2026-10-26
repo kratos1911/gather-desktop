@@ -2,7 +2,7 @@
 tags: [gather, project]
 ---
 # Gather project hub
-CURRENT: [[docs/EMPTY_LIBRARY_SEARCH|Search skips inference when owned metadata proves no publication; actual empty-state UI verified]]. The selected-file lifecycle remains complete through cleanup in [[docs/PRIVATE_TEXT_FILES]]. Earlier entries below are historical checkpoints.
+CURRENT: [[docs/MODEL_AVAILABILITY|Fixed model diagnostics and explicit readiness control verified locally; live identity/deadline paths observed, no embeddings]]. Selected-file lifecycle remains complete through cleanup in [[docs/PRIVATE_TEXT_FILES]]; empty-search guard remains in [[docs/EMPTY_LIBRARY_SEARCH]]. Earlier entries below are historical checkpoints.
 
 
 Latest: [[docs/OPERATOR_LIBRARY_PILOT|Delete control added to search results and verified in current UI]].

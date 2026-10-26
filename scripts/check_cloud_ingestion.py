@@ -56,10 +56,19 @@ class BoundedProvider:
         self.count_tokens = provider.count_tokens
 
     def infer(self, request, *, cancel):
-        if self.calls >= 3:
-            raise RuntimeError('pilot_request_budget_exhausted')
+        from services.worker.model_availability import ModelServiceError, PILOT_REQUEST_LIMIT
+        if self.calls >= PILOT_REQUEST_LIMIT:
+            raise ModelServiceError('service_unavailable','model_budget_exhausted')
         self.calls += 1  # Failures count too; never retry.
         return self.provider.infer(request, cancel=cancel)
+
+    def check_ready(self, *, cancel):
+        from services.worker.model_availability import PILOT_REQUEST_LIMIT
+        from services.inference.runtime import InferenceError
+        if cancel is not None and cancel.is_set(): raise InferenceError('cancelled')
+        state = ('model_budget_exhausted' if self.calls>=PILOT_REQUEST_LIMIT
+                 else self.provider.check_ready(cancel=cancel))
+        return {'state':state,'used':self.calls,'limit':PILOT_REQUEST_LIMIT}
 
 
 def literal(value):

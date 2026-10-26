@@ -19,6 +19,12 @@ def token(role):
 
 
 class Handler(BaseHTTPRequestHandler):
+    def handle(self):
+        try:
+            super().handle()
+        except (ConnectionResetError, BrokenPipeError):
+            pass  # These synthetic clients deliberately cancel connections.
+
     def log_message(self, *_):
         pass
 
@@ -50,6 +56,8 @@ class Handler(BaseHTTPRequestHandler):
             data = b' ' * (MAX_RESPONSE+1)
         elif self.path == '/slow':
             time.sleep(1)
+        elif self.path == '/embed' and self.server.embed_error is not None:
+            status, data = self.server.embed_error
         self.send_response(status)
         self.send_header('Content-Type', content_type)
         self.send_header('Content-Length', str(len(data)))
@@ -78,6 +86,7 @@ class ClientTests(unittest.TestCase):
 
     def setUp(self):
         self.server.received = []
+        self.server.embed_error = None
 
     def request(self, path, **kwargs):
         return request_json(self.server.base, path, {}, None, timeout=kwargs.pop('timeout', 3), **kwargs)
@@ -128,6 +137,20 @@ class ClientTests(unittest.TestCase):
             with self.assertRaisesRegex(TransportError, '^'+code+'$'):
                 self.request(path)
         self.assertEqual(len(self.server.received), 2)
+
+    def test_inference_errors_survive_real_loopback_transport_as_fixed_reasons(self):
+        from services.worker.model_availability import ModelServiceError
+        client=InferenceClient(self.server.base,'synthetic-service',lambda text:1,_test_loopback=True)
+        for status,body,reason in ((429,b'{"error":"busy"}','model_busy'),
+                (429,b'{"private":"secret"}','model_rate_limited'),
+                (503,b'{"error":"model_unavailable"}','model_not_ready'),
+                (504,b'{"error":"deadline_exceeded"}','model_deadline')):
+            self.server.embed_error=(status,body)
+            before=len(self.server.received)
+            with self.assertRaises(ModelServiceError) as error:
+                client.infer({'role':'query','texts':['synthetic']},cancel=threading.Event())
+            self.assertEqual(error.exception.reason,reason)
+            self.assertEqual(len(self.server.received),before+1)
 
     def test_response_shape_encoding_size_and_json(self):
         for path in ('/invalid','/duplicate','/html','/compressed'):

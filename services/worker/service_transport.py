@@ -136,7 +136,8 @@ def _exchange(wire, *, timeout, cancel):
             except (ValueError, UnicodeError, RecursionError):
                 raise TransportError('invalid_response') from None
         codes = {b'authentication_failed', b'rate_limited', b'response_too_large',
-                 b'invalid_response', b'service_unavailable'} | AUTH_CODES
+                 b'invalid_response', b'service_unavailable', b'model_busy',
+                 b'model_not_ready',b'inference_deadline'} | AUTH_CODES
         if output.startswith(b'ERR\n') and output[4:] in codes:
             raise TransportError(output[4:].decode())
         raise TransportError('service_unavailable')
@@ -176,6 +177,26 @@ def auth_error_code(url, error):
         return None
 
 
+def inference_error_code(url, error):
+    """Read only a tiny, exact diagnostic shape from existing inference routes."""
+    try:
+        path = urlsplit(url).path
+        if (path not in ('/embed','/ready') or error.code not in (429,503,504)
+            or error.headers.get('Content-Type','').split(';')[0].strip().lower()!='application/json'
+            or error.headers.get('Content-Encoding','identity').lower()!='identity'):
+            return None
+        raw = error.read(4097)
+        if len(raw)>4096: return None
+        value = strict_json(raw)
+        if path=='/ready' and error.code==503 and type(value) is dict and set(value)=={'ready'} and value['ready'] is False:
+            return b'model_not_ready'
+        if type(value) is not dict or set(value)!={'error'}: return None
+        return {(429,'busy'):b'model_busy',(503,'model_unavailable'):b'model_not_ready',
+                (504,'deadline_exceeded'):b'inference_deadline'}.get((error.code,value['error']))
+    except Exception:
+        return None
+
+
 def child_main():
     # Only called by the fixed trusted parent; private payload arrives via stdin.
     output = b'ERR\nservice_unavailable'
@@ -208,7 +229,7 @@ def child_main():
                 output = b'ERR\nresponse_too_large' if len(data) > MAX_RESPONSE else b'OK\n'+data
     except HTTPError as error:
         try:
-            safe_code = auth_error_code(args.get('url',''),error)
+            safe_code = auth_error_code(args.get('url',''),error) or inference_error_code(args.get('url',''),error)
             output = b'ERR\n' + (safe_code or (b'authentication_failed' if error.code in (401,403) else
                       b'rate_limited' if error.code == 429 else b'service_unavailable'))
         finally:

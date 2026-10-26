@@ -151,13 +151,14 @@ def configuration():
     return key
 
 
-def google_token():
+def google_token(*, timeout=15):
+    require(type(timeout) in (int,float) and 0<timeout<=15,'invalid_identity_timeout')
     executable = shutil.which('gcloud.cmd')
     require(executable is not None,'gcloud_unavailable')
     result = subprocess.run([executable,'auth','print-identity-token',
         '--impersonate-service-account='+IDENTITY.caller_email,'--audiences='+IDENTITY.audience,
         '--include-email','--account=kpanigrahi5602@gmail.com','--project=gather-development-511211'],
-        stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,timeout=15)
+        stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,timeout=timeout)
     require(result.returncode==0 and len(result.stdout)<=8192,'google_token_unavailable')
     return PilotToken(result.stdout.decode('ascii').strip())
 

@@ -1,3 +1,7 @@
+## 26 October: model availability diagnostics
+
+Added manual authenticated readiness and fixed reason preservation with no automatic inference retry, limit increase or cloud setting change. Focused checks pass; native assets unchanged. Live verification exercised identity and readiness-deadline paths with zero embeddings; matching Cloud Run readiness GET completed after the client deadline. Exact historical model failure remains unconfirmed. See MODEL_AVAILABILITY.md for measurements, limits and remaining verification.
+
 ## 26 October: prevent inference after final publication cleanup
 
 The reported model error exposed confirmed embedding-before-availability ordering. Added a bounded owner-scoped publication preflight and UI empty state. Focused checks and actual metadata-only browser refresh pass. No new model, startup probe, warming, migration or Docker workload. Exact prior model failure not established by recent cloud status logs. See EMPTY_LIBRARY_SEARCH.md.

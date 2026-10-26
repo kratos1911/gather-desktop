@@ -16,6 +16,7 @@ from services.worker.search_context import (
     MAX_CANDIDATES, MAX_SOURCES, Hit, Passage, Snapshot, assemble_context,
 )
 from services.worker.source_listing import page, parameters
+from services.worker.model_availability import ModelServiceError
 
 
 class SearchError(Exception):
@@ -169,9 +170,11 @@ def search(query, *, api, provider, limit=20, cancel=None):
         return context
     except SearchError:
         raise
-    except Exception:
+    except Exception as error:
         if cancel.is_set():
             raise SearchError('cancelled') from None
+        if stage=='model' and isinstance(error,ModelServiceError):
+            raise SearchError(error.reason) from None
         code = {'session':'session_unavailable','model':'model_unavailable',
                 'retrieval':'library_unavailable','source_open':'library_unavailable',
                 'context':'search_failed'}.get(stage,'search_failed')

@@ -15,13 +15,13 @@ ID = '00000000-0000-0000-0000-000000000001'
 class APITests(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.session = Mock(spec=LibrarySession)
-        for name in ('import_text', 'search', 'status', 'open', 'delete', 'list_sources'):
+        for name in ('import_text', 'search', 'status', 'open', 'delete', 'list_sources','model_status'):
             getattr(self.session, name).return_value = {'ok': True}
         self.factory = Mock(return_value=self.session)
         self.app = LibraryAPI(self.factory)
 
     async def request(self, path='/v1/status', value=None, raw=None, headers=None, method='POST'):
-        raw = raw if raw is not None else json.dumps(value or {'source_id': ID}).encode()
+        raw = raw if raw is not None else json.dumps(value if value is not None else {'source_id': ID}).encode()
         scope = {'type':'http','path':path,'method':method,'query_string':b'',
                  'headers':headers if headers is not None else [
                      (b'authorization', b'Bearer synthetic-token'),
@@ -42,13 +42,15 @@ class APITests(unittest.IsolatedAsyncioTestCase):
                  ('/v1/status',{'source_id':ID},200),
                  ('/v1/open',{'source_id':ID,'version_id':ID},200),
                  ('/v1/delete',{'source_id':ID},200),
-                 ('/v1/list',{'limit':20,'cursor':None},200)]
+                 ('/v1/list',{'limit':20,'cursor':None},200),
+                 ('/v1/model-status',{},200)]
         for path, value, status in cases:
             with self.subTest(path=path):
                 result = await self.request(path,value)
                 self.assertEqual(result[0]['status'],status)
         self.assertEqual(self.session.import_text.call_args.kwargs['original'], b'hello')
         self.assertIn('cancel',self.session.search.call_args.kwargs)
+        self.assertIn('cancel',self.session.model_status.call_args.kwargs)
 
     async def test_listing_rejects_invalid_cursor_limits_and_owner_before_work(self):
         for value in ({'owner':ID},{'limit':True},{'limit':21},{'cursor':'x'*257},{'cursor':'not-json'}):
@@ -103,9 +105,18 @@ class APITests(unittest.IsolatedAsyncioTestCase):
             self.session.search.side_effect = LibraryError(code)
             result = await self.request('/v1/search',{'query':'synthetic'})
             self.assertEqual(result[0]['status'],status)
-            self.assertEqual(json.loads(result[1]['body']),{'error':'session_unavailable' if status==401 else 'operation_failed'})
-            if code != 'session_unavailable':
+            self.assertEqual(json.loads(result[1]['body']),{'error':code if code in ('session_unavailable','model_unavailable') else 'operation_failed'})
+            if code not in ('session_unavailable','model_unavailable'):
                 self.assertNotIn(code,result[1]['body'].decode())
+
+    async def test_model_failure_codes_are_fixed_and_readiness_has_no_input_target(self):
+        from services.worker.model_availability import MODEL_HTTP
+        for code,status in MODEL_HTTP.items():
+            self.session.search.side_effect = LibraryError(code)
+            output = await self.request('/v1/search',{'query':'fixture'})
+            self.assertEqual(output[0]['status'],status)
+            self.assertEqual(json.loads(output[1]['body']),{'error':code})
+        self.assertEqual((await self.request('/v1/model-status',{'url':'https://untrusted.invalid'}))[0]['status'],400)
 
     async def test_unknown_route_and_method(self):
         self.assertEqual((await self.request('/nope'))[0]['status'],404)

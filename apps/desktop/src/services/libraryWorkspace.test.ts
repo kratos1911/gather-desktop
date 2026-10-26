@@ -17,6 +17,35 @@ const setup = () => {
   return { workspace, send };
 };
 describe("library workspace (synthetic transport)", () => {
+  it("discards a late model check after account switching and never replays search", async () => {
+    const { workspace, send } = setup();
+    let resolve!: (value: Response) => void;
+    send.mockImplementationOnce(
+      () =>
+        new Promise((done) => {
+          resolve = done;
+        }),
+    );
+    const pending = workspace.checkModel();
+    workspace.setSession("other-session");
+    resolve(reply({ state: "ready", used: 0, limit: 3 }));
+    await pending;
+    expect(workspace.getSnapshot().modelStatus).toBeNull();
+    send.mockResolvedValueOnce(
+      reply({ state: "model_budget_exhausted", used: 3, limit: 3 }),
+    );
+    await workspace.checkModel();
+    expect(workspace.getSnapshot().modelStatus?.state).toBe(
+      "model_budget_exhausted",
+    );
+    expect(
+      send.mock.calls.every(([url]) =>
+        String(url).endsWith("/v1/model-status"),
+      ),
+    ).toBe(true);
+    workspace.setSession(null);
+    expect(workspace.getSnapshot().modelStatus).toBeNull();
+  });
   it("corrects a definite first refusal but preserves an earlier uncertain file submission", async () => {
     const { workspace, send } = setup();
     send.mockResolvedValueOnce(reply({}, 400));

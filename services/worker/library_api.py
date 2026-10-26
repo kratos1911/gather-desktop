@@ -16,6 +16,7 @@ from services.worker.service_transport import strict_json, credential
 from services.worker.ingestion import parse
 from services.worker.text_processing import MAX_REQUEST_BYTES, MAX_RESPONSE_BYTES
 from services.worker.source_listing import parameters
+from services.worker.model_availability import MODEL_HTTP
 
 ROUTES = {
     '/v1/import': ({'request_id', 'title', 'media', 'content_base64'}, {'source_id','confirm_cloud_storage'}),
@@ -24,6 +25,7 @@ ROUTES = {
     '/v1/open': ({'source_id', 'version_id'}, set()),
     '/v1/delete': ({'source_id'}, set()),
     '/v1/list': (set(), {'limit','cursor'}),
+    '/v1/model-status': (set(), set()),
 }
 
 
@@ -174,8 +176,9 @@ class LibraryAPI:
                     raise ValueError('invalid_configuration')
                 if cancel.is_set():
                     raise LibraryError('cancelled')
-                method = getattr(session, {'/v1/import':'import_text','/v1/list':'list_sources'}.get(path, path[4:]))
-                if path == '/v1/search':
+                method = getattr(session, {'/v1/import':'import_text','/v1/list':'list_sources',
+                    '/v1/model-status':'model_status'}.get(path, path[4:]))
+                if path in ('/v1/search','/v1/model-status'):
                     return method(**value, cancel=cancel)
                 return method(**value)
 
@@ -198,14 +201,14 @@ class LibraryAPI:
             except LibraryError as error:
                 code = str(error)
                 status = 401 if code == 'session_unavailable' else 503
-                if code == 'model_unavailable': status = 502
+                if code in MODEL_HTTP: status = MODEL_HTTP[code]
                 elif code == 'library_unavailable': status = 503
                 elif code in ('file_import_disabled','file_confirmation_required'): status = 403
                 elif code in ('file_invalid','file_exceeds_pilot_budget'): status = 400
-                safe_codes = {'session_unavailable','model_unavailable','library_unavailable',
-                              'search_failed','invalid_query','cancelled','operation_failed'}
+                safe_codes = {'session_unavailable','library_unavailable',
+                              'search_failed','invalid_query','cancelled','operation_failed'} | MODEL_HTTP.keys()
                 print('Operator request failed: '+(code if code in safe_codes else 'operation_failed'),file=sys.stderr,flush=True)
-                return await reply(status, {'error': 'session_unavailable' if status == 401 else 'operation_failed'})
+                return await reply(status, {'error': code if code in MODEL_HTTP or code=='session_unavailable' else 'operation_failed'})
             except Exception:
                 return await reply(503, {'error':'operation_failed'})
             await reply(202 if path == '/v1/import' else 200, result)

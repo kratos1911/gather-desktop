@@ -1,4 +1,5 @@
 /** HTTP contract only. No UI activation, credential persistence or automatic retries. */
+import { MODEL_HTTP, type ModelStatus } from "./modelAvailability";
 export type ImportReceipt = {
   source_id: string;
   version_id: string;
@@ -427,6 +428,22 @@ export class LibraryClient {
     return value;
   }
 
+  async modelStatus(signal?: AbortSignal): Promise<ModelStatus> {
+    const value = record(await this.request("model-status", {}, signal));
+    const state = text(value.state),
+      used = integer(value.used);
+    if (
+      Object.keys(value).length !== 3 ||
+      value.limit !== 3 ||
+      used > 3 ||
+      (state !== "ready" &&
+        !Object.prototype.hasOwnProperty.call(MODEL_HTTP, state)) ||
+      (state === "model_budget_exhausted") !== (used === 3)
+    )
+      throw new LibraryClientError("invalid_response");
+    return { state, used, limit: 3 };
+  }
+
   private async request(
     route: string,
     payload: unknown,
@@ -463,7 +480,49 @@ export class LibraryClient {
         throw new LibraryClientError("session_changed");
       if (controller.signal.aborted)
         throw new LibraryClientError(timedOut ? "timeout" : "cancelled");
-      if (!response.ok)
+      if (!response.ok) {
+        let specific: string | null = null;
+        // Error details are bounded separately and accepted only as exact,
+        // known code/status pairs. Unknown/error-page content never reaches UI.
+        try {
+          if (
+            response.headers.get("content-type")?.split(";")[0] ===
+              "application/json" &&
+            response.body
+          ) {
+            reader = response.body.getReader();
+            const chunks: Uint8Array[] = [];
+            let size = 0;
+            while (true) {
+              const part = await reader.read();
+              if (part.done) break;
+              size += part.value.byteLength;
+              if (size > 4096) throw new Error();
+              chunks.push(part.value);
+            }
+            const bytes = new Uint8Array(size);
+            let offset = 0;
+            for (const chunk of chunks) {
+              bytes.set(chunk, offset);
+              offset += chunk.byteLength;
+            }
+            const value = record(
+              JSON.parse(
+                new TextDecoder("utf-8", { fatal: true }).decode(bytes),
+              ),
+            );
+            if (
+              Object.keys(value).length === 1 &&
+              typeof value.error === "string" &&
+              Object.prototype.hasOwnProperty.call(MODEL_HTTP, value.error) &&
+              MODEL_HTTP[value.error] === response.status
+            )
+              specific = value.error;
+          }
+        } catch {
+          /* Keep the fixed HTTP fallback, never raw body text. */
+        }
+        if (specific) throw new LibraryClientError(specific);
         throw new LibraryClientError(
           (
             {
@@ -478,6 +537,7 @@ export class LibraryClient {
             } as Record<number, string>
           )[response.status] ?? "service_unavailable",
         );
+      }
       if (
         response.status !== (route === "import" ? 202 : 200) ||
         response.headers.get("content-type")?.split(";")[0] !==

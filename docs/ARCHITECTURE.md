@@ -1,3 +1,5 @@
+26 October: MODEL_AVAILABILITY.md adds an authenticated manual readiness operation and fixed availability codes through the existing client/transport/search/API boundaries. No model image, account, storage subsystem or deployment-policy changes.
+
 26 October: query coordination now checks bounded owner-scoped publication metadata before inference. Empty complete pages return no results without model work; see EMPTY_LIBRARY_SEARCH.md.
 
 26 October: PRIVATE_TEXT_FILES.md adds explicitly enabled private operator file selection/admission through the existing parser, tokenizer, source/job/publication flow. No new database subsystem, migration or inference configuration.

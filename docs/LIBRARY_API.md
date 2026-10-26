@@ -1,3 +1,5 @@
+26 October: /v1/model-status accepts only {} after the existing user/Origin/Host checks and returns a strict state/used/limit snapshot. Search errors may expose only fixed MODEL_HTTP code/status pairs. No upstream body or automatic inference retry. See MODEL_AVAILABILITY.md.
+
 26 October: sixth POST route /v1/list accepts optional limit (1..20) and cursor (null or base64url <=256 characters). It returns validated owned metadata and next_cursor without inference. Existing admission/CORS/deadlines apply. See SAVED_LIBRARY.md.
 
 24 October update: the internal adapter now has an operator-only loopback server and a restricted development UI. See OPERATOR_LIBRARY_PILOT.md for actual HTTP evidence, scoped CORS, lifecycle and remaining live verification. Earlier no-listener statements below describe the 22 October checkpoint.
@@ -12,7 +14,7 @@ bearer and cancellation event. Auth verification and authoritative ownership sta
 in the existing Auth/PostgREST/database contracts. No owner IDs, credentials,
 provider URLs or worker controls are accepted in request payloads.
 
-All five routes use POST and application/json with one Content-Length:
+All seven routes use POST and application/json with one Content-Length:
 
 | Route | Required JSON fields | Optional fields |
 | --- | --- | --- |
@@ -21,6 +23,8 @@ All five routes use POST and application/json with one Content-Length:
 | /v1/status | source_id | none |
 | /v1/open | source_id, version_id | none |
 | /v1/delete | source_id | none |
+| /v1/list | none | limit (1..20), cursor |
+| /v1/model-status | none (send {}) | none |
 
 Import accepts only existing UTF-8 TXT/Markdown contracts, at most 64 KiB original
 bytes / 96 KiB JSON. It returns 202 with the existing durable submission result;

@@ -10,6 +10,7 @@ from services.worker.ingestion import submit
 from services.worker.search import search, SearchError
 from services.worker.service_clients import SessionClient
 from services.worker.source_listing import parameters, page
+from services.worker.model_availability import MODEL_HTTP, status_reply
 
 
 class LibraryError(Exception):
@@ -56,8 +57,8 @@ class LibrarySession:
             # Existing search verifies Auth before embedding; no cached identity.
             return search(query, api=self._api, provider=self._provider, limit=limit, cancel=cancel)
         except SearchError as error:
-            if str(error) in ('cancelled','invalid_query','session_unavailable',
-                              'model_unavailable','library_unavailable','search_failed'):
+            if str(error) in MODEL_HTTP or str(error) in ('cancelled','invalid_query','session_unavailable',
+                              'library_unavailable','search_failed'):
                 raise LibraryError(str(error)) from None
             raise LibraryError('search_failed') from None
         except Exception:
@@ -75,6 +76,14 @@ class LibrarySession:
 
     def status(self, source_id):
         return self._rpc('source_processing_status', {'p_source':source_id})
+
+    def model_status(self, *, cancel=None):
+        self._owner()  # User identity must be verified before any cloud probe.
+        try:
+            return status_reply(self._provider.check_ready(cancel=cancel))
+        except Exception:
+            if cancel is not None and cancel.is_set(): raise LibraryError('cancelled') from None
+            raise LibraryError('model_unavailable') from None
 
     def list_sources(self, *, limit=20, cursor=None):
         self._owner()
