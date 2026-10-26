@@ -2,7 +2,7 @@
 tags: [gather, project]
 ---
 # Gather project hub
-CURRENT: [[docs/PRIVATE_TEXT_FILES|Private TXT/Markdown selection/review and gated admission implemented; real browser local preview verified, hosted selected-file save/processing still unverified]]. Earlier entries below are historical checkpoints.
+CURRENT: [[docs/PRIVATE_TEXT_FILES|One selected synthetic Markdown file passed hosted save, processing, custom search and exact text opening; this source is retained, deletion/cleanup unverified]]. Earlier entries below are historical checkpoints.
 
 
 Latest: [[docs/OPERATOR_LIBRARY_PILOT|Delete control added to search results and verified in current UI]].

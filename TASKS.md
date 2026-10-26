@@ -1,6 +1,6 @@
-## 26 October: private text-file import preparation
+## 26 October: private text-file pilot
 
-Implemented real browser file selection, bounded UTF-8/plain preview, per-file cloud disclosure/confirmation, authoritative server opt-in, existing tokenizer budget preflight, explicit private queries/worker mode and safe uncertain retries. 37 backend and 43 frontend checks; build/lint/format pass. Browser local selection verified; hosted selected-file save/processing unverified. Fixed desktop TEMP/TMP on D: after a concrete C: temporary-file startup failure. Native assets unchanged. Evidence: docs/PRIVATE_TEXT_FILES.md.
+Implemented real browser file selection, bounded UTF-8/plain preview, per-file cloud disclosure/confirmation, authoritative server opt-in, existing tokenizer budget preflight, explicit private queries/worker mode and safe uncertain retries. 37 backend and 43 frontend checks; build/lint/format pass. One selected synthetic Markdown file now passed hosted save/publication, custom search and exact saved-text opening. Worker receipt records one real model call; no repeated inference during evidence update. This source remains stored; deletion/cleanup not exercised. Fixed desktop TEMP/TMP on D: after a concrete C: temporary-file startup failure. Native assets unchanged. Evidence and IDs: docs/PRIVATE_TEXT_FILES.md.
 
 ## 26 October: saved library restoration
 

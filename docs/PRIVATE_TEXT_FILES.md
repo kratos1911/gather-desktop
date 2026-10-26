@@ -2,8 +2,33 @@
 
 26 October 2026. Scope chosen by the agent after the user delegated the choice:
 private operator testing with the two existing Auth accounts. This is not a
-general upload release. Local implementation and synthetic flow verification
-complete; real hosted selected-file save/processing have not been exercised.
+general upload release. Local checks pass; one selected synthetic Markdown file
+now has hosted save/publication/search/open evidence. It remains stored; this
+file's deletion/physical cleanup have not been exercised.
+
+## Hosted selected-file evidence
+
+The operator saved `gather-private-pilot-example.md`, then explicitly ran the
+displayed exact-job worker with TextFiles enabled. Safe receipt on disk confirms:
+
+- Job `1dab95e4-da52-4823-9891-e60b49d3a569`: ready.
+- Source `e170c166-02e6-4733-9deb-30b83104c206` (UI acknowledgement).
+- Published version `89301662-ae6c-440f-b2eb-7e553455b798`.
+- One real model request in this **worker** run. The operator output reports
+  minimum zero restored; capacity was not independently rechecked here.
+- Receipt: `output/operator-pilot/worker-1dab95e4-da52-4823-9891-e60b49d3a569-6625b0032c1a47ba8e64187a26c215ae.json`.
+
+User screenshot then confirms the custom search returned the saved Markdown
+file with citation characters 0–168, and Open displayed its saved text containing
+"The Cedar team reserves two document slots for private testing." Literal HTML
+markup stayed plain text. Screenshot copied unchanged to
+`output/private-text-files/hosted-search-open-1dab95e4-20261026.png`.
+
+This verifies the selected-file hosted path for one synthetic 170-byte source,
+not broad semantic quality, scale, arbitrary formats or a general-user release.
+Search inference-call count was not independently measured. No additional model
+or worker invocation was made while recording this evidence. Do not rerun this
+ready job. The separate retained older unfinished job remains untouched.
 
 ## Flow
 
@@ -138,6 +163,7 @@ plain preview; confirmation stayed unchecked and Save disabled. Browser error
 log empty. No Save/Search/worker action was invoked. Screenshot:
 `output/private-text-files/local-review-20261026.png`.
 
-No general-user release, paid changes, new migration, hosted selected-file upload
-or real-model call is claimed. Next: operator-controlled selected-file admission,
-then one explicitly authorized exact-job processing/integration check.
+The local-only checkpoint above preceded the hosted operator run recorded at the
+top of this document. General release remains gated. Selected-file deletion and
+physical cleanup remain unverified for this source; do not delete it implicitly.
+Broader recovery, security/quality and distribution gates remain separate work.

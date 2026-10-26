@@ -3,6 +3,14 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Bytes and citation characters are different measurements
+
+The selected Markdown fixture is 170 UTF-8 bytes; its confirmed citation spans
+Unicode code points 0–168. A character may use multiple bytes. Preserve original
+encoding bytes/BOM/line endings, and do not reinterpret code-point offsets as
+byte positions or JavaScript UTF-16 indexes. See [[docs/PRIVATE_TEXT_FILES]] for
+the hosted selected-file evidence; it is one flow check, not a recall benchmark.
+
 ## File names and confirmations are not trust boundaries
 
 Attackers can craft file names **and** contents. Validate bounded actual bytes,

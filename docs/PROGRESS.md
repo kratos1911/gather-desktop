@@ -1,3 +1,7 @@
+## 26 October: selected Markdown hosted search/open confirmed
+
+Operator's exact-job receipt verifies ready with one real embedding request. User screenshot confirms the selected file was retrieved for the document-slot query and opened as saved text, citation 0–168. Source retained; no implicit deletion, repeat worker, model call or test rerun during evidence recording. See PRIVATE_TEXT_FILES.md for IDs, receipt and screenshot. Earlier local-only entries below are historical.
+
 ## 26 October: private TXT/Markdown picker and gated admission
 
 Local implementation complete; focused synthetic workflow/build checks pass as recorded in PRIVATE_TEXT_FILES.md. Actual browser selected and reviewed a local synthetic Markdown file with confirmation unchecked and Save disabled. No hosted upload, model call, Docker workload or deployment. Only Gather development servers restarted. Public release remains gated. See PRIVATE_TEXT_FILES.md for evidence, native reuse and the diagnosed D: temp-directory prerequisite.

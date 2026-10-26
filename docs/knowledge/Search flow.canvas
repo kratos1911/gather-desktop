@@ -21,7 +21,7 @@
     {
       "id": "source",
       "type": "text",
-      "text": "Save file or link\nHosted synthetic text flow completed and cleaned\nPrivate TXT/MD selection: PRIVATE_TEXT_FILES.md\nGeneral release remains gated",
+      "text": "Save file or link\nHosted synthetic text flow completed and cleaned\nSelected Markdown passed save/search/open: PRIVATE_TEXT_FILES.md\nNew source retained; general release gated",
       "x": 0,
       "y": 0,
       "width": 330,
