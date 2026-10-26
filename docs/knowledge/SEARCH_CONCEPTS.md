@@ -3,6 +3,14 @@ tags: [gather, learning, search]
 ---
 # Search concepts
 
+## Cleanup can retain a replay guard without retaining document content
+
+Tombstoning hides a source; final cleanup removes its active content and jobs.
+A minimal private receipt of consumed request IDs/fingerprints remains so an old
+retry cannot recreate the deleted source. Verify content absence separately from
+that intentional metadata. A browser's deletion-time hint is not live evidence
+of administrator cleanup. See [[docs/PRIVATE_TEXT_FILES]].
+
 ## Bytes and citation characters are different measurements
 
 The selected Markdown fixture is 170 UTF-8 bytes; its confirmed citation spans

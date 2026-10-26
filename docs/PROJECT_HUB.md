@@ -2,7 +2,7 @@
 tags: [gather, project]
 ---
 # Gather project hub
-CURRENT: [[docs/PRIVATE_TEXT_FILES|One selected synthetic Markdown file passed hosted save, processing, custom search and exact text opening; this source is retained, deletion/cleanup unverified]]. Earlier entries below are historical checkpoints.
+CURRENT: [[docs/PRIVATE_TEXT_FILES|Selected synthetic Markdown lifecycle verified through approved final cleanup; active content and processing rows removed, replay guard retained]]. Earlier entries below are historical checkpoints.
 
 
 Latest: [[docs/OPERATOR_LIBRARY_PILOT|Delete control added to search results and verified in current UI]].

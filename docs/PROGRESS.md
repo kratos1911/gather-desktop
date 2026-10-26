@@ -1,3 +1,7 @@
+## 26 October: selected Markdown cleanup verified
+
+User screenshot confirms tombstone for e170c166-02e6-4733-9deb-30b83104c206, then user explicitly approved permanent cleanup. Existing Gather finalizer returned true once. Read-only checks confirm content and processing rows removed; minimal replay guard intentionally retained. Local test file and older unfinished job untouched. No code/test/model/worker rerun. Evidence: PRIVATE_TEXT_FILES.md.
+
 ## 26 October: selected Markdown hosted search/open confirmed
 
 Operator's exact-job receipt verifies ready with one real embedding request. User screenshot confirms the selected file was retrieved for the document-slot query and opened as saved text, citation 0–168. Source retained; no implicit deletion, repeat worker, model call or test rerun during evidence recording. See PRIVATE_TEXT_FILES.md for IDs, receipt and screenshot. Earlier local-only entries below are historical.

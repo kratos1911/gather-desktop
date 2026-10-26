@@ -3,8 +3,8 @@
 26 October 2026. Scope chosen by the agent after the user delegated the choice:
 private operator testing with the two existing Auth accounts. This is not a
 general upload release. Local checks pass; one selected synthetic Markdown file
-now has hosted save/publication/search/open evidence. It remains stored; this
-file's deletion/physical cleanup have not been exercised.
+now has hosted save/publication/search/open/delete/final-cleanup evidence. The
+operator explicitly approved permanent cleanup for this source; it is removed.
 
 ## Hosted selected-file evidence
 
@@ -29,6 +29,32 @@ not broad semantic quality, scale, arbitrary formats or a general-user release.
 Search inference-call count was not independently measured. No additional model
 or worker invocation was made while recording this evidence. Do not rerun this
 ready job. The separate retained older unfinished job remains untouched.
+
+### Confirmed deletion and cleanup
+
+User screenshot confirms the delete action hid source
+`e170c166-02e6-4733-9deb-30b83104c206` and reported cleanup pending. The user then
+explicitly approved permanent removal of this exact source's stored content and
+processing records. In Gather project `fatolholcjxpwocnpzws`, one invocation of
+the existing `gather_private.finish_source_cleanup(uuid)` returned cleaned=true.
+It was not rerun.
+
+Read-only verification returned content_removed=true and processing_removed=true:
+the source and versions, original bytes, staged text/passages/vectors, publication,
+ingestion job/target and cleanup request are absent for the source/version/job IDs
+above. replay_guard_retained=true is intentional: the minimal private save receipt
+(IDs and fingerprint, no original text) prevents old import retries resurrecting
+the source. It is not deleted or replaced by a weaker retry mechanism.
+
+Evidence under ignored `output/private-text-files/`:
+
+- `tombstoned-e170c166-20261026.png` (user-provided UI screenshot).
+- `cleanup-result-e170c166-20261026.png` (cleaned=true).
+- `cleanup-verification-e170c166-20261026.png` (three postcondition booleans).
+
+No model/worker calls, code/migration changes, shared workload changes or removal
+of the local D: test file occurred. These are active application/database-row
+checks, not a claim about secure erasure of provider backups or logs.
 
 ## Flow
 
@@ -163,7 +189,9 @@ plain preview; confirmation stayed unchecked and Save disabled. Browser error
 log empty. No Save/Search/worker action was invoked. Screenshot:
 `output/private-text-files/local-review-20261026.png`.
 
-The local-only checkpoint above preceded the hosted operator run recorded at the
-top of this document. General release remains gated. Selected-file deletion and
-physical cleanup remain unverified for this source; do not delete it implicitly.
-Broader recovery, security/quality and distribution gates remain separate work.
+The local-only checkpoint above preceded the hosted operator run and approved
+cleanup recorded at the top. The selected synthetic-file lifecycle is verified
+through final cleanup. General release and broader recovery/security/quality/
+distribution gates remain separate work. The browser's cleanup-pending hint is
+session-only deletion-time information; reconnect/refresh clears that old hint
+after administrator cleanup. It is not a live cleanup-status response.
