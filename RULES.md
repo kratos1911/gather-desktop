@@ -20,6 +20,14 @@ Use statuses honestly: done requires verified acceptance; partial identifies
 missing evidence; ready/blocked/deferred retain their actual meanings.
 Fixtures are not semantic results; readiness is not embedding success.
 
+Delivery pacing: prefer a complete user flow over separate milestones for each
+helper, check or small fix. Continue independent implementation with synthetic
+providers when hosted verification is blocked; record the gap rather than claim
+completion. After edits stabilize, run focused checks/required builds and one
+combined acceptance pass; repeat only for new changes, failures or concrete risk.
+Batch user-only actions near that acceptance pass when dependencies allow. Keep
+one agent and existing security, resource, approval and interview boundaries.
+
 ## Verification and review
 
 Use relevant TEST_PLAN/SECURITY gates. Check changed behavior and required

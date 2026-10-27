@@ -745,3 +745,13 @@ token provider exclusively in the opt-in pilot script, fed through stdin. Verify
 tokenizer bytes before parsing and load no local weights. Check readiness before
 pilot ingestion without extending the 15-second client/model limits. This does
 not resolve cold-start UX or replace hosted user authentication.
+
+## 27 October 2026: deliver complete flows and defer only dependent checks
+
+The user requests faster delivery. Group supporting code, UI, failure handling
+and focused verification into complete user-flow milestones. A pending hosted
+readiness result blocks hosted acceptance, not independent local implementation
+using injected providers. Consolidate user-only steps near acceptance when safe.
+Keep one agent, actual evidence, existing limits and separate cloud/destructive
+approvals. This reduces handoffs and repeated work; no measured time/credit saving
+or completion date is claimed. Current sequence belongs in TASKS.md.

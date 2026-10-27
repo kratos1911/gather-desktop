@@ -3,6 +3,15 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 27 October 2026: consolidate the private-pilot delivery path
+
+Changed TASKS/RULES to group work into complete flows and move cloud readiness
+from a coding prerequisite to the relevant hosted acceptance check. MEMORY points
+to the next implementation; DECISIONS records the rationale. No application or
+cloud behavior changed; automatic processing remains planned. `git diff --check`
+and `scripts/desktop.ps1 build` passed (exit 0); production asset names remained
+unchanged. No model, database, Docker, deployment or native rebuild was needed.
+
 ## 26 October 2026: file audit and focused context
 
 Audited all 418 initially tracked files for role, literal/static-import references,

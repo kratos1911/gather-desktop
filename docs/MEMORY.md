@@ -1,6 +1,6 @@
 # Current Gather state
 
-Updated 26 October 2026. Feature checkpoint: `53cf9d8` on
+Updated 27 October 2026. Feature checkpoint: `53cf9d8` on
 `codex/durable-ingestion-jobs`. This file is current state, not a session log. Repository context was audited/reorganized; see FILE_AUDIT.md.
 See [tasks](../TASKS.md) for next acceptance and [topic index](PROJECT_HUB.md)
 for contracts. [Previous state journal](history/2026-10-26/MEMORY-2026-10-26.md)
@@ -36,10 +36,12 @@ The account's separate older job `caae0a28-c50c-4789-9eef-51e62c1fdd7b`
 last reported processing, attempts 2/3, timeout, no publication. That is stored
 state, not evidence of a live worker. Do not claim/retry/delete it implicitly.
 
-Next: deliberate readiness confirmation, then separately scope automatic
-processing for new imports and truthful cleanup/recovery UX. Worker execution
-and physical cleanup are still operator actions. General signup/uploads,
-native connected mode, other formats and chat remain gated/deferred.
+Next implementation: automatic processing of new private text imports, with
+startup/readiness verification inside its final integration check. Live readiness
+does not block independent local implementation. The ordered outcomes and acceptance
+are in TASKS.md. Worker execution and physical cleanup are still operator actions;
+the plan is not implemented. General signup/uploads, native connected mode, other
+formats and chat remain gated/deferred.
 
 ## Fixed scope and operating constraints
 
