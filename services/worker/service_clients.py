@@ -47,6 +47,9 @@ class SessionClient:
             '/rest/v1/rpc/source_processing_status': ('POST', {'p_source'}),
             '/rest/v1/rpc/list_library_sources': ('POST', {'p_limit','p_before_created_at','p_before_id'}),
             '/rest/v1/rpc/request_source_deletion': ('POST', {'p_source_id'}),
+            '/rest/v1/rpc/request_automatic_processing': ('POST', {'p_source','p_job','p_attempts'}),
+            '/rest/v1/rpc/list_source_cleanup': ('POST', set()),
+            '/rest/v1/rpc/complete_source_cleanup': ('POST', {'p_source'}),
         }
         if path not in routes:
             raise TransportError('invalid_request')
@@ -131,7 +134,7 @@ class CloudInferenceClient(InferenceClient):
             headers = {'Authorization':'Bearer '+token,
                        'X-Serverless-Authorization':'Bearer '+token}
             return request_json(self._base,path,headers,
-                                payload,timeout=remaining,cancel=cancel)
+                                payload,timeout=remaining,cancel=cancel,wait_for_slot=True)
         except TransportError as error:
             if str(error)=='authentication_failed':
                 self._identity.invalidate()

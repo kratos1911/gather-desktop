@@ -102,11 +102,12 @@ export function TextFileImport({
           )}
           <p>
             Saving sends the original text and filename to Gather’s Supabase
-            database in Sydney. Explicit worker/search actions send text to the
-            private CPU model in Mumbai. Content stays stored after disconnect.
-            Delete hides it immediately; an operator must finish physical
-            cleanup. No completion time is promised. The pilot accepts only
-            files that fit three processing passages.
+            database in Sydney. An automatic-mode server then sends text to the
+            private CPU model in Mumbai for indexing; search also uses that
+            model. Model calls count toward the pilot budget. Content stays
+            stored after disconnect. Delete hides it immediately; an operator
+            must finish physical cleanup. No completion time is promised. The
+            pilot accepts only files that fit three processing passages.
           </p>
           <label className="text-file-confirm">
             <input

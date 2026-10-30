@@ -201,20 +201,52 @@ def ready_child():
         sys.exit(1)
 
 
-def wait_for_startup(identity, *, wait_for_capacity=False):
-    print('Checking cloud startup: one readiness probe, at most 60 seconds. Inference remains limited to 15 seconds.')
-    timeout = 60
+def cancellable_startup(command, *, input, cwd, env, timeout, cancel):
+    """One probe, cancel/reap its helper; never resend or change cloud capacity."""
+    process = None
+    deadline = time.monotonic()+timeout
+    try:
+        if cancel.is_set(): raise PilotFailure('cancelled')
+        process = subprocess.Popen(command,stdin=subprocess.PIPE,stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,cwd=cwd,env=env)
+        first = True
+        while True:
+            if cancel.is_set(): raise PilotFailure('cancelled')
+            remaining = deadline-time.monotonic()
+            if remaining<=0: raise subprocess.TimeoutExpired(command,timeout)
+            try:
+                output,_ = process.communicate(input=input if first else None,timeout=min(.1,remaining))
+                return subprocess.CompletedProcess(command,process.returncode,stdout=output)
+            except subprocess.TimeoutExpired:
+                first = False
+    finally:
+        if process is not None:
+            if process.poll() is None: process.kill()
+            process.communicate(timeout=2)
+
+
+def wait_for_startup(identity, *, wait_for_capacity=False, cancel=None, startup_timeout=60):
+    require(type(startup_timeout) in (int,float) and 0<startup_timeout<=60,'invalid_startup_timeout')
+    print('Checking cloud startup: one readiness probe, at most '+str(round(startup_timeout,2))+' seconds. Inference remains limited to 15 seconds.')
+    timeout = startup_timeout
     if wait_for_capacity:
         from scripts.pilot_capacity import wait_ready
         deadline = time.monotonic()+60
         wait_ready(deadline)
         timeout = deadline-time.monotonic()
         require(timeout>0,'cloud_startup_deadline_exceeded')
+    deadline = time.monotonic()+timeout if cancel is not None else None
     try:
-        result = subprocess.run([sys.executable,'-I','-B','-c',
-            f'import sys; sys.path.insert(0,{str(ROOT)!r}); from scripts.check_hosted_flow import ready_child; ready_child()'],
-            input=identity.get().encode('ascii'),stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,
-            cwd=ROOT,env={k:os.environ[k] for k in ('SYSTEMROOT','WINDIR') if k in os.environ},timeout=timeout)
+        token = identity.get(cancel=cancel).encode('ascii') if cancel is not None else identity.get().encode('ascii')
+    except Exception:
+        raise PilotFailure('cloud_identity_unavailable') from None
+    try:
+        command = [sys.executable,'-I','-B','-c',
+            f'import sys; sys.path.insert(0,{str(ROOT)!r}); from scripts.check_hosted_flow import ready_child; ready_child()']
+        options = dict(input=token,cwd=ROOT,env={k:os.environ[k] for k in ('SYSTEMROOT','WINDIR') if k in os.environ})
+        result = (cancellable_startup(command,**options,timeout=max(.001,deadline-time.monotonic()),cancel=cancel)
+                  if cancel is not None else subprocess.run(command,**options,stdout=subprocess.PIPE,
+                    stderr=subprocess.DEVNULL,timeout=timeout))
     except subprocess.TimeoutExpired:
         raise PilotFailure('cloud_startup_deadline_exceeded') from None
     require(len(result.stdout)<=4096,'cloud_startup_probe_failed')
@@ -230,6 +262,23 @@ def wait_for_startup(identity, *, wait_for_capacity=False):
         if code in ('network_timeout','tls_failed','dns_failed','connection_failed','readiness_probe_failed'):
             raise PilotFailure('cloud_startup_'+code)
     require(result.returncode==0 and reply=={'ready':True},'cloud_startup_probe_failed')
+
+
+def wait_for_automatic_startup(identity, *, cancel):
+    """Approved: up to three readiness GETs inside one shared 60s deadline."""
+    deadline=time.monotonic()+60
+    for attempt in range(1,4):
+        if cancel.is_set(): raise PilotFailure('cancelled')
+        remaining=deadline-time.monotonic()
+        if remaining<=0: raise PilotFailure('cloud_startup_deadline_exceeded')
+        try:
+            wait_for_startup(identity,cancel=cancel,startup_timeout=remaining)
+            return attempt
+        except PilotFailure as error:
+            if str(error) not in ('cloud_startup_http_429','cloud_startup_http_503') or attempt==3: raise
+            remaining=deadline-time.monotonic()
+            if remaining<=0: raise PilotFailure('cloud_startup_deadline_exceeded') from None
+            cancel.wait(min(1,remaining))
 
 
 def sign_in_clients(key):

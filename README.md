@@ -2,10 +2,10 @@
 
 A Windows knowledge-library project for finding saved material by meaning.
 
-The development-only operator pilot has verified one selected TXT/Markdown file
-through cloud processing, search, exact text opening, deletion and cleanup.
-The packaged native app remains a sample preview. General accounts/uploads,
-production distribution, other formats and chat are not released.
+The private Windows pilot uses hosted Auth, automatic TXT/Markdown processing,
+semantic search and exact saved-text opening. Owner-scoped deletion/cleanup is
+verified through the app. Default builds retain a separate sample preview.
+General signup, production distribution, other formats and chat are not released.
 
 ## Start here
 
@@ -21,10 +21,14 @@ they are not startup context or instructions to rerun old jobs.
 
 ## Local private pilot
 
+The connected private executable/installer needs no local API, Python, Node or
+model weights. Build details and remaining clean-install/signing gates:
+[private desktop delivery](docs/PRIVATE_DESKTOP_DELIVERY.md).
+
 In separate PowerShell terminals at the repository root:
 
 ```powershell
-.\scripts\library.ps1 -Action server -TextFiles
+.\scripts\library.ps1 -Action server -TextFiles -AutoProcess
 .\scripts\library.ps1 -Action frontend -TextFiles
 ```
 
@@ -35,9 +39,9 @@ A fresh checkout requires the setup in [the desktop guide](apps/desktop/README.m
 and [hosted setup](docs/HOSTED_SUPABASE_SETUP.md); do not install/provision blindly.
 
 Selection/preview stays local. Confirmed Save stores reviewed text in Supabase
-Sydney; a separate exact-job worker/search uses private CPU inference in Mumbai.
+Sydney; an opted-in automatic worker/search uses private CPU inference in Mumbai.
 The current pilot supports UTF-8 TXT/Markdown, at most 64 KiB and three processing
-passages. No automatic processing/retry or public signup. Read
+passages. Failed inference requires explicit recovery; no public signup. Read
 [private file handling](docs/PRIVATE_TEXT_FILES.md) before importing.
 
 [Model connection diagnostics](docs/MODEL_AVAILABILITY.md) separate explicit

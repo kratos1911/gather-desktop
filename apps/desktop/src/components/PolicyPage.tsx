@@ -65,7 +65,7 @@ const pilotPages: typeof pages = {
       },
       {
         title: "What is sent and where",
-        body: "Selecting a file reads it locally. Save selected file sends its filename and complete validated bytes through the local Gather API to the private Supabase database in Sydney. Processing and search are separate explicit actions that send text to Gather’s private CPU inference service on Google Cloud Run in Mumbai. Stored originals, passages and vectors are owner-scoped. Markdown is displayed as plain text. No model weights are downloaded by the desktop client.",
+        body: "Selecting a file reads it locally. Save selected file sends its filename and complete validated bytes through the local Gather API to the private Supabase database in Sydney. An automatic-mode server then processes newly saved imports using Gather’s private CPU inference service on Google Cloud Run in Mumbai. Search and failed-processing retries are explicit actions. Stored originals, passages and vectors are owner-scoped. Markdown is displayed as plain text. No model weights are downloaded by the desktop client.",
       },
       {
         title: "Storage, deletion and logging limits",
@@ -86,7 +86,7 @@ const pilotPages: typeof pages = {
       },
       {
         title: "Explicit actions and costs",
-        body: "Selection and local preview make no model calls. A worker or search must be invoked separately, and model calls count toward the operator’s pilot budget. There are no automatic processing retries, payments or subscriptions in the application.",
+        body: "Selection and local preview make no model calls. Saving starts processing when the operator enables automatic mode. Automatic processing and search share the server’s existing three-attempt model budget; calls count toward the cloud pilot budget. Failed-processing retries require an explicit action. There are no payments or subscriptions in the application.",
       },
       {
         title: "Release terms pending",
@@ -109,12 +109,14 @@ const pilotPages: typeof pages = {
   },
 };
 export function PolicyPage({ kind }: { kind: PolicyKind }) {
-  const page = (import.meta.env.DEV ? pilotPages : pages)[kind];
+  const pilot =
+    import.meta.env.DEV || import.meta.env.VITE_GATHER_CONNECTED_PILOT === "1";
+  const page = (pilot ? pilotPages : pages)[kind];
   return (
     <section className="content policy-page">
       <h1>{page.title}</h1>
       <p className="subtitle">
-        {import.meta.env.DEV
+        {pilot
           ? "Current development build · Updated 26 October 2026"
           : "Current development build · Updated 26 September 2026"}
       </p>

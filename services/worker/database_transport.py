@@ -71,7 +71,8 @@ class DatabaseRepository:
         self.cleanup_wait_seconds = operation_timeout+1
 
     def call(self, function, *args):
-        allowed = {'submit_text'} if self._owner else set(FUNCTIONS)-{'submit_text'}
+        admission = {'submit_text','submit_automatic_text'}
+        allowed = admission if self._owner else set(FUNCTIONS)-admission
         if function not in allowed or len(args) != FUNCTIONS[function]:
             raise ValueError('unsupported_repository_operation')
         values = [{'bytes_hex':a.hex()} if type(a) is bytes else a for a in args]
@@ -162,7 +163,8 @@ def child_main():
         config = DatabaseConfig(**value['config'])
         validated = DatabaseRepository(config,owner=value['owner'],operation_timeout=value.get('operation_timeout',DEADLINE))
         function, args = value['function'], value['args']
-        allowed = {'submit_text'} if validated._owner else set(FUNCTIONS)-{'submit_text'}
+        admission = {'submit_text','submit_automatic_text'}
+        allowed = admission if validated._owner else set(FUNCTIONS)-admission
         if function not in allowed or len(args)!=FUNCTIONS[function]:
             raise ValueError()
         args = [bytes.fromhex(a['bytes_hex']) if isinstance(a,dict) and set(a)=={'bytes_hex'} else a for a in args]

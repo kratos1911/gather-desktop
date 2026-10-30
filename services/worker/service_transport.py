@@ -66,7 +66,7 @@ def strict_json(raw):
     return json.loads(raw, object_pairs_hook=unique, parse_constant=nonfinite)
 
 
-def request_json(base, path, headers, payload, *, timeout, cancel=None):
+def request_json(base, path, headers, payload, *, timeout, cancel=None, wait_for_slot=False):
     """Internal call: validated fixed base/path/header configuration required."""
     if type(timeout) not in (int, float) or not 0 < timeout <= 15:
         raise TransportError('invalid_configuration')
@@ -78,7 +78,7 @@ def request_json(base, path, headers, payload, *, timeout, cancel=None):
                                body=None if body is None else body.decode('utf-8'))).encode()
     except (ValueError, TypeError, UnicodeError, RecursionError):
         raise TransportError('invalid_request') from None
-    return _exchange(wire, timeout=timeout, cancel=cancel)
+    return _exchange(wire, timeout=timeout, cancel=cancel, wait_for_slot=wait_for_slot)
 
 
 def request_identity_token(audience, *, timeout=5, cancel=None):
@@ -96,15 +96,21 @@ def request_google_certificates(*, cancel=None):
     return _exchange(b'{"google_certificates":true}', timeout=5, cancel=cancel)
 
 
-def _exchange(wire, *, timeout, cancel):
+def _exchange(wire, *, timeout, cancel, wait_for_slot=False):
     if type(timeout) not in (int,float) or not 0 < timeout <= 15:
         raise TransportError('invalid_configuration')
     if cancel is not None and cancel.is_set():
         raise TransportError('cancelled')
-    if not _SLOT.acquire(blocking=False):
-        raise TransportError('busy')
-    process = None
     deadline = time.monotonic() + timeout
+    if type(wait_for_slot) is not bool: raise TransportError('invalid_configuration')
+    while not _SLOT.acquire(blocking=False):
+        if not wait_for_slot: raise TransportError('busy')
+        if cancel is not None and cancel.is_set(): raise TransportError('cancelled')
+        remaining = deadline-time.monotonic()
+        if remaining<=0: raise TransportError('timeout')
+        if cancel is not None: cancel.wait(min(.05,remaining))
+        else: time.sleep(min(.05,remaining))
+    process = None
     try:
         code = f'import sys; sys.path.insert(0, {str(ROOT)!r}); from services.worker.service_transport import child_main; child_main()'
         env = {k: os.environ[k] for k in ('SYSTEMROOT', 'WINDIR') if k in os.environ}

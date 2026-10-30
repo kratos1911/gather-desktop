@@ -14,7 +14,7 @@ bearer and cancellation event. Auth verification and authoritative ownership sta
 in the existing Auth/PostgREST/database contracts. No owner IDs, credentials,
 provider URLs or worker controls are accepted in request payloads.
 
-All seven routes use POST and application/json with one Content-Length:
+All nine routes use POST and application/json with one Content-Length:
 
 | Route | Required JSON fields | Optional fields |
 | --- | --- | --- |
@@ -25,6 +25,18 @@ All seven routes use POST and application/json with one Content-Length:
 | /v1/delete | source_id | none |
 | /v1/list | none | limit (1..20), cursor |
 | /v1/model-status | none (send {}) | none |
+| /v1/process | source_id, job_id, expected_attempts (integer 0..2) | none |
+| /v1/cleanup | source_id | none |
+
+Cleanup is owner-scoped, requires a tombstone and preserves the existing Storage
+guard/replay receipts. A true result confirms active-row cleanup. Private listing
+also includes bounded owned `cleanup_source_ids` metadata for reconnect recovery.
+
+Recovery returns a boolean after Auth and owner/current-job/attempt checks. It
+does not accept an owner or a worker credential. Only the opted-in pilot server
+wakes the dispatcher; older manual jobs cannot be enrolled through this route.
+In automatic mode the import receipt includes `automatic_processing: true` only
+when its job has a durable intent. See [automatic processing](AUTOMATIC_PROCESSING.md).
 
 Import accepts only existing UTF-8 TXT/Markdown contracts, at most 64 KiB original
 bytes / 96 KiB JSON. It returns 202 with the existing durable submission result;

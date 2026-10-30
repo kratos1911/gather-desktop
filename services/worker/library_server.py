@@ -33,8 +33,10 @@ class LibraryProtocol(H11Protocol):
             port = transport.get_extra_info('sockname')[1]
             origins = [v for k,v in headers if k == b'origin']
             configured = getattr(self.config.app,'operator_origin',None)
-            allowed_origin = configured and origins == [configured.encode()]
-            if hosts != [('127.0.0.1:'+str(port)).encode()] or (origins and not allowed_origin):
+            accepted_origins = getattr(self.config.app,'cloud_origins',None) or ((configured,) if configured else ())
+            allowed_origin = len(origins)==1 and origins[0] in tuple(o.encode() for o in accepted_origins)
+            accepted_host = getattr(self.config.app,'cloud_host',None) or '127.0.0.1:'+str(port)
+            if hosts != [accepted_host.encode()] or (origins and not allowed_origin):
                 await send({'type':'http.response.start','status':403,
                             'headers':[(b'content-type',b'application/json'),(b'cache-control',b'no-store')]})
                 await send({'type':'http.response.body','body':b'{"error":"origin_not_allowed"}'})
@@ -45,7 +47,7 @@ class LibraryProtocol(H11Protocol):
             async def bounded_send(message):
                 if allowed_origin and message['type'] == 'http.response.start':
                     message = dict(message, headers=list(message.get('headers',[]))+[
-                        (b'access-control-allow-origin',configured.encode()),(b'vary',b'Origin')])
+                        (b'access-control-allow-origin',origins[0]),(b'vary',b'Origin')])
                 await asyncio.wait_for(send(message), 5)
             if scope['method'] == 'OPTIONS':
                 methods = [v for k,v in headers if k == b'access-control-request-method']
@@ -100,6 +102,20 @@ def create_server(app, *, host='127.0.0.1', port=8765, operator_origin=None):
     if operator_origin not in (None,'http://localhost:1420'):
         raise ValueError('invalid_operator_origin')
     app.operator_origin = operator_origin
+    return _server(app,host,port)
+
+
+def create_cloud_server(app,environment):
+    if not isinstance(app,LibraryAPI) or environment.get('K_SERVICE')!='gather-library-pilot' or environment.get('PORT')!='8080':
+        raise ValueError('invalid_cloud_library_target')
+    if version('uvicorn')!='0.54.0' or version('h11')!='0.16.0':
+        raise ValueError('unverified_server_dependencies')
+    app.cloud_host='gather-library-pilot-119730530113.asia-south1.run.app'
+    app.cloud_origins=('http://tauri.localhost','tauri://localhost')
+    return _server(app,'0.0.0.0',8080)
+
+
+def _server(app,host,port):
     return LibraryServer(uvicorn.Config(app, host=host, port=port, workers=1,
         http=LibraryProtocol, ws='none', lifespan='on', proxy_headers=False,
         access_log=False, log_config=None, log_level='critical', server_header=False,

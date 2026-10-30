@@ -3,6 +3,29 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 31 October 2026: automatic ingestion, cleanup and native/cloud pilot
+
+Implemented durable new-import intent/dispatch, exact-attempt recovery, bounded
+startup, shared-slot contention handling, safe failure reasons and status updates.
+Fixed startup failures incorrectly becoming invalid-input errors; mapped recovery
+through the real SessionClient allowlist. Added owned cleanup and durable pending
+metadata. Migrations10/11/12 were tested, explicitly approved and installed.
+
+Deployed the approved library API and two restricted Secret Manager values in
+Gather/Mumbai; native-origin preflight204 and unauthenticated POST401 verified.
+Built the private native executable and unsigned installer. A fresh selected
+133-byte Markdown file reached ready on attempt1 in the native app, then custom
+semantic search/open succeeded with exact citation0..133. App cleanup of the prior
+approved fixture completed without SQL. Native metadata reload worked with both
+localhost helpers stopped. Older unfinished work remained untouched.
+
+Focused backend/HTTP checks, 54 frontend tests, typecheck/lint/format, cleanup
+SQL11 and final Linux37 checks passed. Existing unchanged publication/quality
+evidence was reused; no model benchmark. Filelock was patched and rescanned;
+scanner-open zlib retains its exact verified backport. The initial native bundle
+hit a running-file lock; isolated-copy packaging succeeded. Details, IDs, failures,
+artifacts and clean-install/signing limits: [delivery record](PRIVATE_DESKTOP_DELIVERY.md).
+
 ## 27 October 2026: consolidate the private-pilot delivery path
 
 Changed TASKS/RULES to group work into complete flows and move cloud readiness

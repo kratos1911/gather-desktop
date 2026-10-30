@@ -14,6 +14,7 @@ from services.inference.runtime import MODEL, REVISION, DIMENSIONS, InferenceErr
 from services.worker.embedding_client import embed_texts, Limits, EmbeddingError
 from services.worker.ingestion_repository import RepositoryError
 from services.worker.text_processing import process_request, PARSER_VERSION, MAX_SOURCE_BYTES
+from services.worker.model_availability import MODEL_HTTP
 
 MAX_JOB_REQUESTS = 16  # Preserve the embedding client's default request budget.
 MAX_JOB_TOKENS = MAX_JOB_REQUESTS * MAX_TOKENS
@@ -145,6 +146,7 @@ def run_once(repository, provider, *, cancel=None):
         return {'state': 'idle'}
     args = (job['id'], job['lease_token'])
     step = 'renew_lease'
+    provider_reason = None
     try:
         with Lease(repository, job, cancel) as lease:
             step = 'validate_manifest'
@@ -180,10 +182,13 @@ def run_once(repository, provider, *, cancel=None):
                 lease.renew()
 
                 def send(body):
+                    nonlocal provider_reason
                     lease.check()
                     try:
                         result = provider.infer({'role': 'document', 'texts': body['input']}, cancel=lease.cancelled)
                     except InferenceError as error:
+                        reason = getattr(error,'reason',None)
+                        provider_reason = reason if reason in MODEL_HTTP else None
                         code = 'timeout' if str(error) == 'deadline_exceeded' else (
                             'invalid_input' if str(error) in ('token_limit','invalid_request','invalid_model_output')
                             else 'temporarily_unavailable')
@@ -210,6 +215,7 @@ def run_once(repository, provider, *, cancel=None):
             return {'state':'ready','job_id':job['id'],'version_id':version}
     except Exception as error:
         diagnostic = {'step':step}
+        if provider_reason is not None: diagnostic['model_reason'] = provider_reason
         if cancel is not None and cancel.is_set():
             # Leave an interrupted claim to expire; do not turn shutdown into
             # a provider failure or overwrite an uncertain publication result.

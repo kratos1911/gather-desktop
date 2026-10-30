@@ -118,6 +118,9 @@ class MetadataTokenProvider:
             self._token = None
             self._expiry = self._deadline = 0
 
+    def _request_token(self, *, timeout, cancel):
+        return request_identity_token(self.config.audience,timeout=timeout,cancel=cancel)
+
     def get(self, *, cancel=None, timeout=5):
         if not self._lock.acquire(blocking=False):
             raise TransportError('busy')
@@ -127,7 +130,7 @@ class MetadataTokenProvider:
             if self._token and time.time()+60 < self._expiry and time.monotonic()<self._deadline:
                 return self._token
             self._token = None
-            token = request_identity_token(self.config.audience,timeout=timeout,cancel=cancel)
+            token = self._request_token(timeout=timeout,cancel=cancel)
             if cancel is not None and cancel.is_set():
                 raise TransportError('cancelled')
             now = time.time()

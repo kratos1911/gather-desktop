@@ -9,6 +9,7 @@ import subprocess
 import sys
 import time
 import uuid
+import threading
 
 from scripts.check_database import IMAGE, ROOT, run
 from services.worker.cloud_identity import IdentityConfig, _claims
@@ -53,14 +54,20 @@ class PilotToken:
 class BoundedProvider:
     def __init__(self, provider):
         self.provider, self.calls = provider, 0
+        self._inference_slot = threading.Lock()
         self.count_tokens = provider.count_tokens
 
     def infer(self, request, *, cancel):
         from services.worker.model_availability import ModelServiceError, PILOT_REQUEST_LIMIT
-        if self.calls >= PILOT_REQUEST_LIMIT:
-            raise ModelServiceError('service_unavailable','model_budget_exhausted')
-        self.calls += 1  # Failures count too; never retry.
-        return self.provider.infer(request, cancel=cancel)
+        if not self._inference_slot.acquire(blocking=False):
+            raise ModelServiceError('service_unavailable','model_busy')
+        try:
+            if self.calls >= PILOT_REQUEST_LIMIT:
+                raise ModelServiceError('service_unavailable','model_budget_exhausted')
+            self.calls += 1  # Shared search/worker budget; failures count too.
+            return self.provider.infer(request, cancel=cancel)
+        finally:
+            self._inference_slot.release()
 
     def check_ready(self, *, cancel):
         from services.worker.model_availability import PILOT_REQUEST_LIMIT

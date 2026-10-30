@@ -476,3 +476,11 @@ Readiness says whether that process can accept work; a running web server alone
 is not proof of a ready model. Admission rejects excess inference immediately
 instead of building a hidden queue. Async serving lets health checks respond
 while the blocking model runs elsewhere. See [[docs/INFERENCE_ASGI]].
+
+## Durable intent versus automatic retries
+
+An automatic-processing intent is committed with a new import so a lost response
+or server restart cannot lose the request to process it. The existing job remains
+the source of truth. One failed attempt is not silently repeated: recovery must
+name the current owned job and observed attempt. A late duplicate click cannot
+authorize another attempt or a replacement. See [[docs/AUTOMATIC_PROCESSING]].

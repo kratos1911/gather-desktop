@@ -276,13 +276,15 @@ it("completes status, search, exact source opening and deletion with cleanup not
   );
   await screen.findByText(/Removed from search/);
   expect(screen.queryByRole("button", { name: "Open saved text" })).toBeNull();
+  // The server enforces quota while cleanup is pending; deleting a source
+  // no longer locks all later imports for this signed-in session.
   expect(
     (
       screen.getByRole("button", {
         name: "Import synthetic note",
       }) as HTMLButtonElement
     ).disabled,
-  ).toBe(true);
+  ).toBe(false);
   expect(send).toHaveBeenCalledTimes(6);
 });
 

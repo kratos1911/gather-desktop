@@ -755,3 +755,21 @@ using injected providers. Consolidate user-only steps near acceptance when safe.
 Keep one agent, actual evidence, existing limits and separate cloud/destructive
 approvals. This reduces handoffs and repeated work; no measured time/credit saving
 or completion date is claimed. Current sequence belongs in TASKS.md.
+
+## 31 October 2026: durable intent, owned cleanup and explicit private distribution
+
+Reuse existing jobs/leases/publication; commit an opt-in marker only with new
+admission. Recovery must name the current owned job and observed attempt to fence
+late duplicate clicks/replacements. Owner cleanup wraps the existing guarded
+finalizer, acknowledges completion idempotently and restores pending work from SQL.
+
+Keep outbound concurrency one: inference may wait for a status operation within
+its existing deadline. Operational startup failure stays retryable, never invalid
+content. Reuse the established expiry/skew/monotonic token cache. The user explicitly
+approved at most three readiness GETs within the same60s; embeddings never replay.
+
+The user approved the specific Gather-only API/secret deployment under the existing
+aggregate INR500 allowance. Native clients use a fixed HTTPS endpoint/public key;
+DB/Google secrets remain backend-only. Use explicit separate private build/CSP and
+isolated-copy installer bundling. Retain actual failed evidence and the zlib scan
+flag alongside backport proof. Clean-Windows/signing/public-release gates stay open.

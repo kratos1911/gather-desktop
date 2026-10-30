@@ -4,6 +4,7 @@ export type ImportReceipt = {
   source_id: string;
   version_id: string;
   job_id: string;
+  automatic_processing?: boolean;
 };
 export type ProcessingStatus = {
   job_id: string;
@@ -24,7 +25,11 @@ export type LibrarySource = {
   attempts: number | null;
   error_code: string | null;
 };
-export type SourcePage = { items: LibrarySource[]; next_cursor: string | null };
+export type SourcePage = {
+  items: LibrarySource[];
+  next_cursor: string | null;
+  cleanup_source_ids?: string[];
+};
 export type SearchWindow = {
   source_id: string;
   version_id: string;
@@ -216,11 +221,56 @@ export class LibraryClient {
     if (this.prepared.get(value) !== this.generation)
       throw new LibraryClientError("stale_import");
     const result = record(await this.request("import", value, signal));
+    if (
+      result.automatic_processing !== undefined &&
+      typeof result.automatic_processing !== "boolean"
+    )
+      throw new LibraryClientError("invalid_response");
     return {
       source_id: id(result.source_id),
       version_id: id(result.version_id),
       job_id: id(result.job_id),
+      ...(result.automatic_processing === undefined
+        ? {}
+        : { automatic_processing: result.automatic_processing }),
     };
+  }
+
+  async process(
+    sourceId: string,
+    jobId: string,
+    expectedAttempts: number,
+    signal?: AbortSignal,
+  ): Promise<boolean> {
+    if (
+      !Number.isInteger(expectedAttempts) ||
+      expectedAttempts < 0 ||
+      expectedAttempts > 2
+    )
+      throw new LibraryClientError("invalid_request");
+    const result = await this.request(
+      "process",
+      {
+        source_id: id(sourceId),
+        job_id: id(jobId),
+        expected_attempts: expectedAttempts,
+      },
+      signal,
+    );
+    if (typeof result !== "boolean")
+      throw new LibraryClientError("invalid_response");
+    return result;
+  }
+
+  async cleanup(sourceId: string, signal?: AbortSignal): Promise<boolean> {
+    const result = await this.request(
+      "cleanup",
+      { source_id: id(sourceId) },
+      signal,
+    );
+    if (typeof result !== "boolean")
+      throw new LibraryClientError("invalid_response");
+    return result;
   }
 
   async status(
@@ -330,7 +380,17 @@ export class LibraryClient {
       (next !== null && items.length !== 20)
     )
       throw new LibraryClientError("invalid_response");
-    return { items, next_cursor: next };
+    const cleanup =
+      result.cleanup_source_ids === undefined
+        ? undefined
+        : array(result.cleanup_source_ids, 20).map(id);
+    if (cleanup && new Set(cleanup).size !== cleanup.length)
+      throw new LibraryClientError("invalid_response");
+    return {
+      items,
+      next_cursor: next,
+      ...(cleanup === undefined ? {} : { cleanup_source_ids: cleanup }),
+    };
   }
 
   async search(query: string, signal?: AbortSignal): Promise<SearchResult> {

@@ -1,5 +1,10 @@
 # Private TXT/Markdown file pilot
 
+Current extension: [automatic processing](AUTOMATIC_PROCESSING.md) and the
+[private native/cloud delivery](PRIVATE_DESKTOP_DELIVERY.md) reuse this byte/
+consent contract. The manual-worker instructions below remain the opt-out mode;
+the new mode supplies automatic dispatch and owned app cleanup.
+
 26 October 2026. Scope chosen by the agent after the user delegated the choice:
 private operator testing with the two existing Auth accounts. This is not a
 general upload release. Local checks pass; one selected synthetic Markdown file

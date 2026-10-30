@@ -17,6 +17,8 @@ reload the full conversation or historical snapshots for routine coding.
 ## Desktop and library
 
 - [[docs/PRIVATE_TEXT_FILES]]: selected-file consent, validation, pilot scope
+- [[docs/AUTOMATIC_PROCESSING]]: opted-in automatic jobs, bounded startup and explicit recovery
+- [[docs/PRIVATE_DESKTOP_DELIVERY]]: current native/cloud evidence, artifacts and remaining installer QA
 - [[docs/SAVED_LIBRARY]]: owner listing, pagination, reconnect state
 - [[docs/EMPTY_LIBRARY_SEARCH]]: no inference when publication is proven empty
 - [[docs/MODEL_AVAILABILITY]]: explicit readiness, fixed errors, measured limits

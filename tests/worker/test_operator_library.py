@@ -57,15 +57,20 @@ class OperatorTests(unittest.TestCase):
         with self.assertRaisesRegex(WorkerStartError,'pilot_user_only'):
             PilotWorker(repo,'job',text_files=True).call('claim_text_job')
 
-    def test_api_token_is_minted_and_discarded_for_each_request(self):
+    def test_api_token_reuses_valid_memory_cache_then_invalidates(self):
+        from tests.worker.test_cloud_identity import token, NOW
+        from scripts.check_cloud_ingestion import IDENTITY
         cancel = __import__('threading').Event()
         first,second=Mock(),Mock()
-        first.get.return_value='token-one'
-        second.get.return_value='token-two'
-        with patch('scripts.operator_library.google_token',side_effect=[first,second]) as mint:
+        value=token(aud=IDENTITY.audience,email=IDENTITY.caller_email)
+        first.get.return_value=second.get.return_value=value
+        with patch('scripts.operator_library.google_token',side_effect=[first,second]) as mint, patch('services.worker.cloud_identity.time.time',return_value=NOW):
             provider=RefreshingPilotToken()
-            self.assertEqual(provider.get(cancel=cancel,timeout=4),'token-one')
-            self.assertEqual(provider.get(cancel=cancel,timeout=4),'token-two')
+            self.assertEqual(provider.get(cancel=cancel,timeout=4),value)
+            self.assertEqual(provider.get(cancel=cancel,timeout=4),value)
+            self.assertEqual(mint.call_count,1)
+            provider.invalidate()
+            self.assertEqual(provider.get(cancel=cancel,timeout=4),value)
         self.assertEqual(mint.call_count,2)
         for token in (first,second):
             token.get.assert_called_once_with(cancel=cancel,timeout=4)

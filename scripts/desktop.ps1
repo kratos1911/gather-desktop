@@ -1,4 +1,4 @@
-param([ValidateSet('preview', 'desktop', 'build', 'test', 'install', 'lint', 'typecheck', 'format-check')][string]$Action = 'preview')
+param([ValidateSet('preview', 'desktop', 'build', 'test', 'install', 'lint', 'typecheck', 'format-check', 'native-pilot', 'installer-pilot')][string]$Action = 'preview')
 $ErrorActionPreference = 'Stop'
 $appPath = Join-Path $PSScriptRoot '../apps/desktop'
 $nodeCandidates = @()
@@ -34,6 +34,8 @@ try {
         'install' { if (-not $npmCli) { throw 'npm is missing. Repair the Node.js installation.' }; & $nodePath $npmCli ci }
         'preview' { & $nodePath scripts/frontend.mjs dev }
         'desktop' { & $nodePath node_modules/@tauri-apps/cli/tauri.js dev }
+        'native-pilot' { & $nodePath node_modules/@tauri-apps/cli/tauri.js build --debug --no-bundle --config src-tauri/tauri.pilot.conf.json }
+        'installer-pilot' { & $nodePath node_modules/@tauri-apps/cli/tauri.js bundle --debug --bundles nsis --config src-tauri/tauri.pilot.conf.json --config '{"bundle":{"useLocalToolsDir":true}}' }
         'build' { & $nodePath scripts/frontend.mjs build }
         'test' { & $nodePath node_modules/vitest/vitest.mjs run }
         'lint' { & $nodePath node_modules/eslint/bin/eslint.js . }

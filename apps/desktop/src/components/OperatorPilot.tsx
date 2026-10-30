@@ -11,11 +11,15 @@ import "./OperatorPilot.css";
 import { TextFileImport } from "./TextFileImport";
 import { ModelConnection } from "./ModelConnection";
 import { MODEL_MESSAGES } from "../services/modelAvailability";
+import {
+  libraryEndpoint,
+  connectedPilot,
+} from "../services/pilotConfiguration";
 
 const messages: Record<string, string> = {
   ...MODEL_MESSAGES,
   network_unavailable:
-    "The local API is unavailable. Start the operator server, then retry the same action.",
+    "The library service is unavailable. Check your connection, then retry the same action.",
   service_unavailable:
     "The backend could not complete this action. Inspect the operator output before retrying.",
   library_unavailable:
@@ -27,6 +31,10 @@ const messages: Record<string, string> = {
     "Your session is unavailable. Disconnect and sign in again.",
   source_unavailable:
     "This exact source version is no longer available to this session.",
+  processing_not_eligible:
+    "Processing cannot restart yet: the job may still be active, waiting for its retry delay, complete, or outside automatic mode. Refresh its status before trying again. Older manual jobs are not enrolled automatically.",
+  cleanup_pending:
+    "The source is hidden, but cleanup is not confirmed. Retry Finish cleanup when the backend is available.",
   pilot_signin_failed:
     "Sign-in failed. Check the test account password and configuration.",
   cancelled: "Request cancelled. A submitted import may still have been saved.",
@@ -40,7 +48,9 @@ export default function OperatorPilot() {
   const [workspace] = useState(
     () =>
       new LibraryWorkspace(
-        new LibraryClient("http://127.0.0.1:8765", { allowLoopback: true }),
+        new LibraryClient(libraryEndpoint().url, {
+          allowLoopback: libraryEndpoint().allowLoopback,
+        }),
       ),
   );
   const state = useSyncExternalStore(
@@ -51,7 +61,8 @@ export default function OperatorPilot() {
   const [signingIn, setSigningIn] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
   const [query, setQuery] = useState(PILOT_QUERY);
-  const textFiles = import.meta.env.VITE_GATHER_PILOT_TEXT_FILES === "1";
+  const textFiles =
+    connectedPilot || import.meta.env.VITE_GATHER_PILOT_TEXT_FILES === "1";
   const password = useRef<HTMLInputElement>(null);
   const auth = useRef<AbortController | null>(null);
   const readerHeading = useRef<HTMLHeadingElement>(null);
@@ -67,6 +78,7 @@ export default function OperatorPilot() {
   useEffect(() => {
     if (state.opened) readerHeading.current?.focus();
   }, [state.opened]);
+  useEffect(() => workspace.watchImport(), [workspace, state.imported]);
   function act(work: () => Promise<void>) {
     setLocalError(null);
     void work().catch((error) =>
@@ -118,7 +130,7 @@ export default function OperatorPilot() {
         <h1>Operator pilot</h1>
         <p className="subtitle">
           {textFiles
-            ? "Private TXT/Markdown testing with two existing accounts. Review each file before cloud storage; processing is a separate action."
+            ? "Private TXT/Markdown testing with two existing accounts. Review each file before saving. An automatic-mode server processes newly saved imports."
             : "Two test accounts. One synthetic note. Explicit actions use the hosted database and cloud model; the sample library stays separate."}
         </p>
       </div>
@@ -233,8 +245,9 @@ export default function OperatorPilot() {
                     (source.state === "queued" ||
                       source.state === "processing") && (
                       <p>
-                        Operator job: <code>{source.job_id}</code>. Refresh the
-                        saved library before deciding whether to run a worker.
+                        Processing may include cloud startup. Refresh for
+                        current status. Failed or interrupted attempts need an
+                        explicit retry.
                       </p>
                     )}
                   {source.published_version_id && (
@@ -254,6 +267,28 @@ export default function OperatorPilot() {
                       Open published text
                     </button>
                   )}
+                  {source.job_id &&
+                    (source.state === "queued" ||
+                      source.state === "processing") && (
+                      <button
+                        className="back"
+                        disabled={state.busy}
+                        aria-label={`Resume processing ${source.title}`}
+                        onClick={() =>
+                          act(async () => {
+                            await workspace.process(
+                              source.source_id,
+                              source.job_id!,
+                              source.attempts!,
+                            );
+                            if (!workspace.getSnapshot().error)
+                              await workspace.loadSources();
+                          })
+                        }
+                      >
+                        Resume processing
+                      </button>
+                    )}
                   <button
                     className="back"
                     disabled={state.busy}
@@ -286,10 +321,7 @@ export default function OperatorPilot() {
             {textFiles && (
               <TextFileImport
                 disabled={
-                  state.busy ||
-                  !!state.pendingImport ||
-                  !!state.imported ||
-                  !!state.cleanupSourceId
+                  state.busy || !!state.pendingImport || !!state.imported
                 }
                 onSave={async (file) => {
                   setLocalError(null);
@@ -311,12 +343,7 @@ export default function OperatorPilot() {
             <p>{PILOT_NOTE}</p>
             <button
               className="pilot-action"
-              disabled={
-                state.busy ||
-                !!state.pendingImport ||
-                !!state.imported ||
-                !!state.cleanupSourceId
-              }
+              disabled={state.busy || !!state.pendingImport || !!state.imported}
               onClick={() =>
                 act(() =>
                   workspace.importText(
@@ -344,14 +371,29 @@ export default function OperatorPilot() {
                   Saved. Processing state:{" "}
                   <strong>{state.processing?.state ?? "not checked"}</strong>
                 </p>
-                <p>
-                  Run the worker once in another terminal, then refresh status:
-                </p>
-                <code>
-                  .\scripts\library.ps1 -Action worker -JobId{" "}
-                  {state.imported.job_id}
-                  {textFiles && " -TextFiles"}
-                </code>
+                {state.imported.automatic_processing ? (
+                  <p role="status">
+                    Automatic processing is enabled. Status checks stop after
+                    five minutes or a failure; Refresh status reads the latest
+                    saved state without retrying the model. Keep the operator
+                    server running. Closing this page does not cancel a saved
+                    job.
+                  </p>
+                ) : (
+                  state.processing?.state !== "ready" && (
+                    <>
+                      <p>
+                        This server uses manual processing. Run the worker once,
+                        then refresh status:
+                      </p>
+                      <code>
+                        .\scripts\library.ps1 -Action worker -JobId{" "}
+                        {state.imported.job_id}
+                        {textFiles && " -TextFiles"}
+                      </code>
+                    </>
+                  )
+                )}
                 <p>
                   Source: <code>{state.imported.source_id}</code>
                 </p>
@@ -360,6 +402,28 @@ export default function OperatorPilot() {
                     Processing could not finish: {state.processing.error_code}.
                   </p>
                 )}
+                {state.imported.automatic_processing &&
+                  state.processing &&
+                  (state.processing.state === "queued" ||
+                    state.processing.state === "processing") && (
+                    <button
+                      className="back"
+                      disabled={state.busy}
+                      onClick={() =>
+                        act(async () => {
+                          await workspace.process(
+                            state.imported!.source_id,
+                            state.processing!.job_id,
+                            state.processing!.attempts,
+                          );
+                          if (!workspace.getSnapshot().error)
+                            await workspace.refreshStatus();
+                        })
+                      }
+                    >
+                      Resume processing
+                    </button>
+                  )}
                 <button
                   className="back"
                   disabled={state.busy}
@@ -458,9 +522,9 @@ export default function OperatorPilot() {
                   : "3. Delete the test note"}
               </h2>
               <p>
-                Deletion hides it immediately. The operator still finalizes
-                physical cleanup in the database. Keep the source ID until
-                cleanup is confirmed.
+                Deletion hides it immediately and, when supported by the server,
+                removes its stored text and derived data. Failed cleanup remains
+                visible until you explicitly finish it.
               </p>
               <button
                 className="back"
@@ -474,19 +538,47 @@ export default function OperatorPilot() {
               </button>
             </section>
           )}
+          {state.cleanupEnabled && state.cleanupSources.length > 0 && (
+            <section className="pilot-step" aria-label="Pending deletions">
+              <h2>Pending deletions</h2>
+              <p>
+                These sources are hidden. Their cleanup is not yet confirmed.
+              </p>
+              {state.cleanupSources.map((sourceId) => (
+                <p key={sourceId}>
+                  <code>{sourceId}</code>{" "}
+                  <button
+                    className="back"
+                    disabled={state.busy}
+                    onClick={() => act(() => workspace.finishCleanup(sourceId))}
+                  >
+                    Finish cleanup
+                  </button>
+                </p>
+              ))}
+            </section>
+          )}
+          {state.cleanedSourceId && (
+            <p role="status" className="notice">
+              Deletion complete for this source’s active stored text and derived
+              data. A minimal retry receipt remains to prevent an old import
+              from restoring it.
+            </p>
+          )}
           <p className="pilot-disclosure">
             Credentials and results stay in memory. After refresh, sign in again
             to reload saved sources. Disconnecting clears local data; it does
-            not delete server data or revoke other sessions. No automatic model
-            requests or processing retries.
+            not delete server data or revoke other sessions. In automatic mode,
+            saving starts processing. Search and failed-processing retries
+            remain explicit.
           </p>
         </>
       )}
-      {state.cleanupSourceId && (
+      {state.cleanupSourceId && !state.cleanupEnabled && (
         <div role="status" className="notice">
-          Removed from search. Physical cleanup remains pending for source{" "}
-          <code>{state.cleanupSourceId}</code>. Keep this ID for the operator
-          cleanup step.
+          Removed from search. This view does not track completed physical
+          cleanup. Source: <code>{state.cleanupSourceId}</code>. Keep this ID
+          for the operator cleanup step.
         </div>
       )}
       {state.busy && (

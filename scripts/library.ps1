@@ -1,7 +1,8 @@
 param(
     [ValidateSet('check','server','worker','frontend')][string]$Action = 'check',
     [string]$JobId,
-    [switch]$TextFiles
+    [switch]$TextFiles,
+    [switch]$AutoProcess
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot
@@ -32,6 +33,7 @@ try {
         $env:GATHER_PYTHON = $runtime
         $arguments = @('-m','scripts.operator_library')
         if ($TextFiles) { $arguments += '--text-files' }
+        if ($AutoProcess) { $arguments += '--auto-process' }
         if ($Action -eq 'server') { $arguments += '--serve' }
         if ($Action -eq 'worker') {
             if (-not $JobId) { throw 'Worker requires the exact acknowledged pilot JobId.' }

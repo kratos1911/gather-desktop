@@ -19,6 +19,8 @@ def run(*args, input=None, timeout=60):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--listing-only',action='store_true',help='Apply schema and run only source listing acceptance checks.')
+    parser.add_argument('--automatic-only',action='store_true',help='Apply schema and run automatic dispatch and exact-claim checks.')
+    parser.add_argument('--cleanup-only',action='store_true',help='Apply schema and verify only owner-scoped cleanup.')
     args = parser.parse_args()
     # Fail clearly before creating anything if Docker is unavailable.
     run('info', '--format', '{{.ServerVersion}}', timeout=15)
@@ -40,8 +42,8 @@ def main():
             raise RuntimeError('Disposable database did not become ready')
         files = [ROOT / 'tests/database/bootstrap.sql',
                  *sorted((ROOT / 'supabase/migrations').glob('*.sql')),
-                 ROOT / 'tests/database/source_listing.sql']
-        files += ([] if args.listing_only else [
+                 ROOT / ('tests/database/owned_cleanup.sql' if args.cleanup_only else 'tests/database/automatic_processing.sql' if args.automatic_only else 'tests/database/source_listing.sql')]
+        files += ([] if args.listing_only or args.automatic_only or args.cleanup_only else [
                  ROOT / 'tests/database/ownership.sql',
                  ROOT / 'tests/database/lifecycle.sql',
                  ROOT / 'tests/database/ingestion_jobs.sql'])
@@ -51,6 +53,14 @@ def main():
         for line in result.stderr.splitlines():
             if 'PASS:' in line:
                 print(line)
+        if args.cleanup_only:
+            print('Owned cleanup SQL checks passed with synthetic identities; no hosted data was changed.')
+            return
+        if args.automatic_only:
+            from check_targeted_claim import targeted_claim_checks
+            targeted_claim_checks(name, run)
+            print('Automatic dispatch and existing exact-claim checks passed. Synthetic Auth shim; not hosted evidence.')
+            return
         if args.listing_only:
             print('Listing SQL checks passed. Auth is a test-only claim shim; hosted Auth/PostgREST is unverified.')
             return

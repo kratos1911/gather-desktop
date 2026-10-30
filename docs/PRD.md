@@ -1,8 +1,8 @@
 # Product requirements
 
 Status: agreed product direction. A restricted browser operator pilot has verified
-one selected TXT/Markdown lifecycle through cleanup. The packaged native app
-remains a sample preview; the general MVP/release is incomplete. Current evidence
+selected TXT/Markdown lifecycles through cleanup. A separate private Windows build
+now connects to the hosted backend; the general MVP/release is incomplete. Evidence
 and limitations are in MEMORY.md and TASKS.md, not the historical snapshots.
 
 ## What and why

@@ -1,6 +1,6 @@
 # Current Gather state
 
-Updated 27 October 2026. Feature checkpoint: `53cf9d8` on
+Updated 31 October 2026. Current work builds on checkpoint `2f30462` on
 `codex/durable-ingestion-jobs`. This file is current state, not a session log. Repository context was audited/reorganized; see FILE_AUDIT.md.
 See [tasks](../TASKS.md) for next acceptance and [topic index](PROJECT_HUB.md)
 for contracts. [Previous state journal](history/2026-10-26/MEMORY-2026-10-26.md)
@@ -26,29 +26,38 @@ is historical and must not override this file.
 
 ## Current limitations and next work
 
-The last live app check timed out. A matching Cloud Run readiness GET later
-logged HTTP200 after ~31 seconds, beyond the 15-second outbound allowance.
-An isolated caller-token mint passed within five seconds. The earlier generic
-model failure is not conclusively diagnosed. A successful later in-app readiness
-check and fresh post-idle embedding remain unverified.
+Automatic dispatch, exact-attempt recovery and owner-scoped cleanup are implemented.
+Migrations 10/11/12 were explicitly approved and applied to Gather. The library API
+and two restricted Secret Manager credentials were deployed with explicit approval.
+The native app verified hosted sign-in -> fresh file Save -> automatic ready ->
+custom semantic search -> exact saved text. See PRIVATE_DESKTOP_DELIVERY.md.
+
+Recovery source `f092452e-6a08-47a3-92eb-d75153bd4d00` reached ready, passed
+search/open and was physically cleaned through the app after explicit approval.
+New native source `88da1cf6-3708-4f07-9631-6493601a3f3a` remains published for
+inspection; do not rerun its job or delete it implicitly. Its 133-byte file is
+synthetic/nonsensitive. Prior failed results remain historical evidence.
+
+Current checks: 54 frontend tests, typecheck/lint/format, focused backend/HTTP,
+11 owned-cleanup SQL cases and 37 Linux image cases passed. Filelock was fixed;
+its targeted rescan is clear. Scanner-open zlib retains the identical verified
+backport hash. No suppression or blanket security approval. Clean-machine install,
+uninstall, signing and broader release/quality acceptance remain unverified.
 
 The account's separate older job `caae0a28-c50c-4789-9eef-51e62c1fdd7b`
 last reported processing, attempts 2/3, timeout, no publication. That is stored
 state, not evidence of a live worker. Do not claim/retry/delete it implicitly.
 
-Next implementation: automatic processing of new private text imports, with
-startup/readiness verification inside its final integration check. Live readiness
-does not block independent local implementation. The ordered outcomes and acceptance
-are in TASKS.md. Worker execution and physical cleanup are still operator actions;
-the plan is not implemented. General signup/uploads, native connected mode, other
-formats and chat remain gated/deferred.
+Next: clean-Windows installer QA, then choose the next document-format slice.
+Evidence/limits belong in TASKS.md and PRIVATE_DESKTOP_DELIVERY.md. General
+signup/uploads, additional formats and chat remain gated/deferred.
 
 ## Fixed scope and operating constraints
 
 - Cloud CPU inference: private Gather Cloud Run in Mumbai, project
   `gather-development-511211`. Use explicit personal account/project flags from
   the existing helpers. Never use protected Intrixshield/work defaults.
-- Supabase `fatolholcjxpwocnpzws`, Sydney session pooler. Nine migrations were
+- Supabase `fatolholcjxpwocnpzws`, Sydney session pooler. Twelve migrations were
   applied manually; CLI migration history is not automatically populated.
 - Qwen/Qwen3-Embedding-0.6B, pinned revision/dimensions in the serving contracts;
   512-dimensional query/document space. No end-user weight downloads.
@@ -57,6 +66,10 @@ formats and chat remain gated/deferred.
   quotas and per-process counters are not billing meters.
 - Normal min0/max1; the approved pilot budget is INR500 and alerts are not a
   hard spending cap. No new paid provisioning or always-warm changes without approval.
+- Library API: approved CPU1/512MiB, max1/min0; application admission1, platform
+  concurrency4, three model attempts per API instance, two allowed users only.
+  Up to three readiness GETs within one 60s budget were explicitly approved;
+  embedding requests never retry automatically.
 - Models/caches/temp/build evidence on D:. No protected API/container/project
   changes or app closures without specific authorization.
 - One writer/agent by default. Keep commits local; never push without an

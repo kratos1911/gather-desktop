@@ -24,8 +24,18 @@ class FixtureStore:
         self.owner = self.job = self.item = self.key = None
         self.deleted = False
         self.passages, self.vectors = [], set()
+        self.automatic = False
 
     def call(self, name, *args, owner=None):
+        if name == 'submit_automatic_text':
+            result = self.call('submit_text',*args,owner=owner)
+            self.automatic = True
+            return dict(result,automatic_processing=True)
+        if name == 'next_automatic_text_job':
+            return self.job['id'] if self.automatic and not self.deleted and self.job['state']=='queued' else None
+        if name == 'claim_automatic_text_job':
+            if not self.automatic or args[0]!=self.job['id']: return None
+            name = 'claim_text_job'
         if name == 'submit_text':
             request, title, raw, media, parser, chunker, model, revision, dimensions, source = args
             if self.key == (owner,request):
@@ -56,6 +66,10 @@ class FixtureStore:
         raise AssertionError('unexpected fixture operation')
 
     def rpc(self, owner, path, payload):
+        if path.endswith('list_source_cleanup'):
+            return [{'source_id':self.item['source_id']}] if self.deleted and owner==self.owner else []
+        if path.endswith('complete_source_cleanup'):
+            return self.deleted and owner==self.owner and payload['p_source']==self.item['source_id']
         visible = self.item is not None and owner == self.owner and not self.deleted
         if path.endswith('request_source_deletion'):
             if not visible or payload['p_source_id'] != self.item['source_id']: return False
@@ -89,9 +103,14 @@ class FlowTests(unittest.TestCase):
     def test_opt_in_markdown_admission_uses_existing_flow_without_live_inference(self):
         self._exercise(private_files=True)
 
-    def _exercise(self, private_files=False):
-        from scripts.operator_library import PILOT_USERS, PilotSession
+    def test_automatic_import_publishes_without_a_manual_worker_command(self):
+        self._exercise(private_files=True,automatic=True)
+
+    def _exercise(self, private_files=False, automatic=False):
+        from scripts.operator_library import PILOT_USERS, PilotSession, PilotWorker
+        from services.worker.automatic_processing import AutomaticAdmission, AutomaticDispatcher
         store, provider = FixtureStore(), Provider()
+        dispatcher = AutomaticDispatcher(store,lambda job:WorkerRun(PilotWorker(store,job,text_files=True,automatic=True),provider),lambda:True) if automatic else None
         provider.check_ready = Mock(return_value={'state':'ready','used':0,'limit':3})
         owners = dict(zip(('a','b'),sorted(PILOT_USERS))) if private_files else {key:str(uuid4()) for key in ('a','b')}
         def session(token,cancel):
@@ -104,9 +123,9 @@ class FlowTests(unittest.TestCase):
             def admission(owner):
                 repo = Mock()
                 repo.call.side_effect = lambda name,*args:store.call(name,*args,owner=owner)
-                return repo
-            return PilotSession(api,admission,provider,text_files=True) if private_files else LibrarySession(api,admission,provider)
-        app = LibraryAPI(session)
+                return AutomaticAdmission(repo) if automatic else repo
+            return PilotSession(api,admission,provider,text_files=True,dispatcher=dispatcher) if private_files else LibrarySession(api,admission,provider)
+        app = LibraryAPI(session,dispatcher=dispatcher)
         server = create_server(app,port=0)
         thread = threading.Thread(target=server.run,daemon=True)
         thread.start()
@@ -132,11 +151,17 @@ class FlowTests(unittest.TestCase):
             item = call('import',submission)
             self.assertEqual(call('import',submission),item)
             sid,vid = item['source_id'],item['version_id']
-            self.assertEqual(call('status',{'source_id':sid})[0]['state'],'queued')
-            self.assertEqual(call('list',{'limit':20})['items'][0]['state'],'queued')
+            if not automatic:
+                self.assertEqual(call('status',{'source_id':sid})[0]['state'],'queued')
+                self.assertEqual(call('list',{'limit':20})['items'][0]['state'],'queued')
             self.assertEqual(call('list',{'limit':20},'b')['items'],[])
-            self.assertEqual(call('search',{'query':'database security'})['windows'],[])
-            self.assertEqual(WorkerRun(store,provider).run()['outcomes'][0]['state'],'ready')
+            if automatic:
+                self.assertTrue(item['automatic_processing'])
+                deadline = time.monotonic()+3
+                while store.job['state']!='ready' and time.monotonic()<deadline: time.sleep(.01)
+            else:
+                self.assertEqual(call('search',{'query':'database security'})['windows'],[])
+                self.assertEqual(WorkerRun(store,provider).run()['outcomes'][0]['state'],'ready')
             self.assertEqual(call('status',{'source_id':sid})[0]['state'],'ready')
             self.assertEqual(call('list',{'limit':20})['items'][0]['published_version_id'],vid)
             found = call('search',{'query':'database security'})['windows'][0]

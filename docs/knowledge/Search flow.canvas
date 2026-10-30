@@ -21,7 +21,7 @@
     {
       "id": "source",
       "type": "text",
-      "text": "Save file or link\nHosted selected Markdown lifecycle verified through approved cleanup\nSee PRIVATE_TEXT_FILES.md\nReplay guard retained; general release gated",
+      "text": "Native TXT/Markdown -> review + confirmed Save\nHosted Auth + durable automatic intent\nFresh native import/search/open verified\nSee PRIVATE_DESKTOP_DELIVERY.md; bookmarks still gated",
       "x": 0,
       "y": 0,
       "width": 330,
@@ -39,7 +39,7 @@
     {
       "id": "chunk",
       "type": "text",
-      "text": "Versioned passages + provenance\nTXT/MD atomic publication verified locally\nSee docs/TEXT_PUBLICATION.md",
+      "text": "Versioned passages + provenance\nLease renewal -> cloud CPU embedding -> atomic publication\nExact offsets/model identity preserved\nSee AUTOMATIC_PROCESSING.md",
       "x": 760,
       "y": 0,
       "width": 330,
@@ -57,7 +57,7 @@
     {
       "id": "vector",
       "type": "text",
-      "text": "Real cloud vectors -> SQL publication -> search/open/delete pilot passes\nTwo model calls; one synthetic TXT source\nLocal SQL identity shim, NOT hosted JWT\nSee docs/CLOUD_INGESTION_PILOT.md",
+      "text": "Private Windows app -> hosted API -> Qwen CPU\nReal Supabase session + owned SQL publication\nFresh synthetic Markdown ready on attempt1\nSearch/open and owned cleanup verified; broad quality unmeasured",
       "x": 800,
       "y": 220,
       "width": 330,

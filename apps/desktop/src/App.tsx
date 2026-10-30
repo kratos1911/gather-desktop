@@ -7,16 +7,19 @@ import {
 import { PolicyPage, type PolicyKind } from "./components/PolicyPage";
 import { samples, models, type Sample } from "./fixtures";
 import "./App.css";
+import { connectedPilot, pilotAvailable } from "./services/pilotConfiguration";
 
 // Removed from production builds; controlled operator pilot is browser-dev only.
-const OperatorPilot = import.meta.env.DEV
+const OperatorPilot = pilotAvailable
   ? lazy(() => import("./components/OperatorPilot"))
   : null;
 type Screen = "library" | "models" | "pilot" | PolicyKind;
 const filters = ["All files", "Documents", "Presentations", "Photos"];
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>("library");
+  const [screen, setScreen] = useState<Screen>(
+    connectedPilot ? "pilot" : "library",
+  );
   const [filter, setFilter] = useState("All files");
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Sample | null>(null);

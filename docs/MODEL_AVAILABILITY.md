@@ -1,5 +1,10 @@
 # Model availability and explicit recovery
 
+Current extension: automatic workers use the separately approved bounded startup
+GET retry policy; operator identity reuses the established in-memory expiry cache.
+Manual diagnostic checks still do not retry embeddings. Current deployed/native
+evidence and remaining gates: [private delivery](PRIVATE_DESKTOP_DELIVERY.md).
+
 26 October 2026. Diagnostics/manual readiness check implemented and locally
 verified. No automatic ingestion or inference replay. The older generic model
 failure remains unconfirmed; live observations below have narrower evidence.

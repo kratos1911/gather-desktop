@@ -1,6 +1,6 @@
 # Current delivery tasks
 
-Updated 27 October 2026. Current state: [MEMORY](docs/MEMORY.md).
+Updated 31 October 2026. Current state: [MEMORY](docs/MEMORY.md).
 Work/evidence: [progress](docs/PROGRESS.md) and task-specific contracts.
 The [full previous task journal](docs/history/2026-10-26/TASKS-2026-10-26.md)
 preserves all earlier acceptance text and checkpoints.
@@ -9,18 +9,23 @@ preserves all earlier acceptance text and checkpoints.
 
 Deliver complete user flows; supporting fixes/checks belong inside their milestone.
 These three milestones target a usable private text pilot, not the whole multi-format
-MVP or public release. Implementation remains pending.
+MVP or public release. Implementation is present; acceptance remains per item below.
+
+Current delivery: milestones 1/2 are implemented and verified in the private
+hosted flow. Milestone 3 has a deployed API, native executable/installer and real
+Windows sign-in/import/automatic-ready/search/open evidence. Clean-machine
+install/uninstall and release signing remain open acceptance. See
+[delivery evidence and artifacts](docs/PRIVATE_DESKTOP_DELIVERY.md).
 
 | Milestone | Outcome and completion criteria | Dependencies / gates |
 | --- | --- | --- |
-| 1. Automatic private text processing (next) | A newly saved, owned TXT/Markdown import progresses to searchable/openable text without a terminal worker command. Truthful progress/failure states, bounded restart recovery, duplicate prevention and deletion/account isolation pass focused checks plus one bounded hosted flow. | Reuse admission, durable jobs, exact-target claims, leases and atomic publication. Startup handling and readiness verification are part of final integration, not prerequisites for offline implementation. Preserve existing request budgets/deadlines, explicit retry rules and the older unfinished job. |
+| 1. Automatic private text processing (verified private flow) | A newly saved, owned TXT/Markdown import progresses to searchable/openable text without a terminal worker command. Truthful progress/failure states, bounded restart recovery, duplicate prevention and deletion/account isolation pass focused checks plus one bounded hosted flow. | Reuse admission, durable jobs, exact-target claims, leases and atomic publication. Startup handling and readiness verification are part of final integration, not prerequisites for offline implementation. Preserve existing request budgets/deadlines, explicit retry rules and the older unfinished job. |
 | 2. Complete recovery and deletion | Reconnect shows durable state and actionable failures; deletion hides immediately and reports confirmed physical cleanup or a truthful pending/failure state. No manual SQL for the supported flow; late work cannot restore deleted content. | Reuse listing, tombstones, cleanup guards and replay receipts; integrate trusted cleanup execution without exposing privileges. Test restart/race cases. Hosted changes need approval. |
 | 3. Connected Windows private pilot | The packaged app completes sign-in -> import -> search -> open -> delete on a clean Windows test environment without developer tools. No DB/Google operator credentials are bundled. | Choose and verify trusted backend/session packaging, close the relevant privacy/security/native gates, then test the installable artifact. Any new hosted service/deployment needs separate approval. |
 
-Cold-start evidence remains unresolved: the last app check timed out, and a matching
-Cloud Run readiness GET later logged HTTP200/~31 s. Diagnose that integration gap
-within milestone 1; never silently raise limits, keep an instance warm or replay
-inference. See [availability](docs/MODEL_AVAILABILITY.md).
+Startup now has one cancellable probe under lease renewal; isolated readiness
+passed in 32.62 s. Inference retains its 15-second deadline. Finish the live
+pipeline check without silent replays or permanent warming.
 
 For each milestone: one brief interview checkpoint; implement the connected slice;
 run changed-behavior checks and required builds once after edits stabilize; finish
@@ -42,8 +47,8 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-003 | Partial: desktop design | Sample UI + private browser operator panel verified in scoped checks; native accessibility/zoom/motion QA remains |
 | TASK-004 | Done: bounded TXT/Markdown contract | Exact bytes/offsets/hashes and deterministic processing; [worker contract](services/worker/README.md) |
 | TASK-005 | Partial: embedding/quality | Qwen CPU serving and selected hosted flow pass. Broader recall, split/multi-part coverage, visual/Gemma and security/licence work remain; [retrieval evidence](docs/CHUNK_RETRIEVAL_RESULTS.md) |
-| TASK-006 | Partial: identity/private schema | Hosted private pilot and nine migrations verified. General signup/session packaging/audience policy remain gated; [hosted setup](docs/HOSTED_SUPABASE_SETUP.md) |
-| TASK-007 | Private pilot verified; general app partial | Selected synthetic Markdown passed import -> publish -> search/open -> deletion/cleanup. Manual worker/admin cleanup remain; [file pilot](docs/PRIVATE_TEXT_FILES.md) |
+| TASK-006 | Partial: identity/private schema | Hosted private pilot and twelve migrations verified. General signup/session packaging/audience policy remain gated; [hosted setup](docs/HOSTED_SUPABASE_SETUP.md) |
+| TASK-007 | Private pilot verified; general app partial | Selected synthetic Markdown passed import -> publish -> search/open -> deletion/cleanup. Automatic processing/owned cleanup verified; release gates remain; [file pilot](docs/PRIVATE_TEXT_FILES.md) |
 | TASK-008 | Planned: native document formats | PDF/DOCX/PPTX with exact page/slide/section provenance and malformed-input cases |
 | TASK-009 | Planned: photo/OCR retrieval | JPEG/PNG/scanned text, distinct model spaces and separately measured quality |
 | TASK-010 | Deferred by user: chat | Selected-source isolation/citations; do not start before search priorities |

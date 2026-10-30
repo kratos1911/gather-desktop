@@ -21,6 +21,9 @@ export type LibraryState = Readonly<{
   results: SearchResult | null;
   opened: SourceText | null;
   cleanupSourceId: string | null;
+  cleanupSources: string[];
+  cleanupEnabled: boolean;
+  cleanedSourceId: string | null;
   modelStatus: ModelStatus | null;
   sources: LibrarySource[];
   nextCursor: string | null;
@@ -36,6 +39,9 @@ const initial = (): LibraryState => ({
   results: null,
   opened: null,
   cleanupSourceId: null,
+  cleanupSources: [],
+  cleanupEnabled: false,
+  cleanedSourceId: null,
   modelStatus: null,
   sources: [],
   nextCursor: null,
@@ -166,8 +172,83 @@ export class LibraryWorkspace {
     if (!source) throw new LibraryClientError("no_imported_source");
     await this.perform(
       (signal) => this.client.status(source.source_id, signal),
-      (rows) => this.update({ processing: rows[0] ?? null }),
+      (rows) => {
+        const processing =
+          rows.find(
+            (row) =>
+              row.job_id === source.job_id &&
+              row.version_id === source.version_id,
+          ) ?? null;
+        this.update({ processing });
+      },
     );
+  }
+  async process(
+    sourceId: string,
+    jobId: string,
+    attempts: number,
+  ): Promise<void> {
+    await this.perform(
+      (signal) => this.client.process(sourceId, jobId, attempts, signal),
+      (accepted) =>
+        this.update({
+          error: accepted ? null : "processing_not_eligible",
+          ...(accepted && this.state.imported?.source_id === sourceId
+            ? {
+                imported: { ...this.state.imported },
+                processing: null,
+              }
+            : {}),
+        }),
+    );
+  }
+
+  /** Bounded metadata refreshes only. Never submit/retry inference in a timer. */
+  watchImport(): () => void {
+    const source = this.state.imported;
+    if (!source?.automatic_processing) return () => {};
+    const generation = this.generation;
+    let remaining = 30;
+    const deadline = Date.now() + 300000;
+    let stopped = false;
+    let timer: ReturnType<typeof setTimeout>;
+    const tick = async () => {
+      if (
+        stopped ||
+        generation !== this.generation ||
+        this.state.imported?.job_id !== source.job_id ||
+        remaining-- <= 0 ||
+        Date.now() >= deadline
+      )
+        return;
+      if (this.state.busy) {
+        timer = setTimeout(() => void tick(), 10000);
+        return;
+      }
+      await this.refreshStatus();
+      if (
+        stopped ||
+        generation !== this.generation ||
+        this.state.imported?.job_id !== source.job_id
+      )
+        return;
+      const status = this.state.processing;
+      if (
+        (this.state.error && this.state.error !== "busy") ||
+        !status ||
+        status.state === "ready" ||
+        status.state === "failed" ||
+        status.state === "cancelled" ||
+        (status.state === "queued" && status.attempts > 0)
+      )
+        return;
+      timer = setTimeout(() => void tick(), 10000);
+    };
+    timer = setTimeout(() => void tick(), 1000);
+    return () => {
+      stopped = true;
+      clearTimeout(timer);
+    };
   }
   async checkModel(): Promise<void> {
     await this.perform(
@@ -203,6 +284,8 @@ export class LibraryWorkspace {
           ],
           nextCursor: page.next_cursor,
           libraryStatus: "ready",
+          cleanupSources: page.cleanup_source_ids ?? [],
+          cleanupEnabled: page.cleanup_source_ids !== undefined,
         });
       },
       () => this.update({ libraryStatus: "error" }),
@@ -227,6 +310,8 @@ export class LibraryWorkspace {
     );
   }
   async delete(sourceId: string): Promise<void> {
+    const generation = this.generation;
+    let hidden = false;
     await this.perform(
       (signal) => this.client.delete(sourceId, signal),
       (deleted) => {
@@ -235,8 +320,13 @@ export class LibraryWorkspace {
           return;
         }
         // Discard affected result set (byte/citation totals cannot be left stale).
+        hidden = true;
         this.update({
           cleanupSourceId: sourceId,
+          cleanedSourceId: null,
+          cleanupSources: [
+            ...new Set([...this.state.cleanupSources, sourceId]),
+          ],
           sources: this.state.sources.filter(
             (source) => source.source_id !== sourceId,
           ),
@@ -257,6 +347,30 @@ export class LibraryWorkspace {
             this.state.imported?.source_id === sourceId
               ? null
               : this.state.processing,
+        });
+      },
+    );
+    if (hidden && generation === this.generation && this.state.cleanupEnabled)
+      await this.finishCleanup(sourceId);
+  }
+
+  async finishCleanup(sourceId: string): Promise<void> {
+    await this.perform(
+      (signal) => this.client.cleanup(sourceId, signal),
+      (complete) => {
+        if (!complete) {
+          this.update({ error: "cleanup_pending" });
+          return;
+        }
+        this.update({
+          cleanupSources: this.state.cleanupSources.filter(
+            (id) => id !== sourceId,
+          ),
+          cleanupSourceId:
+            this.state.cleanupSourceId === sourceId
+              ? null
+              : this.state.cleanupSourceId,
+          cleanedSourceId: sourceId,
         });
       },
     );

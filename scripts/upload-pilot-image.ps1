@@ -1,4 +1,4 @@
-param([string]$Account, [switch]$Upload)
+param([string]$Account, [switch]$Upload, [switch]$Library)
 $ErrorActionPreference = 'Stop'
 $repoRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 $registry = 'asia-south1-docker.pkg.dev'
@@ -6,6 +6,11 @@ $project = 'gather-development-511211'
 $sourceImage = 'gather-inference:pilot-configured'
 $targetImage = "$registry/$project/gather-pilot-images/inference:pilot-20261021"
 $expected = (Get-Content -Raw -LiteralPath (Join-Path $repoRoot 'tests/inference/results/pilot-configured-20261021.json') | ConvertFrom-Json).image
+if ($Library) {
+    $sourceImage='gather-library:pilot-candidate'
+    $targetImage="$registry/$project/gather-pilot-images/library:pilot-20261031"
+    $expected=(Get-Content -Raw -LiteralPath (Join-Path $repoRoot 'output/library-image/verification.json') | ConvertFrom-Json).image
+}
 $dockerEndpoint = (& docker context inspect desktop-linux --format '{{.Endpoints.docker.Host}}').Trim()
 if ($LASTEXITCODE -ne 0 -or $dockerEndpoint -ne 'npipe:////./pipe/dockerDesktopLinuxEngine') {
     throw 'Expected local Docker Desktop Linux engine; no upload attempted.'
@@ -56,7 +61,7 @@ try {
     $digests = & docker --config $authDirectory --host $dockerEndpoint image inspect $targetImage --format '{{json .RepoDigests}}'
     if ($LASTEXITCODE -ne 0) { throw 'Push completed but local digest lookup failed; check the repository before retrying.' }
     $receipt = @{target=$targetImage; source_image=$imageId; registry_digests=($digests | ConvertFrom-Json)}
-    $receiptPath = Join-Path $repoRoot 'output/pilot-upload-receipt.json'
+    $receiptPath = Join-Path $repoRoot $(if($Library){'output/library-upload-receipt.json'}else{'output/pilot-upload-receipt.json'})
     [IO.File]::WriteAllText($receiptPath, ($receipt | ConvertTo-Json -Depth 4), [Text.UTF8Encoding]::new($false))
     Write-Host "Upload completed. Receipt: $receiptPath"
 } finally {

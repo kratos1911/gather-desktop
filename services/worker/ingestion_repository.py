@@ -21,6 +21,8 @@ FUNCTIONS = {
     'stage_vectors': 6, 'publish_text': 2,
     'completed_passages': 2,
     'claim_target_text_job': 1,
+    'submit_automatic_text': 10, 'next_automatic_text_job': 0,
+    'claim_automatic_text_job': 1,
 }
 
 

@@ -1,5 +1,11 @@
 # Privacy and release audit
 
+Current private extension: PRIVATE_DESKTOP_DELIVERY.md records approved hosted API
+and restricted credential storage, native file processing and owner-confirmed
+cleanup. Only the two existing accounts are allowed; no signup, telemetry or new
+content format was enabled. Final policies/provider retention, signing and broader
+release gates below remain open. This is not a legal-compliance claim.
+
 26 October implementation addendum: [PRIVATE_TEXT_FILES.md](PRIVATE_TEXT_FILES.md)
 records the restricted two-account, nonsensitive-file operator pilot and its
 review/confirmation, actual processors/regions, storage and manual-cleanup limits.

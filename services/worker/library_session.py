@@ -9,6 +9,7 @@ from uuid import UUID
 from services.worker.ingestion import submit
 from services.worker.search import search, SearchError
 from services.worker.service_clients import SessionClient
+from services.worker.service_transport import TransportError
 from services.worker.source_listing import parameters, page
 from services.worker.model_availability import MODEL_HTTP, status_reply
 
@@ -33,6 +34,9 @@ class LibrarySession:
         try:
             # This HTTPS Auth request verifies the bearer; decoding JWT is insufficient.
             return identifier(self._api('GET', '/auth/v1/user')['id'])
+        except TransportError as error:
+            if str(error)=='busy': raise LibraryError('busy') from None
+            raise LibraryError('session_unavailable') from None
         except Exception:
             raise LibraryError('session_unavailable') from None
 
@@ -99,3 +103,16 @@ class LibrarySession:
     def delete(self, source_id):
         # Tombstone now; durable cleanup removes original/derivatives separately.
         return self._rpc('request_source_deletion', {'p_source_id':source_id})
+
+    def cleanup(self, source_id):
+        return self._rpc('complete_source_cleanup',{'p_source':source_id})
+
+    def process(self, source_id, job_id, expected_attempts):
+        self._owner()
+        try:
+            if type(expected_attempts) is not int or not 0<=expected_attempts<=2:
+                raise ValueError()
+            return self._api('POST','/rest/v1/rpc/request_automatic_processing',
+                {'p_source':identifier(source_id),'p_job':identifier(job_id),'p_attempts':expected_attempts})
+        except Exception:
+            raise LibraryError('library_operation_failed') from None
