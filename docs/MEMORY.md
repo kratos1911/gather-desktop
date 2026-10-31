@@ -1,6 +1,6 @@
 # Current Gather state
 
-Updated 31 October 2026. Current work builds on checkpoint `3f23632` on
+Updated 1 November 2026. Current work builds on checkpoint `39aef78` on
 `codex/durable-ingestion-jobs`. This file is current state, not a session log. Repository context was audited/reorganized; see FILE_AUDIT.md.
 See [tasks](../TASKS.md) for next acceptance and [topic index](PROJECT_HUB.md)
 for contracts. [Previous state journal](history/2026-10-26/MEMORY-2026-10-26.md)
@@ -34,8 +34,17 @@ focused checks. Pilot B's generated two-page hosted-pilot.pdf reached ready afte
 explicit recovery; real search returned a cited passage and exact saved page
 opening passed. Exactly two successful embedding requests were used. Keep this
 source for inspection; do not resubmit, retry or delete it implicitly. See
-PDF_IMPORT.md for limits, image and evidence. The status-sync fix keeps recovery
-cards on the observed attempt;64 frontend checks/build/lint/format pass.
+PDF_IMPORT.md for the original limits/evidence and PROCESSING_RECOVERY.md for the
+subsequent status/eligibility changes and current checks.
+
+Recovery follow-up: approved migration14/API revision00003-dpb are live. Owner
+listing/status supply can_resume; active work no longer offers Resume and stale
+rejections refresh metadata. Accepted reconnect recovery restores status watching.
+One existing private PDF reached ready with two model calls; its contents were
+not opened. Current checks:60 exact-image backend, eight SQL groups and68 frontend
+checks plus builds/lint/format. See PROCESSING_RECOVERY.md. Model startup boost was
+explicitly approved, retaining min0/max1 and runtime2CPU/5GiB. Observed startup
+remained about31s; the full recovery took about68s, so latency is not solved.
 
 Automatic dispatch, exact-attempt recovery and owner-scoped cleanup are implemented.
 Migrations 10/11/12 were explicitly approved and applied to Gather. The library API
@@ -62,7 +71,9 @@ The account's separate older job `caae0a28-c50c-4789-9eef-51e62c1fdd7b`
 last reported processing, attempts 2/3, timeout, no publication. That is stored
 state, not evidence of a live worker. Do not claim/retry/delete it implicitly.
 
-Next: clean-Windows installer QA using WINDOWS_INSTALL_QA.md.
+Next: profile processing stages and reduce demonstrated connection/pipeline
+overhead without weakening isolation/deadlines. Clean-Windows installer QA remains
+separate in WINDOWS_INSTALL_QA.md.
 Evidence/limits belong in TASKS.md and PRIVATE_DESKTOP_DELIVERY.md. General
 signup/uploads, DOCX/PPTX/OCR and chat remain gated/deferred.
 
@@ -71,7 +82,7 @@ signup/uploads, DOCX/PPTX/OCR and chat remain gated/deferred.
 - Cloud CPU inference: private Gather Cloud Run in Mumbai, project
   `gather-development-511211`. Use explicit personal account/project flags from
   the existing helpers. Never use protected Intrixshield/work defaults.
-- Supabase `fatolholcjxpwocnpzws`, Sydney session pooler. Thirteen migrations were
+- Supabase `fatolholcjxpwocnpzws`, Sydney session pooler. Fourteen migrations were
   applied manually; CLI migration history is not automatically populated.
 - Qwen/Qwen3-Embedding-0.6B, pinned revision/dimensions in the serving contracts;
   512-dimensional query/document space. No end-user weight downloads.
@@ -80,6 +91,8 @@ signup/uploads, DOCX/PPTX/OCR and chat remain gated/deferred.
   quotas and per-process counters are not billing meters.
 - Normal min0/max1; the approved pilot budget is INR500 and alerts are not a
   hard spending cap. No new paid provisioning or always-warm changes without approval.
+  Startup-only inference CPU boost is now explicitly approved/enabled; its benefit
+  is unproven in the recorded sample. No permanent runtime CPU/memory increase.
 - Library API: approved CPU1/512MiB, max1/min0; application admission1, platform
   concurrency4, three model attempts per API instance, two allowed users only.
   Up to three readiness GETs within one 60s budget were explicitly approved;

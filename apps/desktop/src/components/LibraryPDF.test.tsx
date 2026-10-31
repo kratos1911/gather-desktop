@@ -84,6 +84,74 @@ async function login(send: ReturnType<typeof vi.fn<typeof fetch>>) {
     ).toBe(false),
   );
 }
+it.each([false, true])(
+  "uses server recovery eligibility for a processing PDF (eligible=%s)",
+  async (canResume) => {
+    const send = vi.fn<typeof fetch>().mockResolvedValueOnce(
+      reply({
+        items: [
+          {
+            ...source,
+            published_version_id: null,
+            state: "processing",
+            can_resume: canResume,
+          },
+        ],
+        next_cursor: null,
+        pdf_enabled: true,
+      }),
+    );
+    await login(send);
+    const button = screen.queryByRole("button", {
+      name: "Resume processing guide.pdf",
+    });
+    if (canResume) expect(button).not.toBeNull();
+    else expect(button).toBeNull();
+    expect(
+      screen.getByText(
+        canResume
+          ? "Processing interrupted · ready to resume"
+          : "Processing · no retry needed",
+      ),
+    ).toBeTruthy();
+    expect(send).toHaveBeenCalledTimes(1);
+  },
+);
+it("refreshes a rejected recovery once and removes the stale action", async () => {
+  const pending = {
+    ...source,
+    published_version_id: null,
+    state: "queued",
+    attempts: 1,
+    can_resume: true,
+  };
+  const active = {
+    ...pending,
+    state: "processing",
+    attempts: 2,
+    can_resume: false,
+  };
+  const send = vi
+    .fn<typeof fetch>()
+    .mockResolvedValueOnce(
+      reply({ items: [pending], next_cursor: null, pdf_enabled: true }),
+    )
+    .mockResolvedValueOnce(reply(false))
+    .mockResolvedValueOnce(
+      reply({ items: [active], next_cursor: null, pdf_enabled: true }),
+    );
+  await login(send);
+  fireEvent.click(
+    screen.getByRole("button", { name: "Resume processing guide.pdf" }),
+  );
+  await screen.findByText("Processing · no retry needed");
+  expect(
+    screen.queryByRole("button", { name: "Resume processing guide.pdf" }),
+  ).toBeNull();
+  expect(send.mock.calls.map(([url]) => new URL(String(url)).pathname)).toEqual(
+    ["/v1/list", "/v1/process", "/v1/list"],
+  );
+});
 it("enables PDF only from server capability and renders page-aware search/opening", async () => {
   const text = body.slice(13);
   const send = vi

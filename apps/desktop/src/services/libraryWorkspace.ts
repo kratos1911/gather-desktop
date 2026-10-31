@@ -211,6 +211,9 @@ export class LibraryWorkspace {
                   state: processing.state,
                   attempts: processing.attempts,
                   error_code: processing.error_code,
+                  ...(processing.can_resume === undefined
+                    ? {}
+                    : { can_resume: processing.can_resume }),
                 }
               : row,
           ),
@@ -222,20 +225,44 @@ export class LibraryWorkspace {
     sourceId: string,
     jobId: string,
     attempts: number,
-  ): Promise<void> {
+  ): Promise<boolean> {
+    const generation = this.generation;
+    let rejected = false;
+    let acceptedResult = false;
     await this.perform(
       (signal) => this.client.process(sourceId, jobId, attempts, signal),
-      (accepted) =>
+      (accepted) => {
+        acceptedResult = accepted;
+        rejected = !accepted;
+        const target = this.state.sources.find(
+          (row) => row.source_id === sourceId && row.job_id === jobId,
+        );
+        const resumed = target?.processing_version_id
+          ? {
+              source_id: sourceId,
+              job_id: jobId,
+              version_id: target.processing_version_id,
+              automatic_processing: true,
+            }
+          : this.state.imported?.job_id === jobId
+            ? { ...this.state.imported }
+            : null;
         this.update({
-          error: accepted ? null : "processing_not_eligible",
-          ...(accepted && this.state.imported?.source_id === sourceId
+          error: null,
+          ...(accepted && resumed
             ? {
-                imported: { ...this.state.imported },
+                imported: resumed,
                 processing: null,
               }
             : {}),
-        }),
+        });
+      },
     );
+    // A lease/job may change after rendering. Refresh metadata, never replay
+    // processing or keep a misleading actionable card after a refusal.
+    if (rejected && generation === this.generation && this.state.signedIn)
+      await this.loadSources();
+    return acceptedResult;
   }
 
   /** Bounded metadata refreshes only. Never submit/retry inference in a timer. */

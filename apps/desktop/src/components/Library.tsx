@@ -169,9 +169,14 @@ function statusLabel(source: LibrarySource) {
   if (replacement)
     return `Saved version available · replacement ${source.state ?? "pending"}`;
   if (source.published_version_id) return "Ready to search";
-  if (source.state === "processing") return "Processing status: processing";
+  if (source.state === "processing")
+    return source.can_resume
+      ? "Processing interrupted · ready to resume"
+      : "Processing · no retry needed";
   if (source.state === "queued" && source.attempts)
-    return "Waiting for explicit recovery";
+    return source.can_resume === false
+      ? "Waiting before recovery is available"
+      : "Waiting for explicit recovery";
   return source.state === "failed"
     ? "Processing failed"
     : source.state === "queued"
@@ -715,20 +720,25 @@ export default function Library() {
                         {source.job_id &&
                           source.attempts !== null &&
                           source.attempts < 3 &&
-                          (source.state === "queued" ||
-                            source.state === "processing") && (
+                          (source.can_resume === true ||
+                            (source.can_resume === undefined &&
+                              source.state === "queued" &&
+                              source.attempts > 0)) && (
                             <button
                               className="quiet-button"
                               disabled={state.busy}
                               aria-label={`Resume processing ${source.title}`}
                               onClick={() =>
                                 act(async () => {
-                                  await workspace.process(
+                                  const accepted = await workspace.process(
                                     source.source_id,
                                     source.job_id!,
                                     source.attempts!,
                                   );
-                                  if (!workspace.getSnapshot().error)
+                                  if (
+                                    accepted &&
+                                    !workspace.getSnapshot().error
+                                  )
                                     await workspace.loadSources();
                                 })
                               }

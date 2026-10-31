@@ -17,6 +17,36 @@ from services.worker.library_session import LibraryError
 
 
 class AutomaticTests(unittest.TestCase):
+    def test_model_budget_refuses_recovery_before_durable_intent_and_logs_no_content(self):
+        source='10000000-0000-0000-0000-000000000001'
+        api=Mock(spec=SessionClient,return_value={'id':next(iter(PILOT_USERS))})
+        provider=Mock(calls=3);dispatcher=Mock()
+        session=PilotSession(api,Mock(),provider,dispatcher=dispatcher)
+        with self.assertRaisesRegex(LibraryError,'model_budget_exhausted'):session.process(source,source,1)
+        self.assertEqual(api.call_count,1)
+        dispatcher.wake.assert_not_called()
+        from services.worker.cloud_library import processing_log
+        line=processing_log({'outcomes':[{'state':'queued','body':'PRIVATE'}],
+            'startup_error':'cloud_startup_http_429','token':'PRIVATE'},2)
+        self.assertNotIn('PRIVATE',line)
+        self.assertIn('cloud_startup_http_429',line)
+        self.assertNotIn('PRIVATE',processing_log({'startup_error':'PRIVATE'},0))
+
+    def test_readiness_probes_span_cold_start_without_more_requests_or_a_larger_deadline(self):
+        from scripts.check_hosted_flow import wait_for_automatic_startup
+        now=[0.0]
+        cancel=Mock(is_set=Mock(return_value=False))
+        cancel.wait.side_effect=lambda seconds: now.__setitem__(0,now[0]+seconds)
+        def cold_probe(_identity,**values):
+            self.assertEqual(values['startup_timeout'],60-now[0])
+            if now[0]<28:raise PilotFailure('cloud_startup_http_429')
+        with patch('scripts.check_hosted_flow.time.monotonic',side_effect=lambda:now[0]),patch(
+                'scripts.check_hosted_flow.wait_for_startup',side_effect=cold_probe) as probe:
+            self.assertEqual(wait_for_automatic_startup(Mock(),cancel=cancel),3)
+            self.assertEqual(probe.call_count,3)
+            self.assertEqual(now[0],30)
+        self.assertEqual([call.args[0] for call in cancel.wait.call_args_list],[10,20])
+
     def test_only_startup_429_or_503_retry_within_same_budget(self):
         from scripts.check_hosted_flow import wait_for_automatic_startup
         cancel=Mock(is_set=Mock(return_value=False))

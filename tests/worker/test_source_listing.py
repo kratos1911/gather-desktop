@@ -58,7 +58,7 @@ class ListingTests(unittest.TestCase):
         first = session.list_sources(limit=1)
         session.list_sources(limit=1,cursor=first['next_cursor'])
         self.assertEqual([c.args[1] for c in api.call_args_list],[
-            '/auth/v1/user','/rest/v1/rpc/list_library_sources']*2)
+            '/auth/v1/user','/rest/v1/rpc/list_library_sources_with_recovery']*2)
         self.assertNotIn('owner',api.call_args.kwargs)
         provider.infer.assert_not_called()
         admission.assert_not_called()
@@ -74,3 +74,10 @@ class ListingTests(unittest.TestCase):
             self.assertEqual(send.call_args.kwargs['timeout'],5)
         with self.assertRaises(Exception):
             api('POST','/rest/v1/rpc/list_library_sources',dict(parameters(),owner=OWNER))
+
+    def test_recovery_hint_is_bounded_and_cannot_make_a_completed_job_resumable(self):
+        value=dict(row(),processing_version_id=OWNER,job_id=OWNER,state='processing',attempts=1,can_resume=False)
+        self.assertFalse(page([value])['items'][0]['can_resume'])
+        for fields in ({'can_resume':'yes'},{'can_resume':True,'attempts':3},
+                       {'can_resume':True,'state':'failed'},{'can_resume':True,'job_id':None}):
+            with self.subTest(fields=fields),self.assertRaises(ValueError):page([dict(value,**fields)])

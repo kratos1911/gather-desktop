@@ -12,6 +12,7 @@ export type ProcessingStatus = {
   state: NonNullable<LibrarySource["state"]>;
   attempts: number;
   error_code: string | null;
+  can_resume?: boolean;
 };
 export type LibrarySource = {
   source_id: string;
@@ -24,6 +25,7 @@ export type LibrarySource = {
   state: "queued" | "processing" | "ready" | "failed" | "cancelled" | null;
   attempts: number | null;
   error_code: string | null;
+  can_resume?: boolean;
 };
 export type SourcePage = {
   items: LibrarySource[];
@@ -313,7 +315,11 @@ export class LibraryClient {
         !["queued", "processing", "ready", "failed", "cancelled"].includes(
           state,
         ) ||
-        attempts > 3
+        attempts > 3 ||
+        (value.can_resume !== undefined &&
+          typeof value.can_resume !== "boolean") ||
+        (value.can_resume === true &&
+          (attempts >= 3 || !["queued", "processing"].includes(state)))
       )
         throw new LibraryClientError("invalid_response");
       return {
@@ -322,6 +328,9 @@ export class LibraryClient {
         state: state as ProcessingStatus["state"],
         attempts,
         error_code: value.error_code === null ? null : text(value.error_code),
+        ...(value.can_resume === undefined
+          ? {}
+          : { can_resume: value.can_resume as boolean }),
       };
     });
   }
@@ -381,8 +390,18 @@ export class LibraryClient {
         state,
         attempts: value.attempts === null ? null : integer(value.attempts),
         error_code: value.error_code === null ? null : text(value.error_code),
+        ...(value.can_resume === undefined
+          ? {}
+          : { can_resume: value.can_resume as boolean }),
       };
       if (
+        (value.can_resume !== undefined &&
+          typeof value.can_resume !== "boolean") ||
+        (value.can_resume === true &&
+          (source.job_id === null ||
+            source.attempts === null ||
+            source.attempts >= 3 ||
+            !["queued", "processing"].includes(state ?? ""))) ||
         (source.job_id === null
           ? [
               source.processing_version_id,

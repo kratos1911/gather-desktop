@@ -17,6 +17,43 @@ const setup = () => {
   return { workspace, send };
 };
 describe("library workspace (synthetic transport)", () => {
+  it("restores bounded status watching when an existing job is resumed after reconnect", async () => {
+    const { workspace, send } = setup();
+    send.mockResolvedValueOnce(
+      reply({
+        items: [
+          {
+            source_id: ID,
+            title: "queued.pdf",
+            kind: "file",
+            created_at: "2026-10-31T01:00:00.000001Z",
+            published_version_id: null,
+            processing_version_id: ID,
+            job_id: ID,
+            state: "queued",
+            attempts: 1,
+            error_code: "temporarily_unavailable",
+            can_resume: true,
+          },
+        ],
+        next_cursor: null,
+      }),
+    );
+    await workspace.loadSources();
+    expect(workspace.getSnapshot().imported).toBeNull();
+    send.mockResolvedValueOnce(reply(true));
+    await workspace.process(ID, ID, 1);
+    expect(workspace.getSnapshot().imported).toEqual({
+      source_id: ID,
+      job_id: ID,
+      version_id: ID,
+      automatic_processing: true,
+    });
+    expect(
+      send.mock.calls.map(([url]) => new URL(String(url)).pathname),
+    ).toEqual(["/v1/list", "/v1/process"]);
+    workspace.dispose();
+  });
   it("updates the matching library attempt from status without extra reads or automatic recovery", async () => {
     const { workspace, send } = setup();
     const row = {
@@ -137,15 +174,19 @@ describe("library workspace (synthetic transport)", () => {
   });
   it("binds explicit recovery to the observed job and attempt and never retries itself", async () => {
     const { workspace, send } = setup();
-    send.mockResolvedValueOnce(reply(false));
+    send
+      .mockResolvedValueOnce(reply(false))
+      .mockResolvedValueOnce(reply({ items: [], next_cursor: null }));
     await workspace.process(ID, ID, 1);
     expect(JSON.parse(String(send.mock.calls[0][1]?.body))).toEqual({
       source_id: ID,
       job_id: ID,
       expected_attempts: 1,
     });
-    expect(workspace.getSnapshot().error).toBe("processing_not_eligible");
-    expect(send).toHaveBeenCalledTimes(1);
+    expect(workspace.getSnapshot().error).toBeNull();
+    expect(
+      send.mock.calls.map(([url]) => new URL(String(url)).pathname),
+    ).toEqual(["/v1/process", "/v1/list"]);
     workspace.dispose();
   });
   it("watches an automatic import through ready without replaying import or inference", async () => {

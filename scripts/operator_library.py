@@ -51,6 +51,10 @@ class PilotSession(LibrarySession):
         if result: self.dispatcher.wake()
         return result
 
+    def _validate_process_scope(self):
+        calls=getattr(self._provider,'calls',None)
+        if type(calls) is int and calls>=3: raise LibraryError('model_budget_exhausted')
+
     def list_sources(self, **values):
         result=super().list_sources(**values)
         if self.pdf_files: result=dict(result,pdf_enabled=True)
@@ -91,6 +95,9 @@ class PilotSession(LibrarySession):
         # Reject before storing a file that cannot fit a fresh worker's budget.
         if len(chunks)>3:
             raise LibraryError('file_exceeds_pilot_budget')
+        calls=getattr(self._provider,'calls',None)
+        if type(calls) is int and len(chunks)>3-calls:
+            raise LibraryError('model_budget_exhausted')
         return document
 
     def search(self, query, *, limit=20, cancel=None):

@@ -46,6 +46,11 @@ do not grant access.
    backend caller identity -> fixed GET /ready. It submits no embedding and
    never automatically resends search. Ready is not proof of embedding success.
 
+Owned listing/status wrappers also return a recovery-eligibility hint derived
+from current targets, leases, backoff and attempt caps. UI hints never authorize
+work; recovery rechecks under the existing transaction. See
+[recovery and measured startup limits](PROCESSING_RECOVERY.md).
+
 ## Deployment and limits
 
 Inference uses CPU2/5GiB, concurrency1, max1/min0. The approved library API uses

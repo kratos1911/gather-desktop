@@ -795,3 +795,14 @@ validating extracted text with a separate hash and contiguous numbered page map.
 Keep the existing 64 KiB and three-passage pilot bounds. Expose PDF selection only
 when the authenticated server advertises the approved capability. Exact-version
 owned reads supply page metadata; no second indexing or search implementation.
+
+## Recovery follow-up: database eligibility and bounded startup scheduling
+
+Render recovery from an owner-checked lease/backoff/target/attempt hint instead
+of treating every processing job as resumable. Keep the existing exact-attempt
+transaction authoritative. Refresh metadata after a refusal rather than replaying
+processing. Restore bounded watching after reconnect. Space the already approved
+readiness GETs within the same60s, preserving all inference/SQL/resource limits.
+The user explicitly approved startup-only CPU boost; retain measured startup
+results and do not call this a proven speedup. Avoid another model/image change
+until per-stage timing identifies the next useful performance change.

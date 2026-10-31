@@ -3,6 +3,19 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 1 November 2026: recovery controls and startup follow-up
+
+Fixed active-job Resume visibility using owner-scoped SQL metadata wrappers and
+refresh-on-refusal. Reconnect recovery restores bounded status watching. Kept the
+same retry/inference limits and spaced readiness checks within60s. Sixty checks
+pass in the exact API image, eight SQL groups and68 frontend checks pass; native
+build/lint/format and rendered ready-state review pass. Approved migration14 and
+API revision00003-dpb are live; startup-only boost is enabled on model00002-jpv.
+One existing private PDF reached ready with two model calls; no content preview,
+search, duplicate import or deletion. Earlier cold failure is retained. Startup
+sample30.92s and overall recovery~68s do not prove a speedup; stage profiling is
+next. Evidence/limits: PROCESSING_RECOVERY.md and ignored output/recovery-fix/.
+
 ## 31 October 2026: private native-text PDF flow
 
 Extended the existing import/jobs/publication/search pipeline with pinned pypdf

@@ -278,7 +278,9 @@ def wait_for_automatic_startup(identity, *, cancel):
             if str(error) not in ('cloud_startup_http_429','cloud_startup_http_503') or attempt==3: raise
             remaining=deadline-time.monotonic()
             if remaining<=0: raise PilotFailure('cloud_startup_deadline_exceeded') from None
-            cancel.wait(min(1,remaining))
+            # A CPU model needs time to start. Do not burn all three probes in
+            # the first two seconds; warm services still return on probe one.
+            cancel.wait(min(10*attempt,remaining))
 
 
 def sign_in_clients(key):

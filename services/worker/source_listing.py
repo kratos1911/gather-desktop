@@ -51,7 +51,11 @@ def page(rows,limit=MAX_PAGE,cursor=None):
         raise ValueError('invalid_listing')
     previous = position(cursor)
     for row in rows:
-        if type(row) is not dict or set(row)!=FIELDS:
+        if type(row) is not dict or set(row) not in (FIELDS,FIELDS|{'can_resume'}):
+            raise ValueError('invalid_listing')
+        if 'can_resume' in row and (type(row['can_resume']) is not bool or
+            (row['can_resume'] and (row['state'] not in ('queued','processing') or
+             type(row['attempts']) is not int or not 0<=row['attempts']<3 or row['job_id'] is None))):
             raise ValueError('invalid_listing')
         current = _date(row['created_at']),_id(row['source_id'])
         if previous is not None and current>=previous:

@@ -500,3 +500,11 @@ identity and a separate text SHA-256 for passage validation. Numbered page range
 map extracted Unicode offsets back to pages; a window spanning two pages cites
 both. This preserves provenance without claiming original PDF layout rendering.
 The private implementation and acceptance limits are in [[docs/PDF_IMPORT]].
+
+## A processing state is not permission to retry
+
+A worker may still hold a valid lease. The database's owned recovery hint checks
+lease expiry, backoff, current target and attempt limits; the recovery transaction
+checks them again under locks. The screen must not offer another attempt simply
+because state says processing. Refreshing status is not retrying computation.
+See [[docs/PROCESSING_RECOVERY]].

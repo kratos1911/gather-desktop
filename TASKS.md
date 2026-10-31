@@ -1,6 +1,6 @@
 # Current delivery tasks
 
-Updated 31 October 2026. Current state: [MEMORY](docs/MEMORY.md).
+Updated 1 November 2026. Current state: [MEMORY](docs/MEMORY.md).
 Work/evidence: [progress](docs/PROGRESS.md) and task-specific contracts.
 The [full previous task journal](docs/history/2026-10-26/TASKS-2026-10-26.md)
 preserves all earlier acceptance text and checkpoints.
@@ -55,7 +55,7 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-003 | Unified private Library implemented | One owned grid/search with dark minimal UI; 59 frontend checks including five new synthetic integrations, plus native listing/opening. See [UNIFIED_LIBRARY](docs/UNIFIED_LIBRARY.md); clean-install/accessibility QA remains |
 | TASK-004 | Done: bounded TXT/Markdown contract | Exact bytes/offsets/hashes and deterministic processing; [worker contract](services/worker/README.md) |
 | TASK-005 | Partial: embedding/quality | Qwen CPU serving and selected hosted flow pass. Broader recall, split/multi-part coverage, visual/Gemma and security/licence work remain; [retrieval evidence](docs/CHUNK_RETRIEVAL_RESULTS.md) |
-| TASK-006 | Partial: identity/private schema | Hosted private pilot; thirteen approved migrations applied. PDF permissions/RLS checked; general signup/audience policy remain gated; [hosted setup](docs/HOSTED_SUPABASE_SETUP.md) |
+| TASK-006 | Partial: identity/private schema | Hosted private pilot; fourteen approved migrations applied. PDF/recovery ownership permissions checked; general signup/audience policy remain gated; [hosted setup](docs/HOSTED_SUPABASE_SETUP.md) |
 | TASK-007 | Private pilot verified; general app partial | Selected synthetic Markdown passed import -> publish -> search/open -> deletion/cleanup. Automatic processing/owned cleanup verified; release gates remain; [file pilot](docs/PRIVATE_TEXT_FILES.md) |
 | TASK-008 | Private native-text PDF slice verified; other formats planned | Pilot B's two-page generated PDF passed save, explicit startup recovery, ready, real search, page citations and exact opening with two embeddings. Parser/storage/security fixtures pass. No OCR/layout fidelity/general upload claim; DOCX/PPTX remain planned; [PDF contract](docs/PDF_IMPORT.md) |
 | TASK-009 | Planned: photo/OCR retrieval | JPEG/PNG/scanned text, distinct model spaces and separately measured quality |
@@ -78,6 +78,14 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-023 | Partial: dependency/image risk | Keep open findings and applicability review; [worker scan](services/worker/IMAGE_SCAN_REVIEW.md), [inference risk](services/inference/OS_RISK_REVIEW.md) |
 
 ## Latest verification
+
+Recovery follow-up:60 exact-image backend checks, eight SQL groups and68 frontend
+checks/builds pass. Migration14/API update/startup boost were explicitly approved
+and applied. One retained private PDF reached ready with two model calls, contents
+unopened. Erroneous active Resume/stale-state controls are fixed; roughly68s
+processing and31s cold startup remain performance limits. Next supporting work is
+stage profiling/connection overhead, not another format or broader benchmark.
+See [PROCESSING_RECOVERY](docs/PROCESSING_RECOVERY.md).
 
 PDF:82 affected backend checks, six SQL acceptance groups and64 frontend checks
 completed; lint/format/typecheck/build pass. Approved migration13 and API update

@@ -28,6 +28,15 @@
       "height": 220
     },
     {
+      "id": "processing-recovery",
+      "type": "file",
+      "file": "docs/PROCESSING_RECOVERY.md",
+      "x": 1120,
+      "y": 700,
+      "width": 380,
+      "height": 220
+    },
+    {
       "id": "source",
       "type": "text",
       "text": "Native TXT/Markdown -> review + confirmed Save\nHosted Auth + durable automatic intent\nFresh native import/search/open verified\nSee PRIVATE_DESKTOP_DELIVERY.md; bookmarks still gated",
@@ -155,6 +164,13 @@
     }
   ],
   "edges": [
+    {
+      "id": "lease-recovery",
+      "fromNode": "chunk",
+      "fromSide": "bottom",
+      "toNode": "processing-recovery",
+      "toSide": "top"
+    },
     {
       "id": "pdf-provenance",
       "fromNode": "pdf-import",

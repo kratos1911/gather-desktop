@@ -1,6 +1,6 @@
-param([string]$Account, [switch]$Upload, [switch]$Library, [switch]$Pdf)
+param([string]$Account, [switch]$Upload, [switch]$Library, [switch]$Pdf, [switch]$Recovery)
 $ErrorActionPreference = 'Stop'
-if ($Library -and $Pdf) { throw 'Choose Library or Pdf, not both.' }
+if (([int]$Library.IsPresent+[int]$Pdf.IsPresent+[int]$Recovery.IsPresent) -gt 1) { throw 'Choose one image variant.' }
 $repoRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 $registry = 'asia-south1-docker.pkg.dev'
 $project = 'gather-development-511211'
@@ -16,6 +16,11 @@ if ($Pdf) {
     $sourceImage='gather-library:pdf-candidate'
     $targetImage="$registry/$project/gather-pilot-images/library:pdf-pilot-20261031"
     $expected=(Get-Content -Raw -LiteralPath (Join-Path $repoRoot 'output/pdf-pilot/image-verification.json') | ConvertFrom-Json).image
+}
+if ($Recovery) {
+    $sourceImage='gather-library:recovery-candidate'
+    $targetImage="$registry/$project/gather-pilot-images/library:recovery-pilot-20261031"
+    $expected=(Get-Content -Raw -LiteralPath (Join-Path $repoRoot 'output/recovery-fix/image-verification.json') | ConvertFrom-Json).image
 }
 $dockerEndpoint = (& docker context inspect desktop-linux --format '{{.Endpoints.docker.Host}}').Trim()
 if ($LASTEXITCODE -ne 0 -or $dockerEndpoint -ne 'npipe:////./pipe/dockerDesktopLinuxEngine') {
@@ -34,7 +39,7 @@ if (-not $Upload) {
 if (-not $Account -or $Account -notmatch '^[^\s@]+@[^\s@]+$') {
     throw 'Specify the signed-in personal Gather account using -Account.'
 }
-if ($Pdf -and $Account -ne 'kpanigrahi5602@gmail.com') { throw 'PDF pilot upload requires the approved personal Gather account.' }
+if (($Pdf -or $Recovery) -and $Account -ne 'kpanigrahi5602@gmail.com') { throw 'Gather pilot upload requires the approved personal Gather account.' }
 $gcloudCommand = (Get-Command gcloud.cmd -ErrorAction Stop).Source
 $authRoot = Join-Path $repoRoot 'output/registry-upload-auth'
 $authDirectory = Join-Path $authRoot ([guid]::NewGuid().ToString('N'))
@@ -68,7 +73,7 @@ try {
     $digests = & docker --config $authDirectory --host $dockerEndpoint image inspect $targetImage --format '{{json .RepoDigests}}'
     if ($LASTEXITCODE -ne 0) { throw 'Push completed but local digest lookup failed; check the repository before retrying.' }
     $receipt = @{target=$targetImage; source_image=$imageId; registry_digests=($digests | ConvertFrom-Json)}
-    $receiptPath = Join-Path $repoRoot $(if($Pdf){'output/pdf-pilot/upload-receipt.json'}elseif($Library){'output/library-upload-receipt.json'}else{'output/pilot-upload-receipt.json'})
+    $receiptPath = Join-Path $repoRoot $(if($Recovery){'output/recovery-fix/upload-receipt.json'}elseif($Pdf){'output/pdf-pilot/upload-receipt.json'}elseif($Library){'output/library-upload-receipt.json'}else{'output/pilot-upload-receipt.json'})
     [IO.File]::WriteAllText($receiptPath, ($receipt | ConvertTo-Json -Depth 4), [Text.UTF8Encoding]::new($false))
     Write-Host "Upload completed. Receipt: $receiptPath"
 } finally {

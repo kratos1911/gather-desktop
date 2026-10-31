@@ -46,7 +46,7 @@ class LibraryTests(unittest.TestCase):
         self.session.open(SOURCE, OWNER)
         self.session.delete(SOURCE)
         self.assertEqual([call.args[1] for call in self.api.call_args_list], [
-            '/auth/v1/user','/rest/v1/rpc/source_processing_status',
+            '/auth/v1/user','/rest/v1/rpc/source_processing_status_with_recovery',
             '/auth/v1/user','/rest/v1/rpc/open_published_text',
             '/auth/v1/user','/rest/v1/rpc/request_source_deletion'])
         self.factory.assert_not_called()

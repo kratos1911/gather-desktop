@@ -80,7 +80,7 @@ class LibrarySession:
             raise LibraryError('library_operation_failed') from None
 
     def status(self, source_id):
-        return self._rpc('source_processing_status', {'p_source':source_id})
+        return self._rpc('source_processing_status_with_recovery', {'p_source':source_id})
 
     def model_status(self, *, cancel=None):
         self._owner()  # User identity must be verified before any cloud probe.
@@ -93,7 +93,7 @@ class LibrarySession:
     def list_sources(self, *, limit=20, cursor=None):
         self._owner()
         try:
-            rows = self._api('POST','/rest/v1/rpc/list_library_sources',parameters(limit,cursor))
+            rows = self._api('POST','/rest/v1/rpc/list_library_sources_with_recovery',parameters(limit,cursor))
             return page(rows,limit,cursor)
         except Exception:
             raise LibraryError('library_unavailable') from None
@@ -112,6 +112,7 @@ class LibrarySession:
 
     def process(self, source_id, job_id, expected_attempts):
         self._owner()
+        self._validate_process_scope()
         try:
             if type(expected_attempts) is not int or not 0<=expected_attempts<=2:
                 raise ValueError()
@@ -119,3 +120,6 @@ class LibrarySession:
                 {'p_source':identifier(source_id),'p_job':identifier(job_id),'p_attempts':expected_attempts})
         except Exception:
             raise LibraryError('library_operation_failed') from None
+
+    def _validate_process_scope(self):
+        """Trusted composition may refuse work before changing durable intent."""
