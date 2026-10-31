@@ -1,3 +1,4 @@
+import { pilotAvailable } from "../services/pilotConfiguration";
 export type PolicyKind = "privacy" | "terms" | "copyright";
 const pages: Record<
   PolicyKind,
@@ -60,16 +61,16 @@ const pilotPages: typeof pages = {
     title: "Privacy in this preview",
     sections: [
       {
-        title: "Sample library and private operator pilot",
-        body: "The sample library is fictional. The development Operator pilot connects two existing test accounts to Supabase. Passwords go to Supabase Authentication; access tokens stay in browser memory. There is no public signup. Real TXT/Markdown import requires the explicit TextFiles mode on the local server and frontend, plus review and confirmation for each file. Use only your own nonsensitive test content.",
+        title: "Your private library",
+        body: "The connected Library uses the two existing test accounts and shows their owned saved files. The separate sample-only build contains fictional examples. Passwords go to Supabase Authentication; access tokens stay in application memory. There is no public signup. Each TXT/Markdown import requires local review and confirmation. Use only your own nonsensitive test content.",
       },
       {
         title: "What is sent and where",
-        body: "Selecting a file reads it locally. Save selected file sends its filename and complete validated bytes through the local Gather API to the private Supabase database in Sydney. An automatic-mode server then processes newly saved imports using Gather’s private CPU inference service on Google Cloud Run in Mumbai. Search and failed-processing retries are explicit actions. Stored originals, passages and vectors are owner-scoped. Markdown is displayed as plain text. No model weights are downloaded by the desktop client.",
+        body: "Selecting a file reads it locally. Save selected file sends its filename and validated bytes through the Gather API to Supabase in Sydney. Automatic processing sends text to Gather’s private CPU inference service on Google Cloud Run in Mumbai. Search and failed-processing retries are explicit actions and count toward pilot usage limits. Stored originals, passages and vectors are owner-scoped. Markdown is displayed as plain text. No model weights are downloaded by the desktop client.",
       },
       {
         title: "Storage, deletion and logging limits",
-        body: "Disconnecting or refreshing clears local credentials and previews, not cloud data. Data remains until deletion and operator cleanup. Delete immediately hides a source; physical removal requires the existing operator cleanup step, with no guaranteed completion time. Application logging excludes file contents and tokens; provider logging and retention have not been independently verified for a public release. There is no application analytics or session replay. Do not use sensitive data in this pilot.",
+        body: "Signing out or refreshing clears local credentials and previews, not cloud data. Delete hides a source immediately. The app reports deletion complete only after server-confirmed removal of active stored text and derived data; pending cleanup can be retried. A minimal replay receipt remains to prevent resurrection by an old import. Application logging excludes file contents and tokens; provider retention and public-release policies remain under review. There is no application analytics or session replay.",
       },
       {
         title: "Public release remains gated",
@@ -82,7 +83,7 @@ const pilotPages: typeof pages = {
     sections: [
       {
         title: "Private evaluation only",
-        body: "The packaged native application remains a sample preview. The development operator pilot is restricted to the two existing test accounts. Selected-file import supports UTF-8 TXT and Markdown, at most 64 KiB, and only documents that fit the unchanged three-request pilot processing budget. Saving queues work; it does not prove indexing or search readiness. Keep your original files.",
+        body: "The connected Windows build uses the private hosted library and is restricted to two existing accounts. The default sample-only build remains separate. File import supports UTF-8 TXT and Markdown, at most 64 KiB and three processing passages. Saving queues work; it does not prove indexing or search readiness. Keep your original files. Clean-machine installation, release signing and broader release acceptance remain unverified.",
       },
       {
         title: "Explicit actions and costs",
@@ -109,15 +110,14 @@ const pilotPages: typeof pages = {
   },
 };
 export function PolicyPage({ kind }: { kind: PolicyKind }) {
-  const pilot =
-    import.meta.env.DEV || import.meta.env.VITE_GATHER_CONNECTED_PILOT === "1";
+  const pilot = pilotAvailable;
   const page = (pilot ? pilotPages : pages)[kind];
   return (
     <section className="content policy-page">
       <h1>{page.title}</h1>
       <p className="subtitle">
         {pilot
-          ? "Current development build · Updated 26 October 2026"
+          ? "Private evaluation build · Updated 31 October 2026"
           : "Current development build · Updated 26 September 2026"}
       </p>
       {page.sections.map((section) => (

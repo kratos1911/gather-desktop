@@ -484,3 +484,11 @@ or server restart cannot lose the request to process it. The existing job remain
 the source of truth. One failed attempt is not silently repeated: recovery must
 name the current owned job and observed attempt. A late duplicate click cannot
 authorize another attempt or a replacement. See [[docs/AUTOMATIC_PROCESSING]].
+
+## A valid response can belong to an old session
+
+User A's request can be correctly authorized and still finish after the app has
+switched to B. Discard it instead of displaying A's results in B's view. The UI
+tracks a session generation as well as cancelling requests; database ownership
+checks remain independent. The unified Library reuses this guard, not a visual
+account filter. See [[docs/UNIFIED_LIBRARY]].

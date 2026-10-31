@@ -2,6 +2,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App";
+vi.mock("./services/pilotConfiguration", () => ({ pilotAvailable: false }));
 
 // jsdom has no canvas renderer; interaction tests do not assert orb rendering.
 vi.mock("thinking-orbs", () => ({
@@ -31,9 +32,7 @@ describe("preview workspace", () => {
       screen.getByRole("heading", { name: "Privacy in this preview" }),
     ).toBeTruthy();
     expect(
-      screen.getByText(
-        /development Operator pilot connects two existing test accounts/,
-      ),
+      screen.getByText(/This desktop preview displays fictional sample files/),
     ).toBeTruthy();
     await user.click(screen.getByRole("button", { name: "Copyright" }));
     expect(screen.getByText("Reporting is not configured")).toBeTruthy();

@@ -134,6 +134,15 @@
       "y": -260,
       "width": 460,
       "height": 200
+    },
+    {
+      "id": "unified-library",
+      "type": "file",
+      "file": "docs/UNIFIED_LIBRARY.md",
+      "x": 0,
+      "y": 1000.0,
+      "width": 710,
+      "height": 180
     }
   ],
   "edges": [

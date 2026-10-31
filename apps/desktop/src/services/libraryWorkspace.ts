@@ -300,6 +300,13 @@ export class LibraryWorkspace {
       (results) => this.update({ results }),
     );
   }
+  clearSearch(): void {
+    if (this.state.busy) throw new LibraryClientError("busy");
+    this.update({ results: null, opened: null, error: null });
+  }
+  closeSource(): void {
+    this.update({ opened: null });
+  }
   async open(sourceId: string, versionId: string): Promise<void> {
     if (this.state.busy) throw new LibraryClientError("busy");
     this.update({ opened: null });

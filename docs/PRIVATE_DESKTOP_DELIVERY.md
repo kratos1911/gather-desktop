@@ -2,6 +2,11 @@
 
 31 October 2026. Current two-account TXT/Markdown pilot, not a public release.
 
+The current interface/artifacts now use [one connected Library](UNIFIED_LIBRARY.md).
+That follow-up verified native listing/opening without rerunning inference; the
+full selected semantic-flow evidence below belongs to the preceding checkpoint.
+Current UI screenshots/receipt: output/unified-library/.
+
 ## Delivered and observed
 
 1. Automatic ingestion: native file selection/review/Save created an owned durable

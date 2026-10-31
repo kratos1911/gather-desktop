@@ -1,5 +1,11 @@
 # File roles and retention audit
 
+31 October interface addition: Library.tsx/.css/.test.tsx own the connected
+screen and synthetic integration coverage; docs/UNIFIED_LIBRARY.md owns its
+contract/provenance. OperatorPilot remains a regression harness used by its
+discovered tests, not an application route. Do not delete it by reference count
+alone. The original inventory totals below remain a dated snapshot.
+
 Audit snapshot: feature checkpoint `53cf9d8`, 26 October 2026. Reorganization
 changes context/maintenance only, not application behavior. This is a necessity,
 reference and navigation audit, not proof that all code is correct or secure.

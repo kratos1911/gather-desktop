@@ -105,9 +105,10 @@ export function TextFileImport({
             database in Sydney. An automatic-mode server then sends text to the
             private CPU model in Mumbai for indexing; search also uses that
             model. Model calls count toward the pilot budget. Content stays
-            stored after disconnect. Delete hides it immediately; an operator
-            must finish physical cleanup. No completion time is promised. The
-            pilot accepts only files that fit three processing passages.
+            stored after disconnect. Delete hides it immediately; the app
+            confirms cleanup only after the server removes stored data.
+            Unfinished cleanup remains available to retry. The pilot accepts
+            only files that fit three processing passages.
           </p>
           <label className="text-file-confirm">
             <input

@@ -773,3 +773,13 @@ aggregate INR500 allowance. Native clients use a fixed HTTPS endpoint/public key
 DB/Google secrets remain backend-only. Use explicit separate private build/CSP and
 isolated-copy installer bundling. Retain actual failed evidence and the zlib scan
 flag alongside backport proof. Clean-Windows/signing/public-release gates stay open.
+
+## 31 October 2026: one connected collection, not a second pilot workflow
+
+Use the existing authenticated workspace in the main private Library instead of
+maintaining a sample library beside the working feature screen. Keep sample data
+only in its separately labelled build. Borrow mymind's minimal composition while
+retaining Gather's fonts, identity and real-format limits. Put consent/review and
+diagnostics behind deliberate actions. Preserve session generations, explicit
+search, exact published versions and confirmed cleanup; visual integration must
+not introduce a new data pipeline or automatic model requests.

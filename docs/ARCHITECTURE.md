@@ -9,7 +9,7 @@ next implementation belongs in [TASKS](../TASKS.md).
 
 | Component | Role | Contract |
 | --- | --- | --- |
-| React/TypeScript in apps/desktop | Separate sample build and explicit private Windows build; memory-only bearer, HTTPS library API | [Private delivery](PRIVATE_DESKTOP_DELIVERY.md), [file pilot](PRIVATE_TEXT_FILES.md) |
+| React/TypeScript in apps/desktop | One connected Library in private/dev builds; separate sample-only build, memory-only bearer, HTTPS API | [Unified Library](UNIFIED_LIBRARY.md), [private delivery](PRIVATE_DESKTOP_DELIVERY.md) |
 | ASGI library API | Loopback operator mode or explicit Cloud Run startup; fixed Host/Origins, Auth before privileged work, bounded single-flight HTTP | [LIBRARY_API](LIBRARY_API.md), [Private delivery](PRIVATE_DESKTOP_DELIVERY.md) |
 | Restricted DB transport | Separate admission/worker identities, bounded Psycopg helpers and trusted owner context | [DATABASE_TRANSPORT](DATABASE_TRANSPORT.md) |
 | Supabase Sydney | Auth, owned sources/versions, private originals/jobs/staging, publication and vector reads | [Hosted setup](HOSTED_SUPABASE_SETUP.md), [published reads](PUBLISHED_SEARCH.md) |

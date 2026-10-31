@@ -10,7 +10,7 @@ User requirements recorded 26 September 2026. These rules supersede conflicting 
 - [x] Inter everywhere. The 15 October typography brief supersedes system-font-only styling: self-hosted OFL Manrope for UI; Segoe UI/system sans for document text.
 - [x] Colored left-border cards. Use spacing, labels and subtle full borders.
 - [x] Glassmorphism cards. No translucent blur panels.
-- [x] Low-contrast dark mode. Dark mode is not implemented; verify contrast before adding it.
+- [x] Low-contrast dark mode. The connected Library's scoped dark palette has measured text pairs >=4.5:1 and input boundary >=3:1; see UNIFIED_LIBRARY.md. The separate sample build stays light.
 - [x] Three icon boxes in a row. Organize actual files and tasks, not decorative feature trios.
 - [x] A badge above the headline. Use direct screen titles; preview status belongs in the toolbar.
 - [x] Lucide icons everywhere. Removed the dependency and decorative icon repetition.

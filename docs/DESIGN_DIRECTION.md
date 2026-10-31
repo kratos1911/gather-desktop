@@ -1,5 +1,10 @@
 # Interface and motion direction
 
+The connected Library follows the user's 31 October mymind reference: quiet dark
+canvas, dominant search, compact rail/filters and genuine file cards. See
+UNIFIED_LIBRARY.md for scoped tokens, provenance and verification. The older
+light/forest specification below applies to the separate sample build.
+
 Working concept: an expressive, precise workspace for rediscovering information.
 15 October: user requested stronger color and typography inspired by GSAP sites.
 

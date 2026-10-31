@@ -7,6 +7,13 @@ preserves all earlier acceptance text and checkpoints.
 
 ## Next sequence
 
+The main Library now uses owned saved files and one semantic search, with a
+minimal dark interface. Native sign-in/listing/opening passed; new UI import,
+search and deletion paths passed synthetic HTTP integration checks. See
+[unified interface](docs/UNIFIED_LIBRARY.md). Next remains clean-Windows installer
+QA, then the next agreed format slice; do not confuse the separate sample build
+with the connected application.
+
 Deliver complete user flows; supporting fixes/checks belong inside their milestone.
 These three milestones target a usable private text pilot, not the whole multi-format
 MVP or public release. Implementation is present; acceptance remains per item below.
@@ -23,9 +30,9 @@ install/uninstall and release signing remain open acceptance. See
 | 2. Complete recovery and deletion | Reconnect shows durable state and actionable failures; deletion hides immediately and reports confirmed physical cleanup or a truthful pending/failure state. No manual SQL for the supported flow; late work cannot restore deleted content. | Reuse listing, tombstones, cleanup guards and replay receipts; integrate trusted cleanup execution without exposing privileges. Test restart/race cases. Hosted changes need approval. |
 | 3. Connected Windows private pilot | The packaged app completes sign-in -> import -> search -> open -> delete on a clean Windows test environment without developer tools. No DB/Google operator credentials are bundled. | Choose and verify trusted backend/session packaging, close the relevant privacy/security/native gates, then test the installable artifact. Any new hosted service/deployment needs separate approval. |
 
-Startup now has one cancellable probe under lease renewal; isolated readiness
-passed in 32.62 s. Inference retains its 15-second deadline. Finish the live
-pipeline check without silent replays or permanent warming.
+Startup permits the approved maximum of three readiness GETs within one 60-second
+budget; inference retains its 15-second deadline with no automatic replay.
+The selected native pipeline already passed. Clean-install/signing QA remains.
 
 For each milestone: one brief interview checkpoint; implement the connected slice;
 run changed-behavior checks and required builds once after edits stabilize; finish
@@ -44,7 +51,7 @@ model retries, no larger limits and no broad automation authorization from this 
 | --- | --- | --- |
 | TASK-001 | Done: context/Git baseline | Keep current docs accurate; local commits only |
 | TASK-002 | Ready: audience/product research | Interviews or explicitly unvalidated hypotheses; audience/regions decisions |
-| TASK-003 | Partial: desktop design | Sample UI + private browser operator panel verified in scoped checks; native accessibility/zoom/motion QA remains |
+| TASK-003 | Unified private Library implemented | One owned grid/search with dark minimal UI; 59 frontend checks including five new synthetic integrations, plus native listing/opening. See [UNIFIED_LIBRARY](docs/UNIFIED_LIBRARY.md); clean-install/accessibility QA remains |
 | TASK-004 | Done: bounded TXT/Markdown contract | Exact bytes/offsets/hashes and deterministic processing; [worker contract](services/worker/README.md) |
 | TASK-005 | Partial: embedding/quality | Qwen CPU serving and selected hosted flow pass. Broader recall, split/multi-part coverage, visual/Gemma and security/licence work remain; [retrieval evidence](docs/CHUNK_RETRIEVAL_RESULTS.md) |
 | TASK-006 | Partial: identity/private schema | Hosted private pilot and twelve migrations verified. General signup/session packaging/audience policy remain gated; [hosted setup](docs/HOSTED_SUPABASE_SETUP.md) |
@@ -70,6 +77,10 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-023 | Partial: dependency/image risk | Keep open findings and applicability review; [worker scan](services/worker/IMAGE_SCAN_REVIEW.md), [inference risk](services/inference/OS_RISK_REVIEW.md) |
 
 ## Latest verification
+
+Unified Library: 59 frontend checks, lint/format/typecheck/build and native build
+pass. Rendered desktop/narrow review and live hosted sign-in/listing/opening pass;
+no fresh embedding was submitted. Current artifacts/evidence: UNIFIED_LIBRARY.md.
 
 Feature checkpoint `53cf9d8`: 123 affected backend checks and 48 frontend checks,
 frontend build/lint/format passed. Live readiness exercised identity/deadline

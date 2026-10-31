@@ -1,6 +1,6 @@
 # Current Gather state
 
-Updated 31 October 2026. Current work builds on checkpoint `2f30462` on
+Updated 31 October 2026. Current work builds on checkpoint `b0b5cef` on
 `codex/durable-ingestion-jobs`. This file is current state, not a session log. Repository context was audited/reorganized; see FILE_AUDIT.md.
 See [tasks](../TASKS.md) for next acceptance and [topic index](PROJECT_HUB.md)
 for contracts. [Previous state journal](history/2026-10-26/MEMORY-2026-10-26.md)
@@ -8,8 +8,9 @@ is historical and must not override this file.
 
 ## What is verified
 
-- React/TypeScript/Tauri sample interface remains separate from the
-  development-only private browser operator panel.
+- The private/dev interface uses one authenticated Library and semantic search.
+  Owned imports appear in its grid; import review and diagnostics are secondary
+  panels. A separate sample-only build remains fictional. See UNIFIED_LIBRARY.md.
 - One selected synthetic 170-byte Markdown file passed hosted Auth/admission,
   durable processing, one real worker embedding, atomic publication, custom
   search, exact saved text opening, tombstoning and explicitly approved cleanup.
@@ -20,7 +21,8 @@ is historical and must not override this file.
   not silently treated as empty. See [SAVED_LIBRARY](SAVED_LIBRARY.md) and
   [EMPTY_LIBRARY_SEARCH](EMPTY_LIBRARY_SEARCH.md).
 - Fixed availability reasons and manual readiness control are implemented.
-  Latest scoped checks: 123 backend and 48 frontend, build/lint/format pass.
+  Retained availability evidence: 123 backend and 48 frontend checks at its
+  earlier checkpoint, with build/lint/format passing.
   No new embedding was made for availability verification; native production
   assets were unchanged. See [MODEL_AVAILABILITY](MODEL_AVAILABILITY.md).
 
@@ -38,7 +40,10 @@ New native source `88da1cf6-3708-4f07-9631-6493601a3f3a` remains published for
 inspection; do not rerun its job or delete it implicitly. Its 133-byte file is
 synthetic/nonsensitive. Prior failed results remain historical evidence.
 
-Current checks: 54 frontend tests, typecheck/lint/format, focused backend/HTTP,
+Current frontend checks: 59 tests, typecheck/build/lint/format, native rebuild
+and rendered desktop/minimum-width review. Live native sign-in/listing/opening
+passed against existing published text; no new inference was submitted.
+Prior unchanged backend evidence: focused backend/HTTP,
 11 owned-cleanup SQL cases and 37 Linux image cases passed. Filelock was fixed;
 its targeted rescan is clear. Scanner-open zlib retains the identical verified
 backport hash. No suppression or blanket security approval. Clean-machine install,

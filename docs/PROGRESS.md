@@ -3,6 +3,28 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 31 October 2026: unified connected Library
+
+Connected the existing authenticated workspace to one main Library and explicit
+semantic search. Removed the Operator pilot route; the old component remains an
+isolated regression harness. Added local file review in a secondary panel,
+same-grid status updates, exact-version reading and confirmed deletion/pending
+cleanup. Session/ownership/citation/resource contracts stay intact.
+
+Implemented the user's mymind-inspired minimal dark composition with existing
+licensed fonts, original SVG controls and no new dependencies. Updated stale
+private processing/deletion notices. All59 frontend tests, lint, formatting,
+frontend build/typecheck and native rebuild pass; design detector returned no
+findings. Desktop/640 CSS-pixel review passed without horizontal overflow. Native
+sign-in restored two existing owned sources and exact saved-text opening passed.
+No new inference, cloud deploy,
+schema change, protected-workload change or push. Details: UNIFIED_LIBRARY.md.
+
+Portable and unsigned installer refreshed. NSIS first failed with Windows
+DLL-loading623 in the isolated shell, then the same cached bundler passed in the
+normal host context. Scoped contrast pairs pass AA thresholds; no blanket
+accessibility or clean-install claim. Screenshots/receipt: output/unified-library/.
+
 ## 31 October 2026: automatic ingestion, cleanup and native/cloud pilot
 
 Implemented durable new-import intent/dispatch, exact-attempt recovery, bounded

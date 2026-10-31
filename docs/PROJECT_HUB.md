@@ -16,6 +16,7 @@ reload the full conversation or historical snapshots for routine coding.
 
 ## Desktop and library
 
+- [[docs/UNIFIED_LIBRARY]]: one connected collection/search, minimal dark UI and evidence
 - [[docs/PRIVATE_TEXT_FILES]]: selected-file consent, validation, pilot scope
 - [[docs/AUTOMATIC_PROCESSING]]: opted-in automatic jobs, bounded startup and explicit recovery
 - [[docs/PRIVATE_DESKTOP_DELIVERY]]: current native/cloud evidence, artifacts and remaining installer QA

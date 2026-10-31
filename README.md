@@ -2,7 +2,8 @@
 
 A Windows knowledge-library project for finding saved material by meaning.
 
-The private Windows pilot uses hosted Auth, automatic TXT/Markdown processing,
+The private Windows pilot has [one connected Library](docs/UNIFIED_LIBRARY.md)
+with hosted Auth, automatic TXT/Markdown processing,
 semantic search and exact saved-text opening. Owner-scoped deletion/cleanup is
 verified through the app. Default builds retain a separate sample preview.
 General signup, production distribution, other formats and chat are not released.

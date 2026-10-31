@@ -7,19 +7,32 @@ import {
 import { PolicyPage, type PolicyKind } from "./components/PolicyPage";
 import { samples, models, type Sample } from "./fixtures";
 import "./App.css";
-import { connectedPilot, pilotAvailable } from "./services/pilotConfiguration";
+import { pilotAvailable } from "./services/pilotConfiguration";
 
-// Removed from production builds; controlled operator pilot is browser-dev only.
-const OperatorPilot = pilotAvailable
-  ? lazy(() => import("./components/OperatorPilot"))
+const Library = pilotAvailable
+  ? lazy(() => import("./components/Library"))
   : null;
-type Screen = "library" | "models" | "pilot" | PolicyKind;
+type Screen = "library" | "models" | PolicyKind;
 const filters = ["All files", "Documents", "Presentations", "Photos"];
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>(
-    connectedPilot ? "pilot" : "library",
+  return Library ? (
+    <Suspense
+      fallback={
+        <p className="content" role="status">
+          Opening your library…
+        </p>
+      }
+    >
+      <Library />
+    </Suspense>
+  ) : (
+    <SamplePreview />
   );
+}
+
+function SamplePreview() {
+  const [screen, setScreen] = useState<Screen>("library");
   const [filter, setFilter] = useState("All files");
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Sample | null>(null);
@@ -70,15 +83,6 @@ export default function App() {
           >
             Models & setup
           </button>
-          {OperatorPilot && (
-            <button
-              className={screen === "pilot" ? "nav active" : "nav"}
-              aria-current={screen === "pilot" ? "page" : undefined}
-              onClick={() => navigate("pilot")}
-            >
-              Operator pilot
-            </button>
-          )}
         </nav>
         <div className="sidebar-note">
           <p>
@@ -90,22 +94,8 @@ export default function App() {
         <div className="local-state">
           <span className="status-dot" />
           <div>
-            {screen === "pilot" ? (
-              <>
-                Operator pilot
-                <small>
-                  {import.meta.env.DEV &&
-                  import.meta.env.VITE_GATHER_PILOT_TEXT_FILES === "1"
-                    ? "Private TXT/Markdown test workspace"
-                    : "Restricted synthetic test workspace"}
-                </small>
-              </>
-            ) : (
-              <>
-                Design preview
-                <small>Synthetic files · no cloud connection</small>
-              </>
-            )}
+            Design preview
+            <small>Synthetic files · no cloud connection</small>
           </div>
         </div>
         <nav className="policy-links" aria-label="Policies">
@@ -128,28 +118,14 @@ export default function App() {
               ? "Policies"
               : screen === "models"
                 ? "Models & setup"
-                : screen === "pilot"
-                  ? "Operator pilot"
-                  : selected
-                    ? "Document reader"
-                    : "Library"}
+                : selected
+                  ? "Document reader"
+                  : "Library"}
           </span>
-          <span className="preview-label">
-            {screen === "pilot" ? "Restricted pilot" : "Sample workspace"}
-          </span>
+          <span className="preview-label">Sample workspace</span>
         </header>
         {["privacy", "terms", "copyright"].includes(screen) ? (
           <PolicyPage kind={screen as PolicyKind} />
-        ) : screen === "pilot" && OperatorPilot ? (
-          <Suspense
-            fallback={
-              <p className="content" role="status">
-                Opening operator workspace…
-              </p>
-            }
-          >
-            <OperatorPilot />
-          </Suspense>
         ) : screen === "models" ? (
           <section className="content">
             <div className="screen-heading">
