@@ -1,5 +1,9 @@
 # Hosted Supabase operator setup
 
+Historical operator setup notes follow. Current deployment and migration scope
+are in [MEMORY](MEMORY.md); the approved thirteenth migration is documented in
+[PDF_IMPORT](PDF_IMPORT.md). Earlier blocked-input statements are historical.
+
 25 October: migration8 (202610250001_targeted_claim.sql) applied manually through
 Gather SQL Editor after explicit user approval. Installation and role permissions
 verified read-only. Earlier seven-migration descriptions below are historical.

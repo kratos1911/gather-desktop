@@ -12,6 +12,7 @@ from services.worker.service_clients import SessionClient
 from services.worker.service_transport import TransportError
 from services.worker.source_listing import parameters, page
 from services.worker.model_availability import MODEL_HTTP, status_reply
+from services.worker.pdf_processing import enrich_published
 
 
 class LibraryError(Exception):
@@ -42,17 +43,17 @@ class LibrarySession:
 
     def _validate_import_scope(self, original, media, confirm_cloud_storage):
         # A browser acknowledgement cannot activate an operator-only feature.
-        if confirm_cloud_storage is not False:
+        if confirm_cloud_storage is not False or media=='application/pdf':
             raise LibraryError('file_import_disabled')
 
     def import_text(self, *, request_id, title, original, media, source_id=None,
                     confirm_cloud_storage=False):
         owner = self._owner()
-        self._validate_import_scope(original,media,confirm_cloud_storage)
+        document=self._validate_import_scope(original,media,confirm_cloud_storage)
         try:
             # No owner parameter exists on the user-facing method.
             return submit(self._admission(owner), request_id=request_id, title=title,
-                          original=original, media=media, source_id=source_id)
+                          original=original, media=media, source_id=source_id,document=document)
         except Exception:
             raise LibraryError('import_failed') from None
 
@@ -98,7 +99,9 @@ class LibrarySession:
             raise LibraryError('library_unavailable') from None
 
     def open(self, source_id, version_id):
-        return self._rpc('open_published_text', {'p_source':source_id,'p_version':version_id})
+        documents=self._rpc('open_published_text', {'p_source':source_id,'p_version':version_id})
+        try: return enrich_published(self._api,source_id,version_id,documents)
+        except Exception: raise LibraryError('library_operation_failed') from None
 
     def delete(self, source_id):
         # Tombstone now; durable cleanup removes original/derivatives separately.

@@ -47,10 +47,30 @@ const messages: Record<string, string> = {
   access_denied:
     "File import is not enabled by this server. Use the configured private Gather build.",
   invalid_request:
-    "The request was rejected. Files must be UTF-8 TXT or Markdown, at most 64 KiB, and fit three processing passages.",
+    "The file or request was rejected. Check the supported format, 64 KiB size limit and three-passage budget.",
   cancelled: "Request cancelled. A submitted file may still have been saved.",
+  pdf_encrypted:
+    "Password-protected PDFs are unsupported. Choose an unencrypted PDF you have permission to use.",
+  pdf_text_required:
+    "Every PDF page must have selectable text. Scanned or empty pages are unsupported in this first PDF pilot.",
+  pdf_active_content:
+    "This PDF contains forms or active actions that this pilot does not support.",
+  pdf_page_limit: "This pilot accepts PDFs with at most 20 pages.",
+  pdf_text_limit:
+    "Extracted PDF text exceeds 64 KiB. No partial document was saved.",
+  pdf_stream_limit:
+    "A PDF content stream exceeds the processing limit. No partial document was saved.",
+  pdf_invalid:
+    "The PDF could not be safely parsed. Choose a valid PDF with selectable text.",
+  pdf_invalid_output: "PDF validation failed. The file was not published.",
+  pdf_size: "Choose a nonempty PDF of at most 64 KiB.",
+  pdf_timeout:
+    "PDF extraction reached its deadline. It was not retried automatically.",
+  pdf_busy: "Another PDF is being checked. Wait before trying again.",
+  pdf_parser_unavailable:
+    "PDF extraction is unavailable on this server. TXT and Markdown remain available.",
 };
-const filters = ["Everything", "Markdown", "Text files"] as const;
+const filters = ["Everything", "PDFs", "Markdown", "Text files"] as const;
 type Filter = (typeof filters)[number];
 type Panel = "import" | "settings" | PolicyKind | null;
 
@@ -132,9 +152,11 @@ function PanelDialog({
 }
 
 function fileType(title: string) {
+  if (/\.pdf$/i.test(title)) return "PDFs";
   return /\.(md|markdown)$/i.test(title) ? "Markdown" : "Text files";
 }
 function fileLabel(title: string) {
+  if (fileType(title) === "PDFs") return "PDF";
   return fileType(title) === "Markdown" ? "MD" : "TXT";
 }
 function matches(title: string, filter: Filter) {
@@ -176,6 +198,7 @@ export default function Library() {
   const [query, setQuery] = useState("");
   const [submitted, setSubmitted] = useState<string | null>(null);
   const [filter, setFilter] = useState<Filter>("Everything");
+  const [readerPage, setReaderPage] = useState<number | null>(null);
   const [panel, setPanel] = useState<Panel>(null);
   const [deleting, setDeleting] = useState<{
     source_id: string;
@@ -199,6 +222,12 @@ export default function Library() {
     [workspace],
   );
   useEffect(() => workspace.watchImport(), [workspace, state.imported]);
+  useEffect(() => {
+    if (state.opened?.pages && readerPage)
+      document
+        .getElementById(`pdf-page-${readerPage}`)
+        ?.scrollIntoView?.({ block: "start" });
+  }, [state.opened, readerPage]);
   useEffect(() => {
     const job = state.imported;
     if (
@@ -432,18 +461,25 @@ export default function Library() {
         </form>
         <div className="library-controls">
           <div className="library-filters" role="group" aria-label="File types">
-            {filters.map((value) => (
-              <button
-                key={value}
-                className={
-                  filter === value ? "filter-chip active" : "filter-chip"
-                }
-                aria-pressed={filter === value}
-                onClick={() => setFilter(value)}
-              >
-                {value}
-              </button>
-            ))}
+            {filters
+              .filter(
+                (value) =>
+                  value !== "PDFs" ||
+                  state.pdfEnabled ||
+                  state.sources.some((source) => /\.pdf$/i.test(source.title)),
+              )
+              .map((value) => (
+                <button
+                  key={value}
+                  className={
+                    filter === value ? "filter-chip active" : "filter-chip"
+                  }
+                  aria-pressed={filter === value}
+                  onClick={() => setFilter(value)}
+                >
+                  {value}
+                </button>
+              ))}
           </div>
           {state.signedIn && (
             <button
@@ -475,7 +511,7 @@ export default function Library() {
                 Sign in to open your private library.
               </p>
               <p className="welcome-scope">
-                Private pilot · TXT & Markdown · two existing accounts
+                Private pilot · cloud processing · two existing accounts
               </p>
             </div>
             <form
@@ -575,11 +611,12 @@ export default function Library() {
                         <button
                           className="card-title"
                           disabled={state.busy}
-                          onClick={() =>
+                          onClick={() => {
+                            setReaderPage(hit.pages?.[0] ?? null);
                             act(() =>
                               workspace.open(hit.source_id, hit.version_id),
-                            )
-                          }
+                            );
+                          }}
                         >
                           {hit.title}
                         </button>
@@ -590,8 +627,17 @@ export default function Library() {
                           >
                             <p>{window.text}</p>
                             <small>
-                              Characters {window.start}–{window.end} · exact
-                              saved version
+                              {window.pages ? (
+                                <>
+                                  Pages {window.pages.join(", ")} · extracted
+                                  characters {window.start}–{window.end}
+                                </>
+                              ) : (
+                                <>
+                                  Characters {window.start}–{window.end}
+                                </>
+                              )}{" "}
+                              · exact saved version
                             </small>
                           </div>
                         ))}
@@ -599,11 +645,12 @@ export default function Library() {
                           <button
                             className="quiet-button"
                             disabled={state.busy}
-                            onClick={() =>
+                            onClick={() => {
+                              setReaderPage(hit.pages?.[0] ?? null);
                               act(() =>
                                 workspace.open(hit.source_id, hit.version_id),
-                              )
-                            }
+                              );
+                            }}
                           >
                             Open saved text
                           </button>
@@ -637,14 +684,15 @@ export default function Library() {
                         className="card-open"
                         aria-label={`Open ${source.title}`}
                         disabled={state.busy || !source.published_version_id}
-                        onClick={() =>
+                        onClick={() => {
+                          setReaderPage(null);
                           act(() =>
                             workspace.open(
                               source.source_id,
                               source.published_version_id!,
                             ),
-                          )
-                        }
+                          );
+                        }}
                       >
                         <h2>{source.title}</h2>
                         <span
@@ -825,6 +873,7 @@ export default function Library() {
         >
           {panel === "import" ? (
             <TextFileImport
+              allowPdf={state.pdfEnabled}
               disabled={state.busy || !!state.pendingImport}
               onSave={async (file) => {
                 const started = epoch.current;
@@ -851,8 +900,11 @@ export default function Library() {
           ) : panel === "settings" ? (
             <>
               <p>
-                TXT and Markdown only, UTF-8, up to 64 KiB and three processing
-                passages per file. This pilot has two source slots per account.
+                {state.pdfEnabled
+                  ? "PDF, TXT and Markdown. Text files use UTF-8;"
+                  : "TXT and Markdown only, UTF-8,"}{" "}
+                up to 64 KiB and three processing passages per file. This pilot
+                has two source slots per account.
               </p>
               <p>
                 Stored text and authentication use Supabase in Sydney.
@@ -904,7 +956,22 @@ export default function Library() {
         >
           <p className="reader-version">Exact published version · plain text</p>
           <article className="saved-document" aria-label="Saved document text">
-            {state.opened.body}
+            {state.opened.pages
+              ? state.opened.pages.map((page) => (
+                  <section
+                    className="pdf-page"
+                    id={`pdf-page-${page.number}`}
+                    key={page.number}
+                  >
+                    <h3>Page {page.number}</h3>
+                    <div>
+                      {Array.from(state.opened!.body)
+                        .slice(page.start, page.end)
+                        .join("")}
+                    </div>
+                  </section>
+                ))
+              : state.opened.body}
           </article>
           <div className="reader-actions">
             <button

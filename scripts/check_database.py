@@ -21,6 +21,7 @@ def main():
     parser.add_argument('--listing-only',action='store_true',help='Apply schema and run only source listing acceptance checks.')
     parser.add_argument('--automatic-only',action='store_true',help='Apply schema and run automatic dispatch and exact-claim checks.')
     parser.add_argument('--cleanup-only',action='store_true',help='Apply schema and verify only owner-scoped cleanup.')
+    parser.add_argument('--pdf-only',action='store_true',help='Apply schema and verify only PDF publication/ownership/citations.')
     args = parser.parse_args()
     # Fail clearly before creating anything if Docker is unavailable.
     run('info', '--format', '{{.ServerVersion}}', timeout=15)
@@ -42,8 +43,8 @@ def main():
             raise RuntimeError('Disposable database did not become ready')
         files = [ROOT / 'tests/database/bootstrap.sql',
                  *sorted((ROOT / 'supabase/migrations').glob('*.sql')),
-                 ROOT / ('tests/database/owned_cleanup.sql' if args.cleanup_only else 'tests/database/automatic_processing.sql' if args.automatic_only else 'tests/database/source_listing.sql')]
-        files += ([] if args.listing_only or args.automatic_only or args.cleanup_only else [
+                 ROOT / ('tests/database/pdf_publication.sql' if args.pdf_only else 'tests/database/owned_cleanup.sql' if args.cleanup_only else 'tests/database/automatic_processing.sql' if args.automatic_only else 'tests/database/source_listing.sql')]
+        files += ([] if args.listing_only or args.automatic_only or args.cleanup_only or args.pdf_only else [
                  ROOT / 'tests/database/ownership.sql',
                  ROOT / 'tests/database/lifecycle.sql',
                  ROOT / 'tests/database/ingestion_jobs.sql'])
@@ -53,6 +54,9 @@ def main():
         for line in result.stderr.splitlines():
             if 'PASS:' in line:
                 print(line)
+        if args.pdf_only:
+            print('PDF SQL publication checks passed. Synthetic bytes/identities/vectors, not parser or hosted semantic proof.')
+            return
         if args.cleanup_only:
             print('Owned cleanup SQL checks passed with synthetic identities; no hosted data was changed.')
             return

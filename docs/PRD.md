@@ -4,6 +4,8 @@ Status: agreed product direction. A restricted browser operator pilot has verifi
 selected TXT/Markdown lifecycles through cleanup. A separate private Windows build
 now connects to the hosted backend; the general MVP/release is incomplete. Evidence
 and limitations are in MEMORY.md and TASKS.md, not the historical snapshots.
+The bounded native-text PDF extension is implemented and deployed for the same
+private accounts; live Windows acceptance is tracked in [PDF_IMPORT](PDF_IMPORT.md).
 
 ## What and why
 

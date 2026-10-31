@@ -28,6 +28,7 @@ export type LibraryState = Readonly<{
   sources: LibrarySource[];
   nextCursor: string | null;
   libraryStatus: "idle" | "loading" | "ready" | "error";
+  pdfEnabled: boolean;
 }>;
 const initial = (): LibraryState => ({
   signedIn: false,
@@ -46,6 +47,7 @@ const initial = (): LibraryState => ({
   sources: [],
   nextCursor: null,
   libraryStatus: "idle",
+  pdfEnabled: false,
 });
 
 export class LibraryWorkspace {
@@ -158,6 +160,18 @@ export class LibraryWorkspace {
             "access_denied",
             "session_required",
             "busy",
+            "pdf_size",
+            "pdf_invalid",
+            "pdf_invalid_output",
+            "pdf_encrypted",
+            "pdf_active_content",
+            "pdf_page_limit",
+            "pdf_text_required",
+            "pdf_stream_limit",
+            "pdf_text_limit",
+            "pdf_parser_unavailable",
+            "pdf_busy",
+            "pdf_timeout",
           ].includes(this.state.error ?? "")
         ) {
           this.update({ pendingImport: null });
@@ -179,7 +193,28 @@ export class LibraryWorkspace {
               row.job_id === source.job_id &&
               row.version_id === source.version_id,
           ) ?? null;
-        this.update({ processing });
+        this.update({
+          processing,
+          // Reuse the owned status read so recovery never uses an older
+          // attempt from the initial library page. Ready still reloads the
+          // publication metadata instead of guessing its active version.
+          sources: this.state.sources.map((row) =>
+            processing &&
+            processing.state !== "ready" &&
+            row.state !== "ready" &&
+            row.source_id === source.source_id &&
+            row.job_id === processing.job_id &&
+            row.processing_version_id === processing.version_id &&
+            processing.attempts >= (row.attempts ?? 0)
+              ? {
+                  ...row,
+                  state: processing.state,
+                  attempts: processing.attempts,
+                  error_code: processing.error_code,
+                }
+              : row,
+          ),
+        });
       },
     );
   }
@@ -286,6 +321,7 @@ export class LibraryWorkspace {
           libraryStatus: "ready",
           cleanupSources: page.cleanup_source_ids ?? [],
           cleanupEnabled: page.cleanup_source_ids !== undefined,
+          pdfEnabled: page.pdf_enabled === true,
         });
       },
       () => this.update({ libraryStatus: "error" }),

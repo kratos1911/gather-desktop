@@ -14,6 +14,7 @@ next implementation belongs in [TASKS](../TASKS.md).
 | Restricted DB transport | Separate admission/worker identities, bounded Psycopg helpers and trusted owner context | [DATABASE_TRANSPORT](DATABASE_TRANSPORT.md) |
 | Supabase Sydney | Auth, owned sources/versions, private originals/jobs/staging, publication and vector reads | [Hosted setup](HOSTED_SUPABASE_SETUP.md), [published reads](PUBLISHED_SEARCH.md) |
 | Worker / optional private dispatcher | New-import intent, exact-job claim, leases/cancellation, pinned model and atomic publication; explicit attempt-bound recovery | [Automatic processing](AUTOMATIC_PROCESSING.md), [coordinator](INGESTION_COORDINATOR.md), [exact claim](EXACT_JOB_CLAIM.md) |
+| Native-text PDF extractor | Pinned disposable Linux parser process; original hash, separate extracted-text hash and numbered page ranges | [Private PDF contract](PDF_IMPORT.md) |
 | Private Cloud Run CPU service, Mumbai | Pinned Qwen embeddings, backend Google identity, bounded runtime and readiness | [Inference HTTP](INFERENCE_HTTP.md), [availability](MODEL_AVAILABILITY.md) |
 
 The frontend never receives DB worker credentials or Google caller tokens.
@@ -57,7 +58,13 @@ and three model attempts per API instance remain private-pilot limits.
 The separate private Windows build uses the approved hosted API. The default build
 retains sample behavior. Public signup/general upload, distribution, broader
 quality/security, signing and clean-install validation remain gates.
-R2 originals, additional document/image/OCR formats and bookmark enrichment
+The approved PDF extension reuses this flow. Original PDF bytes remain immutable;
+search offsets address extracted Unicode text, with its own hash and numbered page
+ranges. Admission and worker parsing have separate resource-bounded runs. Exact
+owned-version reads validate page metadata before displaying citations. See
+[PDF limits and evidence](PDF_IMPORT.md); this is not a full OS parser sandbox.
+
+R2 originals, DOCX/PPTX/image/OCR formats and bookmark enrichment
 are planned work, not active integrations. Chat remains deferred.
 
 ## Read only when relevant

@@ -783,3 +783,15 @@ retaining Gather's fonts, identity and real-format limits. Put consent/review an
 diagnostics behind deliberate actions. Preserve session generations, explicit
 search, exact published versions and confirmed cleanup; visual integration must
 not introduce a new data pipeline or automatic model requests.
+
+## 31 October 2026: bounded PDF extraction in the existing publication flow
+
+Reuse admission, jobs, leases, chunking, embeddings and atomic publication for
+native-text PDFs. Pin pypdf6.21.4 and isolate each extraction in a disposable Linux
+process with memory/CPU/wall limits and no credential environment. This is not an
+OS filesystem/network sandbox; public hostile-file intake remains gated. Reject
+scanned/blank pages instead of claiming OCR. Preserve original bytes/hash while
+validating extracted text with a separate hash and contiguous numbered page map.
+Keep the existing 64 KiB and three-passage pilot bounds. Expose PDF selection only
+when the authenticated server advertises the approved capability. Exact-version
+owned reads supply page metadata; no second indexing or search implementation.

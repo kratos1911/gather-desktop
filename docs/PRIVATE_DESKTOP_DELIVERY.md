@@ -58,6 +58,11 @@ it was neither retried nor deleted. Stored status does not prove a live worker.
 
 ## Checks, artifacts and reproducibility
 
+The subsequent [private PDF slice](PDF_IMPORT.md) uses API image72ce93fd… and
+migration13. Its selected native import/recovery/search/page-reader flow passed;
+that contract owns the new evidence. The initial text-delivery image and checks
+below remain historical evidence, not the current image reference.
+
 Focused changed-behavior backend/HTTP checks pass; 54 frontend tests,
 typecheck/lint/format pass. Owned-cleanup SQL11 cases pass; prior automatic/exact
 claim SQL47 cases are retained. Final Linux API image37 cases pass with synthetic

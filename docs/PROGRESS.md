@@ -3,6 +3,28 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 31 October 2026: private native-text PDF flow
+
+Extended the existing import/jobs/publication/search pipeline with pinned pypdf
+extraction in a bounded Linux child, immutable original identity, separate text
+hashes and numbered page provenance. Capability-gated selection and page reader
+preserve the unified Library. Applied approved migration13 and API revision
+00002-f55, image72ce93fd…, retaining service sizes, IAM, secrets and scale-to-zero.
+
+Completed82 affected backend checks across scoped runs (one receipt test needed
+its private tmpfs), six SQL acceptance groups,64 frontend checks, build/lint/format
+and native build. Limited-parser/tokenizer composition passed under512MiB without
+inference. The generated two-page PDF saved under pilot B; initial readiness429
+left it queued, then explicit recovery reached ready. One actual query returned
+Pages1,2 and exact saved-text opening passed. Exactly two successful embedding
+POSTs are logged. Fixed stale recovery-card attempt metadata with a regression;
+reused the existing status response without extra reads or automatic retries.
+
+Preserved B's PDF and A's retained sources. No other project/container changed,
+no GitHub push, no public-upload/OCR or broad quality/security claim. See
+PDF_IMPORT.md and ignored output/pdf-pilot/ evidence. Clean Windows install/
+uninstall and signing remain open; WINDOWS_INSTALL_QA.md defines that acceptance.
+
 ## 31 October 2026: unified connected Library
 
 Connected the existing authenticated workspace to one main Library and explicit

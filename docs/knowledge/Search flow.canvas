@@ -19,6 +19,15 @@
       "height": 220
     },
     {
+      "id": "pdf-import",
+      "type": "file",
+      "file": "docs/PDF_IMPORT.md",
+      "x": -420,
+      "y": 540,
+      "width": 330,
+      "height": 220
+    },
+    {
       "id": "source",
       "type": "text",
       "text": "Native TXT/Markdown -> review + confirmed Save\nHosted Auth + durable automatic intent\nFresh native import/search/open verified\nSee PRIVATE_DESKTOP_DELIVERY.md; bookmarks still gated",
@@ -146,6 +155,13 @@
     }
   ],
   "edges": [
+    {
+      "id": "pdf-provenance",
+      "fromNode": "pdf-import",
+      "fromSide": "right",
+      "toNode": "chunk",
+      "toSide": "bottom"
+    },
     {
       "id": "review-file",
       "fromNode": "private-text-files",

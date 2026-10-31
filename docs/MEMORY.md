@@ -1,6 +1,6 @@
 # Current Gather state
 
-Updated 31 October 2026. Current work builds on checkpoint `b0b5cef` on
+Updated 31 October 2026. Current work builds on checkpoint `3f23632` on
 `codex/durable-ingestion-jobs`. This file is current state, not a session log. Repository context was audited/reorganized; see FILE_AUDIT.md.
 See [tasks](../TASKS.md) for next acceptance and [topic index](PROJECT_HUB.md)
 for contracts. [Previous state journal](history/2026-10-26/MEMORY-2026-10-26.md)
@@ -28,6 +28,15 @@ is historical and must not override this file.
 
 ## Current limitations and next work
 
+Native-text PDF support is implemented and deployed in the existing private API,
+with migration13 explicitly approved and applied. The Windows PDF build passes
+focused checks. Pilot B's generated two-page hosted-pilot.pdf reached ready after
+explicit recovery; real search returned a cited passage and exact saved page
+opening passed. Exactly two successful embedding requests were used. Keep this
+source for inspection; do not resubmit, retry or delete it implicitly. See
+PDF_IMPORT.md for limits, image and evidence. The status-sync fix keeps recovery
+cards on the observed attempt;64 frontend checks/build/lint/format pass.
+
 Automatic dispatch, exact-attempt recovery and owner-scoped cleanup are implemented.
 Migrations 10/11/12 were explicitly approved and applied to Gather. The library API
 and two restricted Secret Manager credentials were deployed with explicit approval.
@@ -53,20 +62,20 @@ The account's separate older job `caae0a28-c50c-4789-9eef-51e62c1fdd7b`
 last reported processing, attempts 2/3, timeout, no publication. That is stored
 state, not evidence of a live worker. Do not claim/retry/delete it implicitly.
 
-Next: clean-Windows installer QA, then choose the next document-format slice.
+Next: clean-Windows installer QA using WINDOWS_INSTALL_QA.md.
 Evidence/limits belong in TASKS.md and PRIVATE_DESKTOP_DELIVERY.md. General
-signup/uploads, additional formats and chat remain gated/deferred.
+signup/uploads, DOCX/PPTX/OCR and chat remain gated/deferred.
 
 ## Fixed scope and operating constraints
 
 - Cloud CPU inference: private Gather Cloud Run in Mumbai, project
   `gather-development-511211`. Use explicit personal account/project flags from
   the existing helpers. Never use protected Intrixshield/work defaults.
-- Supabase `fatolholcjxpwocnpzws`, Sydney session pooler. Twelve migrations were
+- Supabase `fatolholcjxpwocnpzws`, Sydney session pooler. Thirteen migrations were
   applied manually; CLI migration history is not automatically populated.
 - Qwen/Qwen3-Embedding-0.6B, pinned revision/dimensions in the serving contracts;
   512-dimensional query/document space. No end-user weight downloads.
-- Private two-account TXT/Markdown pilot: UTF-8 <=64 KiB, three processing
+- Private two-account TXT/Markdown/native-text PDF pilot: input <=64 KiB, three processing
   passages/model attempts; no automatic inference retries. Existing deadlines,
   quotas and per-process counters are not billing meters.
 - Normal min0/max1; the approved pilot budget is INR500 and alerts are not a

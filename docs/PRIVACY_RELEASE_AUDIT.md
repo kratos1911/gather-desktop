@@ -2,8 +2,11 @@
 
 Current private extension: PRIVATE_DESKTOP_DELIVERY.md records approved hosted API
 and restricted credential storage, native file processing and owner-confirmed
-cleanup. Only the two existing accounts are allowed; no signup, telemetry or new
-content format was enabled. Final policies/provider retention, signing and broader
+cleanup. Only the two existing accounts are allowed; no signup or telemetry is
+enabled. The explicitly approved [private PDF extension](PDF_IMPORT.md) sends
+confirmed original bytes to Supabase/Sydney and extracted passages to Gather's
+CPU model/Mumbai. It keeps the existing quota and input limits; general hostile
+uploads remain gated. Final policies/provider retention, signing and broader
 release gates below remain open. This is not a legal-compliance claim.
 
 26 October implementation addendum: [PRIVATE_TEXT_FILES.md](PRIVATE_TEXT_FILES.md)

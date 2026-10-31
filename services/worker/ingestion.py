@@ -15,6 +15,7 @@ from services.worker.embedding_client import embed_texts, Limits, EmbeddingError
 from services.worker.ingestion_repository import RepositoryError
 from services.worker.text_processing import process_request, PARSER_VERSION, MAX_SOURCE_BYTES
 from services.worker.model_availability import MODEL_HTTP
+from services.worker.pdf_processing import extract_pdf, PDFError, PARSER_VERSION as PDF_PARSER, validate_document
 
 MAX_JOB_REQUESTS = 16  # Preserve the embedding client's default request budget.
 MAX_JOB_TOKENS = MAX_JOB_REQUESTS * MAX_TOKENS
@@ -41,7 +42,9 @@ class RuntimeProvider:
         return self.runtime.infer(request, cancel=cancel)
 
 
-def parse(raw, media):
+def parse(raw, media, *, cancel=None):
+    if media == 'application/pdf':
+        return extract_pdf(raw,cancel=cancel)
     if type(raw) is not bytes or not 0 < len(raw) <= MAX_SOURCE_BYTES or media not in ('text/plain','text/markdown'):
         raise ValueError('invalid_input')
     result = process_request(json.dumps(dict(version=1, request_id='ingestion',
@@ -52,16 +55,18 @@ def parse(raw, media):
     return result['document']
 
 
-def submit(repository, *, request_id, title, original, media, source_id=None):
+def submit(repository, *, request_id, title, original, media, source_id=None, document=None):
     """Repository connection supplies verified auth context; payload has no owner."""
     UUID(request_id)
     if source_id is not None:
         UUID(source_id)
     if not isinstance(title, str) or not title.strip() or len(title) > 500:
         raise ValueError('invalid_input')
-    parse(original, media)
+    document = parse(original, media) if document is None else document
+    if media == 'application/pdf': validate_document(document,original)
+    parser = PDF_PARSER if media == 'application/pdf' else PARSER_VERSION
     return repository.call('submit_text', request_id, title, original, media,
-                           PARSER_VERSION, VERSION, MODEL, REVISION, DIMENSIONS, source_id)
+                           parser, VERSION, MODEL, REVISION, DIMENSIONS, source_id)
 
 
 class Cancellation:
@@ -151,12 +156,12 @@ def run_once(repository, provider, *, cancel=None):
         with Lease(repository, job, cancel) as lease:
             step = 'validate_manifest'
             if (job['parser_version'],job['chunker_version'],job['model_id'],job['model_revision'],job['dimensions']) != (
-                    PARSER_VERSION,VERSION,MODEL,REVISION,DIMENSIONS):
+                    PDF_PARSER if job['media_type']=='application/pdf' else PARSER_VERSION,VERSION,MODEL,REVISION,DIMENSIONS):
                 raise ValueError('invalid_input')
             step = 'read_original'
             raw = bytes.fromhex(repository.call('read_job_original', *args))
             step = 'parse_original'
-            document = parse(raw, job['media_type'])
+            document = parse(raw, job['media_type'],cancel=lease.cancelled)
             if len(raw) != job['input_bytes'] or document['source_sha256'] != job['content_sha256']:
                 raise ValueError('invalid_input')
 
@@ -165,14 +170,18 @@ def run_once(repository, provider, *, cancel=None):
                 return provider.count_tokens(text)
 
             step = 'chunk_original'
-            chunks = chunk_document(raw.decode('utf-8'), count_tokens)
+            text = document['body'] if job['media_type']=='application/pdf' else raw.decode('utf-8')
+            chunks = chunk_document(text, count_tokens)
             if len(chunks) > MAX_JOB_REQUESTS or sum(c['tokens'] for c in chunks) > MAX_JOB_TOKENS:
                 raise ValueError('invalid_input')
             step = 'renew_lease'
             lease.renew()
             step = 'stage_text'
-            repository.call('stage_text', *args, raw, job['media_type'],
-                            [{k: c[k] for k in ('id','start','end')} for c in chunks])
+            manifest = [{k: c[k] for k in ('id','start','end')} for c in chunks]
+            if job['media_type']=='application/pdf':
+                repository.call('stage_pdf',*args,raw,document['body'],document['pages'],manifest)
+            else:
+                repository.call('stage_text', *args, raw, job['media_type'],manifest)
             step = 'read_completed_passages'
             completed = set(repository.call('completed_passages', *args))
             for chunk in chunks:
@@ -229,6 +238,8 @@ def run_once(repository, provider, *, cancel=None):
             code = error.code
         if isinstance(error, ProviderFailure):
             code = error.code
+        if isinstance(error,PDFError) and str(error) in ('pdf_timeout','pdf_busy','pdf_cancelled','pdf_parser_unavailable'):
+            code = 'timeout' if str(error)=='pdf_timeout' else 'temporarily_unavailable'
         if isinstance(error, InferenceError) and str(error) == 'deadline_exceeded':
             code = 'timeout'
         try:

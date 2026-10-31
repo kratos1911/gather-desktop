@@ -11,7 +11,8 @@ The main Library now uses owned saved files and one semantic search, with a
 minimal dark interface. Native sign-in/listing/opening passed; new UI import,
 search and deletion paths passed synthetic HTTP integration checks. See
 [unified interface](docs/UNIFIED_LIBRARY.md). Next remains clean-Windows installer
-QA, then the next agreed format slice; do not confuse the separate sample build
+QA; bounded PDF live acceptance passed in [PDF_IMPORT](docs/PDF_IMPORT.md).
+Do not confuse the separate sample build
 with the connected application.
 
 Deliver complete user flows; supporting fixes/checks belong inside their milestone.
@@ -54,14 +55,14 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-003 | Unified private Library implemented | One owned grid/search with dark minimal UI; 59 frontend checks including five new synthetic integrations, plus native listing/opening. See [UNIFIED_LIBRARY](docs/UNIFIED_LIBRARY.md); clean-install/accessibility QA remains |
 | TASK-004 | Done: bounded TXT/Markdown contract | Exact bytes/offsets/hashes and deterministic processing; [worker contract](services/worker/README.md) |
 | TASK-005 | Partial: embedding/quality | Qwen CPU serving and selected hosted flow pass. Broader recall, split/multi-part coverage, visual/Gemma and security/licence work remain; [retrieval evidence](docs/CHUNK_RETRIEVAL_RESULTS.md) |
-| TASK-006 | Partial: identity/private schema | Hosted private pilot and twelve migrations verified. General signup/session packaging/audience policy remain gated; [hosted setup](docs/HOSTED_SUPABASE_SETUP.md) |
+| TASK-006 | Partial: identity/private schema | Hosted private pilot; thirteen approved migrations applied. PDF permissions/RLS checked; general signup/audience policy remain gated; [hosted setup](docs/HOSTED_SUPABASE_SETUP.md) |
 | TASK-007 | Private pilot verified; general app partial | Selected synthetic Markdown passed import -> publish -> search/open -> deletion/cleanup. Automatic processing/owned cleanup verified; release gates remain; [file pilot](docs/PRIVATE_TEXT_FILES.md) |
-| TASK-008 | Planned: native document formats | PDF/DOCX/PPTX with exact page/slide/section provenance and malformed-input cases |
+| TASK-008 | Private native-text PDF slice verified; other formats planned | Pilot B's two-page generated PDF passed save, explicit startup recovery, ready, real search, page citations and exact opening with two embeddings. Parser/storage/security fixtures pass. No OCR/layout fidelity/general upload claim; DOCX/PPTX remain planned; [PDF contract](docs/PDF_IMPORT.md) |
 | TASK-009 | Planned: photo/OCR retrieval | JPEG/PNG/scanned text, distinct model spaces and separately measured quality |
 | TASK-010 | Deferred by user: chat | Selected-source isolation/citations; do not start before search priorities |
 | TASK-011 | Partial: automated quality | Focused local checks/builds pass; remote manual CI/native E2E not claimed |
 | TASK-012 | Continuous release gate | Ownership, limits, cleanup, dependencies/licences/secrets and [privacy gates](docs/PRIVACY_RELEASE_AUDIT.md) |
-| TASK-013 | Planned: installer QA | Clean Windows install/update/uninstall and network/offline/quota cases without developer tools |
+| TASK-013 | Pending clean Windows environment | Build/current-PC checks do not prove clean install/update/uninstall; combined acceptance procedure: [WINDOWS_INSTALL_QA](docs/WINDOWS_INSTALL_QA.md) |
 | TASK-014 | Gated: production distribution | Signing, final policies, approved destination, backup/restore/rollback and verified artifacts |
 | TASK-015 | After release: monitoring | Privacy-preserving diagnostics; telemetry requires separate review/consent |
 | TASK-016 | Done: offline bookmark contract | Bounded synthetic HTML/URL extraction; not live fetching |
@@ -77,6 +78,12 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-023 | Partial: dependency/image risk | Keep open findings and applicability review; [worker scan](services/worker/IMAGE_SCAN_REVIEW.md), [inference risk](services/inference/OS_RISK_REVIEW.md) |
 
 ## Latest verification
+
+PDF:82 affected backend checks, six SQL acceptance groups and64 frontend checks
+completed; lint/format/typecheck/build pass. Approved migration13 and API update
+are live. One bounded native PDF flow passed with two actual model requests;
+cold-start failure and explicit recovery remain recorded. PDF_IMPORT.md owns
+the detailed evidence. Clean-install QA remains separate and unverified.
 
 Unified Library: 59 frontend checks, lint/format/typecheck/build and native build
 pass. Rendered desktop/narrow review and live hosted sign-in/listing/opening pass;

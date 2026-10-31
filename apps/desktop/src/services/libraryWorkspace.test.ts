@@ -17,6 +17,92 @@ const setup = () => {
   return { workspace, send };
 };
 describe("library workspace (synthetic transport)", () => {
+  it("updates the matching library attempt from status without extra reads or automatic recovery", async () => {
+    const { workspace, send } = setup();
+    const row = {
+      source_id: ID,
+      title: "queued.pdf",
+      kind: "file",
+      created_at: "2026-10-31T01:00:00.000001Z",
+      published_version_id: null,
+      processing_version_id: ID,
+      job_id: ID,
+      state: "queued",
+      attempts: 0,
+      error_code: null,
+    };
+    const otherJob = "00000000-0000-0000-0000-000000000002";
+    send.mockResolvedValueOnce(
+      reply({
+        items: [row, { ...row, source_id: otherJob, job_id: otherJob }],
+        next_cursor: null,
+      }),
+    );
+    await workspace.loadSources();
+    send.mockResolvedValueOnce(
+      reply({ source_id: ID, version_id: ID, job_id: ID }, 202),
+    );
+    await workspace.importText(
+      "queued.pdf",
+      new TextEncoder().encode("%PDF-1.7\n%%EOF\n"),
+      "application/pdf",
+      true,
+    );
+    send.mockResolvedValueOnce(
+      reply([
+        {
+          job_id: ID,
+          version_id: ID,
+          state: "queued",
+          attempts: 1,
+          error_code: "temporarily_unavailable",
+        },
+      ]),
+    );
+    await workspace.refreshStatus();
+    expect(workspace.getSnapshot().sources[0]).toMatchObject({
+      state: "queued",
+      attempts: 1,
+      error_code: "temporarily_unavailable",
+      published_version_id: null,
+    });
+    expect(workspace.getSnapshot().sources[1].attempts).toBe(0);
+    expect(send).toHaveBeenCalledTimes(3);
+    send.mockResolvedValueOnce(reply(true));
+    const current = workspace.getSnapshot().sources[0];
+    await workspace.process(
+      current.source_id,
+      current.job_id!,
+      current.attempts!,
+    );
+    expect(
+      JSON.parse(String(send.mock.calls[3][1]?.body)).expected_attempts,
+    ).toBe(1);
+    workspace.dispose();
+  });
+  it("allows correction after a definite pre-admission PDF rejection", async () => {
+    const { workspace, send } = setup();
+    send.mockResolvedValueOnce(reply({ error: "pdf_encrypted" }, 400));
+    await workspace.importText(
+      "encrypted.pdf",
+      new TextEncoder().encode("%PDF-1.7\n%%EOF\n"),
+      "application/pdf",
+      true,
+    );
+    expect(workspace.getSnapshot().pendingImport).toBeNull();
+    expect(workspace.getSnapshot().error).toBe("pdf_encrypted");
+    send.mockResolvedValueOnce(
+      reply({ source_id: ID, version_id: ID, job_id: ID }, 202),
+    );
+    await workspace.importText(
+      "corrected.txt",
+      new TextEncoder().encode("owned fixture"),
+      "text/plain",
+      true,
+    );
+    expect(workspace.getSnapshot().imported?.source_id).toBe(ID);
+    workspace.dispose();
+  });
   it("confirms cleanup only after server success and restores pending cleanup after reconnect", async () => {
     const { workspace, send } = setup();
     send.mockResolvedValueOnce(

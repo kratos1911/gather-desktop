@@ -6,6 +6,12 @@ contract/provenance. OperatorPilot remains a regression harness used by its
 discovered tests, not an application route. Do not delete it by reference count
 alone. The original inventory totals below remain a dated snapshot.
 
+PDF additions have distinct roles: pdf_processing.py and requirements-pdf.lock
+own the parser boundary/provenance; migration13 and PDF tests protect storage
+and page contracts. Stage/update helpers are explicit manual entry points.
+PDF_IMPORT.md and WINDOWS_INSTALL_QA.md are linked from the hub. Retain them;
+generated fixtures, receipts, wheels and packages stay ignored under output/.
+
 Audit snapshot: feature checkpoint `53cf9d8`, 26 October 2026. Reorganization
 changes context/maintenance only, not application behavior. This is a necessity,
 reference and navigation audit, not proof that all code is correct or secure.

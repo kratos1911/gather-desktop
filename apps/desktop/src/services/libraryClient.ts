@@ -9,7 +9,7 @@ export type ImportReceipt = {
 export type ProcessingStatus = {
   job_id: string;
   version_id: string;
-  state: string;
+  state: NonNullable<LibrarySource["state"]>;
   attempts: number;
   error_code: string | null;
 };
@@ -29,6 +29,7 @@ export type SourcePage = {
   items: LibrarySource[];
   next_cursor: string | null;
   cleanup_source_ids?: string[];
+  pdf_enabled?: boolean;
 };
 export type SearchWindow = {
   source_id: string;
@@ -42,6 +43,8 @@ export type SearchWindow = {
   passage_ids: string[];
   seed_rank: number;
   similarity: number;
+  media_type?: "application/pdf";
+  pages?: number[];
 };
 export type SearchResult = {
   version: string;
@@ -59,17 +62,36 @@ export type SourceText = {
   model_revision: string;
   dimensions: number;
   passages: { id: string; start: number; end: number }[];
+  media_type?: "application/pdf";
+  text_sha256?: string;
+  pages?: { number: number; start: number; end: number }[];
 };
 export type PreparedImport = Readonly<{
   request_id: string;
   title: string;
-  media: "text/plain" | "text/markdown";
+  media: "text/plain" | "text/markdown" | "application/pdf";
   content_base64: string;
   source_id?: string;
   confirm_cloud_storage?: true;
 }>;
 
 const MAX_REPLY = 512 * 1024;
+const ERROR_HTTP: Record<string, number> = {
+  ...MODEL_HTTP,
+  pdf_size: 400,
+  pdf_invalid: 400,
+  pdf_invalid_output: 400,
+  pdf_encrypted: 400,
+  pdf_active_content: 400,
+  pdf_page_limit: 400,
+  pdf_text_required: 400,
+  pdf_stream_limit: 400,
+  pdf_text_limit: 400,
+  pdf_parser_unavailable: 503,
+  pdf_busy: 429,
+  pdf_timeout: 504,
+  pdf_cancelled: 400,
+};
 const uuidPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const hashPattern = /^[0-9a-f]{64}$/;
@@ -192,11 +214,14 @@ export class LibraryClient {
       Array.from(title).length > 500 ||
       bytes.byteLength < 1 ||
       bytes.byteLength > 65536 ||
-      !["text/plain", "text/markdown"].includes(media)
+      !["text/plain", "text/markdown", "application/pdf"].includes(media)
     )
       throw new LibraryClientError("invalid_import");
     try {
-      new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+      if (media !== "application/pdf")
+        new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+      else if (String.fromCharCode(...bytes.slice(0, 5)) !== "%PDF-")
+        throw new Error();
     } catch {
       throw new LibraryClientError("invalid_import");
     }
@@ -294,7 +319,7 @@ export class LibraryClient {
       return {
         job_id: id(value.job_id),
         version_id: id(value.version_id),
-        state,
+        state: state as ProcessingStatus["state"],
         attempts,
         error_code: value.error_code === null ? null : text(value.error_code),
       };
@@ -386,10 +411,18 @@ export class LibraryClient {
         : array(result.cleanup_source_ids, 20).map(id);
     if (cleanup && new Set(cleanup).size !== cleanup.length)
       throw new LibraryClientError("invalid_response");
+    if (
+      result.pdf_enabled !== undefined &&
+      typeof result.pdf_enabled !== "boolean"
+    )
+      throw new LibraryClientError("invalid_response");
     return {
       items,
       next_cursor: next,
       ...(cleanup === undefined ? {} : { cleanup_source_ids: cleanup }),
+      ...(result.pdf_enabled === undefined
+        ? {}
+        : { pdf_enabled: result.pdf_enabled }),
     };
   }
 
@@ -409,6 +442,20 @@ export class LibraryClient {
         encoder.encode(body).length > 8192
       )
         throw new LibraryClientError("invalid_response");
+      let pdf: { media_type?: "application/pdf"; pages?: number[] } = {};
+      if (value.media_type !== undefined || value.pages !== undefined) {
+        const pages = array(value.pages, 20).map(integer);
+        if (
+          value.media_type !== "application/pdf" ||
+          !pages.length ||
+          pages.some(
+            (page, index) =>
+              page < 1 || page > 20 || (index > 0 && page <= pages[index - 1]),
+          )
+        )
+          throw new LibraryClientError("invalid_response");
+        pdf = { media_type: "application/pdf", pages };
+      }
       return {
         ...identity(value),
         ...offsets(value, body),
@@ -417,6 +464,7 @@ export class LibraryClient {
         passage_ids: array(value.passage_ids, 256).map(text),
         seed_rank: integer(value.seed_rank),
         similarity: number(value.similarity),
+        ...pdf,
       };
     });
     const size = integer(result.utf8_bytes);
@@ -467,10 +515,46 @@ export class LibraryClient {
         throw new LibraryClientError("invalid_response");
       return { id: text(passage.id), start, end };
     });
+    let pdf: Pick<SourceText, "media_type" | "text_sha256" | "pages"> = {};
+    if (
+      value.media_type !== undefined ||
+      value.pages !== undefined ||
+      value.text_sha256 !== undefined
+    ) {
+      let previous = 0;
+      const pages = array(value.pages, 20).map((row, index) => {
+        const page = record(row),
+          number = integer(page.number),
+          start = integer(page.start),
+          end = integer(page.end);
+        if (
+          number !== index + 1 ||
+          start !== previous ||
+          end <= start ||
+          end > length
+        )
+          throw new LibraryClientError("invalid_response");
+        previous = end;
+        return { number, start, end };
+      });
+      if (
+        value.media_type !== "application/pdf" ||
+        !pages.length ||
+        previous !== length ||
+        !hashPattern.test(text(value.text_sha256))
+      )
+        throw new LibraryClientError("invalid_response");
+      pdf = {
+        media_type: "application/pdf",
+        pages,
+        text_sha256: text(value.text_sha256),
+      };
+    }
     return {
       ...identity(value),
       body,
       passages,
+      ...pdf,
       model_id: text(value.model_id),
       model_revision: text(value.model_revision),
       dimensions: integer(value.dimensions),
@@ -574,8 +658,8 @@ export class LibraryClient {
             if (
               Object.keys(value).length === 1 &&
               typeof value.error === "string" &&
-              Object.prototype.hasOwnProperty.call(MODEL_HTTP, value.error) &&
-              MODEL_HTTP[value.error] === response.status
+              Object.prototype.hasOwnProperty.call(ERROR_HTTP, value.error) &&
+              ERROR_HTTP[value.error] === response.status
             )
               specific = value.error;
           }

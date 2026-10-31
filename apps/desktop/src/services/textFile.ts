@@ -4,7 +4,7 @@ import { LibraryClientError } from "./libraryClient";
 export const MAX_TEXT_FILE_BYTES = 65536;
 export type SelectedTextFile = Readonly<{
   title: string;
-  media: "text/plain" | "text/markdown";
+  media: "text/plain" | "text/markdown" | "application/pdf";
   bytes: Uint8Array;
   preview: string;
   previewTruncated: boolean;
@@ -25,6 +25,7 @@ function hasControls(value: string, allowLayout = false): boolean {
 export async function readTextFile(
   file: File,
   signal: AbortSignal,
+  allowPdf = false,
 ): Promise<SelectedTextFile> {
   if (signal.aborted) throw new LibraryClientError("cancelled");
   if (
@@ -33,7 +34,10 @@ export async function readTextFile(
     hasControls(file.name) ||
     file.name.includes("/") ||
     file.name.includes("\\") ||
-    !/\.(txt|md|markdown)$/i.test(file.name)
+    !(
+      /\.(txt|md|markdown)$/i.test(file.name) ||
+      (allowPdf && /\.pdf$/i.test(file.name))
+    )
   )
     throw new LibraryClientError("file_type");
   if (
@@ -72,6 +76,23 @@ export async function readTextFile(
     reader.readAsArrayBuffer(file.slice(0, MAX_TEXT_FILE_BYTES + 1));
   });
   if (signal.aborted) throw new LibraryClientError("cancelled");
+  if (/\.pdf$/i.test(file.name)) {
+    const header = String.fromCharCode(...bytes.slice(0, 9));
+    const tail = String.fromCharCode(...bytes.slice(-1024));
+    if (
+      !/^%PDF-(1\.[0-7]|2\.0)[\r\n]/.test(header) ||
+      !/%%EOF[\t\n\f\r ]*$/.test(tail)
+    )
+      throw new LibraryClientError("file_pdf_invalid");
+    return Object.freeze({
+      title: file.name,
+      media: "application/pdf",
+      bytes,
+      preview:
+        "PDF selected locally. Text and page references will be extracted by Gather after you confirm and save. This is not an extracted-text preview.",
+      previewTruncated: false,
+    });
+  }
   let body: string;
   try {
     body = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(

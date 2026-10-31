@@ -38,7 +38,8 @@ def main():
         provider=BoundedProvider(cloud_provider(IDENTITY,Path('/app/tokenizer'),token_provider=identity))
         def record(_job,result):
             print('Automatic processing: '+','.join(r['state'] for r in result['outcomes']),flush=True)
-        app=compose_pilot(admission,worker,provider,identity,key,text_files=True,automatic=True,record=record)
+        app=compose_pilot(admission,worker,provider,identity,key,text_files=True,automatic=True,record=record,
+            pdf_files=os.environ.get('GATHER_PDF_PILOT')=='1')
         create_cloud_server(app,os.environ).run()
     finally: identity.invalidate()
 

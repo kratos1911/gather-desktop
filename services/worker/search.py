@@ -17,6 +17,7 @@ from services.worker.search_context import (
 )
 from services.worker.source_listing import page, parameters
 from services.worker.model_availability import ModelServiceError
+from services.worker.pdf_processing import enrich_published
 
 
 class SearchError(Exception):
@@ -132,6 +133,7 @@ def search(query, *, api, provider, limit=20, cancel=None):
             docs = call('POST', '/rest/v1/rpc/open_published_text', {
                 'p_source': sid, 'p_version': seed['version_id'],
             })
+            docs=enrich_published(call,sid,seed['version_id'],docs)
             if docs == []:
                 omitted.append({'source_id': sid, 'reason': 'no_longer_available'})
                 continue
@@ -152,7 +154,9 @@ def search(query, *, api, provider, limit=20, cancel=None):
                         or row['source_sha256'] != doc['source_sha256']
                         or doc['body'][p.start:p.end] != row['body']):
                     raise ValueError('citation_mismatch')
-            snapshots.append(Snapshot(owner, sid, doc['version_id'], doc['source_sha256'], doc['body'], passages))
+            snapshots.append(Snapshot(owner, sid, doc['version_id'], doc['source_sha256'], doc['body'], passages,
+                text_sha256=doc.get('text_sha256'),media_type=doc.get('media_type','text/plain'),
+                pages=tuple((p['number'],p['start'],p['end']) for p in doc.get('pages',[]))))
             metadata[sid] = {'title': seed['title'], 'similarity': seed['similarity']}
         active()
         # Preserve original ranking even when several hits share one source.

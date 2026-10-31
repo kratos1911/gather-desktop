@@ -492,3 +492,11 @@ switched to B. Discard it instead of displaying A's results in B's view. The UI
 tracks a session generation as well as cancelling requests; database ownership
 checks remain independent. The unified Library reuses this guard, not a visual
 account filter. See [[docs/UNIFIED_LIBRARY]].
+
+## PDF originals and searchable text have different identities
+
+A PDF's bytes are not its extracted text. Keep the original SHA-256 for source
+identity and a separate text SHA-256 for passage validation. Numbered page ranges
+map extracted Unicode offsets back to pages; a window spanning two pages cites
+both. This preserves provenance without claiming original PDF layout rendering.
+The private implementation and acceptance limits are in [[docs/PDF_IMPORT]].

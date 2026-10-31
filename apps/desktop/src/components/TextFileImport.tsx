@@ -10,13 +10,17 @@ const messages: Record<string, string> = {
   file_empty: "This file has no searchable text.",
   file_read_failed: "The file could not be read. Select it again.",
   cancelled: "File reading cancelled.",
+  file_pdf_invalid:
+    "This file does not have a valid PDF header and trailer. Choose the original PDF file.",
 };
 
 export function TextFileImport({
   disabled,
   onSave,
+  allowPdf = false,
 }: {
   disabled: boolean;
+  allowPdf?: boolean;
   onSave: (file: SelectedTextFile) => Promise<boolean>;
 }) {
   const [selected, setSelected] = useState<SelectedTextFile | null>(null);
@@ -38,7 +42,7 @@ export function TextFileImport({
     setReading(!!file);
     if (!file) return;
     try {
-      const result = await readTextFile(file, controller.signal);
+      const result = await readTextFile(file, controller.signal, allowPdf);
       if (!controller.signal.aborted) setSelected(result);
     } catch (failure) {
       if (!controller.signal.aborted)
@@ -69,18 +73,28 @@ export function TextFileImport({
   }
   return (
     <div className="text-file-import">
-      <label htmlFor="pilot-text-file">Choose a TXT or Markdown file</label>
+      <label htmlFor="pilot-text-file">
+        {allowPdf
+          ? "Choose a PDF, TXT or Markdown file"
+          : "Choose a TXT or Markdown file"}
+      </label>
       <input
         id="pilot-text-file"
         ref={input}
         type="file"
-        accept=".txt,.md,.markdown,text/plain,text/markdown"
+        accept={
+          allowPdf
+            ? ".pdf,.txt,.md,.markdown,application/pdf,text/plain,text/markdown"
+            : ".txt,.md,.markdown,text/plain,text/markdown"
+        }
         disabled={disabled || saving}
         onChange={(event) => void choose(event.target.files?.[0])}
       />
       <p>
-        Private testing only. UTF-8, at most 64 KiB. Choosing a file reads it
-        locally; nothing is uploaded until you confirm and save.
+        Private testing only.{" "}
+        {allowPdf ? "PDF with selectable text, or UTF-8 text," : "UTF-8,"} at
+        most 64 KiB. Choosing a file reads it locally; nothing is uploaded until
+        you confirm and save.
       </p>
       {reading && <p role="status">Reading selected file locally…</p>}
       {selected && (
@@ -91,7 +105,11 @@ export function TextFileImport({
           </p>
           <div
             className="paper text-file-preview"
-            aria-label="Local plain-text preview"
+            aria-label={
+              selected.media === "application/pdf"
+                ? "Local PDF review"
+                : "Local plain-text preview"
+            }
           >
             {selected.preview}
           </div>
@@ -101,7 +119,7 @@ export function TextFileImport({
             </p>
           )}
           <p>
-            Saving sends the original text and filename to Gather’s Supabase
+            Saving sends the original file and filename to Gather’s Supabase
             database in Sydney. An automatic-mode server then sends text to the
             private CPU model in Mumbai for indexing; search also uses that
             model. Model calls count toward the pilot budget. Content stays
@@ -109,6 +127,8 @@ export function TextFileImport({
             confirms cleanup only after the server removes stored data.
             Unfinished cleanup remains available to retry. The pilot accepts
             only files that fit three processing passages.
+            {selected.media === "application/pdf" &&
+              " PDFs may have at most 20 pages, each with selectable text. Encrypted, scanned, empty-page and active-content PDFs are unsupported. The reader shows extracted text with page numbers, not original page artwork."}
           </p>
           <label className="text-file-confirm">
             <input

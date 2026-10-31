@@ -684,6 +684,22 @@
 .reader-actions {
   padding-top: 20px;
 }
+.pdf-page {
+  scroll-margin-top: 110px;
+}
+.pdf-page + .pdf-page {
+  border-top: 1px solid #b7b3aa;
+  padding-top: 28px;
+  margin-top: 28px;
+}
+.pdf-page h3 {
+  color: #505952;
+  font:
+    600 12px/1.5 Manrope,
+    sans-serif;
+  margin-bottom: 16px;
+  letter-spacing: 0;
+}
 .delete-actions {
   justify-content: flex-end;
   margin-top: 26px;

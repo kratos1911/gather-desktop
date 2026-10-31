@@ -24,16 +24,19 @@ from services.worker.worker_lifecycle import WorkerRun, WorkerStartError
 from services.worker.ingestion import parse
 from services.inference.chunking import chunk_document
 from services.worker.automatic_processing import AutomaticAdmission, AutomaticDispatcher, StartupProvider
+from services.worker.pdf_processing import PDFError
 
 PILOT_USERS = frozenset(('8b8de9a3-6600-465d-9ae6-8a0f2271c1dc',
                          '903b7ed0-9d21-467c-907a-4032d589f4c4'))
 
 
 class PilotSession(LibrarySession):
-    def __init__(self, *args, text_files=False, dispatcher=None):
+    def __init__(self, *args, text_files=False, dispatcher=None,pdf_files=False,cancel=None):
         super().__init__(*args)
         self.text_files = text_files
         self.dispatcher = dispatcher
+        self.pdf_files=pdf_files
+        self.cancel=cancel
 
     def import_text(self, **values):
         try:
@@ -50,6 +53,7 @@ class PilotSession(LibrarySession):
 
     def list_sources(self, **values):
         result=super().list_sources(**values)
+        if self.pdf_files: result=dict(result,pdf_enabled=True)
         if self.dispatcher is not None:
             try:
                 pending=self._api('POST','/rest/v1/rpc/list_source_cleanup',{})
@@ -74,15 +78,20 @@ class PilotSession(LibrarySession):
             raise LibraryError('file_import_disabled')
         if confirm_cloud_storage is not True:
             raise LibraryError('file_confirmation_required')
+        if media=='application/pdf' and not self.pdf_files: raise LibraryError('file_import_disabled')
         try:
-            parse(original,media)
-            chunks = chunk_document(original.decode('utf-8'),self._provider.count_tokens)
+            document=parse(original,media,cancel=self.cancel)
+            text=document['body'] if media=='application/pdf' else original.decode('utf-8')
+            chunks = chunk_document(text,self._provider.count_tokens)
+        except PDFError as error:
+            raise LibraryError(str(error)) from None
         except Exception:
             raise LibraryError('file_invalid') from None
         # The operator provider already permits only three calls per process.
         # Reject before storing a file that cannot fit a fresh worker's budget.
         if len(chunks)>3:
             raise LibraryError('file_exceeds_pilot_budget')
+        return document
 
     def search(self, query, *, limit=20, cancel=None):
         self._owner()
@@ -138,7 +147,7 @@ def run_ready_worker(worker, identity):
         return worker.run()
 
 
-def compose_pilot(config,worker_config,provider,identity,key,*,text_files=False,automatic=False,record=None):
+def compose_pilot(config,worker_config,provider,identity,key,*,text_files=False,automatic=False,record=None,pdf_files=False):
     """Shared trusted composition for operator and explicit managed-cloud startup."""
     dispatcher=None
     if automatic:
@@ -158,7 +167,7 @@ def compose_pilot(config,worker_config,provider,identity,key,*,text_files=False,
             repo=DatabaseRepository(config,owner=owner,operation_timeout=15)
             return AutomaticAdmission(repo) if dispatcher is not None else repo
         return PilotSession(SessionClient(BASE,key,token,cancel=cancel),admission,provider,
-            text_files=text_files,dispatcher=dispatcher)
+            text_files=text_files,dispatcher=dispatcher,pdf_files=pdf_files,cancel=cancel)
     return LibraryAPI(session,dispatcher=dispatcher)
 
 
