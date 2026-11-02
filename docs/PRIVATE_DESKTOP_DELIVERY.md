@@ -7,6 +7,11 @@ That follow-up verified native listing/opening without rerunning inference; the
 full selected semantic-flow evidence below belongs to the preceding checkpoint.
 Current UI screenshots/receipt: output/unified-library/.
 
+Current-PC installer lifecycle was subsequently verified at the user's request:
+install -> installed launch -> real account/library access -> uninstall -> reinstall.
+This does not establish clean-machine acceptance. See [Windows QA](WINDOWS_INSTALL_QA.md)
+for exact hashes, the Tauri NSIS marker check, safe receipt and remaining gates.
+
 ## Delivered and observed
 
 1. Automatic ingestion: native file selection/review/Save created an owned durable

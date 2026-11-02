@@ -62,7 +62,7 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-010 | Deferred by user: chat | Selected-source isolation/citations; do not start before search priorities |
 | TASK-011 | Partial: automated quality | Focused local checks/builds pass; remote manual CI/native E2E not claimed |
 | TASK-012 | Continuous release gate | Ownership, limits, cleanup, dependencies/licences/secrets and [privacy gates](docs/PRIVACY_RELEASE_AUDIT.md) |
-| TASK-013 | Pending clean Windows environment | Build/current-PC checks do not prove clean install/update/uninstall; combined acceptance procedure: [WINDOWS_INSTALL_QA](docs/WINDOWS_INSTALL_QA.md) |
+| TASK-013 | Current-PC installer lifecycle verified; clean environment pending | D: install, tool-free child PATH launch, real A/B sign-in/listing, synthetic opening, uninstall and reinstall passed. Missing-WebView2, upgrade, offline and clean-machine acceptance remain; [WINDOWS_INSTALL_QA](docs/WINDOWS_INSTALL_QA.md) |
 | TASK-014 | Gated: production distribution | Signing, final policies, approved destination, backup/restore/rollback and verified artifacts |
 | TASK-015 | After release: monitoring | Privacy-preserving diagnostics; telemetry requires separate review/consent |
 | TASK-016 | Done: offline bookmark contract | Bounded synthetic HTML/URL extraction; not live fetching |

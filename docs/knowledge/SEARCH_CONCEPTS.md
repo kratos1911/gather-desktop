@@ -517,3 +517,12 @@ Reusing a worker connection saves process/TLS setup; it does not permit carrying
 user authorization between operations. Admission stays fresh; worker transactions
 reset and reapply their restricted context. Compare identical inputs and report
 overlapping time separately. See [[docs/PROCESSING_SPEED]].
+
+## Installer identity and environment evidence
+
+A packaged executable may contain a documented bundler change. Verify the source
+hash, permit only the exact known marker patch, and compare every remaining byte.
+Do not waive arbitrary mismatches. A real install/uninstall pass on a development
+PC proves that environment's lifecycle, not a clean Windows installation. Removing
+tools from PATH strengthens the launch check but does not remove installed DLLs
+or WebView2. See [[docs/WINDOWS_INSTALL_QA]].

@@ -3,6 +3,26 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 2 November 2026: current-PC Windows installer lifecycle
+
+The user chose their existing Windows PC after no separate Sandbox/VM was found.
+Installed the exact unsigned private installer in a separate D: test directory.
+Verified executable identity, per-user registration and two shortcut targets.
+Launched with only System32 on child PATH; real pilot A listing and synthetic
+Markdown opening passed. Uninstall returned zero and removed the executable,
+registration and shortcuts. Reinstall returned zero; launching its shortcut,
+real pilot B listing and generated two-page PDF opening passed. Memory-only
+sign-in reset as expected. No cloud document mutation, model calls, deployments,
+protected workload changes or OS security bypass occurred.
+
+Initial raw executable hash check stopped: exactly three bytes were Tauri's
+documented UNK -> NSS bundle marker. All other bytes match the pinned source.
+Added a bounded read-only verifier; seven synthetic checks and the required
+frontend build pass. Receipts/install products are under output/windows-install-qa/.
+Windows installation/runtime evidence is distinct from those synthetic checks.
+Clean-machine, missing-WebView2, upgrade, offline/scaling and signing gates remain
+open. Exact hashes/procedure: WINDOWS_INSTALL_QA.md.
+
 ## 1 November 2026: measured ingestion performance
 
 Implemented content-free stage/DB timings, worker-only framed helper reuse with

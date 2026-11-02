@@ -1,6 +1,6 @@
 # Current Gather state
 
-Updated 2 November 2026. This performance milestone builds on checkpoint `4c76cd0` on
+Updated 2 November 2026. Installer QA builds on checkpoint `2dbe85c` on
 `codex/durable-ingestion-jobs`. This file is current state, not a session log. Repository context was audited/reorganized; see FILE_AUDIT.md.
 See [tasks](../TASKS.md) for next acceptance and [topic index](PROJECT_HUB.md)
 for contracts. [Previous state journal](history/2026-10-26/MEMORY-2026-10-26.md)
@@ -75,8 +75,15 @@ Another 18 local operator HTTP/acknowledgement checks passed. These test groups
 overlap and must not be summed as unique tests. Prior unchanged backend evidence:
 11 owned-cleanup SQL cases and 37 Linux image cases passed. Filelock was fixed;
 its targeted rescan is clear. Scanner-open zlib retains the identical verified
-backport hash. No suppression or blanket security approval. Clean-machine install,
-uninstall, signing and broader release/quality acceptance remain unverified.
+backport hash. No suppression or blanket security approval.
+
+Current-PC install/uninstall/reinstall passed using the existing verified unsigned
+installer and a separate D: test folder. The installed app launched with developer
+tools removed from its PATH; real A/B sign-in, owned metadata and synthetic opening
+were checked without model calls or cloud document changes. Exact binary identity
+accounts for Tauri's three-byte NSIS marker patch. Seven verifier tests and the
+frontend build passed. Clean-machine, upgrade, missing-WebView2, offline, signing
+and broader release/quality acceptance remain unverified; see WINDOWS_INSTALL_QA.md.
 
 The account's separate older job `caae0a28-c50c-4789-9eef-51e62c1fdd7b`
 last reported processing, attempts 2/3, timeout, no publication. That is stored

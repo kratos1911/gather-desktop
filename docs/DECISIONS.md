@@ -822,3 +822,15 @@ overlapping time separately. Use allowlisted operational measurements in existin
 logs, not document/usage telemetry. Enable via trusted flags after an approved,
 same-input comparison; retain failed harness evidence and distinguish cold/warm
 cases. CPU/memory/model changes were unnecessary for the measured warm gain.
+
+## 2 November 2026: installer evidence and exact packaging identity
+
+At the user's request, test the existing installer on their development PC
+without enabling virtualization or changing protected workloads. Keep that result
+separate from clean-machine acceptance, including missing-runtime and offline
+branches. Use a bounded D: test installation and preserve app/cloud data.
+
+Tauri changes its bundle marker from UNK to NSS when producing NSIS packages.
+Pin the unbundled source hash and permit exactly that byte substitution; reject
+all other differences. Do not equate byte identity with signing or independent
+security approval. Retain the initial raw-hash harness stop and its resolution.

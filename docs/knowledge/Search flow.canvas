@@ -46,6 +46,15 @@
       "height": 220
     },
     {
+      "id": "windows-install-qa",
+      "type": "file",
+      "file": "docs/WINDOWS_INSTALL_QA.md",
+      "x": 0,
+      "y": 1290,
+      "width": 710,
+      "height": 220
+    },
+    {
       "id": "source",
       "type": "text",
       "text": "Native TXT/Markdown -> review + confirmed Save\nHosted Auth + durable automatic intent\nFresh native import/search/open verified\nSee PRIVATE_DESKTOP_DELIVERY.md; bookmarks still gated",
@@ -173,6 +182,13 @@
     }
   ],
   "edges": [
+    {
+      "id": "native-installer-evidence",
+      "fromNode": "unified-library",
+      "fromSide": "bottom",
+      "toNode": "windows-install-qa",
+      "toSide": "top"
+    },
     {
       "id": "measured-ingestion",
       "fromNode": "processing-recovery",

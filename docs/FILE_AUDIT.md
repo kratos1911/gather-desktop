@@ -128,6 +128,12 @@ application regression rerun is warranted for unchanged application sources.
 
 ## Repeatable maintenance
 
+scripts/verify_desktop_bundle.py is a manual, read-only Windows packaging entry
+point. Its synthetic tests belong to normal unittest discovery. Retain both:
+NSIS patches Tauri's bundle marker, so an installed executable has a different
+raw hash from its verified unbundled input. Windows test receipts, installer
+copies, browser profiles and install products stay under ignored output/.
+
 ```powershell
 .\scripts\python.ps1 scripts/audit_files.py --check-links
 ```
