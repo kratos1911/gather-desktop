@@ -12,6 +12,13 @@ and page contracts. Stage/update helpers are explicit manual entry points.
 PDF_IMPORT.md and WINDOWS_INSTALL_QA.md are linked from the hub. Retain them;
 generated fixtures, receipts, wheels and packages stay ignored under output/.
 
+Performance additions: database_session.py owns worker-only framed helpers;
+processing_timing.py owns the numeric allowlist. benchmark_processing.py is an
+explicit operator comparison entry point; check_worker_runtime.py is restricted
+to disposable loopback/Linux fixtures and refuses Cloud Run startup. The hub links
+PROCESSING_SPEED.md. Keep these manual/discovered contracts; benchmark receipts
+and staged build contexts remain ignored under output/processing-speed/.
+
 Audit snapshot: feature checkpoint `53cf9d8`, 26 October 2026. Reorganization
 changes context/maintenance only, not application behavior. This is a necessity,
 reference and navigation audit, not proof that all code is correct or secure.

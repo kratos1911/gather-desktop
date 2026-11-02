@@ -137,7 +137,7 @@ class Lease:
             self.thread.join(wait)  # Includes the explicitly selected repository bound.
 
 
-def run_once(repository, provider, *, cancel=None):
+def run_once(repository, provider, *, cancel=None, timing=None):
     """Provider supplies count_tokens(text), infer(request, cancel=event).
 
     The tokenizer must match the pinned Qwen revision. An already-started Runtime
@@ -151,16 +151,25 @@ def run_once(repository, provider, *, cancel=None):
         return {'state': 'idle'}
     args = (job['id'], job['lease_token'])
     step = 'renew_lease'
+    def stage(name):
+        nonlocal step
+        step=name
+        if timing is not None:timing.enter(name)
+    stage(step)
     provider_reason = None
     try:
         with Lease(repository, job, cancel) as lease:
-            step = 'validate_manifest'
+            stage('validate_manifest')
             if (job['parser_version'],job['chunker_version'],job['model_id'],job['model_revision'],job['dimensions']) != (
                     PDF_PARSER if job['media_type']=='application/pdf' else PARSER_VERSION,VERSION,MODEL,REVISION,DIMENSIONS):
                 raise ValueError('invalid_input')
-            step = 'read_original'
+            # Trusted claim/manifest/lease have passed. Preparation sends no
+            # source text; parsing/staging can overlap its bounded readiness GETs.
+            if callable(getattr(type(provider),'start_prepare',None)):
+                provider.start_prepare(cancel=lease.cancelled)
+            stage('read_original')
             raw = bytes.fromhex(repository.call('read_job_original', *args))
-            step = 'parse_original'
+            stage('parse_original')
             document = parse(raw, job['media_type'],cancel=lease.cancelled)
             if len(raw) != job['input_bytes'] or document['source_sha256'] != job['content_sha256']:
                 raise ValueError('invalid_input')
@@ -169,25 +178,25 @@ def run_once(repository, provider, *, cancel=None):
                 lease.check()
                 return provider.count_tokens(text)
 
-            step = 'chunk_original'
+            stage('chunk_original')
             text = document['body'] if job['media_type']=='application/pdf' else raw.decode('utf-8')
             chunks = chunk_document(text, count_tokens)
             if len(chunks) > MAX_JOB_REQUESTS or sum(c['tokens'] for c in chunks) > MAX_JOB_TOKENS:
                 raise ValueError('invalid_input')
-            step = 'renew_lease'
+            stage('renew_lease')
             lease.renew()
-            step = 'stage_text'
+            stage('stage_text')
             manifest = [{k: c[k] for k in ('id','start','end')} for c in chunks]
             if job['media_type']=='application/pdf':
                 repository.call('stage_pdf',*args,raw,document['body'],document['pages'],manifest)
             else:
                 repository.call('stage_text', *args, raw, job['media_type'],manifest)
-            step = 'read_completed_passages'
+            stage('read_completed_passages')
             completed = set(repository.call('completed_passages', *args))
             for chunk in chunks:
                 if chunk['id'] in completed:
                     continue
-                step = 'renew_lease'
+                stage('renew_lease')
                 lease.renew()
 
                 def send(body):
@@ -207,18 +216,18 @@ def run_once(repository, provider, *, cancel=None):
                         raise EmbeddingError('Invalid provider identity')
                     return result
 
-                step = 'embed_passage'
+                stage('embed_passage')
                 result = embed_texts([chunk['text']], model=MODEL,
                     limits=Limits(DIMENSIONS,MAX_TOKENS,MAX_TOKENS,1,1), count_tokens=count_tokens, send=send)
-                step = 'renew_lease'
+                stage('renew_lease')
                 lease.renew()
-                step = 'stage_vectors'
+                stage('stage_vectors')
                 repository.call('stage_vectors', *args, MODEL, REVISION, DIMENSIONS,
                                 [{'id':chunk['id'],'vector':result['vectors'][0]}])
             # Prevent heartbeat racing a successful ready transition.
             with lease.lock:
                 lease.check()
-                step = 'publish'
+                stage('publish')
                 version = repository.call('publish_text', *args)
                 lease.stopped.set()
             return {'state':'ready','job_id':job['id'],'version_id':version}

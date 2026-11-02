@@ -40,6 +40,8 @@ class Handler(BaseHTTPRequestHandler):
         status, content_type, data, headers = 200, 'application/json', b'{"ok":true}', {}
         if self.path == '/redirect':
             status, headers = 302, {'Location': self.server.base+'/should-not-follow'}
+        elif self.path == '/accepted':
+            status=202
         elif self.path == '/unauthorized':
             status, data = 401, b'PRIVATE TOKEN document'
         elif self.path == '/rate':
@@ -71,6 +73,16 @@ class Handler(BaseHTTPRequestHandler):
 
 
 class ClientTests(unittest.TestCase):
+    def test_accepted_status_is_explicit_and_default_remains_strict(self):
+        self.assertEqual(self.request('/accepted',expected_status=202),{'ok':True})
+        with self.assertRaisesRegex(TransportError,'invalid_response'):self.request('/accepted')
+        with self.assertRaisesRegex(TransportError,'invalid_response'):self.request('/ok',expected_status=202)
+        self.assertEqual(len(self.server.received),3)
+        for invalid in (True,201,204,'202'):
+            with self.assertRaisesRegex(TransportError,'invalid_configuration'):
+                self.request('/accepted',expected_status=invalid)
+        self.assertEqual(len(self.server.received),3)
+
     @classmethod
     def setUpClass(cls):
         cls.server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)

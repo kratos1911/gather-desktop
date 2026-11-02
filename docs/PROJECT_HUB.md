@@ -20,6 +20,7 @@ reload the full conversation or historical snapshots for routine coding.
 - [[docs/PRIVATE_TEXT_FILES]]: selected-file consent, validation, pilot scope
 - [[docs/PDF_IMPORT]]: bounded native-text PDF parsing, page provenance and private pilot evidence
 - [[docs/PROCESSING_RECOVERY]]: authoritative recovery controls, bounded startup and measured latency limits
+- [[docs/PROCESSING_SPEED]]: stage profiling, bounded worker reuse and controlled latency evidence
 - [[docs/WINDOWS_INSTALL_QA]]: pending clean-machine installation acceptance
 - [[docs/AUTOMATIC_PROCESSING]]: opted-in automatic jobs, bounded startup and explicit recovery
 - [[docs/PRIVATE_DESKTOP_DELIVERY]]: current native/cloud evidence, artifacts and remaining installer QA

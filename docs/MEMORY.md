@@ -1,6 +1,6 @@
 # Current Gather state
 
-Updated 1 November 2026. Current work builds on checkpoint `39aef78` on
+Updated 2 November 2026. This performance milestone builds on checkpoint `4c76cd0` on
 `codex/durable-ingestion-jobs`. This file is current state, not a session log. Repository context was audited/reorganized; see FILE_AUDIT.md.
 See [tasks](../TASKS.md) for next acceptance and [topic index](PROJECT_HUB.md)
 for contracts. [Previous state journal](history/2026-10-26/MEMORY-2026-10-26.md)
@@ -44,7 +44,16 @@ One existing private PDF reached ready with two model calls; its contents were
 not opened. Current checks:60 exact-image backend, eight SQL groups and68 frontend
 checks plus builds/lint/format. See PROCESSING_RECOVERY.md. Model startup boost was
 explicitly approved, retaining min0/max1 and runtime2CPU/5GiB. Observed startup
-remained about31s; the full recovery took about68s, so latency is not solved.
+remained about 31s; that earlier recovery took about 68s. Later warm-path
+measurements are recorded below; cold-start latency remains a limitation.
+
+Performance follow-up is deployed in API revision 00005-gkw: content-free
+stage timings, worker-only job-scoped DB reuse and early model readiness. Same
+small PDF warm comparison: worker 39–41s -> 18–19s; observed ready 60.66s -> 33–35s;
+in-job DB connections 12 -> 2. All four jobs reached ready on attempt 1 with four
+successful model requests total. Personal files were untouched. First client
+measurement had an HTTP 202 harness error; its original server timing was retained
+and acknowledgement recovered idempotently. See PROCESSING_SPEED.md for limits.
 
 Automatic dispatch, exact-attempt recovery and owner-scoped cleanup are implemented.
 Migrations 10/11/12 were explicitly approved and applied to Gather. The library API
@@ -58,10 +67,12 @@ New native source `88da1cf6-3708-4f07-9631-6493601a3f3a` remains published for
 inspection; do not rerun its job or delete it implicitly. Its 133-byte file is
 synthetic/nonsensitive. Prior failed results remain historical evidence.
 
-Current frontend checks: 59 tests, typecheck/build/lint/format, native rebuild
-and rendered desktop/minimum-width review. Live native sign-in/listing/opening
-passed against existing published text; no new inference was submitted.
-Prior unchanged backend evidence: focused backend/HTTP,
+Prior unified-interface checks/build/native review are in UNIFIED_LIBRARY.md.
+The performance change is backend-only; the required frontend build passed and
+no native rebuild was required. The exact server image passed 112 checks; twelve
+real-driver cases and the 512 MiB/1 CPU tokenizer/PDF/two-helper composition passed.
+Another 18 local operator HTTP/acknowledgement checks passed. These test groups
+overlap and must not be summed as unique tests. Prior unchanged backend evidence:
 11 owned-cleanup SQL cases and 37 Linux image cases passed. Filelock was fixed;
 its targeted rescan is clear. Scanner-open zlib retains the identical verified
 backport hash. No suppression or blanket security approval. Clean-machine install,
@@ -71,9 +82,10 @@ The account's separate older job `caae0a28-c50c-4789-9eef-51e62c1fdd7b`
 last reported processing, attempts 2/3, timeout, no publication. That is stored
 state, not evidence of a live worker. Do not claim/retry/delete it implicitly.
 
-Next: profile processing stages and reduce demonstrated connection/pipeline
-overhead without weakening isolation/deadlines. Clean-Windows installer QA remains
-separate in WINDOWS_INSTALL_QA.md.
+Next: use captured timings for any further admission/selection/network latency
+work; warm inference was not the main delay on this small fixture. Cold starts,
+larger-file performance and clean-Windows installer QA remain separate acceptance.
+See WINDOWS_INSTALL_QA.md.
 Evidence/limits belong in TASKS.md and PRIVATE_DESKTOP_DELIVERY.md. General
 signup/uploads, DOCX/PPTX/OCR and chat remain gated/deferred.
 
@@ -97,6 +109,8 @@ signup/uploads, DOCX/PPTX/OCR and chat remain gated/deferred.
   concurrency4, three model attempts per API instance, two allowed users only.
   Up to three readiness GETs within one 60s budget were explicitly approved;
   embedding requests never retry automatically.
+  Worker DB helpers remain capped at two, with separate heartbeat sockets and
+  transaction reset/privilege checks; admission sessions remain fresh per user.
 - Models/caches/temp/build evidence on D:. No protected API/container/project
   changes or app closures without specific authorization.
 - One writer/agent by default. Keep commits local; never push without an

@@ -25,6 +25,10 @@ def processing_log(result,calls):
         'cloud_startup_connection_failed','cloud_startup_readiness_probe_failed','startup_unavailable'}:
         value['startup_error']=startup
     if type(calls) is int and 0<=calls<=3:value['model_attempts_used']=calls
+    from services.worker.processing_timing import safe_timing
+    timings=[safe_timing(row.get('timing')) for row in result.get('outcomes',[]) if type(row) is dict]
+    timings=[entry for entry in timings if entry is not None]
+    if timings:value['timings']=timings
     return 'Automatic processing: '+json.dumps(value,separators=(',',':'))
 
 
@@ -55,7 +59,10 @@ def main():
         def record(_job,result):
             print(processing_log(result,provider.calls),flush=True)
         app=compose_pilot(admission,worker,provider,identity,key,text_files=True,automatic=True,record=record,
-            pdf_files=os.environ.get('GATHER_PDF_PILOT')=='1')
+            pdf_files=os.environ.get('GATHER_PDF_PILOT')=='1',
+            reuse_worker=os.environ.get('GATHER_WORKER_DB_REUSE')=='1',
+            early_prepare=os.environ.get('GATHER_EARLY_MODEL_START')=='1',
+            record_timings=os.environ.get('GATHER_PIPELINE_TIMING')=='1')
         create_cloud_server(app,os.environ).run()
     finally: identity.invalidate()
 

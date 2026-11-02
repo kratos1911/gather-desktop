@@ -128,6 +128,14 @@ class PilotWorker(ExpectedWorker):
             raise ValueError('pilot_fixture_only')
         return value
 
+    def job_scope(self):
+        from contextlib import nullcontext
+        return self.worker.job_scope() if isinstance(self.worker,DatabaseRepository) else nullcontext()
+
+    @property
+    def last_job_metrics(self):
+        return getattr(self.worker,'last_job_metrics',None)
+
 
 class RefreshingPilotToken(MetadataTokenProvider):
     """Reuse the existing expiry/skew/locking cache with a pinned operator mint.
@@ -154,14 +162,16 @@ def run_ready_worker(worker, identity):
         return worker.run()
 
 
-def compose_pilot(config,worker_config,provider,identity,key,*,text_files=False,automatic=False,record=None,pdf_files=False):
+def compose_pilot(config,worker_config,provider,identity,key,*,text_files=False,automatic=False,record=None,pdf_files=False,
+                  reuse_worker=False,early_prepare=False,record_timings=False):
     """Shared trusted composition for operator and explicit managed-cloud startup."""
     dispatcher=None
     if automatic:
-        repository=DatabaseRepository(worker_config,operation_timeout=15)
+        repository=DatabaseRepository(worker_config,operation_timeout=15,reuse_worker=reuse_worker)
         def create_worker(job):
             return WorkerRun(PilotWorker(repository,job,text_files=text_files,automatic=True),
-                StartupProvider(provider,lambda cancel:wait_for_automatic_startup(identity,cancel=cancel)))
+                StartupProvider(provider,lambda cancel:wait_for_automatic_startup(identity,cancel=cancel),
+                                background=early_prepare),record_timings=record_timings)
         def local_record(job,result):
             target=ROOT/'output/operator-pilot'/('automatic-'+uuid4().hex+'.json')
             target.parent.mkdir(parents=True,exist_ok=True)

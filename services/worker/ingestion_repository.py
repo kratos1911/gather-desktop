@@ -28,8 +28,12 @@ FUNCTIONS = {
 
 
 class PostgresRepository:
-    def __init__(self, connect):
+    def __init__(self, connect, *, close_connection=True, context_limits_set=False):
+        if type(close_connection) is not bool or type(context_limits_set) is not bool:
+            raise ValueError('invalid_connection_policy')
         self.connect = connect
+        self.close_connection = close_connection
+        self.context_limits_set = context_limits_set
 
     def call(self, function, *args):
         if function not in FUNCTIONS or len(args) != FUNCTIONS[function]:
@@ -42,8 +46,9 @@ class PostgresRepository:
             if connection.autocommit:
                 raise ValueError('transaction_required')
             with connection.cursor() as cursor:
-                cursor.execute("set local statement_timeout='5s'")
-                cursor.execute("set local lock_timeout='3s'")
+                if not self.context_limits_set:
+                    cursor.execute("set local statement_timeout='5s'")
+                    cursor.execute("set local lock_timeout='3s'")
                 params = tuple(json.dumps(a, allow_nan=False) if isinstance(a, (list, dict)) else a for a in args)
                 cursor.execute(f"select gather_private.{function}({','.join(['%s']*len(args))})", params)
                 result = cursor.fetchone()[0]
@@ -60,7 +65,7 @@ class PostgresRepository:
                 'invalid_input' if state and state[:2] in ('22', '23', '42') else 'temporarily_unavailable')
             raise RepositoryError(code,reason='sqlstate_'+state if isinstance(state,str) else None) from None
         finally:
-            if connection is not None:
+            if connection is not None and self.close_connection:
                 try:
                     connection.close()
                 except Exception:

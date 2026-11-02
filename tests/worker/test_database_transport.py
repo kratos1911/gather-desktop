@@ -16,6 +16,23 @@ OWNER = '00000000-0000-0000-0000-000000000001'
 
 
 class DatabaseTransportTests(unittest.TestCase):
+    def test_batched_worker_context_keeps_privilege_check_and_deadlines(self):
+        from services.worker.database_transport import configure_connection
+        connection=MagicMock()
+        cursor=connection.cursor.return_value.__enter__.return_value
+        cursor.fetchone.return_value=(False,)*5
+        configure_connection(connection,None,batch_context=True)
+        self.assertEqual(cursor.execute.call_count,1)
+        command,parameters=cursor.execute.call_args.args
+        self.assertIn("statement_timeout='5s'",command)
+        self.assertIn("lock_timeout='3s'",command)
+        self.assertIn('set local role gather_ingestion_worker',command)
+        self.assertLess(command.index('restricted_login_required'),command.index('set local role'))
+        for flag in ('rolsuper','rolbypassrls','rolcreaterole','rolcreatedb','rolreplication'):
+            self.assertIn('not '+flag,command)
+        self.assertIn("set_config('request.jwt.claim.sub',%s,true)",command)
+        self.assertEqual(parameters,('',))
+
     def test_targeted_claim_is_worker_only_and_preserves_job_parameter(self):
         child = Mock(returncode=0)
         child.poll.return_value = 0
@@ -38,7 +55,10 @@ class DatabaseTransportTests(unittest.TestCase):
                 'services.worker.database_transport.PostgresRepository') as repository:
             repository.return_value.call.return_value = None
             child_main()
-        self.assertEqual(json.loads(output.getvalue()),{'result':None})
+        response=json.loads(output.getvalue())
+        self.assertIsNone(response.pop('result'))
+        self.assertEqual(set(response),{'timing'})
+        self.assertEqual(response['timing']['connects'],0)
         repository.return_value.call.assert_called_once_with('claim_text_job')
 
     def test_longer_handshake_requires_explicit_pilot_total(self):

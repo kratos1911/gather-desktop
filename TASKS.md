@@ -1,6 +1,6 @@
 # Current delivery tasks
 
-Updated 1 November 2026. Current state: [MEMORY](docs/MEMORY.md).
+Updated 2 November 2026. Current state: [MEMORY](docs/MEMORY.md).
 Work/evidence: [progress](docs/PROGRESS.md) and task-specific contracts.
 The [full previous task journal](docs/history/2026-10-26/TASKS-2026-10-26.md)
 preserves all earlier acceptance text and checkpoints.
@@ -76,15 +76,24 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-021 | Developer persistence slice verified; production partial | Owned originals/jobs/private staging/atomic publication/search/deletion verified in scoped local/hosted evidence. Automation/distribution/release gates remain |
 | TASK-022 | Supporting plan recorded | [Delivery plan](docs/DELIVERY_PLAN.md) is planning/history, not current completion status |
 | TASK-023 | Partial: dependency/image risk | Keep open findings and applicability review; [worker scan](services/worker/IMAGE_SCAN_REVIEW.md), [inference risk](services/inference/OS_RISK_REVIEW.md) |
+| TASK-024 | Private ingestion performance implemented/verified | Profiled stages, bounded worker reuse and early readiness are deployed. Same small-PDF warm comparison: worker 39–41s -> 18–19s, observed ready 61s -> 33–35s. Cold/larger-file/p95 behavior is not established; [PROCESSING_SPEED](docs/PROCESSING_SPEED.md) |
 
 ## Latest verification
+
+Performance: 112 exact-image checks, twelve real-driver cases and 512 MiB/1 CPU
+composition pass. Four approved generated-PDF imports used four real embeddings;
+all reached ready on attempt 1 and reopened exactly. The 18 local operator HTTP/ack
+checks and required frontend build pass. These check groups overlap. API 00005-gkw
+is optimized, with unchanged resources/model/quotas. The first harness HTTP 202
+failure is retained, with idempotent ack
+recovery and no extra inference. Detailed paired timings: PROCESSING_SPEED.md.
 
 Recovery follow-up:60 exact-image backend checks, eight SQL groups and68 frontend
 checks/builds pass. Migration14/API update/startup boost were explicitly approved
 and applied. One retained private PDF reached ready with two model calls, contents
 unopened. Erroneous active Resume/stale-state controls are fixed; roughly68s
-processing and31s cold startup remain performance limits. Next supporting work is
-stage profiling/connection overhead, not another format or broader benchmark.
+processing and 31s cold startup were observed in that earlier test. Later
+profiling/connection improvements are covered by TASK-024 above.
 See [PROCESSING_RECOVERY](docs/PROCESSING_RECOVERY.md).
 
 PDF:82 affected backend checks, six SQL acceptance groups and64 frontend checks

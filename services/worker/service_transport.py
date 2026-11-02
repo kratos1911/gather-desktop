@@ -66,16 +66,19 @@ def strict_json(raw):
     return json.loads(raw, object_pairs_hook=unique, parse_constant=nonfinite)
 
 
-def request_json(base, path, headers, payload, *, timeout, cancel=None, wait_for_slot=False):
+def request_json(base, path, headers, payload, *, timeout, cancel=None, wait_for_slot=False, expected_status=200):
     """Internal call: validated fixed base/path/header configuration required."""
     if type(timeout) not in (int, float) or not 0 < timeout <= 15:
+        raise TransportError('invalid_configuration')
+    if type(expected_status) is not int or expected_status not in (200,202):
         raise TransportError('invalid_configuration')
     try:
         body = None if payload is None else json.dumps(payload, allow_nan=False).encode('utf-8')
         if body is not None and len(body) > MAX_REQUEST:
             raise ValueError()
-        wire = json.dumps(dict(url=base+path, headers=headers,
-                               body=None if body is None else body.decode('utf-8'))).encode()
+        value=dict(url=base+path, headers=headers,body=None if body is None else body.decode('utf-8'))
+        if expected_status!=200:value['expected_status']=expected_status
+        wire = json.dumps(value).encode()
     except (ValueError, TypeError, UnicodeError, RecursionError):
         raise TransportError('invalid_request') from None
     return _exchange(wire, timeout=timeout, cancel=cancel, wait_for_slot=wait_for_slot)
@@ -219,6 +222,9 @@ def child_main():
             sys.stdout.buffer.write(output)
             return
         body = args['body']
+        expected_status=args.get('expected_status',200)
+        if type(expected_status) is not int or expected_status not in (200,202):
+            raise ValueError()
         headers = dict(args['headers'], **{'Accept': 'application/json',
             'Accept-Encoding': 'identity', 'Content-Type': 'application/json'})
         request = Request(args['url'], headers=headers,
@@ -226,7 +232,7 @@ def child_main():
             method='GET' if body is None else 'POST')
         opener = build_opener(ProxyHandler({}), _NoRedirect())
         with opener.open(request, timeout=15) as response:
-            if response.status != 200 or response.headers.get_content_type() != 'application/json':
+            if response.status != expected_status or response.headers.get_content_type() != 'application/json':
                 output = b'ERR\ninvalid_response'
             elif response.headers.get('Content-Encoding', 'identity').lower() != 'identity':
                 output = b'ERR\ninvalid_response'

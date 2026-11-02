@@ -806,3 +806,19 @@ readiness GETs within the same60s, preserving all inference/SQL/resource limits.
 The user explicitly approved startup-only CPU boost; retain measured startup
 results and do not call this a proven speedup. Avoid another model/image change
 until per-stage timing identifies the next useful performance change.
+
+## 1 November 2026: bounded reuse and overlapping independent preparation
+
+Measured fresh helper/connect setup dominated the small-PDF worker path. Reuse
+only trusted worker sessions within one job, keep user admission fresh, recheck
+restricted login/context/timeouts on every transaction and retain two physical
+helpers with separate heartbeat sockets. Fixed guard/setup SQL can be batched;
+function parameters, commit boundaries, ownership and lease fences stay intact.
+Kill uncertain calls under the same deadlines and never replay them automatically.
+
+Start one bounded readiness task after a trusted claim/lease, while independent
+parsing/staging proceeds. Cancel and join it on failure/lease loss. Report its
+overlapping time separately. Use allowlisted operational measurements in existing
+logs, not document/usage telemetry. Enable via trusted flags after an approved,
+same-input comparison; retain failed harness evidence and distinguish cold/warm
+cases. CPU/memory/model changes were unnecessary for the measured warm gain.

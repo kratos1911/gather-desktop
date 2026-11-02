@@ -508,3 +508,12 @@ lease expiry, backoff, current target and attempt limits; the recovery transacti
 checks them again under locks. The screen must not offer another attempt simply
 because state says processing. Refreshing status is not retrying computation.
 See [[docs/PROCESSING_RECOVERY]].
+
+## Overlap independent work; preserve transaction identity
+
+Preparing a cloud model sends no document text, so it can overlap parsing/staging
+after a trusted job is claimed. Embedding still waits for readiness and validation.
+Reusing a worker connection saves process/TLS setup; it does not permit carrying
+user authorization between operations. Admission stays fresh; worker transactions
+reset and reapply their restricted context. Compare identical inputs and report
+overlapping time separately. See [[docs/PROCESSING_SPEED]].

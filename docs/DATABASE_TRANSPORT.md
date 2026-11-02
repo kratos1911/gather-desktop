@@ -1,5 +1,11 @@
 # Bounded PostgreSQL connection
 
+1 November optional worker optimization: [PROCESSING_SPEED.md](PROCESSING_SPEED.md)
+defines job-scoped reuse, transaction reset, two-helper eviction, per-operation
+deadlines and evidence. Admission keeps the original fresh-connection contract.
+Historical initial setup/verification below is retained; MEMORY owns current
+hosted deployment status.
+
 22 October handshake correction: DatabaseConfig defaults to connect_timeout=3,
 with an explicit operator-pilot choice of 10 permitted only when repository total
 timeout=15. Both values cross the private helper wire and validate in the child.

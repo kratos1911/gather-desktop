@@ -14,6 +14,7 @@ import sys
 import threading
 import time
 from uuid import UUID
+from contextlib import contextmanager
 
 from services.worker.ingestion_repository import FUNCTIONS, PostgresRepository, RepositoryError
 from services.worker.service_transport import strict_json
@@ -54,7 +55,7 @@ class DatabaseConfig:
 
 
 class DatabaseRepository:
-    def __init__(self, config, *, owner=None, operation_timeout=DEADLINE):
+    def __init__(self, config, *, owner=None, operation_timeout=DEADLINE, reuse_worker=False):
         if not isinstance(config,DatabaseConfig):
             raise ValueError('invalid_database_configuration')
         if type(operation_timeout) is not int or operation_timeout not in (DEADLINE,15):
@@ -66,29 +67,62 @@ class DatabaseRepository:
         expected = 'gather_admission' if owner else 'gather_worker'
         if config.user.split('.')[0] != expected:
             raise ValueError('database_role_mismatch')
+        if type(reuse_worker) is not bool or (reuse_worker and owner is not None):
+            raise ValueError('worker_reuse_only')
         self._config, self._owner = config, owner
         self.operation_timeout = operation_timeout
         self.cleanup_wait_seconds = operation_timeout+1
+        self._reuse_worker = reuse_worker
+        self._scope = None
+        self._scope_lock = threading.Lock()
+        self._thread_timing = threading.local()
+        self.last_job_metrics = {}
+
+    @contextmanager
+    def job_scope(self):
+        from services.worker.database_session import WorkerSession
+        with self._scope_lock:
+            if self._scope is not None: raise RuntimeError('worker_scope_busy')
+            scope = self._scope = WorkerSession(self,reuse=self._reuse_worker)
+        try:
+            yield
+        finally:
+            try:
+                scope.close()
+            finally:
+                self.last_job_metrics = scope.summary()
+                with self._scope_lock: self._scope = None
 
     def call(self, function, *args):
         admission = {'submit_text','submit_automatic_text'}
         allowed = admission if self._owner else set(FUNCTIONS)-admission
         if function not in allowed or len(args) != FUNCTIONS[function]:
             raise ValueError('unsupported_repository_operation')
+        if self._scope is not None:
+            return self._scope.call(function,*args)
+        return self._call_once(function,*args)
+
+    def _call_once(self,function,*args):
+        started=time.monotonic()
+        measurements=dict(operations=1,helpers_started=0,connects=0,total_ms=0.0,
+                          connect_ms=0.0,context_ms=0.0,execute_ms=0.0)
+        self._thread_timing.value=measurements
         values = [{'bytes_hex':a.hex()} if type(a) is bytes else a for a in args]
         wire = json.dumps({'config':asdict(self._config),'owner':self._owner,
                            'function':function,'args':values,'operation_timeout':self.operation_timeout},allow_nan=False).encode()
         if len(wire) > MAX_WIRE:
             raise RepositoryError('invalid_input')
-        if not SLOTS.acquire(blocking=False):
+        from services.worker.database_session import acquire_slot
+        if not acquire_slot():
             raise RepositoryError('temporarily_unavailable')
         process = None
-        deadline = time.monotonic()+self.operation_timeout
+        deadline = started+self.operation_timeout
         try:
             code = f'import sys; sys.path.insert(0,{str(ROOT)!r}); from services.worker.database_transport import child_main; child_main()'
             env = {k:os.environ[k] for k in ('SYSTEMROOT','WINDIR') if k in os.environ}
             process = subprocess.Popen([sys.executable,'-I','-B','-u','-c',code],cwd=ROOT,
                 env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL)
+            measurements['helpers_started']=1
             remaining = deadline-time.monotonic()
             if remaining <= 0:
                 raise RepositoryError('temporarily_unavailable')
@@ -96,6 +130,8 @@ class DatabaseRepository:
             if time.monotonic()>=deadline or process.returncode or len(output)>MAX_REPLY:
                 raise RepositoryError('temporarily_unavailable')
             value = strict_json(output)
+            from services.worker.database_session import validated_timing
+            measurements.update(validated_timing(value.pop('timing',{})))
             if set(value)=={'result'}:
                 return value['result']
             if set(value) in ({'error'},{'error','reason'}) and value['error'] in ('stale_lease','invalid_input','temporarily_unavailable'):
@@ -119,9 +155,11 @@ class DatabaseRepository:
                 raise RepositoryError('temporarily_unavailable') from None
             finally:
                 SLOTS.release()
+                measurements['total_ms']=(time.monotonic()-started)*1000
+                self._thread_timing.value=measurements
 
 
-def connect(config, owner):
+def open_connection(config,owner=None):
     import psycopg2
     kwargs = dict(host=config.host,port=config.port,user=config.user,password=config.password,
         dbname='postgres',connect_timeout=config.connect_timeout,options='-c search_path= -c statement_timeout=5000 -c lock_timeout=3000',
@@ -129,20 +167,39 @@ def connect(config, owner):
         sslmode='disable' if config.test_loopback else 'verify-full',gssencmode='disable')
     if not config.test_loopback:
         kwargs['sslrootcert'] = config.root_certificate
-    connection = psycopg2.connect(**kwargs)
+    return psycopg2.connect(**kwargs)
+
+
+def configure_connection(connection, owner, *, batch_context=False):
     try:
         with connection.cursor() as cursor:
-            cursor.execute('select rolsuper,rolbypassrls,rolcreaterole,rolcreatedb,rolreplication '
-                           'from pg_catalog.pg_roles where rolname=current_user')
-            if cursor.fetchone() != (False,False,False,False,False):
-                raise ValueError('privileged_database_login')
             role = 'gather_ingestion_coordinator' if owner else 'gather_ingestion_worker'
-            cursor.execute('set local role '+role)  # Fixed identifiers only.
-            cursor.execute("select pg_catalog.set_config('request.jwt.claim.sub',%s,true)",(owner or '',))
+            if batch_context:
+                # Fixed server-side guard, with no interpolated request values.
+                # It executes before SET ROLE, preserving the original login check
+                # without another network round trip.
+                cursor.execute("set local statement_timeout='5s'; set local lock_timeout='3s'; "+
+                    "do $gather_guard$ begin if not exists(select 1 from pg_catalog.pg_roles "+
+                    "where rolname=current_user and not rolsuper and not rolbypassrls "+
+                    "and not rolcreaterole and not rolcreatedb and not rolreplication) then "+
+                    "raise exception 'restricted_login_required' using errcode='P0001'; end if; end $gather_guard$; "+
+                    'set local role '+role+"; select pg_catalog.set_config('request.jwt.claim.sub',%s,true)",
+                    (owner or '',))
+            else:
+                cursor.execute('select rolsuper,rolbypassrls,rolcreaterole,rolcreatedb,rolreplication '
+                               'from pg_catalog.pg_roles where rolname=current_user')
+                if cursor.fetchone() != (False,False,False,False,False):
+                    raise ValueError('privileged_database_login')
+                cursor.execute('set local role '+role)  # Fixed identifiers only.
+                cursor.execute("select pg_catalog.set_config('request.jwt.claim.sub',%s,true)",(owner or '',))
         return connection
     except Exception:
         connection.close()
         raise
+
+
+def connect(config, owner):
+    return configure_connection(open_connection(config,owner),owner)
 
 
 def encode_result(value):
@@ -155,6 +212,7 @@ def encode_result(value):
 
 def child_main():
     output = {'error':'temporarily_unavailable'}
+    timing=dict(connects=0,connect_ms=0.0,context_ms=0.0,execute_ms=0.0)
     try:
         raw = sys.stdin.buffer.read(MAX_WIRE+1)
         if len(raw)>MAX_WIRE:
@@ -168,7 +226,18 @@ def child_main():
         if function not in allowed or len(args)!=FUNCTIONS[function]:
             raise ValueError()
         args = [bytes.fromhex(a['bytes_hex']) if isinstance(a,dict) and set(a)=={'bytes_hex'} else a for a in args]
-        result = PostgresRepository(lambda:connect(config,value['owner'])).call(function,*args)
+        def factory():
+            started=time.monotonic()
+            connection=open_connection(config,value['owner'])
+            timing['connect_ms']=(time.monotonic()-started)*1000
+            timing['connects']=1
+            started=time.monotonic()
+            configure_connection(connection,value['owner'])
+            timing['context_ms']=(time.monotonic()-started)*1000
+            return connection
+        started=time.monotonic()
+        result = PostgresRepository(factory).call(function,*args)
+        timing['execute_ms']=max(0,(time.monotonic()-started)*1000-timing['connect_ms']-timing['context_ms'])
         output = {'result':result}
     except RepositoryError as error:
         output = {'error':error.code}
@@ -177,6 +246,7 @@ def child_main():
     except Exception:
         pass
     try:
+        output['timing']=timing
         raw = json.dumps(output,allow_nan=False,default=encode_result).encode()
         if len(raw)>MAX_REPLY:
             raise ValueError()

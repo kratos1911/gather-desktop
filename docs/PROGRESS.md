@@ -3,6 +3,28 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 1 November 2026: measured ingestion performance
+
+Implemented content-free stage/DB timings, worker-only framed helper reuse with
+transaction reset and two-helper eviction, and early bounded readiness preparation.
+The exact image passed 112 checks. Twelve real restricted-driver cases, Linux
+tokenizer/PDF and two-helper composition under 512 MiB/1 CPU pass. Frontend build passes;
+native inputs stayed unchanged. Read-only hosted pooler compatibility passed.
+
+User approved image 2c557d18… and two Gather-only API revisions: timing baseline
+00004-9kb, optimized 00005-gkw. Four replacements of only the generated PDF used
+four successful embeddings, all attempt 1 with exact opening. Paired warm worker
+times 39–41s -> 18–19s; observed ready 61s -> 33–35s; in-job connections 12 -> 2.
+No cold start was observed during those processing windows. Personal files,
+model settings, quotas, other projects/containers and GitHub stayed untouched.
+
+The local harness initially rejected the correct HTTP 202 import response after
+the server had accepted it. Preserved that failure/request ID, added explicit 202
+client handling and 18 HTTP/operator regressions, then recovered the same ack
+without extra inference. Its client wall time is unavailable; server timing is
+retained. Full evidence and caveats: PROCESSING_SPEED.md and ignored
+output/processing-speed/. Cold/larger-file performance remains unproven.
+
 ## 1 November 2026: recovery controls and startup follow-up
 
 Fixed active-job Resume visibility using owner-scoped SQL metadata wrappers and

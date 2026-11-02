@@ -11,7 +11,7 @@ next implementation belongs in [TASKS](../TASKS.md).
 | --- | --- | --- |
 | React/TypeScript in apps/desktop | One connected Library in private/dev builds; separate sample-only build, memory-only bearer, HTTPS API | [Unified Library](UNIFIED_LIBRARY.md), [private delivery](PRIVATE_DESKTOP_DELIVERY.md) |
 | ASGI library API | Loopback operator mode or explicit Cloud Run startup; fixed Host/Origins, Auth before privileged work, bounded single-flight HTTP | [LIBRARY_API](LIBRARY_API.md), [Private delivery](PRIVATE_DESKTOP_DELIVERY.md) |
-| Restricted DB transport | Separate admission/worker identities, bounded Psycopg helpers and trusted owner context | [DATABASE_TRANSPORT](DATABASE_TRANSPORT.md) |
+| Restricted DB transport | Fresh verified-user admission; bounded worker-only job-scoped helpers, transaction reset and separate heartbeat | [DATABASE_TRANSPORT](DATABASE_TRANSPORT.md), [performance](PROCESSING_SPEED.md) |
 | Supabase Sydney | Auth, owned sources/versions, private originals/jobs/staging, publication and vector reads | [Hosted setup](HOSTED_SUPABASE_SETUP.md), [published reads](PUBLISHED_SEARCH.md) |
 | Worker / optional private dispatcher | New-import intent, exact-job claim, leases/cancellation, pinned model and atomic publication; explicit attempt-bound recovery | [Automatic processing](AUTOMATIC_PROCESSING.md), [coordinator](INGESTION_COORDINATOR.md), [exact claim](EXACT_JOB_CLAIM.md) |
 | Native-text PDF extractor | Pinned disposable Linux parser process; original hash, separate extracted-text hash and numbered page ranges | [Private PDF contract](PDF_IMPORT.md) |
@@ -33,6 +33,10 @@ do not grant access.
    one atomic publication. Deleted, stale or superseded workers cannot publish.
    Automatic workers perform one bounded startup check under lease renewal;
    failures require explicit recovery bound to the observed job and attempt.
+   In the optimized private API, bounded readiness starts after the trusted
+   claim/manifest/lease and overlaps reading/parsing/staging. Inference remains
+   sequential and waits for readiness. Worker connections close at job end;
+   idle helpers can be evicted while retaining the global two-helper cap.
 3. Search: Auth -> owned publication metadata -> empty if a complete page proves
    no publication; otherwise query embedding in the matching model space ->
    published vector ranking -> exact-version reads -> bounded source context.
