@@ -1,6 +1,6 @@
 # Current delivery tasks
 
-Updated 2 November 2026. Current state: [MEMORY](docs/MEMORY.md).
+Updated 3 November 2026. Current state: [MEMORY](docs/MEMORY.md).
 Work/evidence: [progress](docs/PROGRESS.md) and task-specific contracts.
 The [full previous task journal](docs/history/2026-10-26/TASKS-2026-10-26.md)
 preserves all earlier acceptance text and checkpoints.
@@ -10,8 +10,10 @@ preserves all earlier acceptance text and checkpoints.
 The main Library now uses owned saved files and one semantic search, with a
 minimal dark interface. Native sign-in/listing/opening passed; new UI import,
 search and deletion paths passed synthetic HTTP integration checks. See
-[unified interface](docs/UNIFIED_LIBRARY.md). Next remains clean-Windows installer
-QA; bounded PDF live acceptance passed in [PDF_IMPORT](docs/PDF_IMPORT.md).
+[unified interface](docs/UNIFIED_LIBRARY.md). Current-PC installer QA passed;
+clean-machine acceptance remains open. The selected DOCX slice is implemented
+and its approved hosted/native acceptance passed; exact scope and evidence are
+in [DOCX_IMPORT](docs/DOCX_IMPORT.md). PDF live acceptance is in [PDF_IMPORT](docs/PDF_IMPORT.md).
 Do not confuse the separate sample build
 with the connected application.
 
@@ -55,9 +57,9 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-003 | Unified private Library implemented | One owned grid/search with dark minimal UI; 59 frontend checks including five new synthetic integrations, plus native listing/opening. See [UNIFIED_LIBRARY](docs/UNIFIED_LIBRARY.md); clean-install/accessibility QA remains |
 | TASK-004 | Done: bounded TXT/Markdown contract | Exact bytes/offsets/hashes and deterministic processing; [worker contract](services/worker/README.md) |
 | TASK-005 | Partial: embedding/quality | Qwen CPU serving and selected hosted flow pass. Broader recall, split/multi-part coverage, visual/Gemma and security/licence work remain; [retrieval evidence](docs/CHUNK_RETRIEVAL_RESULTS.md) |
-| TASK-006 | Partial: identity/private schema | Hosted private pilot; fourteen approved migrations applied. PDF/recovery ownership permissions checked; general signup/audience policy remain gated; [hosted setup](docs/HOSTED_SUPABASE_SETUP.md) |
+| TASK-006 | Partial: identity/private schema | Hosted private pilot; fifteen approved migrations applied. PDF/DOCX/recovery ownership permissions checked; general signup/audience policy remain gated; [hosted setup](docs/HOSTED_SUPABASE_SETUP.md) |
 | TASK-007 | Private pilot verified; general app partial | Selected synthetic Markdown passed import -> publish -> search/open -> deletion/cleanup. Automatic processing/owned cleanup verified; release gates remain; [file pilot](docs/PRIVATE_TEXT_FILES.md) |
-| TASK-008 | Private native-text PDF slice verified; other formats planned | Pilot B's two-page generated PDF passed save, explicit startup recovery, ready, real search, page citations and exact opening with two embeddings. Parser/storage/security fixtures pass. No OCR/layout fidelity/general upload claim; DOCX/PPTX remain planned; [PDF contract](docs/PDF_IMPORT.md) |
+| TASK-008 | PDF and bounded DOCX private flows verified | DOCX native import reached ready on attempt 1; real search/cited opening passed with two model requests. Approved migration 15/API/native installed update are live; general Office compatibility, PPTX and public release remain open. [DOCX contract](docs/DOCX_IMPORT.md), [PDF contract](docs/PDF_IMPORT.md) |
 | TASK-009 | Planned: photo/OCR retrieval | JPEG/PNG/scanned text, distinct model spaces and separately measured quality |
 | TASK-010 | Deferred by user: chat | Selected-source isolation/citations; do not start before search priorities |
 | TASK-011 | Partial: automated quality | Focused local checks/builds pass; remote manual CI/native E2E not claimed |
@@ -79,6 +81,13 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-024 | Private ingestion performance implemented/verified | Profiled stages, bounded worker reuse and early readiness are deployed. Same small-PDF warm comparison: worker 39–41s -> 18–19s, observed ready 61s -> 33–35s. Cold/larger-file/p95 behavior is not established; [PROCESSING_SPEED](docs/PROCESSING_SPEED.md) |
 
 ## Latest verification
+
+DOCX: 74 frontend checks, affected Linux run 112 checks, final exact-image 22
+parser checks and 13 SQL groups pass, with builds/lint/native bundling. Approved
+migration/API update and native real import -> first-attempt ready -> cited
+search/open passed with exactly two successful embeddings. Installed update
+identity/shortcut checks pass. Counts overlap; [DOCX_IMPORT](docs/DOCX_IMPORT.md)
+owns detailed evidence and limits.
 
 Performance: 112 exact-image checks, twelve real-driver cases and 512 MiB/1 CPU
 composition pass. Four approved generated-PDF imports used four real embeddings;

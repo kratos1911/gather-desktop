@@ -3,6 +3,37 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 2–3 November 2026: bounded DOCX import and native/cloud acceptance
+
+Implemented standard-library ZIP/XML main-body extraction with expansion/node/
+depth limits, active/ambiguous-content rejection and paragraph provenance. PDF
+and DOCX share the existing resource-bounded parser slot and staging validator;
+jobs, hashes, leases, ownership, atomic publication and cleanup remain the same
+pipeline. Added server capability gating and same-Library Word review/filter/
+reader controls. No packages, models or larger limits were introduced.
+
+Verification: affected Linux run 112 checks, refreshed DOCX subset, final exact
+image 22 parser checks and 512 MiB/1 CPU tokenizer composition passed. Isolated
+SQL 13 groups include DOCX and PDF compatibility. Frontend 74 tests, lint/typecheck/
+build and native/installer builds passed. Groups overlap; do not sum as unique.
+SQL fixture privilege/expiry setup, PowerShell framing/date-query and local edit
+issues were corrected without weakening production guards or replaying inference.
+
+After explicit approval, migration 15 committed and seven hosted permission checks
+passed. Uploaded image 9fe1d130… and deployed only Gather API revision 00006-g5r,
+retaining resources/scaling/speed flags, model service, identities and secrets.
+User approved removal of the generated hosted PDF fixture; the app confirmed its
+cleanup. Personal PDF/A's sources were unchanged. Native DOCX selection/review/
+Save reached ready on attempt 1. One real query returned paragraphs 1/2; exact
+saved reading passed. Cloud logs confirm two successful embeddings, document and
+query, without replay. The generated DOCX remains available for inspection.
+
+Promoted the verified native build, preserved prior artifacts and updated the
+existing D: installation via NSIS /UPDATE with byte/marker verification and the
+normal shortcut preserved. Evidence and limits: DOCX_IMPORT.md and ignored
+output/docx-pilot/. Clean-Windows, signing and broad Office compatibility remain
+open; no GitHub push or protected workload change was made.
+
 ## 2 November 2026: current-PC Windows installer lifecycle
 
 The user chose their existing Windows PC after no separate Sandbox/VM was found.

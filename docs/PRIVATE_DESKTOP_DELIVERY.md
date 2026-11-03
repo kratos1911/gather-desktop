@@ -1,5 +1,10 @@
 # Private Windows/cloud delivery
 
+Current private formats include the subsequently approved bounded PDF and DOCX
+slices. [DOCX_IMPORT](DOCX_IMPORT.md) owns the current selected native/real-model
+DOCX evidence, exact API/native/installer identities and installed update. Earlier
+text-delivery artifacts below remain historical evidence, not the current build.
+
 31 October 2026. Current two-account TXT/Markdown pilot, not a public release.
 
 The current interface/artifacts now use [one connected Library](UNIFIED_LIBRARY.md).

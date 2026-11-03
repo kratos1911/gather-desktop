@@ -1,10 +1,14 @@
 /** Local, bounded file preparation only. No network or persistence. */
-import { LibraryClientError } from "./libraryClient";
+import {
+  LibraryClientError,
+  DOCX_MEDIA,
+  type DocumentMedia,
+} from "./libraryClient";
 
 export const MAX_TEXT_FILE_BYTES = 65536;
 export type SelectedTextFile = Readonly<{
   title: string;
-  media: "text/plain" | "text/markdown" | "application/pdf";
+  media: DocumentMedia;
   bytes: Uint8Array;
   preview: string;
   previewTruncated: boolean;
@@ -26,6 +30,7 @@ export async function readTextFile(
   file: File,
   signal: AbortSignal,
   allowPdf = false,
+  allowDocx = false,
 ): Promise<SelectedTextFile> {
   if (signal.aborted) throw new LibraryClientError("cancelled");
   if (
@@ -36,7 +41,8 @@ export async function readTextFile(
     file.name.includes("\\") ||
     !(
       /\.(txt|md|markdown)$/i.test(file.name) ||
-      (allowPdf && /\.pdf$/i.test(file.name))
+      (allowPdf && /\.pdf$/i.test(file.name)) ||
+      (allowDocx && /\.docx$/i.test(file.name))
     )
   )
     throw new LibraryClientError("file_type");
@@ -76,6 +82,18 @@ export async function readTextFile(
     reader.readAsArrayBuffer(file.slice(0, MAX_TEXT_FILE_BYTES + 1));
   });
   if (signal.aborted) throw new LibraryClientError("cancelled");
+  if (/\.docx$/i.test(file.name)) {
+    if (String.fromCharCode(...bytes.slice(0, 4)) !== "PK\x03\x04")
+      throw new LibraryClientError("file_docx_invalid");
+    return Object.freeze({
+      title: file.name,
+      media: DOCX_MEDIA,
+      bytes,
+      preview:
+        "Word document selected locally. Gather will validate the archive and extract body-text paragraphs after you confirm and save. This is not an extracted-text preview.",
+      previewTruncated: false,
+    });
+  }
   if (/\.pdf$/i.test(file.name)) {
     const header = String.fromCharCode(...bytes.slice(0, 9));
     const tail = String.fromCharCode(...bytes.slice(-1024));

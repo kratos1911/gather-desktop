@@ -1,5 +1,14 @@
 # Privacy and release audit
 
+DOCX private extension review, 2 November: [DOCX_IMPORT](DOCX_IMPORT.md) records
+the tested parser/storage/UI safeguards, approved hosted flow and consent copy. Reuses the
+same two-account original/text processors and deletion chain; no new recipient,
+signup, telemetry or package. ZIP/XML limits, no entity/template/link fetching,
+private staging, paragraph provenance and existing ownership/version/lease fences
+are verified locally. Hosted enablement and the exact disposable fixture cleanup
+were explicitly approved; the selected native/real-model flow passed. This does
+not close public hostile-upload, confinement, final retention/policy or legal gates.
+
 Current private extension: PRIVATE_DESKTOP_DELIVERY.md records approved hosted API
 and restricted credential storage, native file processing and owner-confirmed
 cleanup. Only the two existing accounts are allowed; no signup, session replay or

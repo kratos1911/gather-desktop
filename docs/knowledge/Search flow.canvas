@@ -28,6 +28,15 @@
       "height": 220
     },
     {
+      "id": "docx-import",
+      "type": "file",
+      "file": "docs/DOCX_IMPORT.md",
+      "x": -420,
+      "y": 810,
+      "width": 330,
+      "height": 220
+    },
+    {
       "id": "processing-recovery",
       "type": "file",
       "file": "docs/PROCESSING_RECOVERY.md",

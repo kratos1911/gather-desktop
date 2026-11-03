@@ -10,6 +10,8 @@ const messages: Record<string, string> = {
   file_empty: "This file has no searchable text.",
   file_read_failed: "The file could not be read. Select it again.",
   cancelled: "File reading cancelled.",
+  file_docx_invalid:
+    "This is not a DOCX archive. Choose an original .docx file.",
   file_pdf_invalid:
     "This file does not have a valid PDF header and trailer. Choose the original PDF file.",
 };
@@ -18,9 +20,11 @@ export function TextFileImport({
   disabled,
   onSave,
   allowPdf = false,
+  allowDocx = false,
 }: {
   disabled: boolean;
   allowPdf?: boolean;
+  allowDocx?: boolean;
   onSave: (file: SelectedTextFile) => Promise<boolean>;
 }) {
   const [selected, setSelected] = useState<SelectedTextFile | null>(null);
@@ -42,7 +46,12 @@ export function TextFileImport({
     setReading(!!file);
     if (!file) return;
     try {
-      const result = await readTextFile(file, controller.signal, allowPdf);
+      const result = await readTextFile(
+        file,
+        controller.signal,
+        allowPdf,
+        allowDocx,
+      );
       if (!controller.signal.aborted) setSelected(result);
     } catch (failure) {
       if (!controller.signal.aborted)
@@ -74,27 +83,41 @@ export function TextFileImport({
   return (
     <div className="text-file-import">
       <label htmlFor="pilot-text-file">
-        {allowPdf
-          ? "Choose a PDF, TXT or Markdown file"
-          : "Choose a TXT or Markdown file"}
+        {allowDocx
+          ? allowPdf
+            ? "Choose a DOCX, PDF, TXT or Markdown file"
+            : "Choose a DOCX, TXT or Markdown file"
+          : allowPdf
+            ? "Choose a PDF, TXT or Markdown file"
+            : "Choose a TXT or Markdown file"}
       </label>
       <input
         id="pilot-text-file"
         ref={input}
         type="file"
         accept={
-          allowPdf
-            ? ".pdf,.txt,.md,.markdown,application/pdf,text/plain,text/markdown"
-            : ".txt,.md,.markdown,text/plain,text/markdown"
+          allowDocx
+            ? ".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document," +
+              (allowPdf ? ".pdf,application/pdf," : "") +
+              ".txt,.md,.markdown,text/plain,text/markdown"
+            : allowPdf
+              ? ".pdf,.txt,.md,.markdown,application/pdf,text/plain,text/markdown"
+              : ".txt,.md,.markdown,text/plain,text/markdown"
         }
         disabled={disabled || saving}
         onChange={(event) => void choose(event.target.files?.[0])}
       />
       <p>
         Private testing only.{" "}
-        {allowPdf ? "PDF with selectable text, or UTF-8 text," : "UTF-8,"} at
-        most 64 KiB. Choosing a file reads it locally; nothing is uploaded until
-        you confirm and save.
+        {allowDocx
+          ? allowPdf
+            ? "DOCX body text, PDF with selectable text or UTF-8 text,"
+            : "DOCX body text or UTF-8 text,"
+          : allowPdf
+            ? "PDF with selectable text, or UTF-8 text,"
+            : "UTF-8,"}{" "}
+        at most 64 KiB. Choosing a file reads it locally; nothing is uploaded
+        until you confirm and save.
       </p>
       {reading && <p role="status">Reading selected file locally…</p>}
       {selected && (
@@ -106,9 +129,11 @@ export function TextFileImport({
           <div
             className="paper text-file-preview"
             aria-label={
-              selected.media === "application/pdf"
-                ? "Local PDF review"
-                : "Local plain-text preview"
+              selected.media.endsWith("wordprocessingml.document")
+                ? "Local Word document review"
+                : selected.media === "application/pdf"
+                  ? "Local PDF review"
+                  : "Local plain-text preview"
             }
           >
             {selected.preview}
@@ -127,6 +152,8 @@ export function TextFileImport({
             confirms cleanup only after the server removes stored data.
             Unfinished cleanup remains available to retry. The pilot accepts
             only files that fit three processing passages.
+            {selected.media.endsWith("wordprocessingml.document") &&
+              " DOCX extraction includes main-body and table paragraph text, labelled by extracted paragraph number. It does not reproduce Word page layout, images, headers, footers or comments. Macros, embedded objects, tracked changes and unsupported active content are rejected; links are never followed."}
             {selected.media === "application/pdf" &&
               " PDFs may have at most 20 pages, each with selectable text. Encrypted, scanned, empty-page and active-content PDFs are unsupported. The reader shows extracted text with page numbers, not original page artwork."}
           </p>

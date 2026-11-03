@@ -526,3 +526,12 @@ Do not waive arbitrary mismatches. A real install/uninstall pass on a developmen
 PC proves that environment's lifecycle, not a clean Windows installation. Removing
 tools from PATH strengthens the launch check but does not remove installed DLLs
 or WebView2. See [[docs/WINDOWS_INSTALL_QA]].
+
+## DOCX is an archive; citations describe extracted paragraphs
+
+A small compressed upload can expand dramatically. Bound ZIP member count,
+expanded bytes and XML complexity before extracting any text. Parse only the
+supported main body, never execute fields/macros or follow relationships. Word
+pagination depends on layout, so cite stable extracted paragraph ranges with a
+separate text hash. Keep raw archive identity and exact saved-version ownership
+alongside them. See [[docs/DOCX_IMPORT]].

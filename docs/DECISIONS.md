@@ -834,3 +834,14 @@ Tauri changes its bundle marker from UNK to NSS when producing NSIS packages.
 Pin the unbundled source hash and permit exactly that byte substitution; reject
 all other differences. Do not equate byte identity with signing or independent
 security approval. Retain the initial raw-hash harness stop and its resolution.
+
+## 2 November 2026: bounded DOCX body extraction in the existing pipeline
+
+Use the standard ZIP/XML libraries under a shared disposable parser slot; no new
+Office runtime, package or model. Bound expansion and XML complexity, reject
+active/ambiguous constructs, and never fetch relationships. Preserve binary and
+extracted-text identities separately. Cite extracted paragraphs, not invented
+Word pages. Keep typed format staging wrappers over one common validator with
+existing publication/lease fences and private per-format metadata. Enable only
+through a trusted server capability after explicit hosted approval; reuse the
+same two-account pilot rather than opening general Office uploads.

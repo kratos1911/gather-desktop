@@ -8,6 +8,7 @@ from dataclasses import dataclass
 import hashlib
 import re
 from services.worker.pdf_processing import validate_text
+from services.worker.docx_processing import MEDIA as DOCX_MEDIA, validate_text as validate_docx_text
 
 VERSION = 'source-neighbors-v1'
 MAX_CANDIDATES = 100
@@ -36,6 +37,7 @@ class Snapshot:
     text_sha256: str | None = None
     media_type: str = 'text/plain'
     pages: tuple[tuple[int,int,int],...] = ()
+    paragraphs: tuple[tuple[int,int,int],...] = ()
 
 
 @dataclass(frozen=True)
@@ -82,10 +84,13 @@ before producing any output, including those beyond the first five sources.
             raise ValueError('invalid_source_text') from None
         if not isinstance(source.source_sha256,str) or not re.fullmatch('[0-9a-f]{64}',source.source_sha256):
             raise ValueError('source_integrity')
-        if source.media_type=='application/pdf':
-            if not isinstance(source.pages,tuple): raise ValueError('source_integrity')
+        if source.media_type==DOCX_MEDIA:
+            if type(source.paragraphs) is not tuple or source.pages: raise ValueError('source_integrity')
+            validate_docx_text(source.text,[dict(number=n,start=a,end=b) for n,a,b in source.paragraphs],source.text_sha256)
+        elif source.media_type=='application/pdf':
+            if source.paragraphs or not isinstance(source.pages,tuple): raise ValueError('source_integrity')
             validate_text(source.text,[dict(number=n,start=a,end=b) for n,a,b in source.pages],source.text_sha256)
-        elif source.media_type!='text/plain' or source.text_sha256 is not None or source.pages or len(encoded)>65536 or hashlib.sha256(encoded).hexdigest()!=source.source_sha256:
+        elif source.media_type!='text/plain' or source.text_sha256 is not None or source.pages or source.paragraphs or len(encoded)>65536 or hashlib.sha256(encoded).hexdigest()!=source.source_sha256:
             raise ValueError('source_integrity')
         if not isinstance(source.passages, tuple) or not 1 <= len(source.passages) <= 256:
             raise ValueError('passage_limit')
@@ -166,7 +171,10 @@ before producing any output, including those beyond the first five sources.
             'start': window['start'], 'end': window['end'], 'offset_unit': 'unicode_code_point',
             'text': source.text[window['start']:window['end']], 'utf8_bytes': window['bytes'],
             'skipped_neighbors': window['skipped']})
-        if source.media_type=='application/pdf':
+        if source.media_type==DOCX_MEDIA:
+            windows[-1].update(media_type=DOCX_MEDIA,paragraphs=[n for n,a,b in source.paragraphs
+                if a<window['end'] and b>window['start']])
+        elif source.media_type=='application/pdf':
             windows[-1].update(media_type='application/pdf',pages=[n for n,a,b in source.pages
                 if a<window['end'] and b>window['start']])
     return {'version': VERSION, 'windows': windows, 'utf8_bytes': used, 'omitted_sources': omitted}

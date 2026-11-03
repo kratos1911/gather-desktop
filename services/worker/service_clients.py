@@ -44,6 +44,7 @@ class SessionClient:
             '/rest/v1/rpc/search_published_text': ('POST',
                 {'p_query','p_model','p_revision','p_dimensions','p_limit'}),
             '/rest/v1/rpc/open_published_text': ('POST', {'p_source','p_version'}),
+            '/rest/v1/rpc/read_published_docx': ('POST', {'p_source','p_version'}),
             '/rest/v1/rpc/read_published_pdf': ('POST', {'p_source','p_version'}),
             '/rest/v1/rpc/source_processing_status': ('POST', {'p_source'}),
             '/rest/v1/rpc/source_processing_status_with_recovery': ('POST', {'p_source'}),

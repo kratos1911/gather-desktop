@@ -6,6 +6,8 @@ now connects to the hosted backend; the general MVP/release is incomplete. Evide
 and limitations are in MEMORY.md and TASKS.md, not the historical snapshots.
 The bounded native-text PDF extension is implemented and deployed for the same
 private accounts; live Windows acceptance is tracked in [PDF_IMPORT](PDF_IMPORT.md).
+The bounded main-body DOCX extension also passed selected private hosted/native
+acceptance; limits and paragraph provenance are in [DOCX_IMPORT](DOCX_IMPORT.md).
 
 ## What and why
 

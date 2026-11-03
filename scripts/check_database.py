@@ -23,6 +23,7 @@ def main():
     parser.add_argument('--cleanup-only',action='store_true',help='Apply schema and verify only owner-scoped cleanup.')
     parser.add_argument('--pdf-only',action='store_true',help='Apply schema and verify only PDF publication/ownership/citations.')
     parser.add_argument('--recovery-only',action='store_true',help='Verify owner-scoped recovery eligibility without models.')
+    parser.add_argument('--docx-only',action='store_true',help='Verify DOCX publication/citations plus existing PDF compatibility.')
     args = parser.parse_args()
     # Fail clearly before creating anything if Docker is unavailable.
     run('info', '--format', '{{.ServerVersion}}', timeout=15)
@@ -44,17 +45,21 @@ def main():
             raise RuntimeError('Disposable database did not become ready')
         files = [ROOT / 'tests/database/bootstrap.sql',
                  *sorted((ROOT / 'supabase/migrations').glob('*.sql')),
-                 ROOT / ('tests/database/recovery_readiness.sql' if args.recovery_only else 'tests/database/pdf_publication.sql' if args.pdf_only else 'tests/database/owned_cleanup.sql' if args.cleanup_only else 'tests/database/automatic_processing.sql' if args.automatic_only else 'tests/database/source_listing.sql')]
-        files += ([] if args.listing_only or args.automatic_only or args.cleanup_only or args.pdf_only or args.recovery_only else [
+                 ROOT / ('tests/database/docx_publication.sql' if args.docx_only else 'tests/database/recovery_readiness.sql' if args.recovery_only else 'tests/database/pdf_publication.sql' if args.pdf_only else 'tests/database/owned_cleanup.sql' if args.cleanup_only else 'tests/database/automatic_processing.sql' if args.automatic_only else 'tests/database/source_listing.sql')]
+        files += ([] if args.listing_only or args.automatic_only or args.cleanup_only or args.pdf_only or args.recovery_only or args.docx_only else [
                  ROOT / 'tests/database/ownership.sql',
                  ROOT / 'tests/database/lifecycle.sql',
                  ROOT / 'tests/database/ingestion_jobs.sql'])
+        if args.docx_only: files.append(ROOT/'tests/database/pdf_publication.sql')
         result = run('exec', '-i', name, 'psql', '-X', '-U', 'postgres',
                      '-v', 'ON_ERROR_STOP=1', input='\n'.join(
                          path.read_text(encoding='utf-8') for path in files))
         for line in result.stderr.splitlines():
             if 'PASS:' in line:
                 print(line)
+        if args.docx_only:
+            print('DOCX storage and PDF compatibility checks passed. Synthetic identities/bytes/vectors; no parser or hosted semantic claim.')
+            return
         if args.recovery_only:
             print('Recovery eligibility SQL checks passed with synthetic identities; no hosted data or model calls.')
             return

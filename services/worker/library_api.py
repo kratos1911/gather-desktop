@@ -18,6 +18,7 @@ from services.worker.text_processing import MAX_REQUEST_BYTES, MAX_RESPONSE_BYTE
 from services.worker.source_listing import parameters
 from services.worker.model_availability import MODEL_HTTP
 from services.worker.pdf_processing import validate_bytes as validate_pdf_bytes
+from services.worker.docx_processing import MEDIA as DOCX_MEDIA, validate_bytes as validate_docx_bytes, ERRORS as DOCX_ERRORS
 
 ROUTES = {
     '/v1/import': ({'request_id', 'title', 'media', 'content_base64'}, {'source_id','confirm_cloud_storage'}),
@@ -51,7 +52,8 @@ def validate(path, value):
             raise ValueError()
         raw = base64.b64decode(value.pop('content_base64'), validate=True)
         # Heavy PDF parsing belongs after real Auth, not in frame validation.
-        if value['media']=='application/pdf': validate_pdf_bytes(raw)
+        if value['media']==DOCX_MEDIA: validate_docx_bytes(raw)
+        elif value['media']=='application/pdf': validate_pdf_bytes(raw)
         else: parse(raw, value['media'])
         value['original'] = raw
     if path == '/v1/search':
@@ -218,6 +220,8 @@ class LibraryAPI:
                 elif code == 'busy': status = 429
                 elif code in ('file_import_disabled','file_confirmation_required'): status = 403
                 elif code in ('file_invalid','file_exceeds_pilot_budget'): status = 400
+                elif code in DOCX_ERRORS:
+                    status=504 if code=='docx_timeout' else 429 if code=='docx_busy' else 503 if code=='docx_parser_unavailable' else 400
                 elif code.startswith('pdf_'):
                     status=504 if code=='pdf_timeout' else 429 if code=='pdf_busy' else 503 if code=='pdf_parser_unavailable' else 400
                 safe_codes = {'session_unavailable','library_unavailable',
@@ -225,7 +229,7 @@ class LibraryAPI:
                 print('Operator request failed: '+(code if code in safe_codes else 'operation_failed'),file=sys.stderr,flush=True)
                 pdf_codes={'pdf_size','pdf_invalid','pdf_invalid_output','pdf_encrypted','pdf_active_content','pdf_page_limit',
                     'pdf_text_required','pdf_stream_limit','pdf_text_limit','pdf_parser_unavailable','pdf_busy','pdf_timeout','pdf_cancelled'}
-                return await reply(status, {'error': code if code in MODEL_HTTP or code in pdf_codes or code in ('session_unavailable','busy') else 'operation_failed'})
+                return await reply(status, {'error': code if code in MODEL_HTTP or code in pdf_codes or code in DOCX_ERRORS or code in ('session_unavailable','busy') else 'operation_failed'})
             except Exception:
                 return await reply(503, {'error':'operation_failed'})
             await reply(202 if path == '/v1/import' else 200, result)

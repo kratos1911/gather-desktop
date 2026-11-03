@@ -8,6 +8,12 @@ No virtualization features, other apps or protected workloads were changed.
 
 ## Current-PC evidence
 
+Subsequent DOCX delivery updated this same D: installation through NSIS /UPDATE
+and preserved its normal shortcut. The verified native/installed/installer hashes
+and selected real DOCX flow are in [DOCX_IMPORT](DOCX_IMPORT.md). This is a
+same-version private update check, not clean-machine or cross-version acceptance.
+The initial installation lifecycle and hashes below are retained unchanged.
+
 The existing unsigned private installer was installed in
 output/windows-install-qa/installed on D:. Installation and uninstallation both
 returned zero using NSIS's supported silent mode. The interactive wizard and OS

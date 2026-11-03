@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { LibraryClient } from "./libraryClient";
+import { LibraryClient, DOCX_MEDIA } from "./libraryClient";
 const ID = "00000000-0000-0000-0000-000000000001";
 const receipt = { source_id: ID, version_id: ID, job_id: ID };
 const respond = (value: unknown, status = 200) =>
@@ -21,6 +21,46 @@ afterEach(() => {
 });
 
 describe("library HTTP client (synthetic responses)", () => {
+  it("rejects mixed or incomplete DOCX citation metadata without retrying", async () => {
+    const { client, send } = setup();
+    const doc = {
+      source_id: ID,
+      version_id: ID,
+      source_sha256: "0".repeat(64),
+      title: "guide.docx",
+      body: "First\n\nSecond",
+      passages: [{ id: "p", start: 0, end: 13 }],
+      model_id: "model",
+      model_revision: "revision",
+      dimensions: 2,
+      media_type: DOCX_MEDIA,
+      text_sha256: "1".repeat(64),
+    };
+    for (const spans of [
+      { paragraphs: [{ number: 2, start: 0, end: 13 }] },
+      { paragraphs: [{ number: 1, start: 1, end: 13 }] },
+      {
+        paragraphs: [{ number: 1, start: 0, end: 13 }],
+        pages: [{ number: 1, start: 0, end: 13 }],
+      },
+    ]) {
+      send.mockResolvedValueOnce(respond([{ ...doc, ...spans }]));
+      await expect(client.open(ID, ID)).rejects.toMatchObject({
+        code: "invalid_response",
+      });
+    }
+    expect(send).toHaveBeenCalledTimes(3);
+  });
+  it("validates DOCX capability booleans rather than trusting truthy values", async () => {
+    const { client, send } = setup();
+    send.mockResolvedValueOnce(
+      respond({ items: [], next_cursor: null, docx_enabled: "true" }),
+    );
+    await expect(client.listSources()).rejects.toMatchObject({
+      code: "invalid_response",
+    });
+    expect(send).toHaveBeenCalledTimes(1);
+  });
   it("preserves only bounded known model-code/status pairs and never retries", async () => {
     const { client, send } = setup();
     for (const [status, body, expected] of [

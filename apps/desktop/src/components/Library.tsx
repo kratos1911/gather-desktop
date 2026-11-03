@@ -49,6 +49,26 @@ const messages: Record<string, string> = {
   invalid_request:
     "The file or request was rejected. Check the supported format, 64 KiB size limit and three-passage budget.",
   cancelled: "Request cancelled. A submitted file may still have been saved.",
+  docx_invalid:
+    "The DOCX archive could not be safely parsed. Choose the original Word document.",
+  docx_archive_limit:
+    "This DOCX archive exceeds the expanded-size or structure limits. No partial document was saved.",
+  docx_active_content:
+    "This DOCX contains macros, an unsafe relationship or active content that this pilot rejects.",
+  docx_unsupported_content:
+    "This DOCX uses unsupported objects, fields or tracked changes. Use a plain main-body document.",
+  docx_text_required: "No searchable main-body paragraph text was found.",
+  docx_text_limit:
+    "Extracted DOCX text exceeds 64 KiB. No partial document was saved.",
+  docx_paragraph_limit:
+    "This pilot accepts at most 128 nonempty extracted paragraphs.",
+  docx_invalid_output:
+    "DOCX validation failed. The document was not published.",
+  docx_size: "Choose a nonempty DOCX of at most 64 KiB.",
+  docx_busy: "Another document is being checked. Wait before trying again.",
+  docx_timeout:
+    "DOCX extraction reached its deadline. It was not retried automatically.",
+  docx_parser_unavailable: "DOCX extraction is unavailable on this server.",
   pdf_encrypted:
     "Password-protected PDFs are unsupported. Choose an unencrypted PDF you have permission to use.",
   pdf_text_required:
@@ -70,7 +90,13 @@ const messages: Record<string, string> = {
   pdf_parser_unavailable:
     "PDF extraction is unavailable on this server. TXT and Markdown remain available.",
 };
-const filters = ["Everything", "PDFs", "Markdown", "Text files"] as const;
+const filters = [
+  "Everything",
+  "PDFs",
+  "Word documents",
+  "Markdown",
+  "Text files",
+] as const;
 type Filter = (typeof filters)[number];
 type Panel = "import" | "settings" | PolicyKind | null;
 
@@ -152,10 +178,12 @@ function PanelDialog({
 }
 
 function fileType(title: string) {
+  if (/\.docx$/i.test(title)) return "Word documents";
   if (/\.pdf$/i.test(title)) return "PDFs";
   return /\.(md|markdown)$/i.test(title) ? "Markdown" : "Text files";
 }
 function fileLabel(title: string) {
+  if (fileType(title) === "Word documents") return "DOCX";
   if (fileType(title) === "PDFs") return "PDF";
   return fileType(title) === "Markdown" ? "MD" : "TXT";
 }
@@ -228,9 +256,11 @@ export default function Library() {
   );
   useEffect(() => workspace.watchImport(), [workspace, state.imported]);
   useEffect(() => {
-    if (state.opened?.pages && readerPage)
+    if ((state.opened?.pages || state.opened?.paragraphs) && readerPage)
       document
-        .getElementById(`pdf-page-${readerPage}`)
+        .getElementById(
+          `${state.opened?.paragraphs ? "docx-paragraph" : "pdf-page"}-${readerPage}`,
+        )
         ?.scrollIntoView?.({ block: "start" });
   }, [state.opened, readerPage]);
   useEffect(() => {
@@ -469,9 +499,16 @@ export default function Library() {
             {filters
               .filter(
                 (value) =>
-                  value !== "PDFs" ||
-                  state.pdfEnabled ||
-                  state.sources.some((source) => /\.pdf$/i.test(source.title)),
+                  (value !== "PDFs" ||
+                    state.pdfEnabled ||
+                    state.sources.some((source) =>
+                      /\.pdf$/i.test(source.title),
+                    )) &&
+                  (value !== "Word documents" ||
+                    state.docxEnabled ||
+                    state.sources.some((source) =>
+                      /\.docx$/i.test(source.title),
+                    )),
               )
               .map((value) => (
                 <button
@@ -617,7 +654,9 @@ export default function Library() {
                           className="card-title"
                           disabled={state.busy}
                           onClick={() => {
-                            setReaderPage(hit.pages?.[0] ?? null);
+                            setReaderPage(
+                              hit.pages?.[0] ?? hit.paragraphs?.[0] ?? null,
+                            );
                             act(() =>
                               workspace.open(hit.source_id, hit.version_id),
                             );
@@ -632,7 +671,13 @@ export default function Library() {
                           >
                             <p>{window.text}</p>
                             <small>
-                              {window.pages ? (
+                              {window.paragraphs ? (
+                                <>
+                                  Paragraphs {window.paragraphs.join(", ")} ·
+                                  extracted characters {window.start}–
+                                  {window.end}
+                                </>
+                              ) : window.pages ? (
                                 <>
                                   Pages {window.pages.join(", ")} · extracted
                                   characters {window.start}–{window.end}
@@ -651,7 +696,9 @@ export default function Library() {
                             className="quiet-button"
                             disabled={state.busy}
                             onClick={() => {
-                              setReaderPage(hit.pages?.[0] ?? null);
+                              setReaderPage(
+                                hit.pages?.[0] ?? hit.paragraphs?.[0] ?? null,
+                              );
                               act(() =>
                                 workspace.open(hit.source_id, hit.version_id),
                               );
@@ -884,6 +931,7 @@ export default function Library() {
           {panel === "import" ? (
             <TextFileImport
               allowPdf={state.pdfEnabled}
+              allowDocx={state.docxEnabled}
               disabled={state.busy || !!state.pendingImport}
               onSave={async (file) => {
                 const started = epoch.current;
@@ -910,9 +958,13 @@ export default function Library() {
           ) : panel === "settings" ? (
             <>
               <p>
-                {state.pdfEnabled
-                  ? "PDF, TXT and Markdown. Text files use UTF-8;"
-                  : "TXT and Markdown only, UTF-8,"}{" "}
+                {state.docxEnabled
+                  ? state.pdfEnabled
+                    ? "DOCX, PDF, TXT and Markdown. Text files use UTF-8;"
+                    : "DOCX, TXT and Markdown. Text files use UTF-8;"
+                  : state.pdfEnabled
+                    ? "PDF, TXT and Markdown. Text files use UTF-8;"
+                    : "TXT and Markdown only, UTF-8,"}{" "}
                 up to 64 KiB and three processing passages per file. This pilot
                 has two source slots per account.
               </p>
@@ -966,14 +1018,17 @@ export default function Library() {
         >
           <p className="reader-version">Exact published version · plain text</p>
           <article className="saved-document" aria-label="Saved document text">
-            {state.opened.pages
-              ? state.opened.pages.map((page) => (
+            {(state.opened.pages ?? state.opened.paragraphs)
+              ? (state.opened.pages ?? state.opened.paragraphs)!.map((page) => (
                   <section
                     className="pdf-page"
-                    id={`pdf-page-${page.number}`}
+                    id={`${state.opened!.paragraphs ? "docx-paragraph" : "pdf-page"}-${page.number}`}
                     key={page.number}
                   >
-                    <h3>Page {page.number}</h3>
+                    <h3>
+                      {state.opened!.paragraphs ? "Paragraph" : "Page"}{" "}
+                      {page.number}
+                    </h3>
                     <div>
                       {Array.from(state.opened!.body)
                         .slice(page.start, page.end)

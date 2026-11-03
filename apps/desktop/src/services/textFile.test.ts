@@ -2,6 +2,19 @@ import { describe, expect, it, vi } from "vitest";
 import { readTextFile } from "./textFile";
 
 describe("local text-file preparation", () => {
+  it("requires the DOCX capability and archive header, and rejects legacy DOC", async () => {
+    const signal = new AbortController().signal;
+    const bytes = new Uint8Array([80, 75, 3, 4, 255, 0]);
+    await expect(
+      readTextFile(new File([bytes], "note.docx"), signal),
+    ).rejects.toMatchObject({ code: "file_type" });
+    await expect(
+      readTextFile(new File([bytes], "note.doc"), signal, true, true),
+    ).rejects.toMatchObject({ code: "file_type" });
+    await expect(
+      readTextFile(new File(["plain text"], "note.docx"), signal, true, true),
+    ).rejects.toMatchObject({ code: "file_docx_invalid" });
+  });
   it("preserves actual bytes, BOM and CRLF, ignoring advisory MIME", async () => {
     const raw = new TextEncoder().encode("\uFEFF# Note\r\nStars 🌟");
     const send = vi.spyOn(globalThis, "fetch");

@@ -17,7 +17,7 @@ from services.worker.search_context import (
 )
 from services.worker.source_listing import page, parameters
 from services.worker.model_availability import ModelServiceError
-from services.worker.pdf_processing import enrich_published
+from services.worker.document_metadata import enrich_published
 
 
 class SearchError(Exception):
@@ -156,7 +156,8 @@ def search(query, *, api, provider, limit=20, cancel=None):
                     raise ValueError('citation_mismatch')
             snapshots.append(Snapshot(owner, sid, doc['version_id'], doc['source_sha256'], doc['body'], passages,
                 text_sha256=doc.get('text_sha256'),media_type=doc.get('media_type','text/plain'),
-                pages=tuple((p['number'],p['start'],p['end']) for p in doc.get('pages',[]))))
+                pages=tuple((p['number'],p['start'],p['end']) for p in doc.get('pages',[])),
+                paragraphs=tuple((p['number'],p['start'],p['end']) for p in doc.get('paragraphs',[]))))
             metadata[sid] = {'title': seed['title'], 'similarity': seed['similarity']}
         active()
         # Preserve original ranking even when several hits share one source.

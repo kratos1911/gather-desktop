@@ -29,6 +29,7 @@ export type LibraryState = Readonly<{
   nextCursor: string | null;
   libraryStatus: "idle" | "loading" | "ready" | "error";
   pdfEnabled: boolean;
+  docxEnabled: boolean;
 }>;
 const initial = (): LibraryState => ({
   signedIn: false,
@@ -48,6 +49,7 @@ const initial = (): LibraryState => ({
   nextCursor: null,
   libraryStatus: "idle",
   pdfEnabled: false,
+  docxEnabled: false,
 });
 
 export class LibraryWorkspace {
@@ -160,6 +162,18 @@ export class LibraryWorkspace {
             "access_denied",
             "session_required",
             "busy",
+            "docx_size",
+            "docx_invalid",
+            "docx_invalid_output",
+            "docx_archive_limit",
+            "docx_active_content",
+            "docx_unsupported_content",
+            "docx_text_required",
+            "docx_text_limit",
+            "docx_paragraph_limit",
+            "docx_parser_unavailable",
+            "docx_busy",
+            "docx_timeout",
             "pdf_size",
             "pdf_invalid",
             "pdf_invalid_output",
@@ -349,6 +363,7 @@ export class LibraryWorkspace {
           cleanupSources: page.cleanup_source_ids ?? [],
           cleanupEnabled: page.cleanup_source_ids !== undefined,
           pdfEnabled: page.pdf_enabled === true,
+          docxEnabled: page.docx_enabled === true,
         });
       },
       () => this.update({ libraryStatus: "error" }),

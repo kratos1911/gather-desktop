@@ -19,6 +19,7 @@ reload the full conversation or historical snapshots for routine coding.
 - [[docs/UNIFIED_LIBRARY]]: one connected collection/search, minimal dark UI and evidence
 - [[docs/PRIVATE_TEXT_FILES]]: selected-file consent, validation, pilot scope
 - [[docs/PDF_IMPORT]]: bounded native-text PDF parsing, page provenance and private pilot evidence
+- [[docs/DOCX_IMPORT]]: bounded DOCX body text/paragraph provenance and verified private hosted/native flow
 - [[docs/PROCESSING_RECOVERY]]: authoritative recovery controls, bounded startup and measured latency limits
 - [[docs/PROCESSING_SPEED]]: stage profiling, bounded worker reuse and controlled latency evidence
 - [[docs/WINDOWS_INSTALL_QA]]: verified current-PC installer lifecycle; clean-machine acceptance pending

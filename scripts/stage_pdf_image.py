@@ -1,4 +1,4 @@
-"""Stage a small PDF-capable overlay on the exact verified library image."""
+"""Stage an approved document-processing overlay on an exact verified API image."""
 import hashlib
 import argparse
 import json
@@ -15,12 +15,14 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--recovery',action='store_true',help='Stage recovery fixes over the deployed PDF image; preserve PDF evidence.')
     parser.add_argument('--performance',action='store_true',help='Stage measured pipeline fixes over the deployed recovery image.')
+    parser.add_argument('--docx',action='store_true',help='Stage the private DOCX extension over the optimized API image.')
+    parser.add_argument('--docx-compat',action='store_true',help='Stage the reviewed Word styles compatibility correction over the deployed DOCX image.')
     options=parser.parse_args()
     recovery=options.recovery
-    if recovery and options.performance:parser.error('Choose one overlay.')
+    if sum((recovery,options.performance,options.docx,options.docx_compat))>1:parser.error('Choose one overlay.')
     wheel=ROOT/'output/pdf-pilot/wheels/pypdf-6.21.4-py3-none-any.whl'
     if hashlib.sha256(wheel.read_bytes()).hexdigest()!=HASH:raise ValueError('parser_hash_mismatch')
-    artifact_directory=ROOT/('output/processing-speed' if options.performance else 'output/recovery-fix' if recovery else 'output/pdf-pilot')
+    artifact_directory=ROOT/('output/docx-compatibility' if options.docx_compat else 'output/docx-pilot' if options.docx else 'output/processing-speed' if options.performance else 'output/recovery-fix' if recovery else 'output/pdf-pilot')
     artifact_directory.mkdir(parents=True,exist_ok=True)
     target=artifact_directory/('context-'+uuid4().hex);target.mkdir()
     for directory in ('services','scripts'):
@@ -42,7 +44,7 @@ assert pypdf.__version__=='6.21.4'
 p.unlink()
 """
     (target/'install_pdf.py').write_text(install)
-    base=('sha256:ae5a05c14d30aa1c259f962f766ece08ec5e778635f835a64041558c84b196d1' if options.performance else
+    base=('sha256:9fe1d130274debcfa00fce95e30484871776682caa4fa44d075e043c690493c1' if options.docx_compat else 'sha256:2c557d18f7e6d0a5dac28252663ea28234fbab9f0bffddc49224d8d8d50ae498' if options.docx else 'sha256:ae5a05c14d30aa1c259f962f766ece08ec5e778635f835a64041558c84b196d1' if options.performance else
           'sha256:72ce93fda395473d17dbce81247ced97f138e334ff8fef3c949cfb2ec479db8d' if recovery else BASE)
     base_ref='asia-south1-docker.pkg.dev/gather-development-511211/gather-pilot-images/library@'+base
     (target/'Dockerfile').write_text('FROM '+base_ref+'''

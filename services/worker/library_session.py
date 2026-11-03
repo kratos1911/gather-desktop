@@ -12,7 +12,7 @@ from services.worker.service_clients import SessionClient
 from services.worker.service_transport import TransportError
 from services.worker.source_listing import parameters, page
 from services.worker.model_availability import MODEL_HTTP, status_reply
-from services.worker.pdf_processing import enrich_published
+from services.worker.document_metadata import enrich_published
 
 
 class LibraryError(Exception):
@@ -43,7 +43,7 @@ class LibrarySession:
 
     def _validate_import_scope(self, original, media, confirm_cloud_storage):
         # A browser acknowledgement cannot activate an operator-only feature.
-        if confirm_cloud_storage is not False or media=='application/pdf':
+        if confirm_cloud_storage is not False or media not in ('text/plain','text/markdown'):
             raise LibraryError('file_import_disabled')
 
     def import_text(self, *, request_id, title, original, media, source_id=None,

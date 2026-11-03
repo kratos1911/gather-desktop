@@ -16,6 +16,8 @@ from services.worker.ingestion_repository import RepositoryError
 from services.worker.text_processing import process_request, PARSER_VERSION, MAX_SOURCE_BYTES
 from services.worker.model_availability import MODEL_HTTP
 from services.worker.pdf_processing import extract_pdf, PDFError, PARSER_VERSION as PDF_PARSER, validate_document
+from services.worker.docx_processing import (MEDIA as DOCX_MEDIA, PARSER_VERSION as DOCX_PARSER,
+    DOCXError, extract_docx, validate_document as validate_docx)
 
 MAX_JOB_REQUESTS = 16  # Preserve the embedding client's default request budget.
 MAX_JOB_TOKENS = MAX_JOB_REQUESTS * MAX_TOKENS
@@ -42,7 +44,13 @@ class RuntimeProvider:
         return self.runtime.infer(request, cancel=cancel)
 
 
+def parser_version(media):
+    return DOCX_PARSER if media == DOCX_MEDIA else PDF_PARSER if media == 'application/pdf' else PARSER_VERSION
+
+
 def parse(raw, media, *, cancel=None):
+    if media == DOCX_MEDIA:
+        return extract_docx(raw, cancel=cancel)
     if media == 'application/pdf':
         return extract_pdf(raw,cancel=cancel)
     if type(raw) is not bytes or not 0 < len(raw) <= MAX_SOURCE_BYTES or media not in ('text/plain','text/markdown'):
@@ -64,7 +72,8 @@ def submit(repository, *, request_id, title, original, media, source_id=None, do
         raise ValueError('invalid_input')
     document = parse(original, media) if document is None else document
     if media == 'application/pdf': validate_document(document,original)
-    parser = PDF_PARSER if media == 'application/pdf' else PARSER_VERSION
+    if media == DOCX_MEDIA: validate_docx(document,original)
+    parser = parser_version(media)
     return repository.call('submit_text', request_id, title, original, media,
                            parser, VERSION, MODEL, REVISION, DIMENSIONS, source_id)
 
@@ -161,7 +170,7 @@ def run_once(repository, provider, *, cancel=None, timing=None):
         with Lease(repository, job, cancel) as lease:
             stage('validate_manifest')
             if (job['parser_version'],job['chunker_version'],job['model_id'],job['model_revision'],job['dimensions']) != (
-                    PDF_PARSER if job['media_type']=='application/pdf' else PARSER_VERSION,VERSION,MODEL,REVISION,DIMENSIONS):
+                    parser_version(job['media_type']),VERSION,MODEL,REVISION,DIMENSIONS):
                 raise ValueError('invalid_input')
             # Trusted claim/manifest/lease have passed. Preparation sends no
             # source text; parsing/staging can overlap its bounded readiness GETs.
@@ -179,7 +188,7 @@ def run_once(repository, provider, *, cancel=None, timing=None):
                 return provider.count_tokens(text)
 
             stage('chunk_original')
-            text = document['body'] if job['media_type']=='application/pdf' else raw.decode('utf-8')
+            text = document['body'] if job['media_type'] in ('application/pdf',DOCX_MEDIA) else raw.decode('utf-8')
             chunks = chunk_document(text, count_tokens)
             if len(chunks) > MAX_JOB_REQUESTS or sum(c['tokens'] for c in chunks) > MAX_JOB_TOKENS:
                 raise ValueError('invalid_input')
@@ -187,7 +196,9 @@ def run_once(repository, provider, *, cancel=None, timing=None):
             lease.renew()
             stage('stage_text')
             manifest = [{k: c[k] for k in ('id','start','end')} for c in chunks]
-            if job['media_type']=='application/pdf':
+            if job['media_type']==DOCX_MEDIA:
+                repository.call('stage_docx',*args,raw,document['body'],document['paragraphs'],manifest)
+            elif job['media_type']=='application/pdf':
                 repository.call('stage_pdf',*args,raw,document['body'],document['pages'],manifest)
             else:
                 repository.call('stage_text', *args, raw, job['media_type'],manifest)
@@ -247,8 +258,8 @@ def run_once(repository, provider, *, cancel=None, timing=None):
             code = error.code
         if isinstance(error, ProviderFailure):
             code = error.code
-        if isinstance(error,PDFError) and str(error) in ('pdf_timeout','pdf_busy','pdf_cancelled','pdf_parser_unavailable'):
-            code = 'timeout' if str(error)=='pdf_timeout' else 'temporarily_unavailable'
+        if isinstance(error,(PDFError,DOCXError)) and str(error).endswith(('_timeout','_busy','_cancelled','_parser_unavailable')):
+            code = 'timeout' if str(error).endswith('_timeout') else 'temporarily_unavailable'
         if isinstance(error, InferenceError) and str(error) == 'deadline_exceeded':
             code = 'timeout'
         try:

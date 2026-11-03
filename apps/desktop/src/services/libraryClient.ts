@@ -1,5 +1,9 @@
 /** HTTP contract only. No UI activation, credential persistence or automatic retries. */
 import { MODEL_HTTP, type ModelStatus } from "./modelAvailability";
+export const DOCX_MEDIA =
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document" as const;
+export type DocumentMedia =
+  "text/plain" | "text/markdown" | "application/pdf" | typeof DOCX_MEDIA;
 export type ImportReceipt = {
   source_id: string;
   version_id: string;
@@ -32,6 +36,7 @@ export type SourcePage = {
   next_cursor: string | null;
   cleanup_source_ids?: string[];
   pdf_enabled?: boolean;
+  docx_enabled?: boolean;
 };
 export type SearchWindow = {
   source_id: string;
@@ -45,8 +50,9 @@ export type SearchWindow = {
   passage_ids: string[];
   seed_rank: number;
   similarity: number;
-  media_type?: "application/pdf";
+  media_type?: "application/pdf" | typeof DOCX_MEDIA;
   pages?: number[];
+  paragraphs?: number[];
 };
 export type SearchResult = {
   version: string;
@@ -64,14 +70,15 @@ export type SourceText = {
   model_revision: string;
   dimensions: number;
   passages: { id: string; start: number; end: number }[];
-  media_type?: "application/pdf";
+  media_type?: "application/pdf" | typeof DOCX_MEDIA;
   text_sha256?: string;
   pages?: { number: number; start: number; end: number }[];
+  paragraphs?: { number: number; start: number; end: number }[];
 };
 export type PreparedImport = Readonly<{
   request_id: string;
   title: string;
-  media: "text/plain" | "text/markdown" | "application/pdf";
+  media: DocumentMedia;
   content_base64: string;
   source_id?: string;
   confirm_cloud_storage?: true;
@@ -80,6 +87,19 @@ export type PreparedImport = Readonly<{
 const MAX_REPLY = 512 * 1024;
 const ERROR_HTTP: Record<string, number> = {
   ...MODEL_HTTP,
+  docx_size: 400,
+  docx_invalid: 400,
+  docx_invalid_output: 400,
+  docx_archive_limit: 400,
+  docx_active_content: 400,
+  docx_unsupported_content: 400,
+  docx_text_required: 400,
+  docx_text_limit: 400,
+  docx_paragraph_limit: 400,
+  docx_parser_unavailable: 503,
+  docx_busy: 429,
+  docx_timeout: 504,
+  docx_cancelled: 400,
   pdf_size: 400,
   pdf_invalid: 400,
   pdf_invalid_output: 400,
@@ -216,11 +236,16 @@ export class LibraryClient {
       Array.from(title).length > 500 ||
       bytes.byteLength < 1 ||
       bytes.byteLength > 65536 ||
-      !["text/plain", "text/markdown", "application/pdf"].includes(media)
+      !["text/plain", "text/markdown", "application/pdf", DOCX_MEDIA].includes(
+        media,
+      )
     )
       throw new LibraryClientError("invalid_import");
     try {
-      if (media !== "application/pdf")
+      if (media === DOCX_MEDIA) {
+        if (String.fromCharCode(...bytes.slice(0, 4)) !== "PK\x03\x04")
+          throw new Error();
+      } else if (media !== "application/pdf")
         new TextDecoder("utf-8", { fatal: true }).decode(bytes);
       else if (String.fromCharCode(...bytes.slice(0, 5)) !== "%PDF-")
         throw new Error();
@@ -431,14 +456,19 @@ export class LibraryClient {
     if (cleanup && new Set(cleanup).size !== cleanup.length)
       throw new LibraryClientError("invalid_response");
     if (
-      result.pdf_enabled !== undefined &&
-      typeof result.pdf_enabled !== "boolean"
+      (result.pdf_enabled !== undefined &&
+        typeof result.pdf_enabled !== "boolean") ||
+      (result.docx_enabled !== undefined &&
+        typeof result.docx_enabled !== "boolean")
     )
       throw new LibraryClientError("invalid_response");
     return {
       items,
       next_cursor: next,
       ...(cleanup === undefined ? {} : { cleanup_source_ids: cleanup }),
+      ...(result.docx_enabled === undefined
+        ? {}
+        : { docx_enabled: result.docx_enabled as boolean }),
       ...(result.pdf_enabled === undefined
         ? {}
         : { pdf_enabled: result.pdf_enabled }),
@@ -461,19 +491,29 @@ export class LibraryClient {
         encoder.encode(body).length > 8192
       )
         throw new LibraryClientError("invalid_response");
-      let pdf: { media_type?: "application/pdf"; pages?: number[] } = {};
-      if (value.media_type !== undefined || value.pages !== undefined) {
-        const pages = array(value.pages, 20).map(integer);
+      let locations: Pick<SearchWindow, "media_type" | "pages" | "paragraphs"> =
+        {};
+      if (
+        value.media_type !== undefined ||
+        value.pages !== undefined ||
+        value.paragraphs !== undefined
+      ) {
+        const docx = value.media_type === DOCX_MEDIA;
+        const key = docx ? "paragraphs" : "pages";
+        const maximum = docx ? 128 : 20;
+        const numbers = array(value[key], maximum).map(integer);
         if (
-          value.media_type !== "application/pdf" ||
-          !pages.length ||
-          pages.some(
-            (page, index) =>
-              page < 1 || page > 20 || (index > 0 && page <= pages[index - 1]),
+          (!docx && value.media_type !== "application/pdf") ||
+          value[docx ? "pages" : "paragraphs"] !== undefined ||
+          !numbers.length ||
+          numbers.some(
+            (n, i) => n < 1 || n > maximum || (i > 0 && n <= numbers[i - 1]),
           )
         )
           throw new LibraryClientError("invalid_response");
-        pdf = { media_type: "application/pdf", pages };
+        locations = docx
+          ? { media_type: DOCX_MEDIA, paragraphs: numbers }
+          : { media_type: "application/pdf", pages: numbers };
       }
       return {
         ...identity(value),
@@ -483,7 +523,7 @@ export class LibraryClient {
         passage_ids: array(value.passage_ids, 256).map(text),
         seed_rank: integer(value.seed_rank),
         similarity: number(value.similarity),
-        ...pdf,
+        ...locations,
       };
     });
     const size = integer(result.utf8_bytes);
@@ -534,18 +574,24 @@ export class LibraryClient {
         throw new LibraryClientError("invalid_response");
       return { id: text(passage.id), start, end };
     });
-    let pdf: Pick<SourceText, "media_type" | "text_sha256" | "pages"> = {};
+    let locations: Pick<
+      SourceText,
+      "media_type" | "text_sha256" | "pages" | "paragraphs"
+    > = {};
     if (
       value.media_type !== undefined ||
       value.pages !== undefined ||
+      value.paragraphs !== undefined ||
       value.text_sha256 !== undefined
     ) {
+      const docx = value.media_type === DOCX_MEDIA;
+      const key = docx ? "paragraphs" : "pages";
       let previous = 0;
-      const pages = array(value.pages, 20).map((row, index) => {
-        const page = record(row),
-          number = integer(page.number),
-          start = integer(page.start),
-          end = integer(page.end);
+      const spans = array(value[key], docx ? 128 : 20).map((row, index) => {
+        const span = record(row),
+          number = integer(span.number),
+          start = integer(span.start),
+          end = integer(span.end);
         if (
           number !== index + 1 ||
           start !== previous ||
@@ -557,23 +603,30 @@ export class LibraryClient {
         return { number, start, end };
       });
       if (
-        value.media_type !== "application/pdf" ||
-        !pages.length ||
+        (!docx && value.media_type !== "application/pdf") ||
+        value[docx ? "pages" : "paragraphs"] !== undefined ||
+        !spans.length ||
         previous !== length ||
         !hashPattern.test(text(value.text_sha256))
       )
         throw new LibraryClientError("invalid_response");
-      pdf = {
-        media_type: "application/pdf",
-        pages,
-        text_sha256: text(value.text_sha256),
-      };
+      locations = docx
+        ? {
+            media_type: DOCX_MEDIA,
+            paragraphs: spans,
+            text_sha256: text(value.text_sha256),
+          }
+        : {
+            media_type: "application/pdf",
+            pages: spans,
+            text_sha256: text(value.text_sha256),
+          };
     }
     return {
       ...identity(value),
       body,
       passages,
-      ...pdf,
+      ...locations,
       model_id: text(value.model_id),
       model_revision: text(value.model_revision),
       dimensions: integer(value.dimensions),

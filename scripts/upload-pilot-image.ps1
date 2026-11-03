@@ -1,6 +1,6 @@
-param([string]$Account, [switch]$Upload, [switch]$Library, [switch]$Pdf, [switch]$Recovery, [switch]$Performance)
+param([string]$Account, [switch]$Upload, [switch]$Library, [switch]$Pdf, [switch]$Recovery, [switch]$Performance, [switch]$Docx, [switch]$DocxCompat)
 $ErrorActionPreference = 'Stop'
-if (([int]$Library.IsPresent+[int]$Pdf.IsPresent+[int]$Recovery.IsPresent+[int]$Performance.IsPresent) -gt 1) { throw 'Choose one image variant.' }
+if (([int]$Library.IsPresent+[int]$Pdf.IsPresent+[int]$Recovery.IsPresent+[int]$Performance.IsPresent+[int]$Docx.IsPresent+[int]$DocxCompat.IsPresent) -gt 1) { throw 'Choose one image variant.' }
 $repoRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 $registry = 'asia-south1-docker.pkg.dev'
 $project = 'gather-development-511211'
@@ -27,6 +27,16 @@ if ($Performance) {
     $targetImage="$registry/$project/gather-pilot-images/library:performance-pilot-20261101"
     $expected=(Get-Content -Raw -LiteralPath (Join-Path $repoRoot 'output/processing-speed/image-verification.json') | ConvertFrom-Json).image
 }
+if ($Docx) {
+    $sourceImage='gather-library:docx-candidate'
+    $targetImage="$registry/$project/gather-pilot-images/library:docx-pilot-20261102"
+    $expected=(Get-Content -Raw -LiteralPath (Join-Path $repoRoot 'output/docx-pilot/image-verification.json') | ConvertFrom-Json).image
+}
+if ($DocxCompat) {
+    $sourceImage='gather-library:docx-compat-candidate'
+    $targetImage="$registry/$project/gather-pilot-images/library:docx-compat-20261103"
+    $expected=(Get-Content -Raw -LiteralPath (Join-Path $repoRoot 'output/docx-compatibility/image-verification.json') | ConvertFrom-Json).image
+}
 $dockerEndpoint = (& docker context inspect desktop-linux --format '{{.Endpoints.docker.Host}}').Trim()
 if ($LASTEXITCODE -ne 0 -or $dockerEndpoint -ne 'npipe:////./pipe/dockerDesktopLinuxEngine') {
     throw 'Expected local Docker Desktop Linux engine; no upload attempted.'
@@ -44,7 +54,7 @@ if (-not $Upload) {
 if (-not $Account -or $Account -notmatch '^[^\s@]+@[^\s@]+$') {
     throw 'Specify the signed-in personal Gather account using -Account.'
 }
-if (($Pdf -or $Recovery -or $Performance) -and $Account -ne 'kpanigrahi5602@gmail.com') { throw 'Gather pilot upload requires the approved personal Gather account.' }
+if (($Pdf -or $Recovery -or $Performance -or $Docx -or $DocxCompat) -and $Account -ne 'kpanigrahi5602@gmail.com') { throw 'Gather pilot upload requires the approved personal Gather account.' }
 $gcloudCommand = (Get-Command gcloud.cmd -ErrorAction Stop).Source
 $authRoot = Join-Path $repoRoot 'output/registry-upload-auth'
 $authDirectory = Join-Path $authRoot ([guid]::NewGuid().ToString('N'))
@@ -78,7 +88,7 @@ try {
     $digests = & docker --config $authDirectory --host $dockerEndpoint image inspect $targetImage --format '{{json .RepoDigests}}'
     if ($LASTEXITCODE -ne 0) { throw 'Push completed but local digest lookup failed; check the repository before retrying.' }
     $receipt = @{target=$targetImage; source_image=$imageId; registry_digests=($digests | ConvertFrom-Json)}
-    $receiptPath = Join-Path $repoRoot $(if($Performance){'output/processing-speed/upload-receipt.json'}elseif($Recovery){'output/recovery-fix/upload-receipt.json'}elseif($Pdf){'output/pdf-pilot/upload-receipt.json'}elseif($Library){'output/library-upload-receipt.json'}else{'output/pilot-upload-receipt.json'})
+    $receiptPath = Join-Path $repoRoot $(if($DocxCompat){'output/docx-compatibility/upload-receipt.json'}elseif($Docx){'output/docx-pilot/upload-receipt.json'}elseif($Performance){'output/processing-speed/upload-receipt.json'}elseif($Recovery){'output/recovery-fix/upload-receipt.json'}elseif($Pdf){'output/pdf-pilot/upload-receipt.json'}elseif($Library){'output/library-upload-receipt.json'}else{'output/pilot-upload-receipt.json'})
     [IO.File]::WriteAllText($receiptPath, ($receipt | ConvertTo-Json -Depth 4), [Text.UTF8Encoding]::new($false))
     Write-Host "Upload completed. Receipt: $receiptPath"
 } finally {

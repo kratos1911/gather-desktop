@@ -7,13 +7,9 @@ import hashlib
 import io
 import json
 import logging
-import os
 from pathlib import Path
 import re
-import subprocess
 import sys
-import threading
-import time
 
 PYPDF_VERSION = '6.21.4'
 PARSER_VERSION = 'pdf-pypdf6.21.4-text-v1'
@@ -22,7 +18,6 @@ MAX_PAGES = 20
 MAX_STREAM_BYTES = 262144
 MAX_REPLY_BYTES = 524288
 WALL_SECONDS = 5
-_SLOT = threading.BoundedSemaphore(1)
 
 
 class PDFError(ValueError):
@@ -117,48 +112,17 @@ def _extract(raw):
 
 def extract_pdf(raw, *, cancel=None):
     validate_bytes(raw)
-    if sys.platform != 'linux': raise PDFError('pdf_parser_unavailable')
-    if not _SLOT.acquire(blocking=False): raise PDFError('pdf_busy')
-    process = None
-    try:
-        if cancel is not None and cancel.is_set(): raise PDFError('pdf_cancelled')
-        # No DB passwords, tokens, provider configuration or file arguments.
-        process = subprocess.Popen([sys.executable,'-I','-B',str(Path(__file__).resolve()),'--child'],
-            stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,
-            env={'PATH':os.defpath,'LANG':'C.UTF-8','PYTHONDONTWRITEBYTECODE':'1'},
-            start_new_session=True)
-        deadline, first = time.monotonic()+WALL_SECONDS, True
-        while True:
-            if cancel is not None and cancel.is_set(): raise PDFError('pdf_cancelled')
-            remaining = deadline-time.monotonic()
-            if remaining<=0: raise PDFError('pdf_timeout')
-            try:
-                output,_ = process.communicate(input=raw if first else None,timeout=min(.1,remaining))
-                break
-            except subprocess.TimeoutExpired: first=False
-        if len(output)>MAX_REPLY_BYTES: raise PDFError('pdf_invalid_output')
-        try: result=json.loads(output)
-        except (ValueError,UnicodeError): raise PDFError('pdf_invalid') from None
-        if process.returncode!=0:
-            code=result.get('error') if isinstance(result,dict) else None
-            raise PDFError(code if code in ('pdf_encrypted','pdf_active_content','pdf_page_limit',
-                'pdf_text_required','pdf_stream_limit','pdf_text_limit','pdf_parser_unavailable') else 'pdf_invalid')
-        return validate_document(result,raw)
-    finally:
-        if process is not None:
-            if process.poll() is None: process.kill()
-            process.communicate(timeout=2)
-        _SLOT.release()
+    from services.worker.document_parser import extract
+    return extract(raw, script=Path(__file__).resolve(), validate=validate_document,
+        error=PDFError, prefix='pdf', child_errors={
+            'pdf_encrypted','pdf_active_content','pdf_page_limit','pdf_text_required',
+            'pdf_stream_limit','pdf_text_limit','pdf_parser_unavailable'}, cancel=cancel)
 
 
 def _child():
     try:
-        import resource
-        resource.setrlimit(resource.RLIMIT_AS,(192*1024*1024,192*1024*1024))
-        resource.setrlimit(resource.RLIMIT_CPU,(3,3))
-        resource.setrlimit(resource.RLIMIT_CORE,(0,0))
-        resource.setrlimit(resource.RLIMIT_FSIZE,(0,0))
-        resource.setrlimit(resource.RLIMIT_NOFILE,(32,32))
+        from services.worker.document_parser import limits
+        limits()
         result=_extract(sys.stdin.buffer.read(MAX_BYTES+1))
         output=json.dumps(result,ensure_ascii=False,separators=(',',':')).encode()
         if len(output)>MAX_REPLY_BYTES: raise PDFError('pdf_invalid_output')
@@ -171,4 +135,5 @@ def _child():
 
 
 if __name__=='__main__':
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
     raise SystemExit(_child() if sys.argv[1:]==['--child'] else 2)

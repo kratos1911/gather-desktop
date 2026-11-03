@@ -1,6 +1,6 @@
 # Current Gather state
 
-Updated 2 November 2026. Installer QA builds on checkpoint `2dbe85c` on
+Updated 3 November 2026. DOCX work builds on checkpoint `47f5516` on
 `codex/durable-ingestion-jobs`. This file is current state, not a session log. Repository context was audited/reorganized; see FILE_AUDIT.md.
 See [tasks](../TASKS.md) for next acceptance and [topic index](PROJECT_HUB.md)
 for contracts. [Previous state journal](history/2026-10-26/MEMORY-2026-10-26.md)
@@ -89,23 +89,32 @@ The account's separate older job `caae0a28-c50c-4789-9eef-51e62c1fdd7b`
 last reported processing, attempts 2/3, timeout, no publication. That is stored
 state, not evidence of a live worker. Do not claim/retry/delete it implicitly.
 
-Next: use captured timings for any further admission/selection/network latency
-work; warm inference was not the main delay on this small fixture. Cold starts,
-larger-file performance and clean-Windows installer QA remain separate acceptance.
-See WINDOWS_INSTALL_QA.md.
+DOCX is implemented and deployed through approved migration 15 and API revision
+00006-g5r. Native selection/review/Save reached ready on attempt 1; one real query
+returned paragraph citations and exact saved opening passed. Exactly two successful
+model requests were confirmed. Only the approved generated PDF fixture was cleaned;
+personal PDF/A's sources were unchanged. The DOCX remains for inspection. Frontend
+74 checks, affected Linux checks, 13 SQL groups, final 22 parser-image checks and
+native/installer builds pass. The D: installed copy and normal shortcut use this
+verified build. See DOCX_IMPORT.md for scope and immutable artifact/source evidence.
+
+Next product milestone: safe links/bookmarks in the same Library. Cold/larger-file
+performance, general Office compatibility and clean-Windows/signing QA remain
+separate acceptance. Both pilot B source slots are full; never raise quotas or
+delete retained/personal sources implicitly.
 Evidence/limits belong in TASKS.md and PRIVATE_DESKTOP_DELIVERY.md. General
-signup/uploads, DOCX/PPTX/OCR and chat remain gated/deferred.
+signup/uploads, PPTX/OCR and chat remain gated/deferred.
 
 ## Fixed scope and operating constraints
 
 - Cloud CPU inference: private Gather Cloud Run in Mumbai, project
   `gather-development-511211`. Use explicit personal account/project flags from
   the existing helpers. Never use protected Intrixshield/work defaults.
-- Supabase `fatolholcjxpwocnpzws`, Sydney session pooler. Fourteen migrations were
+- Supabase `fatolholcjxpwocnpzws`, Sydney session pooler. Fifteen migrations were
   applied manually; CLI migration history is not automatically populated.
 - Qwen/Qwen3-Embedding-0.6B, pinned revision/dimensions in the serving contracts;
   512-dimensional query/document space. No end-user weight downloads.
-- Private two-account TXT/Markdown/native-text PDF pilot: input <=64 KiB, three processing
+- Private two-account TXT/Markdown/native-text PDF/DOCX pilot: input <=64 KiB, three processing
   passages/model attempts; no automatic inference retries. Existing deadlines,
   quotas and per-process counters are not billing meters.
 - Normal min0/max1; the approved pilot budget is INR500 and alerts are not a

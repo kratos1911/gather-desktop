@@ -128,6 +128,12 @@ application regression rerun is warranted for unchanged application sources.
 
 ## Repeatable maintenance
 
+DOCX processing/metadata modules and the shared document_parser resource runner
+are active imports and disposable-child entry points; retain their tests and
+the DOCX migration/SQL fixture. DOCX adds a mode to existing image/deployment
+helpers instead of another deployment subsystem. Candidate files and generated
+OOXML fixtures remain under ignored output/docx-pilot/; none are user documents.
+
 scripts/verify_desktop_bundle.py is a manual, read-only Windows packaging entry
 point. Its synthetic tests belong to normal unittest discovery. Retain both:
 NSIS patches Tauri's bundle marker, so an installed executable has a different

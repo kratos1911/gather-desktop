@@ -1,4 +1,4 @@
-"""Reviewed PDF-only update of the existing Gather API. Preview by default."""
+"""Reviewed document-processing update of the existing Gather API; preview default."""
 import argparse
 import json
 from pathlib import Path
@@ -15,8 +15,8 @@ CALLER='gather-pilot-caller@'+PROJECT+'.iam.gserviceaccount.com'
 PREVIOUS='sha256:522826fd030d34807e17c2073c1b23d8376a30d215d936f738e74f83a4cc3724'
 
 
-def plan(recovery=False,performance=False,optimized=False):
-    verified=json.loads((ROOT/('output/processing-speed/image-verification.json' if performance else
+def plan(recovery=False,performance=False,optimized=False,docx=False,docx_compat=False):
+    verified=json.loads((ROOT/('output/docx-compatibility/image-verification.json' if docx_compat else 'output/docx-pilot/image-verification.json' if docx else 'output/processing-speed/image-verification.json' if performance else
         'output/recovery-fix/image-verification.json' if recovery else 'output/pdf-pilot/image-verification.json')).read_text(encoding='utf-8-sig'))
     image=verified['image']
     if not re.fullmatch('sha256:[0-9a-f]{64}',image) or verified.get('passed') is not True:
@@ -27,6 +27,9 @@ def plan(recovery=False,performance=False,optimized=False):
         previous=image if optimized else 'sha256:ae5a05c14d30aa1c259f962f766ece08ec5e778635f835a64041558c84b196d1'
         environment.update(GATHER_PIPELINE_TIMING='1',GATHER_WORKER_DB_REUSE='1' if optimized else '0',
                            GATHER_EARLY_MODEL_START='1' if optimized else '0')
+    if docx or docx_compat:
+        previous=('sha256:9fe1d130274debcfa00fce95e30484871776682caa4fa44d075e043c690493c1' if docx_compat else 'sha256:2c557d18f7e6d0a5dac28252663ea28234fbab9f0bffddc49224d8d8d50ae498')
+        environment.update(GATHER_DOCX_PILOT='1',GATHER_PIPELINE_TIMING='1',GATHER_WORKER_DB_REUSE='1',GATHER_EARLY_MODEL_START='1')
     return dict(project=PROJECT,region=REGION,service=SERVICE,
         image=f'{REGION}-docker.pkg.dev/{PROJECT}/gather-pilot-images/library@{image}',
         previous_image=previous,environment_update=environment,
@@ -39,10 +42,12 @@ def main():
     parser.add_argument('--recovery',action='store_true',help='Update the deployed PDF revision with the verified recovery image.')
     parser.add_argument('--performance',action='store_true',help='Use the performance image, initially with baseline behavior.')
     parser.add_argument('--optimized',action='store_true',help='Enable verified worker reuse and earlier readiness on the performance image.')
+    parser.add_argument('--docx',action='store_true',help='Deploy the verified DOCX extension; existing performance settings stay enabled.')
+    parser.add_argument('--docx-compat',action='store_true',help='Apply the approved per-part-cap correction; all other bounds stay unchanged.')
     args=parser.parse_args()
-    if (args.recovery and args.performance) or (args.optimized and not args.performance):
+    if sum((args.recovery,args.performance,args.docx,args.docx_compat))>1 or (args.optimized and not args.performance):
         parser.error('Choose one approved variant; optimized requires performance.')
-    value=plan(args.recovery,args.performance,args.optimized)
+    value=plan(args.recovery,args.performance,args.optimized,args.docx,args.docx_compat)
     if not args.apply: print(json.dumps(value,indent=2));return
     executable=shutil.which('gcloud.cmd')
     if executable is None:raise ValueError('gcloud_unavailable')
@@ -65,7 +70,7 @@ def main():
                {'GATHER_PIPELINE_TIMING':'1','GATHER_WORKER_DB_REUSE':'0','GATHER_EARLY_MODEL_START':'0'}.items()):
             raise ValueError('profiled_baseline_revision_required')
     receipt=dict(value,previous_revision=current['status'].get('latestReadyRevisionName'),completed=False)
-    path=ROOT/('output/processing-speed/deployment-optimized.json' if args.optimized else
+    path=ROOT/('output/docx-compatibility/deployment.json' if args.docx_compat else 'output/docx-pilot/deployment.json' if args.docx else 'output/processing-speed/deployment-optimized.json' if args.optimized else
         'output/processing-speed/deployment-baseline.json' if args.performance else
         'output/recovery-fix/deployment.json' if args.recovery else 'output/pdf-pilot/deployment.json')
     path.write_text(json.dumps(receipt,indent=2))
