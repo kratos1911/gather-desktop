@@ -82,7 +82,7 @@ model retries, no larger limits and no broad automation authorization from this 
 
 ## Latest verification
 
-DOCX: 74 frontend checks, affected Linux run 112 checks, final exact-image 22
+DOCX: 74 frontend checks, affected Linux run 112 checks, final corrective-image 23
 parser checks and 13 SQL groups pass, with builds/lint/native bundling. Approved
 migration/API update and native real import -> first-attempt ready -> cited
 search/open passed with exactly two successful embeddings. Installed update

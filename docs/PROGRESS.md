@@ -30,7 +30,12 @@ query, without replay. The generated DOCX remains available for inspection.
 
 Promoted the verified native build, preserved prior artifacts and updated the
 existing D: installation via NSIS /UPDATE with byte/marker verification and the
-normal shortcut preserved. Evidence and limits: DOCX_IMPORT.md and ignored
+normal shortcut preserved. A standard-producer fixture then exposed a valid
+style part above 256 KiB. The user approved a 512 KiB per-part cap with the
+1 MiB total unchanged. Final image 95bb6106... passed 23 parser checks and the
+bounded standard-producer/tokenizer check; deployed as 00007-x4t with no further
+model calls or native rebuild. Evidence: output/docx-compatibility/.
+Evidence and limits: DOCX_IMPORT.md and ignored
 output/docx-pilot/. Clean-Windows, signing and broad Office compatibility remain
 open; no GitHub push or protected workload change was made.
 

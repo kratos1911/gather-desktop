@@ -90,11 +90,11 @@ last reported processing, attempts 2/3, timeout, no publication. That is stored
 state, not evidence of a live worker. Do not claim/retry/delete it implicitly.
 
 DOCX is implemented and deployed through approved migration 15 and API revision
-00006-g5r. Native selection/review/Save reached ready on attempt 1; one real query
+00007-x4t (approved standard-Word style-part compatibility correction). Native selection/review/Save reached ready on attempt 1; one real query
 returned paragraph citations and exact saved opening passed. Exactly two successful
 model requests were confirmed. Only the approved generated PDF fixture was cleaned;
 personal PDF/A's sources were unchanged. The DOCX remains for inspection. Frontend
-74 checks, affected Linux checks, 13 SQL groups, final 22 parser-image checks and
+74 checks, affected Linux checks, 13 SQL groups, final 23 parser-image checks and
 native/installer builds pass. The D: installed copy and normal shortcut use this
 verified build. See DOCX_IMPORT.md for scope and immutable artifact/source evidence.
 

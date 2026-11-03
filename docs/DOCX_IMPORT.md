@@ -33,7 +33,7 @@ are unsupported. No claim of universal Office compatibility.
 
 - Keep 64 KiB original and extracted text limits and the private three-passage/
   model-attempt budget. At most 128 nonempty extracted paragraphs.
-- At most 128 ZIP members, 256 KiB per expanded member and 1 MiB total expanded
+- At most 128 ZIP members, 512 KiB per expanded member and 1 MiB total expanded
   bytes. Read and check actual bytes/CRC without extracting paths to disk.
   Reject duplicate/case-colliding or noncanonical paths, symlinks, encrypted
   entries, unsupported compression, malformed OPC types/relationships and active
@@ -92,15 +92,15 @@ of native file selection or hosted DOCX success follows from them.
 Local artifacts: output/docx-pilot/hosted-pilot.docx (generated nonsensitive file),
 Gather-DOCX-Candidate.exe, native-verification.json, staging/image-verification
 and Linux runtime receipts. No model was loaded or called during local checks.
-No new packages, services, IAM, secrets or larger limits. Existing scanner-open
+No new packages, services, IAM or secrets. The approved per-part correction is recorded below. Existing scanner-open
 base-image findings remain; do not infer security clearance from parser tests.
 
 ## Approved hosted/native acceptance
 
 The user approved migration 15, image
 sha256:9fe1d130274debcfa00fce95e30484871776682caa4fa44d075e043c690493c1
-and an update of only gather-library-pilot in Gather/Mumbai. Revision 00006-g5r
-is live with DOCX/PDF and the existing performance flags enabled. CPU 1/512 MiB,
+and an update of only gather-library-pilot in Gather/Mumbai. Initial revision 00006-g5r
+verified the live flow with DOCX/PDF and the existing performance flags enabled. CPU 1/512 MiB,
 min 0/max 1, identities/secrets, model deployment and INR500 allowance are unchanged.
 Seven hosted table/RLS/function-grant checks returned true. The browser-entered
 SQL matches the tested migration after comment/whitespace normalization; proof
@@ -148,3 +148,18 @@ changing production limits or replaying model requests.
 
 Primary references inspected: [Microsoft WordprocessingML structure](https://learn.microsoft.com/en-us/office/open-xml/word/structure-of-a-wordprocessingml-document)
 and [Python ZIP pitfalls](https://docs.python.org/3.13/library/zipfile.html#decompression-pitfalls).
+
+## 3 November compatibility correction
+
+A standard python-docx-produced fixture exposed a legitimate 438,131-byte style
+part rejected by the initial 256 KiB member cap. After explicit approval, the
+member cap is 512 KiB; total expansion remains 1 MiB, upload/text 64 KiB and all
+XML/parser/resource limits remain unchanged. The 826,304-byte expanded fixture
+passes the bounded Linux parser and pinned tokenizer with exactly the same body,
+paragraphs and model inputs as the live fixture. Final exact-image parser checks:
+23 passed. No additional inference was performed.
+
+Corrective image sha256:95bb6106f63623dc90949e34e58359d31ca7974c2478efdcd4a6ab10032e0844
+is deployed as gather-library-pilot-00007-x4t. The installed app needs no rebuild.
+Evidence: output/docx-compatibility/deployment.json, image-verification.json and
+linux-runtime.json. This fixture does not establish universal Word compatibility.

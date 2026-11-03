@@ -845,3 +845,11 @@ Word pages. Keep typed format staging wrappers over one common validator with
 existing publication/lease fences and private per-format metadata. Enable only
 through a trusted server capability after explicit hosted approval; reuse the
 same two-account pilot rather than opening general Office uploads.
+
+## 3 November 2026: accept bounded standard Word style parts
+
+The user approved raising only DOCX per-part expansion from 256 to 512 KiB
+after a standard-producer fixture exposed legitimate larger style parts. Keep
+total expansion at 1 MiB and upload/text/XML/resource limits unchanged. Include
+a standard-producer check alongside minimal security fixtures; unchanged extracted
+body/model inputs allow reuse of the existing live inference evidence.
