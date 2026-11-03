@@ -8,6 +8,12 @@ No virtualization features, other apps or protected workloads were changed.
 
 ## Current-PC evidence
 
+Windows console fix, 4 November: packaged debug pilots now use the Windows GUI
+subsystem, as release builds already did. Actual rebuilt/installed PE headers
+and a launch with zero owned console processes were verified. Closing the old
+Gather instance also removed its confirmed child console; other terminals stayed
+untouched. Safe evidence: output/console-startup/.
+
 Subsequent DOCX delivery updated this same D: installation through NSIS /UPDATE
 and preserved its normal shortcut. The verified native/installed/installer hashes
 and selected real DOCX flow are in [DOCX_IMPORT](DOCX_IMPORT.md). This is a

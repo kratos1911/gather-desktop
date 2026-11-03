@@ -3,6 +3,16 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 4 November 2026: remove the attached Windows console
+
+The installed debug binary used console subsystem 3 and owned a conhost child.
+Set every Windows build to GUI mode, retaining non-Windows behavior. Rebuilt
+frontend/native/installer, updated the existing D: installation and verified
+subsystem 2, exact bundle identity and zero console/shell descendants after launch.
+The old Gather/console exited normally; unrelated terminals stayed untouched.
+Rustfmt is absent in the installed toolchain; no component was installed. No
+frontend logic changed or model/cloud calls were made. Evidence: output/console-startup/.
+
 ## 4 November 2026: focused sign-in and window-title fix
 
 Signed-out Library controls no longer render; authentication reveals the workspace

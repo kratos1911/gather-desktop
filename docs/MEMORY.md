@@ -11,6 +11,8 @@ is historical and must not override this file.
 - The installed private window is titled Gather. Signed-out screens show branding,
   sign-in and privacy only; Library controls appear after authentication and are
   removed on logout. Private-testing scope lives in account settings. See UNIFIED_LIBRARY.md.
+  Windows builds now use the GUI subsystem in debug/release; the installed app
+  was relaunched with no owned console process. See WINDOWS_INSTALL_QA.md.
 - The private/dev interface uses one authenticated Library and semantic search.
   Owned imports appear in its grid; import review and diagnostics are secondary
   panels. A separate sample-only build remains fictional. See UNIFIED_LIBRARY.md.

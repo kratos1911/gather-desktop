@@ -82,6 +82,9 @@ model retries, no larger limits and no broad automation authorization from this 
 
 ## Latest verification
 
+Windows startup: installed PE subsystem 2 and a normal GUI launch with zero owned
+console processes verified; frontend/native/installer builds pass. No model calls.
+
 Sign-in UI: 75 frontend checks, lint/format, frontend/native/installer builds and
 installed binary identity pass. Native signed-out rendering and Gather window title
 were inspected; no model/cloud operations were run. See UNIFIED_LIBRARY.md.
