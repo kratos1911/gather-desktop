@@ -1,6 +1,6 @@
 # Current delivery tasks
 
-Updated 3 November 2026. Current state: [MEMORY](docs/MEMORY.md).
+Updated 4 November 2026. Current state: [MEMORY](docs/MEMORY.md).
 Work/evidence: [progress](docs/PROGRESS.md) and task-specific contracts.
 The [full previous task journal](docs/history/2026-10-26/TASKS-2026-10-26.md)
 preserves all earlier acceptance text and checkpoints.
@@ -81,6 +81,10 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-024 | Private ingestion performance implemented/verified | Profiled stages, bounded worker reuse and early readiness are deployed. Same small-PDF warm comparison: worker 39–41s -> 18–19s, observed ready 61s -> 33–35s. Cold/larger-file/p95 behavior is not established; [PROCESSING_SPEED](docs/PROCESSING_SPEED.md) |
 
 ## Latest verification
+
+Sign-in UI: 75 frontend checks, lint/format, frontend/native/installer builds and
+installed binary identity pass. Native signed-out rendering and Gather window title
+were inspected; no model/cloud operations were run. See UNIFIED_LIBRARY.md.
 
 DOCX: 74 frontend checks, affected Linux run 112 checks, final corrective-image 23
 parser checks and 13 SQL groups pass, with builds/lint/native bundling. Approved

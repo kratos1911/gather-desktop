@@ -3,6 +3,18 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 4 November 2026: focused sign-in and window-title fix
+
+Signed-out Library controls no longer render; authentication reveals the workspace
+and logout removes it. Moved private-testing scope into settings and changed the
+native title to Gather without changing installer identity. All 75 frontend checks,
+lint/format and frontend/native/installer builds passed. Updated the existing D:
+installation, verified exact NSIS marker-only byte differences and inspected the
+normal native sign-in screen. Minimum-size visual QA was not established by the
+resize attempt. NSIS error623 in the restricted runner resolved with the existing
+host packager; no system/dependency change. No model calls or cloud changes.
+Safe artifacts/previous binaries: output/signin-ui/. Kept the checkpoint local.
+
 ## 2–3 November 2026: bounded DOCX import and native/cloud acceptance
 
 Implemented standard-library ZIP/XML main-body extraction with expansion/node/

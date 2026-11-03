@@ -4,7 +4,7 @@
   "app": {
     "windows": [
       {
-        "title": "Gather Private Pilot",
+        "title": "Gather",
         "width": 1280,
         "height": 900,
         "minWidth": 640,

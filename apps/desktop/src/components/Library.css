@@ -26,6 +26,17 @@
   color: #171a20;
   background: var(--lib-accent);
 }
+.gather-library.signed-out {
+  grid-template-columns: minmax(0, 1fr);
+}
+.signed-out .library-main {
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+}
+.signed-out .library-welcome {
+  flex: 1;
+}
 .gather-library button,
 .gather-library input,
 .gather-library select {
@@ -425,11 +436,6 @@
   color: var(--lib-muted);
   font-size: 15px;
   line-height: 1.9;
-}
-.library-welcome .welcome-scope {
-  color: var(--lib-sage);
-  font-size: 12px;
-  margin-top: 30px;
 }
 .library-auth {
   display: grid;

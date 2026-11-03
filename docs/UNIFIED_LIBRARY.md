@@ -5,6 +5,11 @@ No new backend, schema, inference configuration or deployment.
 
 ## User flow and boundaries
 
+The signed-out screen contains branding, sign-in and privacy access only. Search,
+filters, navigation and Add file mount only after authentication and disappear
+on logout. The window title is Gather; private-testing scope is disclosed in account
+settings. Keep the existing installer identity/shortcut to preserve installed updates.
+
 Sign in -> Everything shows owned metadata -> Add file -> local review and
 explicit cloud confirmation -> save -> automatic processing -> this same grid
 updates -> submit the single semantic search -> open its exact saved version.

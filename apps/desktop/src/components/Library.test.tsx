@@ -122,6 +122,28 @@ async function login() {
 }
 
 describe("unified authenticated library (synthetic HTTP fixtures)", () => {
+  it("shows only sign-in and branding before authentication without library requests", () => {
+    const send = vi.fn<typeof fetch>();
+    setup(send);
+    render(<Library />);
+    expect(
+      screen.getByRole("heading", { name: "Sign in to Gather" }),
+    ).toBeTruthy();
+    expect(screen.getByLabelText("Password")).toBeTruthy();
+    expect(screen.queryByLabelText("Search your library")).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "Search saved files" }),
+    ).toBeNull();
+    expect(screen.queryByRole("button", { name: "Add file" })).toBeNull();
+    expect(screen.queryByRole("group", { name: "File types" })).toBeNull();
+    expect(
+      screen.queryByRole("navigation", { name: "Library navigation" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "Connection & account" }),
+    ).toBeNull();
+    expect(send).not.toHaveBeenCalled();
+  });
   it("routes the app to one real library and one explicit semantic search, with exact text and confirmed deletion", async () => {
     const send = vi
       .fn<typeof fetch>()
@@ -134,6 +156,8 @@ describe("unified authenticated library (synthetic HTTP fixtures)", () => {
     render(<App />);
     await screen.findByLabelText("Password");
     await login();
+    expect(screen.getByRole("button", { name: "Add file" })).toBeTruthy();
+    expect(screen.getByRole("group", { name: "File types" })).toBeTruthy();
     expect(screen.getAllByRole("textbox")).toHaveLength(1);
     expect(screen.queryByText("Operator pilot")).toBeNull();
     expect(screen.queryByText("The art of remembering")).toBeNull();
@@ -314,6 +338,9 @@ describe("unified authenticated library (synthetic HTTP fixtures)", () => {
     fireEvent.click(
       screen.getByRole("button", { name: "Connection & account" }),
     );
+    expect(
+      screen.getByText("Private testing · two existing accounts"),
+    ).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Sign out" }));
     resolve(results());
     await waitFor(() =>
@@ -321,9 +348,8 @@ describe("unified authenticated library (synthetic HTTP fixtures)", () => {
     );
     expect(screen.queryByText(body)).toBeNull();
     expect(screen.queryByRole("list", { name: "Search results" })).toBeNull();
-    expect(
-      (screen.getByLabelText("Search your library") as HTMLInputElement).value,
-    ).toBe("");
+    expect(screen.queryByLabelText("Search your library")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Add file" })).toBeNull();
   });
   it("keeps failed listing retry explicit and does not claim readiness or issue automatic model checks", async () => {
     const send = vi

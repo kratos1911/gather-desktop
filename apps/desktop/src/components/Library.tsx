@@ -279,6 +279,7 @@ export default function Library() {
   useEffect(() => {
     const focusSearch = (event: KeyboardEvent) => {
       if (
+        state.signedIn &&
         event.ctrlKey &&
         event.key.toLowerCase() === "k" &&
         !panel &&
@@ -291,7 +292,7 @@ export default function Library() {
     };
     document.addEventListener("keydown", focusSearch);
     return () => document.removeEventListener("keydown", focusSearch);
-  }, [panel, state.opened, deleting]);
+  }, [panel, state.signedIn, state.opened, deleting]);
 
   function act(work: () => Promise<void>) {
     const started = epoch.current;
@@ -394,148 +395,166 @@ export default function Library() {
   const showResults = state.results !== null;
 
   return (
-    <div className="gather-library">
-      <aside className="library-rail" aria-label="Workspace navigation">
-        <button
-          className="library-mark"
-          aria-label="Gather library"
-          disabled={state.busy}
-          onClick={everything}
-        >
-          g<span>.</span>
-        </button>
-        <button
-          className="rail-button selected"
-          aria-label="Everything in your library"
-          disabled={state.busy}
-          onClick={everything}
-        >
-          <Icon kind="grid" />
-        </button>
-        <span className="rail-spacer" />
-        <button
-          className="rail-button"
-          aria-label="Connection & account"
-          onClick={() => setPanel("settings")}
-        >
-          <Icon kind="settings" />
-        </button>
-      </aside>
+    <div
+      className={
+        state.signedIn ? "gather-library" : "gather-library signed-out"
+      }
+    >
+      {state.signedIn && (
+        <aside className="library-rail" aria-label="Workspace navigation">
+          <button
+            className="library-mark"
+            aria-label="Gather library"
+            disabled={state.busy}
+            onClick={everything}
+          >
+            g<span>.</span>
+          </button>
+          <button
+            className="rail-button selected"
+            aria-label="Everything in your library"
+            disabled={state.busy}
+            onClick={everything}
+          >
+            <Icon kind="grid" />
+          </button>
+          <span className="rail-spacer" />
+          <button
+            className="rail-button"
+            aria-label="Connection & account"
+            onClick={() => setPanel("settings")}
+          >
+            <Icon kind="settings" />
+          </button>
+        </aside>
+      )}
       <main className="library-main">
         <header className="library-topbar">
           <span className="library-wordmark">
             Gather<span>.</span>
           </span>
-          <nav aria-label="Library navigation">
-            <button
-              className="top-link current"
-              disabled={state.busy}
-              onClick={everything}
-            >
-              Everything
-            </button>
-            <button
-              className="add-file"
-              disabled={
-                !state.signedIn ||
-                state.busy ||
-                !!state.pendingImport ||
-                !textFiles
-              }
-              onClick={() => setPanel("import")}
-            >
-              <Icon kind="add" />
-              Add file
-            </button>
-          </nav>
-        </header>
-        <h1 className="sr-only">Your library</h1>
-        <form
-          className="library-search"
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (
-              !state.signedIn ||
-              state.busy ||
-              !query.trim() ||
-              knownEmpty ||
-              state.modelStatus?.state === "model_budget_exhausted"
-            )
-              return;
-            setSubmitted(query.trim());
-            act(() => workspace.search(query.trim()));
-          }}
-        >
-          <label className="sr-only" htmlFor="library-search">
-            Search your library
-          </label>
-          <input
-            id="library-search"
-            ref={search}
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Find what’s on your mind…"
-            autoComplete="off"
-            disabled={!state.signedIn || state.busy}
-            maxLength={2000}
-          />
-          <button
-            className="search-submit"
-            aria-label="Search saved files"
-            disabled={
-              !state.signedIn ||
-              state.busy ||
-              !query.trim() ||
-              knownEmpty ||
-              state.modelStatus?.state === "model_budget_exhausted"
-            }
-          >
-            <Icon kind="search" />
-            <span>Search</span>
-          </button>
-        </form>
-        <div className="library-controls">
-          <div className="library-filters" role="group" aria-label="File types">
-            {filters
-              .filter(
-                (value) =>
-                  (value !== "PDFs" ||
-                    state.pdfEnabled ||
-                    state.sources.some((source) =>
-                      /\.pdf$/i.test(source.title),
-                    )) &&
-                  (value !== "Word documents" ||
-                    state.docxEnabled ||
-                    state.sources.some((source) =>
-                      /\.docx$/i.test(source.title),
-                    )),
-              )
-              .map((value) => (
-                <button
-                  key={value}
-                  className={
-                    filter === value ? "filter-chip active" : "filter-chip"
-                  }
-                  aria-pressed={filter === value}
-                  onClick={() => setFilter(value)}
-                >
-                  {value}
-                </button>
-              ))}
-          </div>
           {state.signedIn && (
-            <button
-              className="quiet-button"
-              disabled={state.busy}
-              onClick={() => {
-                setSubmitted(null);
-                act(() => workspace.loadSources());
+            <nav aria-label="Library navigation">
+              <button
+                className="top-link current"
+                disabled={state.busy}
+                onClick={everything}
+              >
+                Everything
+              </button>
+              <button
+                className="add-file"
+                disabled={
+                  !state.signedIn ||
+                  state.busy ||
+                  !!state.pendingImport ||
+                  !textFiles
+                }
+                onClick={() => setPanel("import")}
+              >
+                <Icon kind="add" />
+                Add file
+              </button>
+            </nav>
+          )}
+        </header>
+        <h1 className="sr-only">
+          {state.signedIn ? "Your library" : "Sign in to Gather"}
+        </h1>
+        {state.signedIn && (
+          <>
+            <form
+              className="library-search"
+              onSubmit={(event) => {
+                event.preventDefault();
+                if (
+                  !state.signedIn ||
+                  state.busy ||
+                  !query.trim() ||
+                  knownEmpty ||
+                  state.modelStatus?.state === "model_budget_exhausted"
+                )
+                  return;
+                setSubmitted(query.trim());
+                act(() => workspace.search(query.trim()));
               }}
             >
-              Refresh library
-            </button>
-          )}
-        </div>
+              <label className="sr-only" htmlFor="library-search">
+                Search your library
+              </label>
+              <input
+                id="library-search"
+                ref={search}
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Find what’s on your mind…"
+                autoComplete="off"
+                disabled={!state.signedIn || state.busy}
+                maxLength={2000}
+              />
+              <button
+                className="search-submit"
+                aria-label="Search saved files"
+                disabled={
+                  !state.signedIn ||
+                  state.busy ||
+                  !query.trim() ||
+                  knownEmpty ||
+                  state.modelStatus?.state === "model_budget_exhausted"
+                }
+              >
+                <Icon kind="search" />
+                <span>Search</span>
+              </button>
+            </form>
+            <div className="library-controls">
+              <div
+                className="library-filters"
+                role="group"
+                aria-label="File types"
+              >
+                {filters
+                  .filter(
+                    (value) =>
+                      (value !== "PDFs" ||
+                        state.pdfEnabled ||
+                        state.sources.some((source) =>
+                          /\.pdf$/i.test(source.title),
+                        )) &&
+                      (value !== "Word documents" ||
+                        state.docxEnabled ||
+                        state.sources.some((source) =>
+                          /\.docx$/i.test(source.title),
+                        )),
+                  )
+                  .map((value) => (
+                    <button
+                      key={value}
+                      className={
+                        filter === value ? "filter-chip active" : "filter-chip"
+                      }
+                      aria-pressed={filter === value}
+                      onClick={() => setFilter(value)}
+                    >
+                      {value}
+                    </button>
+                  ))}
+              </div>
+              {state.signedIn && (
+                <button
+                  className="quiet-button"
+                  disabled={state.busy}
+                  onClick={() => {
+                    setSubmitted(null);
+                    act(() => workspace.loadSources());
+                  }}
+                >
+                  Refresh library
+                </button>
+              )}
+            </div>
+          </>
+        )}
         {!panel && !deleting && !state.opened && notice}
         {!state.signedIn ? (
           <section
@@ -551,9 +570,6 @@ export default function Library() {
                 Your saved files, together in one quiet place.
                 <br />
                 Sign in to open your private library.
-              </p>
-              <p className="welcome-scope">
-                Private pilot · cloud processing · two existing accounts
               </p>
             </div>
             <form
@@ -957,6 +973,9 @@ export default function Library() {
             />
           ) : panel === "settings" ? (
             <>
+              <p className="library-footnote">
+                Private testing · two existing accounts
+              </p>
               <p>
                 {state.docxEnabled
                   ? state.pdfEnabled

@@ -1,6 +1,6 @@
 # Current Gather state
 
-Updated 3 November 2026. DOCX work builds on checkpoint `47f5516` on
+Updated 4 November 2026. DOCX work builds on checkpoint `47f5516` on
 `codex/durable-ingestion-jobs`. This file is current state, not a session log. Repository context was audited/reorganized; see FILE_AUDIT.md.
 See [tasks](../TASKS.md) for next acceptance and [topic index](PROJECT_HUB.md)
 for contracts. [Previous state journal](history/2026-10-26/MEMORY-2026-10-26.md)
@@ -8,6 +8,9 @@ is historical and must not override this file.
 
 ## What is verified
 
+- The installed private window is titled Gather. Signed-out screens show branding,
+  sign-in and privacy only; Library controls appear after authentication and are
+  removed on logout. Private-testing scope lives in account settings. See UNIFIED_LIBRARY.md.
 - The private/dev interface uses one authenticated Library and semantic search.
   Owned imports appear in its grid; import review and diagnostics are secondary
   panels. A separate sample-only build remains fictional. See UNIFIED_LIBRARY.md.
