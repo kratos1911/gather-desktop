@@ -1,46 +1,170 @@
-# Personal knowledge library
+# Gather
 
-A Windows desktop application being rebuilt to find saved content by meaning and answer questions about selected documents with source citations.
+Find saved information by meaning, without remembering exact filenames.
 
-**Current status: step 1, interface foundation.** The new application is in `apps/desktop`. It shows clearly labelled synthetic content. Real import, embeddings, Supabase and model inference are not connected yet. The root Python scripts remain legacy; the privacy audit removed remote preview requests and sensitive console output. Original data folders remain untouched.
+Gather is a Windows knowledge library with a unified collection, cloud-powered
+semantic search and citations back to the exact saved source.
 
-## Start here
+**Status — 4 November 2026:** working, restricted private pilot. Selected
+TXT/Markdown, native-text PDF and DOCX flows have been verified against the
+hosted backend and Windows app. Public signup and production distribution are
+not released. The separate default design preview uses fictional sample data.
 
-- [Product requirements](docs/PRD.md)
-- [Architecture](docs/ARCHITECTURE.md)
-- [Design entry point](docs/DESIGN.md)
-- [Development rules](RULES.md)
-- [Tasks and next acceptance criteria](TASKS.md)
-- [Current state](docs/MEMORY.md)
-- [Decision log](docs/DECISIONS.md)
-- [Test plan](docs/TEST_PLAN.md)
-- [Security requirements](docs/SECURITY.md)
+**Current implementation:** [`codex/durable-ingestion-jobs`](https://github.com/kratos1911/gather-desktop/tree/codex/durable-ingestion-jobs).
+The default `main` branch is an earlier baseline; use the implementation branch
+for the current source, setup scripts and linked documentation.
 
-Each task follows read, plan, implement, test, review, fix, commit and documentation updates. The desktop stack remains unchanged. `.env.example` lists future public configuration only; the preview does not read it yet.
+## What works today
 
-- [Desktop run instructions](apps/desktop/README.md)
-- [Project blueprint and milestones](docs/PROJECT_BLUEPRINT.md)
-- [Model choices and benchmark plan](docs/MODEL_STRATEGY.md)
-- [Design direction](docs/DESIGN_DIRECTION.md)
-- [Progress and verification](docs/PROGRESS.md)
+| Capability | Implemented and verified scope |
+| --- | --- |
+| One connected Library | Sign in, load owned sources, filter files and restore the saved collection after signing in again. Credentials remain in memory. |
+| TXT and Markdown | Select a UTF-8 file, review it locally, explicitly save it and process it automatically. |
+| Native-text PDFs | Extract selectable text with page references; preserve the immutable original and exact saved version. |
+| Word documents | Extract supported DOCX main-body text, including table-cell paragraphs, with paragraph citations. |
+| Reliable processing | Durable jobs, idempotent submission, bounded claims/leases/retries, truthful states and explicit failure recovery. |
+| Semantic search | Use matching pinned document/query embeddings, retrieve published passages and assemble bounded source context. |
+| Source-grounded reading | Open the exact owned published version; show text offsets, PDF pages or extracted DOCX paragraphs. |
+| Deletion and cleanup | Hide deleted sources immediately, prevent stale publication and report physical cleanup as complete only after confirmation. |
+| Windows delivery | Built the native executable and unsigned installer; verified installation, sign-in, restoration, opening and installer lifecycle on the development PC. |
 
-From PowerShell in this folder:
+The connected Windows build uses hosted services. End users do not need a local
+API server, Python, Node.js or downloaded model weights. Clean-machine acceptance
+and release signing remain open.
 
-```powershell
-./scripts/desktop.ps1 desktop
+## How it works
+
+```mermaid
+flowchart LR
+    App[Windows app<br/>React + Tauri] -->|Verified user session| API[Library API<br/>Cloud Run]
+    API <-->|Auth and owned source reads| DB[(Supabase<br/>Auth + PostgreSQL + pgvector)]
+    API -->|Durable import job| Worker[Worker<br/>Validate, extract and chunk]
+    Worker -->|Document embeddings| Model[Private CPU inference<br/>Qwen3-Embedding-0.6B]
+    Model --> Worker
+    Worker -->|Private staging and atomic publication| DB
+    API -->|Query embeddings| Model
 ```
 
-For a fresh checkout, install the prerequisites in the desktop instructions and run `./scripts/desktop.ps1 install` first. The helper avoids the broken npm shim detected on the development machine without modifying global PATH.
+**Import → validate → save job → extract/chunk → embed → publish → search → open → delete.**
 
-## Intended stack
+- The API and private model service run on Google Cloud Run in Mumbai. Supabase
+  in Sydney currently holds authentication, originals, jobs, metadata and vectors.
+- Document and query embeddings share a pinned model revision and 512-dimensional
+  space. Model execution stays in the cloud.
+- Only a complete, validated version becomes searchable. Replacement processing
+  preserves the previous published version until the new version is ready.
+- Ownership is enforced through verified sessions and database/API checks.
+  The frontend receives neither privileged database credentials nor Google caller tokens.
+- Cancelled, expired, deleted or superseded work cannot publish late results.
+  Embedding requests are never automatically replayed after an uncertain failure.
 
-Tauri + React + TypeScript, a local Python processing worker, Supabase Auth/Storage/Postgres with pgvector, and locally executed models. Starting candidates: EmbeddingGemma 300M (text search), SigLIP 2 Base (photos), Qwen3.5 4B (chat/vision) and PaddleOCR PP-OCRv5 (scanned text). Quantization, model versions, dimensions and runtime performance remain benchmark decisions.
+See the [architecture](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/ARCHITECTURE.md), [publication contract](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/TEXT_PUBLICATION.md)
+and [security boundaries](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/SECURITY.md) for details.
 
-The service budget is zero recurring fees. Supabase free-tier capacity is finite and search needs connectivity. Model downloads and device hardware requirements will be explicit during setup.
+## Technology
 
-## Repository hygiene
+| Layer | Current implementation |
+| --- | --- |
+| Desktop | Tauri 2 / Rust shell, React 19, TypeScript, Vite |
+| API and processing | Python, ASGI, bounded background processing and disposable parser helpers |
+| Authentication and storage | Supabase Auth, PostgreSQL and pgvector; private originals/staging |
+| Embeddings | Self-hosted Qwen/Qwen3-Embedding-0.6B, CPU inference, 512 dimensions |
+| Hosting | Google Cloud Run and Artifact Registry |
+| Verification | Vitest / Testing Library, Python unittest, isolated SQL acceptance checks and selected native/cloud flows |
 
-Private files, model indexes, secrets, local Python environments and build outputs are ignored by `.gitignore`. Do not force-add those paths. No original files are automatically imported into the new app or uploaded to a cloud service.
+R2 originals, additional formats and bookmark enrichment are planned rather than
+the current deployed storage/import implementation.
 
-- [Design avoid list](docs/DESIGN_AVOID_LIST.md)
-- [Privacy and release audit](docs/PRIVACY_RELEASE_AUDIT.md)
+## Progress and evidence
+
+- **Connected Windows/cloud flow:** sign in → select/review/save → automatic
+  ready → custom semantic search → exact saved text. Supported deletion/cleanup
+  was also verified through the app.
+- **DOCX milestone:** the generated test document reached ready on attempt 1.
+  Search and paragraph-cited opening passed with exactly two real embedding
+  requests: one document request and one query request. A subsequent compatibility
+  correction accepted a standard-producer Word fixture without further inference.
+- **Focused verification:** 74 frontend checks, an affected Linux backend run of
+  112 checks, 23 final parser-image checks and 13 SQL acceptance groups passed
+  for the DOCX milestone, alongside frontend/native/installer builds. Groups
+  overlap and must not be added into one unique test count. Synthetic checks
+  and live semantic evidence are distinguished in the linked notes.
+- **Measured warm-path improvement:** in a four-run comparison on the same small
+  generated PDF, worker time fell from approximately 39–41 seconds to 18–19
+  seconds; observed ready time fell from about 61 seconds to 33–35 seconds.
+  In-job database connections fell from 12 to 2. These are fixture measurements,
+  not cold-start, large-document or p95 guarantees.
+
+Detailed evidence: [DOCX](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/DOCX_IMPORT.md), [PDF](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/PDF_IMPORT.md),
+[private text files](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/PRIVATE_TEXT_FILES.md), [processing performance](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/PROCESSING_SPEED.md),
+[Windows install QA](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/WINDOWS_INSTALL_QA.md) and [progress journal](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/PROGRESS.md).
+
+## Current limits and remaining work
+
+- Access is restricted to two existing pilot accounts; this is not a public service.
+- Original files and extracted text are bounded to 64 KiB, with at most three
+  processing passages. Additional parser and request limits apply.
+- PDFs require selectable text on every page, with at most 20 pages. Scanned
+  documents, OCR and image indexing are not implemented.
+- DOCX support covers a bounded subset of main-body text, not Word page layout,
+  images or universal Office compatibility. Legacy DOC, active/ambiguous content
+  and unsupported packages are rejected. Expanded archives are capped at 1 MiB
+  total and 512 KiB per member.
+- Cold starts and broader performance remain limitations. Failed processing
+  requires explicit recovery within existing attempt limits.
+- The installer is unsigned. A clean Windows environment, cross-version upgrades,
+  broader accessibility/security/dependency review and public-release gates remain open.
+- **Next:** safe links/bookmarks in the same Library. PPTX, photo/OCR retrieval
+  and broader quality evaluation remain planned; chat is deferred.
+
+Current scope and release gates: [MEMORY](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/MEMORY.md), [TASKS](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/TASKS.md)
+and [privacy/release audit](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/PRIVACY_RELEASE_AUDIT.md).
+
+## Run and develop
+
+### Sample UI preview
+
+From the repository root in PowerShell, with a supported Node.js runtime installed:
+
+```powershell
+git switch codex/durable-ingestion-jobs
+.\scripts\desktop.ps1 install
+.\scripts\desktop.ps1 preview
+```
+
+Open [localhost:1420](http://localhost:1420/). This default preview is sample-only;
+it does not establish a live account, upload a document or run semantic inference.
+Use the runtime helper rather than an outdated Node installation on PATH.
+
+### Connected private build
+
+The private Windows app uses the configured hosted API and existing allowed
+accounts. A fresh clone does not include operator credentials, private configuration,
+model caches or built installers, and does not automatically provision cloud services.
+See [private desktop delivery](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/PRIVATE_DESKTOP_DELIVERY.md) and
+[hosted setup](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/HOSTED_SUPABASE_SETUP.md) before configuring a connected build.
+Native development also needs the Tauri Windows prerequisites.
+
+### Focused checks
+
+```powershell
+.\scripts\python.ps1 -m unittest tests.worker.test_docx_processing -q
+.\scripts\desktop.ps1 test
+.\scripts\desktop.ps1 build
+```
+
+Select checks appropriate to the change from the [test plan](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/TEST_PLAN.md).
+Model benchmarks, isolated database tests and paid cloud operations are explicit
+tasks, not prerequisites for every edit.
+
+## Repository guide
+
+- [Project hub / Obsidian navigation](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/PROJECT_HUB.md)
+- [Product requirements](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/PRD.md) and [current architecture](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/ARCHITECTURE.md)
+- [Current state](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/MEMORY.md), [task register](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/TASKS.md) and [decisions](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/DECISIONS.md)
+- [Working instructions](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/AGENTS.md) and [development workflow](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/RULES.md)
+- [File retention policy](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/FILE_AUDIT.md) and [historical snapshots](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/history/README.md)
+
+Keep private documents, credentials, models and build outputs out of Git.
+Historical prototypes in [legacy](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/legacy/README.md) are not the current app and
+must not be run against personal documents. Preserve dependency licences and provenance.
