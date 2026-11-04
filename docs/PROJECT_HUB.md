@@ -30,6 +30,7 @@ reload the full conversation or historical snapshots for routine coding.
 - [[docs/EMPTY_LIBRARY_SEARCH]]: no inference when publication is proven empty
 - [[docs/MODEL_AVAILABILITY]]: explicit readiness, fixed errors, measured limits
 - [[docs/LIBRARY_API]], [[docs/LIBRARY_SESSION]], [[docs/SERVICE_CLIENTS]]
+- [[docs/SEARCH_AUTH_SCOPE]]: single Auth verification per search, request boundaries and observed timing
 - [[docs/DESIGN_AVOID_LIST]], [[docs/DESIGN_DIRECTION]]
 - [[docs/CLI_WORKFLOW]]: scoped writer/reviewer handoffs
 

@@ -215,6 +215,15 @@
       "y": 500,
       "width": 330,
       "height": 220
+    },
+    {
+      "id": "search-auth",
+      "type": "file",
+      "file": "docs/SEARCH_AUTH_SCOPE.md",
+      "x": 1500,
+      "y": 780,
+      "width": 330,
+      "height": 220
     }
   ],
   "edges": [
@@ -330,6 +339,14 @@
       "toNode": "vector",
       "toSide": "right",
       "label": "query vectors only"
+    },
+    {
+      "id": "search-auth-cache",
+      "fromNode": "search-auth",
+      "fromSide": "top",
+      "toNode": "query-cache",
+      "toSide": "bottom",
+      "label": "fresh per request"
     }
   ]
 }

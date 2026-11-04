@@ -1,5 +1,7 @@
 """Server-only fixed-service adapters; never expose service credentials to UI."""
 import base64
+from contextlib import contextmanager
+import threading
 import time
 from uuid import UUID
 
@@ -37,6 +39,36 @@ class SessionClient:
         _claims(token, 'authenticated')
         self._headers = {'apikey': public_key, 'Authorization': 'Bearer '+token}
         self._cancel = cancel
+        self._search_auth = None
+        self._search_auth_lock = threading.Lock()
+
+    @contextmanager
+    def search_authentication(self):
+        """Share one fresh Auth response within this synchronous search only.
+
+        Bound to this immutable bearer/origin and thread, cleared on every exit.
+        This is not an identity/authorization cache between requests.
+        """
+        if not self._search_auth_lock.acquire(blocking=False):
+            raise TransportError('busy')
+        try:
+            self._search_auth = dict(thread=threading.get_ident(),base=self._base,
+                                     headers=dict(self._headers),user=None)
+            yield
+        finally:
+            self._search_auth = None
+            self._search_auth_lock.release()
+
+    def _search_binding(self):
+        scope = self._search_auth
+        if scope is not None:
+            if scope['thread'] != threading.get_ident():
+                raise TransportError('busy')
+            if scope['base'] != self._base or scope['headers'] != self._headers:
+                raise TransportError('invalid_configuration')
+        if self._cancel is not None and self._cancel.is_set():
+            raise TransportError('cancelled')
+        return scope
 
     def __call__(self, method, path, payload=None):
         routes = {
@@ -63,8 +95,21 @@ class SessionClient:
         if method != expected or (payload is not None if fields is None else
                 not isinstance(payload, dict) or set(payload) != fields):
             raise TransportError('invalid_request')
-        return request_json(self._base, path, self._headers, payload,
-                            timeout=5, cancel=self._cancel)
+        scope = self._search_binding()
+        if path == '/auth/v1/user' and scope is not None and scope['user'] is not None:
+            return dict(scope['user'])
+        result = request_json(self._base, path, self._headers, payload,
+                              timeout=5, cancel=self._cancel)
+        self._search_binding()
+        if path == '/auth/v1/user' and scope is not None:
+            # Retain only a canonical verified user ID, never Auth profile data.
+            try:
+                owner = result['id']
+                if type(owner) is str and str(UUID(owner)) == owner:
+                    scope['user'] = {'id':owner}
+            except (KeyError,TypeError,ValueError,AttributeError):
+                pass  # Existing caller validation rejects malformed Auth replies.
+        return result
 
 
 class InferenceClient:

@@ -1,5 +1,6 @@
 """HTTP -> real coordinators -> synthetic repository/provider. NOT SQL/RLS proof."""
 import base64
+from contextlib import nullcontext
 import hashlib
 import http.client
 import json
@@ -76,12 +77,12 @@ class FixtureStore:
             self.deleted = True
             return True
         if not visible: return []
-        if path.endswith('list_library_sources'):
+        if path.endswith(('list_library_sources','list_library_sources_with_recovery')):
             return [dict(source_id=self.item['source_id'],title=self.title,kind='file',
                 created_at='2026-10-26T01:00:00.000001Z',job_id=self.job['id'],
                 processing_version_id=self.item['version_id'],state=self.job['state'],attempts=1,error_code=None,
                 published_version_id=self.item['version_id'] if self.job['state']=='ready' else None)]
-        if path.endswith('source_processing_status'):
+        if path.endswith(('source_processing_status','source_processing_status_with_recovery')):
             if payload['p_source'] != self.item['source_id']: return []
             return [dict(job_id=self.job['id'],version_id=self.item['version_id'],state=self.job['state'],attempts=1,error_code=None)]
         if self.job['state'] != 'ready': return []
@@ -115,6 +116,7 @@ class FlowTests(unittest.TestCase):
         owners = dict(zip(('a','b'),sorted(PILOT_USERS))) if private_files else {key:str(uuid4()) for key in ('a','b')}
         def session(token,cancel):
             api = Mock(spec=SessionClient)
+            api.search_authentication.side_effect = nullcontext
             def request(method,path,payload=None):
                 if token not in owners: raise ValueError('invalid fixture session')
                 if path == '/auth/v1/user': return {'id':owners[token]}

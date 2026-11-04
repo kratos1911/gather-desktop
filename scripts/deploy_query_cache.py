@@ -19,26 +19,30 @@ SECRETS={'token':('gather-upstash-rest-token','/secrets/gather_upstash/token'),
          'key':('gather-query-cache-key','/secrets/gather_query_cache/key')}
 
 
-def plan(correct=False):
-    proof=json.loads((ROOT/('output/upstash-cache/corrected-image-verification.json' if correct else 'output/upstash-cache/image-verification.json')).read_text())
-    expected=('sha256:8cff0f17326cafd02c9f3bd51272a2ece8278c5272aca4b4ec513a64117e6ccb' if correct else
+def plan(correct=False,auth_scope=False):
+    proof=json.loads((ROOT/('output/search-auth/image-verification.json' if auth_scope else 'output/upstash-cache/corrected-image-verification.json' if correct else 'output/upstash-cache/image-verification.json')).read_text())
+    expected=('sha256:40fcacab2d1a104c60bb4296f9339f68d4d2a920f288002a2d1694faafe3f4b1' if auth_scope else
+              'sha256:8cff0f17326cafd02c9f3bd51272a2ece8278c5272aca4b4ec513a64117e6ccb' if correct else
               'sha256:ab41ddcdcb165f0edfd58d1a6d539df2ff669be4a55350f07b60816b7353bf6b')
     if proof.get('passed') is not True or proof['image']!=expected:
         raise ValueError('unverified_cache_image')
     return dict(project=PROJECT,account=ACCOUNT,region=REGION,service=SERVICE,
         image=REGION+'-docker.pkg.dev/'+PROJECT+'/gather-pilot-images/library@'+proof['image'],
-        cache_endpoint=CACHE_ENDPOINT,cache_ttl_seconds=600,cache_operation_seconds=1 if correct else .5,
+        cache_endpoint=CACHE_ENDPOINT,cache_ttl_seconds=600,cache_operation_seconds=1 if correct or auth_scope else .5,
         secrets=[value[0] for value in SECRETS.values()],secret_reader=RUNTIME,
         cpu=1,memory='2Gi',minimum=0,maximum=1,
         budget='Existing INR500 allowance; Upstash remains Free',model_changes=False,
-        new_secret_or_iam_changes=not correct)
+        new_secret_or_iam_changes=not (correct or auth_scope),authentication_scope_change=auth_scope)
 
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--apply',action='store_true')
     parser.add_argument('--correct',action='store_true',help='Cache deadline/diagnostic image only; retain existing secrets, IAM and environment.')
-    args=parser.parse_args();value=plan(args.correct)
+    parser.add_argument('--auth-scope',action='store_true',help='Request-local authentication reuse only; retain all settings and secrets.')
+    args=parser.parse_args()
+    if args.correct and args.auth_scope:parser.error('Choose one reviewed patch.')
+    value=plan(args.correct,args.auth_scope)
     if not args.apply:
         print(json.dumps(value,indent=2));return
     executable=shutil.which('gcloud.cmd')
@@ -59,12 +63,13 @@ def main():
             raise ValueError('gather_configuration_changed')
         return spec,container
     current=describe();old_spec,old=bound(current)
-    expected_previous=('sha256:ab41ddcdcb165f0edfd58d1a6d539df2ff669be4a55350f07b60816b7353bf6b' if args.correct else PREVIOUS)
+    expected_previous=('sha256:8cff0f17326cafd02c9f3bd51272a2ece8278c5272aca4b4ec513a64117e6ccb' if args.auth_scope else
+        'sha256:ab41ddcdcb165f0edfd58d1a6d539df2ff669be4a55350f07b60816b7353bf6b' if args.correct else PREVIOUS)
     if not old['image'].endswith('@'+expected_previous):raise ValueError('gather_revision_changed_review_required')
-    path=ROOT/('output/upstash-cache/corrected-deployment.json' if args.correct else 'output/upstash-cache/deployment.json')
+    path=ROOT/('output/search-auth/deployment.json' if args.auth_scope else 'output/upstash-cache/corrected-deployment.json' if args.correct else 'output/upstash-cache/deployment.json')
     receipt=dict(value,completed=False,secrets_prepared=[],previous_revision=current['status']['latestReadyRevisionName'])
     path.write_text(json.dumps(receipt,indent=2))
-    if args.correct:
+    if args.correct or args.auth_scope:
         before={row['name']:row.get('value') for row in old.get('env',[])}
         if before.get('GATHER_QUERY_CACHE')!='1' or before.get('GATHER_UPSTASH_URL')!=CACHE_ENDPOINT:
             raise ValueError('existing_cache_configuration_changed')

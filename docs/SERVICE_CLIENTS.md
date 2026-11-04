@@ -2,6 +2,11 @@
 
 # Bounded service clients
 
+Search follow-up: [SEARCH_AUTH_SCOPE](SEARCH_AUTH_SCOPE.md) adds an explicit
+request-local Auth scope. The private wrapper/coordinator share one verified
+user ID only for that search; later requests and every other RPC remain fresh.
+Bearer/origin/thread mutation, cancellation and scope exit are guarded.
+
 22 October Auth diagnostics: password-grant errors alone may read <=4096 bytes of
 uncompressed JSON to extract fixed allowlisted codes (invalid credentials, email
 confirmation/provider, banned user or CAPTCHA). Descriptions and other fields

@@ -60,7 +60,7 @@ class LibrarySession:
 
     def search(self, query, *, limit=20, cancel=None):
         try:
-            # Existing search verifies Auth before embedding; no cached identity.
+            # Fresh Auth per request; a search scope may reuse its verified ID.
             return search(query, api=self._api, provider=self._provider, limit=limit, cancel=cancel,
                           query_cache=self._query_cache)
         except SearchError as error:

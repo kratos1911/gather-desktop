@@ -38,7 +38,8 @@ do not grant access.
    claim/manifest/lease and overlaps reading/parsing/staging. Inference remains
    sequential and waits for readiness. Worker connections close at job end;
    idle helpers can be evicted while retaining the global two-helper cap.
-3. Search: Auth -> owned publication metadata -> empty if a complete page proves
+3. Search: one fresh Auth verification per request (private wrapper/coordinator
+   share the verified ID only in that request) -> owned metadata -> empty if a complete page proves
    no publication; otherwise optional encrypted query-vector cache or one query
    embedding in the matching model space ->
    published vector ranking -> pinned-space relevance gate -> exact-version reads

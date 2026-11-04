@@ -4,6 +4,11 @@
 
 # Authenticated library boundary
 
+Search follow-up: [SEARCH_AUTH_SCOPE](SEARCH_AUTH_SCOPE.md) shares one verified
+Auth response between the private wrapper and coordinator within one request.
+The next request still verifies remotely; no identity/permission cache across
+requests. Existing database checks remain fresh.
+
 `services/worker/library_session.py` is an internal application service, with no
 public listener, signup route or desktop credentials. Trusted server composition
 supplies a SessionClient bound to one bearer token, a restricted admission
@@ -25,7 +30,7 @@ original/derivative cleanup remains a separate durable operation.
 SessionClient adds only two fixed RPC routes: source_processing_status and
 request_source_deletion, with exact payload fields and the existing five-second
 transport deadline. It still rejects privileged credentials and arbitrary routes.
-No identity cache, service-role substitution or new inference limits are added.
+No cross-request identity cache, service-role substitution or new inference limits are added.
 Errors crossing this boundary are fixed codes, never raw provider/database text.
 
 ## Verification and limits

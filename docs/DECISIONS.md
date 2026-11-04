@@ -882,3 +882,11 @@ the bounded transport and existing crypto dependency. Separate query-cache expir
 from document deletion. The initially selected .5s operation budget was too tight
 at CPU1; user-approved1s adds measured headroom without changing inference/SQL or
 resources. One paired hit confirms reuse, not instant search or general p95.
+
+## Request-local search authentication, started 4 November 2026
+
+Share the private wrapper's verified Auth user ID with the coordinator only in
+one synchronous search. Bind the scope to bearer/origin/thread, clear it finally,
+and reverify every next request. Keep private gates and database/RLS reads live;
+do not add an identity TTL cache or decoded-JWT shortcut. This removes one network
+verification without changing session revocation policy, pooling or batching.

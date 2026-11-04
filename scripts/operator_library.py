@@ -109,10 +109,11 @@ class PilotSession(LibrarySession):
         return document
 
     def search(self, query, *, limit=20, cancel=None):
-        self._owner()
-        if not self.text_files and query != QUERY:
-            raise LibraryError('pilot_fixture_only')
-        return super().search(query,limit=limit,cancel=cancel)
+        with self._api.search_authentication():
+            self._owner()  # Fresh verification plus the private-user allowlist.
+            if not self.text_files and query != QUERY:
+                raise LibraryError('pilot_fixture_only')
+            return super().search(query,limit=limit,cancel=cancel)
 
 
 class PilotWorker(ExpectedWorker):

@@ -3,6 +3,19 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 4–5 November 2026: single fresh authentication per search
+
+Added bearer/origin/thread-bound Auth response reuse only inside PilotSession's
+search context, cleared on every exit. Private guards and all database reads
+stay fresh.101 focused checks pass across the packaged run and corrected
+temporary-output harness case; frontend build passes. Restricted Windows
+loopback was isolated to the runner; host check passed. Stale test-only recovery
+route/context fixtures were updated without changing assertions or production SQL.
+With approval, deployed API00012-x89 unchanged at CPU1/2GiB/min0/max1 and INR500,
+retaining cache/secrets/IAM/model/schema. Same cached fictional query with saved
+real Qwen vector:10.25s ->7.84s, both200/hit, zero new inference. This is one
+Auth/HTTP pair, not search-quality or general latency evidence. See SEARCH_AUTH_SCOPE.md.
+
 ## 4 November 2026: encrypted Upstash cache and selected native hit proof
 
 Built owner/model/prompt-scoped HMAC keys, AES-GCM vectors, expiry, bounded

@@ -536,6 +536,13 @@ pagination depends on layout, so cite stable extracted paragraph ranges with a
 separate text hash. Keep raw archive identity and exact saved-version ownership
 alongside them. See [[docs/DOCX_IMPORT]].
 
+## Reuse authentication only inside one request
+
+The private wrapper and coordinator can share a verified user ID while the same
+search runs. Bind it to the bearer/origin/thread and clear it on every exit.
+The next request verifies again; database authorization stays live. This saves
+duplicate network work without an identity TTL cache. See [[docs/SEARCH_AUTH_SCOPE]].
+
 ## Cache vectors; keep permissions and sources fresh
 
 An encrypted, owner/model/query-bound embedding can be reused without repeating

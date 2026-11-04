@@ -156,6 +156,8 @@ class OperatorTests(unittest.TestCase):
 
     def test_non_pilot_user_rejected_for_reads_and_search(self):
         api = Mock(spec=SessionClient,return_value={'id':'00000000-0000-0000-0000-000000000001'})
+        from contextlib import nullcontext
+        api.search_authentication.side_effect = nullcontext
         provider = Mock()
         library = PilotSession(api,Mock(),provider)
         for action in (lambda:library.status('id'),lambda:library.search(QUERY)):
@@ -165,6 +167,8 @@ class OperatorTests(unittest.TestCase):
 
     def test_personal_content_and_arbitrary_queries_rejected(self):
         api = Mock(spec=SessionClient,return_value={'id':next(iter(PILOT_USERS))})
+        from contextlib import nullcontext
+        api.search_authentication.side_effect = nullcontext
         factory,provider = Mock(),Mock()
         library = PilotSession(api,factory,provider)
         with self.assertRaises(LibraryError): library.import_text(original=b'personal',media='text/plain',request_id='id',title='Synthetic refusal')

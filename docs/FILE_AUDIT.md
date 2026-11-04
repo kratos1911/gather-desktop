@@ -167,3 +167,7 @@ scripts/store_upstash_credentials.py, scripts/check_query_cache.py and
 scripts/deploy_query_cache.py are manual operator entry points, not desktop secrets.
 Retain them and test_query_cache.py. Tokens, DPAPI stores, images, diagnostics and
 rollout receipts stay ignored under output/; never purge them as unused files.
+
+test_search_auth.py verifies the real SessionClient's request-local identity
+boundary and loopback request count. The auth fixture/replay receipts remain
+under ignored output/search-auth/; they are workflow evidence, not user documents.
