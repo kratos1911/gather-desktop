@@ -161,3 +161,9 @@ ignored output/ocr-pilot/ and output/private-desktop/; do not purge as cleanup.
 scripts/evaluate_relevance.py is an offline manual entry point over hash-fenced
 saved vectors, reusing evaluate_search_context.py. Retain it, the relevance policy,
 synthetic unit tests and reviewed result JSON; raw replays/images belong in output/.
+
+query_cache.py is backend runtime code. local_query_cache.py,
+scripts/store_upstash_credentials.py, scripts/check_query_cache.py and
+scripts/deploy_query_cache.py are manual operator entry points, not desktop secrets.
+Retain them and test_query_cache.py. Tokens, DPAPI stores, images, diagnostics and
+rollout receipts stay ignored under output/; never purge them as unused files.

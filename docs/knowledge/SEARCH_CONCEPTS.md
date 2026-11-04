@@ -536,6 +536,13 @@ pagination depends on layout, so cite stable extracted paragraph ranges with a
 separate text hash. Keep raw archive identity and exact saved-version ownership
 alongside them. See [[docs/DOCX_IMPORT]].
 
+## Cache vectors; keep permissions and sources fresh
+
+An encrypted, owner/model/query-bound embedding can be reused without repeating
+inference. Every search still verifies Auth and reads current owned publications;
+source replacement/deletion cannot be hidden by cached results. Active query-cache
+expiry is distinct from document deletion. See [[docs/QUERY_EMBEDDING_CACHE]].
+
 ## Similarity needs a tested display policy
 
 A nearest neighbor may be unrelated. A calibrated floor and near-best score band

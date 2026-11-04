@@ -1043,6 +1043,12 @@ export default function Library() {
                 Embeddings use Gather’s CPU service in Mumbai. No model download
                 is required.
               </p>
+              <p>
+                When query caching is enabled, Gather stores encrypted query
+                embeddings in Upstash in Mumbai for up to 10 minutes. Cache hits
+                reuse the embedding; document access is checked fresh. Cached
+                query embeddings expire separately from deleted files.
+              </p>
               {state.signedIn && (
                 <>
                   <p>

@@ -70,7 +70,7 @@ const pilotPages: typeof pages = {
       },
       {
         title: "Storage, deletion and logging limits",
-        body: "Signing out or refreshing clears local credentials and previews, not cloud data. Delete hides a source immediately. The app reports deletion complete only after server-confirmed removal of active stored text and derived data; pending cleanup can be retried. A minimal replay receipt remains to prevent resurrection by an old import. Application logging excludes file contents and tokens; provider retention and public-release policies remain under review. There is no application analytics or session replay.",
+        body: "Signing out or refreshing clears local credentials and previews, not cloud data. Delete hides a source immediately. The app reports deletion complete only after server-confirmed removal of active stored text and derived data; pending cleanup can be retried. A minimal replay receipt remains to prevent resurrection by an old import. When query caching is enabled, encrypted query embeddings are stored in Upstash in Mumbai for up to 10 minutes, separately from document deletion. Raw queries, files and session tokens are not stored in that cache. Authentication and current document access are checked on every search. Application logging excludes file contents and tokens; fixed cache hit/miss/failure diagnostics may be recorded. Provider retention and public-release policies remain under review. There is no application analytics or session replay.",
       },
       {
         title: "Public release remains gated",

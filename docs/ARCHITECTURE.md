@@ -17,7 +17,8 @@ next implementation belongs in [TASKS](../TASKS.md).
 | Native-text PDF / DOCX extractors | Shared bounded Linux extraction slot; separate original/text hashes, PDF pages or extracted DOCX paragraphs. Restricted hosted pilot | [PDF contract](PDF_IMPORT.md), [DOCX contract](DOCX_IMPORT.md) |
 | Private Cloud Run CPU service, Mumbai | Pinned Qwen embeddings, backend Google identity, bounded runtime and readiness | [Inference HTTP](INFERENCE_HTTP.md), [availability](MODEL_AVAILABILITY.md) |
 
-The frontend never receives DB worker credentials or Google caller tokens.
+The frontend never receives DB worker credentials, Redis credentials/encryption
+keys or Google caller tokens.
 User Supabase identity and backend Google service identity are separate.
 RLS/SQL ownership and version guards remain authoritative; cursors/checkboxes
 do not grant access.
@@ -38,10 +39,13 @@ do not grant access.
    sequential and waits for readiness. Worker connections close at job end;
    idle helpers can be evicted while retaining the global two-helper cap.
 3. Search: Auth -> owned publication metadata -> empty if a complete page proves
-   no publication; otherwise query embedding in the matching model space ->
+   no publication; otherwise optional encrypted query-vector cache or one query
+   embedding in the matching model space ->
    published vector ranking -> pinned-space relevance gate -> exact-version reads
    -> bounded source context. The gate removes weak candidates before full reads;
    it does not prove answerability. See SEARCH_RELEVANCE.md.
+   The cache preserves fresh Auth/metadata/ranking/version reads; it never supplies
+   documents or permissions. See [query cache](QUERY_EMBEDDING_CACHE.md).
 4. Open: requested source/version must still be owned, published and unchanged;
    never redirect an old citation silently to a replacement.
 5. Delete: tombstone immediately hides content; an authenticated owner-scoped

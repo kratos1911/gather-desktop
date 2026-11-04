@@ -25,6 +25,7 @@ for the current source, setup scripts and linked documentation.
 | Image OCR | Recognize printed English in bounded PNG/JPEG images; search the recognized text and open the original with cited text regions. |
 | Reliable processing | Durable jobs, idempotent submission, bounded claims/leases/retries, truthful states and explicit failure recovery. |
 | Semantic search | Use matching pinned document/query embeddings, retrieve published passages and assemble bounded source context. |
+| Repeated-query cache | Reuse encrypted, owner/model-scoped embeddings from Upstash while checking current authentication and documents. Selected native miss/hit verified. |
 | Source-grounded reading | Open the exact owned published version; show text offsets, PDF pages or extracted DOCX paragraphs. |
 | Deletion and cleanup | Hide deleted sources immediately, prevent stale publication and report physical cleanup as complete only after confirmation. |
 | Windows delivery | Built the native executable and unsigned installer; verified installation, sign-in, restoration, opening and installer lifecycle on the development PC. |
@@ -69,6 +70,7 @@ and [security boundaries](https://github.com/kratos1911/gather-desktop/blob/code
 | Desktop | Tauri 2 / Rust shell, React 19, TypeScript, Vite |
 | API and processing | Python, ASGI, bounded background processing and disposable parser helpers |
 | Authentication and storage | Supabase Auth, PostgreSQL and pgvector; private originals/staging |
+| Query cache | Upstash Redis-compatible REST; application-encrypted vectors with expiry |
 | Embeddings | Self-hosted Qwen/Qwen3-Embedding-0.6B, CPU inference, 512 dimensions |
 | Hosting | Google Cloud Run and Artifact Registry |
 | Verification | Vitest / Testing Library, Python unittest, isolated SQL acceptance checks and selected native/cloud flows |

@@ -1,6 +1,6 @@
 # Current Gather state
 
-Updated 4 November 2026. OCR work builds on checkpoint `518f958` on
+Updated 4 November 2026. Cache work builds on checkpoint `140e8c6` on
 `codex/durable-ingestion-jobs`. This file is current state, not a session log. Repository context was audited/reorganized; see FILE_AUDIT.md.
 See [tasks](../TASKS.md) for next acceptance and [topic index](PROJECT_HUB.md)
 for contracts. [Previous state journal](history/2026-10-26/MEMORY-2026-10-26.md)
@@ -114,7 +114,14 @@ is separate. SEARCH_RELEVANCE.md records the verified score-floor/near-best
 filter, deployed with approval in API00009-mxp. One native/real-query check kept
 the Cedar image and removed the resume. Known-set replay kept expected source/
 context coverage; topic-adjacent false matches remain. CPU1/2GiB, scaling and
-INR500 allowance unchanged. Next product slice: safe links/bookmarks.
+INR500 allowance unchanged.
+
+Encrypted Upstash query caching is approved/deployed in API00011-vn4 and verified
+in the updated installed app: miss/store/repeat-hit, with fresh Auth/source reads.
+Active TTL600s and approved Redis deadline1s; credentials stay backend-only. See
+QUERY_EMBEDDING_CACHE.md for evidence and the initial timeout/fallback. Search
+still has substantial Auth/DB latency; profile those next for speed. Safe links/
+bookmarks remain the next product-format slice. No file/model/schema changes.
 Cold/larger-file
 performance, general Office compatibility and clean-Windows/signing QA remain
 separate acceptance. Both pilot B source slots are full; never raise quotas or

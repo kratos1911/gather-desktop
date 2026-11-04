@@ -8,6 +8,7 @@ from services.worker.cloud_identity import MetadataTokenProvider
 from services.worker.cloud_provider import cloud_provider
 from services.worker.database_transport import DatabaseConfig
 from services.worker.library_server import create_cloud_server
+from services.worker.query_cache import from_environment, EVENTS as CACHE_EVENTS
 
 PROJECT='gather-development-511211'
 SUPABASE='fatolholcjxpwocnpzws'
@@ -56,6 +57,10 @@ def main():
     try:
         identity.get()  # Prime metadata identity before accepting user requests.
         provider=BoundedProvider(cloud_provider(IDENTITY,Path('/app/tokenizer'),token_provider=identity))
+        def cache_event(event):
+            if event in CACHE_EVENTS and os.environ.get('GATHER_PIPELINE_TIMING')=='1':
+                print('Query cache: '+json.dumps({'event':event}),flush=True)
+        query_cache=from_environment(os.environ,record=cache_event)
         def record(_job,result):
             print(processing_log(result,provider.calls),flush=True)
         app=compose_pilot(admission,worker,provider,identity,key,text_files=True,automatic=True,record=record,
@@ -64,7 +69,7 @@ def main():
             image_files=os.environ.get('GATHER_IMAGE_PILOT')=='1',
             reuse_worker=os.environ.get('GATHER_WORKER_DB_REUSE')=='1',
             early_prepare=os.environ.get('GATHER_EARLY_MODEL_START')=='1',
-            record_timings=os.environ.get('GATHER_PIPELINE_TIMING')=='1')
+            record_timings=os.environ.get('GATHER_PIPELINE_TIMING')=='1',query_cache=query_cache)
         create_cloud_server(app,os.environ).run()
     finally: identity.invalidate()
 

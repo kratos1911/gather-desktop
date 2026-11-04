@@ -31,7 +31,7 @@ def _uuid(value):
     return value
 
 
-def search(query, *, api, provider, limit=20, cancel=None):
+def search(query, *, api, provider, limit=20, cancel=None, query_cache=None):
     """Owned metadata preflight, at most one embedding/ranking and five reads.
 
     No automatic retries, model startup, synthetic fallback or owner payload.
@@ -89,9 +89,20 @@ def search(query, *, api, provider, limit=20, cancel=None):
         # Runtime applies that template once. Preserve its 2048-token ceiling.
         stage = 'model'
         validate_space(MODEL, REVISION, DIMENSIONS)
-        vector = embed_texts([templated], model=MODEL,
-            limits=Limits(DIMENSIONS, 2048, 2048, 1, 1),
-            count_tokens=provider.count_tokens, send=send)['vectors'][0]
+        tokens = provider.count_tokens(templated)
+        if type(tokens) is not int or not 0 < tokens <= 2048:
+            raise ValueError('invalid_query_tokens')
+        vector = query_cache.get(owner,query,cancel=cancel) if query_cache is not None else None
+        active()
+        if vector is None:
+            vector = embed_texts([templated], model=MODEL,
+                limits=Limits(DIMENSIONS, 2048, 2048, 1, 1),
+                count_tokens=lambda _:tokens, send=send)['vectors'][0]
+            if abs(math.hypot(*vector)-1) > .001:
+                raise ValueError('invalid_vector_norm')
+            if query_cache is not None:
+                query_cache.put(owner,query,vector,cancel=cancel)
+            active()
         if abs(math.hypot(*vector) - 1) > .001:
             raise ValueError('invalid_vector_norm')
         stage = 'retrieval'

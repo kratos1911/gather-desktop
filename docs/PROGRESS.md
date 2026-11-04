@@ -3,6 +3,21 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 4 November 2026: encrypted Upstash cache and selected native hit proof
+
+Built owner/model/prompt-scoped HMAC keys, AES-GCM vectors, expiry, bounded
+transport/fallback and fixed diagnostics; Auth/owned reads remain fresh.49 focused
+checks, frontend/native/installer builds, installed identity and disclosure pass.
+User created Free Mumbai Redis and entered the token through DPAPI setup. Approved
+two named runtime-readable secrets/API00010-d2g, retaining resource/model/schema.
+Initial .5s cache deadline timed out; normal search worked but did not cache.
+CPU1 reproduction isolated helper startup/headroom. With separate approval,
+deployed corrected API00011-vn4 at1s Redis deadline. Real miss/store/hit passed:
+13.87s/10.11s one HTTP pair, one corrected embedding plus initial fallback1.
+Repeat made no model call; Cedar/citations retained, resume excluded. No files
+changed; Upstash Free/INR500/CPU1/2GiB/min0/max1 unchanged. Approval usage-limit
+review failed once and later passed normally. Evidence/limits: QUERY_EMBEDDING_CACHE.md.
+
 ## 4 November 2026: relevance gate for weak secondary matches
 
 Added pinned-space floor/near-best filtering before source reads, preserving rank,

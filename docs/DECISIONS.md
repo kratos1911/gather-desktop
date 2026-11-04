@@ -872,3 +872,13 @@ absolute threshold that rejects valid identifier/paraphrase cases. Calibrate wit
 saved vectors, preserve expected source/context coverage and record absent-query
 failures. This adds no model request and does not establish answerability. Keep
 the RPC as the owned candidate generator; the coordinator owns display filtering.
+
+## 4 November 2026: encrypted query vectors in Upstash
+
+Cache query embeddings rather than results/permissions, using exact owner/model/
+prompt/query identity. Upstash Free lacks provider storage encryption, so encrypt
+values with an independent backend key; keep raw queries out of keys/logs. Reuse
+the bounded transport and existing crypto dependency. Separate query-cache expiry
+from document deletion. The initially selected .5s operation budget was too tight
+at CPU1; user-approved1s adds measured headroom without changing inference/SQL or
+resources. One paired hit confirms reuse, not instant search or general p95.

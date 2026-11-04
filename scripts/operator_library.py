@@ -33,8 +33,8 @@ PILOT_USERS = frozenset(('8b8de9a3-6600-465d-9ae6-8a0f2271c1dc',
 
 
 class PilotSession(LibrarySession):
-    def __init__(self, *args, text_files=False, dispatcher=None,pdf_files=False,docx_files=False,image_files=False,cancel=None):
-        super().__init__(*args)
+    def __init__(self, *args, text_files=False, dispatcher=None,pdf_files=False,docx_files=False,image_files=False,cancel=None,query_cache=None):
+        super().__init__(*args,query_cache=query_cache)
         self.text_files = text_files
         self.dispatcher = dispatcher
         self.pdf_files=pdf_files
@@ -171,7 +171,7 @@ def run_ready_worker(worker, identity):
 
 
 def compose_pilot(config,worker_config,provider,identity,key,*,text_files=False,automatic=False,record=None,pdf_files=False,
-                  reuse_worker=False,early_prepare=False,record_timings=False,docx_files=False,image_files=False):
+                  reuse_worker=False,early_prepare=False,record_timings=False,docx_files=False,image_files=False,query_cache=None):
     """Shared trusted composition for operator and explicit managed-cloud startup."""
     dispatcher=None
     if automatic:
@@ -192,7 +192,7 @@ def compose_pilot(config,worker_config,provider,identity,key,*,text_files=False,
             repo=DatabaseRepository(config,owner=owner,operation_timeout=15)
             return AutomaticAdmission(repo) if dispatcher is not None else repo
         return PilotSession(SessionClient(BASE,key,token,cancel=cancel),admission,provider,
-            text_files=text_files,dispatcher=dispatcher,pdf_files=pdf_files,docx_files=docx_files,image_files=image_files,cancel=cancel)
+            text_files=text_files,dispatcher=dispatcher,pdf_files=pdf_files,docx_files=docx_files,image_files=image_files,cancel=cancel,query_cache=query_cache)
     return LibraryAPI(session,dispatcher=dispatcher)
 
 

@@ -206,6 +206,15 @@
       "y": 130,
       "width": 330,
       "height": 220
+    },
+    {
+      "id": "query-cache",
+      "type": "file",
+      "file": "docs/QUERY_EMBEDDING_CACHE.md",
+      "x": 1500,
+      "y": 500,
+      "width": 330,
+      "height": 220
     }
   ],
   "edges": [
@@ -313,6 +322,14 @@
       "fromSide": "right",
       "toNode": "search-relevance",
       "toSide": "left"
+    },
+    {
+      "id": "query-cache-vector",
+      "fromNode": "query-cache",
+      "fromSide": "left",
+      "toNode": "vector",
+      "toSide": "right",
+      "label": "query vectors only"
     }
   ]
 }

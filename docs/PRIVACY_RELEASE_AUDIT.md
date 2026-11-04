@@ -1,5 +1,12 @@
 # Privacy and release audit
 
+4 November query cache: [QUERY_EMBEDDING_CACHE](QUERY_EMBEDDING_CACHE.md) records
+the explicitly approved Upstash/Mumbai processor, application-encrypted vectors,
+600s active expiry, distinct document/query retention and fixed diagnostic events.
+No raw queries, files or session tokens enter Redis. Backend-only secrets and the
+installed disclosure were verified; fresh Auth/ownership reads remain. Provider
+backup retention and public-release/legal gates remain open; no compliance claim.
+
 PNG/JPEG private extension, 4 November: [IMAGE_OCR](IMAGE_OCR.md) records explicit
 review/consent, bounded pixel decoding and English OCR in Gather's Mumbai API.
 Confirmed originals and recognized text use the existing Supabase/Sydney storage;
