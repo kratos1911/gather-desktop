@@ -28,7 +28,10 @@ Inputs require 256/512/1024 dimensions, finite numeric values, unit norm within
 0.001, at most 64 KiB JSON, model/revision identifiers of 1–200 characters and
 1–100 results (default 20). Invalid inputs fail with a safe query error or pgvector
 numeric validation error. No raw document data is placed in error messages.
-No approximate index, minimum-score threshold or relevance guarantee is introduced.
+This database RPC introduces no minimum-score threshold or relevance guarantee.
+The application coordinator applies the separately calibrated
+[relevance policy](SEARCH_RELEVANCE.md) before source reads; the RPC remains a
+bounded owned candidate generator.
 Initial exact search must be profiled before claiming large-library latency;
 production rate limits, request deadlines and concurrent-query limits remain gates.
 

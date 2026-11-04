@@ -197,6 +197,15 @@
       "y": 1080,
       "width": 330,
       "height": 220
+    },
+    {
+      "id": "search-relevance",
+      "type": "file",
+      "file": "docs/SEARCH_RELEVANCE.md",
+      "x": 1120,
+      "y": 130,
+      "width": 330,
+      "height": 220
     }
   ],
   "edges": [
@@ -279,7 +288,7 @@
     },
     {
       "id": "e5",
-      "fromNode": "vector",
+      "fromNode": "search-relevance",
       "fromSide": "bottom",
       "toNode": "results",
       "toSide": "top"
@@ -297,6 +306,13 @@
       "fromSide": "top",
       "toNode": "parse",
       "toSide": "bottom"
+    },
+    {
+      "id": "vector-relevance",
+      "fromNode": "vector",
+      "fromSide": "right",
+      "toNode": "search-relevance",
+      "toSide": "left"
     }
   ]
 }

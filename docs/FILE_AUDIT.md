@@ -157,3 +157,7 @@ retain them despite no runtime imports. The PNG/JPEG files and README under
 apps/desktop/src/test-fixtures/image-ocr are synthetic frontend test inputs.
 Generated probes, images, package inventories, scans and installers remain under
 ignored output/ocr-pilot/ and output/private-desktop/; do not purge as cleanup.
+
+scripts/evaluate_relevance.py is an offline manual entry point over hash-fenced
+saved vectors, reusing evaluate_search_context.py. Retain it, the relevance policy,
+synthetic unit tests and reviewed result JSON; raw replays/images belong in output/.

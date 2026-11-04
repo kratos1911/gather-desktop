@@ -1,5 +1,9 @@
 # Query-to-context coordinator
 
+4 November: [SEARCH_RELEVANCE.md](SEARCH_RELEVANCE.md) adds a pinned-space score
+floor/near-best window before source reads. Local replay/checks and the approved
+hosted/native Cedar regression pass. Rejected hits do not reenter context assembly.
+
 26 October: [EMPTY_LIBRARY_SEARCH.md](EMPTY_LIBRARY_SEARCH.md) adds an existing
 owner-scoped metadata read before inference. A complete page without publication
 returns empty without model work; incomplete pages preserve ordinary search.

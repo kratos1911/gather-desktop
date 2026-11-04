@@ -1,0 +1,56 @@
+{
+  "policy": "qwen-cosine-window-v1",
+  "minimum_similarity": 0.24,
+  "maximum_score_gap": 0.12,
+  "datasets": {
+    "text-v2": {
+      "baseline": {
+        "answerable": 56,
+        "source_recalled": 56,
+        "returned": 320,
+        "expected_source_candidates": 64,
+        "absent": 8,
+        "absent_empty": 0,
+        "missing_expected_sources": []
+      },
+      "filtered": {
+        "answerable": 56,
+        "source_recalled": 56,
+        "returned": 155,
+        "expected_source_candidates": 64,
+        "absent": 8,
+        "absent_empty": 0,
+        "missing_expected_sources": []
+      },
+      "context_regressions": [],
+      "context_recall": 1.0
+    },
+    "boundaries-v1": {
+      "baseline": {
+        "answerable": 8,
+        "source_recalled": 8,
+        "returned": 50,
+        "expected_source_candidates": 16,
+        "absent": 2,
+        "absent_empty": 0,
+        "missing_expected_sources": []
+      },
+      "filtered": {
+        "answerable": 8,
+        "source_recalled": 8,
+        "returned": 33,
+        "expected_source_candidates": 14,
+        "absent": 2,
+        "absent_empty": 0,
+        "missing_expected_sources": []
+      },
+      "context_regressions": [],
+      "context_recall": 1.0
+    }
+  },
+  "scope": "Known fictional regression sets; post-hoc calibration, not independent quality validation",
+  "rankings_sha256": "b47eea523fc6971063ae357ebaa0660d52443e729bb21c37c18006e9486298cf",
+  "raw_vectors_sha256": "89beeab78c4a0895100474a51ebdc0698c8c52c0ccb75d4a86911b57182f541b",
+  "new_model_calls": 0,
+  "passed": true
+}

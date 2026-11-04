@@ -3,6 +3,18 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 4 November 2026: relevance gate for weak secondary matches
+
+Added pinned-space floor/near-best filtering before source reads, preserving rank,
+citations and existing authorization/cancellation. Cached real-vector replay kept
+all expected sources in 64 answerable cases with no context regressions; ten
+topic-adjacent absent cases remain unresolved. Thirty-five focused checks pass
+locally/in the packaged image; frontend build passes. No new inference, schema,
+packages or native assets during local verification. With specific approval, then
+deployed API00009-mxp unchanged at CPU1/2GiB/min0/max1 and used one real native
+search: Cedar image retained, resume excluded. First readiness GET timed out;
+second passed before the single embedding. Files/settings unchanged. See SEARCH_RELEVANCE.md.
+
 ## 4 November 2026: private image OCR rollout and native acceptance
 
 Added bounded PNG/JPEG English OCR through fixed Tesseract C API/Pillow, private

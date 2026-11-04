@@ -158,6 +158,49 @@ class SearchTests(unittest.TestCase):
         self.assertEqual(self.run_search()['windows'], [])
         self.assertEqual(len(self.api.calls), 3)  # Published data exists, but ranker found no hits.
 
+    def test_weak_secondary_source_is_hidden_before_any_reader_call(self):
+        self.api = Session(2)
+        self.api.rows[0]['similarity'] = .73
+        self.api.rows[1]['similarity'] = .38
+        result = self.run_search()
+        self.assertEqual([w['source_id'] for w in result['windows']], [self.api.rows[0]['source_id']])
+        reads = [c[2]['p_source'] for c in self.api.calls if c[1].endswith('open_published_text')]
+        self.assertEqual(reads, [self.api.rows[0]['source_id']])
+        self.assertEqual(len(self.provider.calls), 1)
+
+    def test_all_below_floor_returns_empty_without_reading_documents(self):
+        self.api.rows[0]['similarity'] = .23
+        result = self.run_search()
+        self.assertEqual(result['windows'], [])
+        self.assertEqual(result['utf8_bytes'], 0)
+        self.assertEqual(len(self.api.calls), 3)
+        self.assertEqual(len(self.provider.calls), 1)
+
+    def test_close_multi_source_results_and_weak_exact_identifier_are_preserved(self):
+        self.api = Session(2)
+        self.api.rows[0]['similarity'], self.api.rows[1]['similarity'] = .30, .27
+        result = self.run_search()
+        self.assertEqual(len(result['windows']), 2)
+        self.assertEqual([w['seed_rank'] for w in result['windows']], [1, 2])
+
+    def test_filtered_candidate_is_still_validated(self):
+        self.api = Session(2)
+        self.api.rows[-1].update(similarity=.01, model_revision='wrong')
+        with self.assertRaisesRegex(SearchError, '^library_unavailable$'):
+            self.run_search()
+        self.assertFalse(any(c[1].endswith('open_published_text') for c in self.api.calls))
+
+    def test_weak_far_passage_cannot_reenter_through_an_accepted_source(self):
+        original = self.api.rows[0]
+        doc = self.api.docs[original['source_id']][0]
+        self.api.rows = [dict(original, passage_id='p1', start_offset=0, end_offset=8,
+                              body=doc['body'][:8], similarity=.8),
+                         dict(original, passage_id='p3', start_offset=17, end_offset=len(doc['body']),
+                              body=doc['body'][17:], similarity=.3)]
+        result = self.run_search()
+        self.assertEqual((result['windows'][0]['start'], result['windows'][0]['end']), (0,17))
+        self.assertEqual(result['windows'][0]['seed_rank'], 1)
+
     def test_empty_or_unpublished_library_skips_tokenizer_and_model(self):
         for count in (0,1):
             self.api = Session(count)

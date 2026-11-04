@@ -536,6 +536,13 @@ pagination depends on layout, so cite stable extracted paragraph ranges with a
 separate text hash. Keep raw archive identity and exact saved-version ownership
 alongside them. See [[docs/DOCX_IMPORT]].
 
+## Similarity needs a tested display policy
+
+A nearest neighbor may be unrelated. A calibrated floor and near-best score band
+remove weak secondary candidates before full reads without requiring exact query
+words. Preserve weak exact-identifier and multi-source cases during evaluation;
+scores are not answer probabilities. See [[docs/SEARCH_RELEVANCE]].
+
 ## OCR searches recognized text, not the image's objects
 
 Decode an authenticated bounded image in the disposable parser, recognize English

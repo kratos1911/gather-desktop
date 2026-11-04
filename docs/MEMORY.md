@@ -110,7 +110,11 @@ search -> exact original/OCR-region opening, with two real embedding requests.
 No explicit processing retry was needed. The image remains in pilot B's Library;
 personal PDF and pilot A sources were not modified. See IMAGE_OCR.md for bounds,
 selected evidence and unsuppressed dependency findings. Object/scene retrieval
-is separate; next product slice is safe links/bookmarks unless the user redirects.
+is separate. SEARCH_RELEVANCE.md records the verified score-floor/near-best
+filter, deployed with approval in API00009-mxp. One native/real-query check kept
+the Cedar image and removed the resume. Known-set replay kept expected source/
+context coverage; topic-adjacent false matches remain. CPU1/2GiB, scaling and
+INR500 allowance unchanged. Next product slice: safe links/bookmarks.
 Cold/larger-file
 performance, general Office compatibility and clean-Windows/signing QA remain
 separate acceptance. Both pilot B source slots are full; never raise quotas or

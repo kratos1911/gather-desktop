@@ -18,6 +18,7 @@ from services.worker.search_context import (
 from services.worker.source_listing import page, parameters
 from services.worker.model_availability import ModelServiceError
 from services.worker.document_metadata import enrich_published
+from services.worker.search_relevance import selected_indices, validate_space
 
 
 class SearchError(Exception):
@@ -87,6 +88,7 @@ def search(query, *, api, provider, limit=20, cancel=None):
         # Count the exact query template, but send RAW text with role=query so
         # Runtime applies that template once. Preserve its 2048-token ceiling.
         stage = 'model'
+        validate_space(MODEL, REVISION, DIMENSIONS)
         vector = embed_texts([templated], model=MODEL,
             limits=Limits(DIMENSIONS, 2048, 2048, 1, 1),
             count_tokens=provider.count_tokens, send=send)['vectors'][0]
@@ -117,6 +119,12 @@ def search(query, *, api, provider, limit=20, cancel=None):
                 raise ValueError('invalid_candidate')
             previous_score = score
             seen.add((sid, vid, pid))
+        # Validate every candidate first. Weak rows never trigger full-source reads
+        # or enter context through another accepted passage from the same source.
+        accepted = selected_indices([row['similarity'] for row in rows])
+        retained = [rows[i] for i in accepted]
+        for row in retained:
+            sid, vid = row['source_id'], row['version_id']
             if sid in selected:
                 if selected[sid][0]['version_id'] != vid:
                     raise ValueError('mixed_versions')
@@ -166,7 +174,7 @@ def search(query, *, api, provider, limit=20, cancel=None):
         stage = 'context'
         visible = {source.source_id for source in snapshots}
         hits = [Hit(owner, row['source_id'], row['version_id'], row['passage_id'])
-                for row in rows if row['source_id'] in visible]
+                for row in retained if row['source_id'] in visible]
         context = assemble_context(owner, hits, snapshots)
         context['omitted_sources'].extend(omitted)
         for window in context['windows']:

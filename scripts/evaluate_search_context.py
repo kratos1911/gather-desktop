@@ -10,7 +10,7 @@ from services.worker.search_context import (assemble_context, Snapshot, Passage,
     MAX_CANDIDATES, MAX_SOURCES, MAX_WINDOW_BYTES, MAX_TOTAL_BYTES)
 
 
-def evaluate():
+def evaluate(*, filter_hits=None, destination=None, emit=True):
     evidence_path = ROOT / 'tests/evaluation/results/chunk-retrieval-20261015.json'
     evidence = json.loads(evidence_path.read_text())
     raw_path = ROOT / 'output/inference-results/patched/retrieval-rows.json'
@@ -65,8 +65,11 @@ def evaluate():
         old_rows = {q['id']: q for q in evidence['reports'][name]['token512']['dense']['queries']}
         rows = []
         for row in dense['results']:
+            ranked = row['hits'][:MAX_CANDIDATES]
+            if filter_hits is not None:
+                ranked = filter_hits(ranked)
             hits = [Hit('fixture-owner', h['document_id'], sources[h['document_id']].version_id,
-                        h['chunk_id']) for h in row['hits'][:MAX_CANDIDATES]]
+                        h['chunk_id']) for h in ranked]
             result = assemble_context('fixture-owner', hits, snapshots)
             expected = labels[row['id']]['evidence']
             covered = [any(w['source_id'] == item['document_id'] and w['start'] <= item['start']
@@ -91,10 +94,12 @@ def evaluate():
                                      'window_bytes': MAX_WINDOW_BYTES, 'total_bytes': MAX_TOTAL_BYTES},
         'source_evidence_sha256': digest(evidence_path), 'raw_vectors_sha256': digest(raw_path),
         'new_model_calls': 0, 'datasets': datasets}
-    destination = ROOT / 'output/evaluation/search-context-v1'
+    destination = destination or ROOT / 'output/evaluation/search-context-v1'
     destination.mkdir(parents=True, exist_ok=True)
     (destination / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
-    print(json.dumps({name: {k: v for k, v in d.items() if k != 'queries'} for name, d in datasets.items()}, indent=2))
+    if emit:
+        print(json.dumps({name: {k: v for k, v in d.items() if k != 'queries'} for name, d in datasets.items()}, indent=2))
+    return report
 
 
 if __name__ == '__main__':

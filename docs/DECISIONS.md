@@ -864,3 +864,11 @@ provenance. The user approved 2 GiB only for the existing API, with CPU/scaling
 and aggregate INR500 allowance unchanged. Minimize runtime packages to the C
 library and English data; hash-verified pyasn1/setuptools updates address available
 patches. Retain unsuppressed remaining OS findings and public-release gates.
+
+## 4 November 2026: filter weak secondary search results before reads
+
+Use a pinned-space .24 cosine floor and .12 near-best band rather than a high
+absolute threshold that rejects valid identifier/paraphrase cases. Calibrate with
+saved vectors, preserve expected source/context coverage and record absent-query
+failures. This adds no model request and does not establish answerability. Keep
+the RPC as the owned candidate generator; the coordinator owns display filtering.

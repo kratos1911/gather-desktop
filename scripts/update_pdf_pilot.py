@@ -15,8 +15,8 @@ CALLER='gather-pilot-caller@'+PROJECT+'.iam.gserviceaccount.com'
 PREVIOUS='sha256:522826fd030d34807e17c2073c1b23d8376a30d215d936f738e74f83a4cc3724'
 
 
-def plan(recovery=False,performance=False,optimized=False,docx=False,docx_compat=False,image_ocr=False):
-    verified=json.loads((ROOT/('output/ocr-pilot/image-verification.json' if image_ocr else 'output/docx-compatibility/image-verification.json' if docx_compat else 'output/docx-pilot/image-verification.json' if docx else 'output/processing-speed/image-verification.json' if performance else
+def plan(recovery=False,performance=False,optimized=False,docx=False,docx_compat=False,image_ocr=False,relevance=False):
+    verified=json.loads((ROOT/('output/relevance-pilot/image-verification.json' if relevance else 'output/ocr-pilot/image-verification.json' if image_ocr else 'output/docx-compatibility/image-verification.json' if docx_compat else 'output/docx-pilot/image-verification.json' if docx else 'output/processing-speed/image-verification.json' if performance else
         'output/recovery-fix/image-verification.json' if recovery else 'output/pdf-pilot/image-verification.json')).read_text(encoding='utf-8-sig'))
     image=verified['image']
     if not re.fullmatch('sha256:[0-9a-f]{64}',image) or verified.get('passed') is not True:
@@ -33,10 +33,13 @@ def plan(recovery=False,performance=False,optimized=False,docx=False,docx_compat
     if image_ocr:
         previous='sha256:95bb6106f63623dc90949e34e58359d31ca7974c2478efdcd4a6ab10032e0844'
         environment['GATHER_IMAGE_PILOT']='1'
+    if relevance:
+        previous='sha256:af36fbc5cc4fb7105630fe6c5ace1cdc9c4e2e813ef4b5ddead1443e63cc25ca'
+        environment={}
     return dict(project=PROJECT,region=REGION,service=SERVICE,
         image=f'{REGION}-docker.pkg.dev/{PROJECT}/gather-pilot-images/library@{image}',
         previous_image=previous,environment_update=environment,
-        cpu=1,memory='2Gi' if image_ocr else '512Mi',minimum=0,maximum=1,new_services=False,
+        cpu=1,memory='2Gi' if image_ocr or relevance else '512Mi',minimum=0,maximum=1,new_services=False,
         iam_or_secret_changes=False,model_changes=False,budget='Existing aggregate INR500 pilot allowance')
 
 
@@ -48,10 +51,11 @@ def main():
     parser.add_argument('--docx',action='store_true',help='Deploy the verified DOCX extension; existing performance settings stay enabled.')
     parser.add_argument('--docx-compat',action='store_true',help='Apply the approved per-part-cap correction; all other bounds stay unchanged.')
     parser.add_argument('--image-ocr',action='store_true',help='Reviewed private OCR rollout, using the user-approved 2 GiB API allocation.')
+    parser.add_argument('--relevance',action='store_true',help='Reviewed search-only patch; existing resource/env configuration is preserved.')
     args=parser.parse_args()
-    if sum((args.recovery,args.performance,args.docx,args.docx_compat,args.image_ocr))>1 or (args.optimized and not args.performance):
+    if sum((args.recovery,args.performance,args.docx,args.docx_compat,args.image_ocr,args.relevance))>1 or (args.optimized and not args.performance):
         parser.error('Choose one approved variant; optimized requires performance.')
-    value=plan(args.recovery,args.performance,args.optimized,args.docx,args.docx_compat,args.image_ocr)
+    value=plan(args.recovery,args.performance,args.optimized,args.docx,args.docx_compat,args.image_ocr,args.relevance)
     if not args.apply: print(json.dumps(value,indent=2));return
     executable=shutil.which('gcloud.cmd')
     if executable is None:raise ValueError('gcloud_unavailable')
@@ -64,7 +68,7 @@ def main():
     template=current['spec']['template'];container=template['spec']['containers'][0]
     annotations={**template['metadata'].get('annotations',{}),**current['metadata'].get('annotations',{})}
     if (not container['image'].endswith('@'+value['previous_image']) or template['spec']['serviceAccountName']!=CALLER
-            or container['resources']['limits']!={'cpu':'1','memory':'512Mi'}
+            or container['resources']['limits']!={'cpu':'1','memory':'2Gi' if args.relevance else '512Mi'}
             or not any(annotations.get(key)=='1' for key in ('autoscaling.knative.dev/maxScale','run.googleapis.com/maxScale'))
             or any(annotations.get(key) not in (None,'0') for key in ('autoscaling.knative.dev/minScale','run.googleapis.com/minScale'))):
         raise ValueError('existing_gather_configuration_changed_review_required')
@@ -74,20 +78,23 @@ def main():
                {'GATHER_PIPELINE_TIMING':'1','GATHER_WORKER_DB_REUSE':'0','GATHER_EARLY_MODEL_START':'0'}.items()):
             raise ValueError('profiled_baseline_revision_required')
     receipt=dict(value,previous_revision=current['status'].get('latestReadyRevisionName'),completed=False)
-    path=ROOT/('output/ocr-pilot/deployment.json' if args.image_ocr else 'output/docx-compatibility/deployment.json' if args.docx_compat else 'output/docx-pilot/deployment.json' if args.docx else 'output/processing-speed/deployment-optimized.json' if args.optimized else
+    path=ROOT/('output/relevance-pilot/deployment.json' if args.relevance else 'output/ocr-pilot/deployment.json' if args.image_ocr else 'output/docx-compatibility/deployment.json' if args.docx_compat else 'output/docx-pilot/deployment.json' if args.docx else 'output/processing-speed/deployment-optimized.json' if args.optimized else
         'output/processing-speed/deployment-baseline.json' if args.performance else
         'output/recovery-fix/deployment.json' if args.recovery else 'output/pdf-pilot/deployment.json')
     path.write_text(json.dumps(receipt,indent=2))
-    command=['run','services','update',SERVICE,'--image='+value['image'],
-         '--update-env-vars='+','.join(key+'='+entry for key,entry in value['environment_update'].items())]
+    command=['run','services','update',SERVICE,'--image='+value['image']]
+    if value['environment_update']:
+        command.append('--update-env-vars='+','.join(key+'='+entry for key,entry in value['environment_update'].items()))
     if args.image_ocr:command.append('--memory='+value['memory'])
     call(*command)
     updated=json.loads(call('run','services','describe',SERVICE,'--format=json'))
     if updated['spec']['template']['spec']['containers'][0]['image']!=value['image']:
         raise RuntimeError('updated_image_not_confirmed')
-    if args.image_ocr and updated['spec']['template']['spec']['containers'][0]['resources']['limits']!={'cpu':'1','memory':'2Gi'}:
+    if (args.image_ocr or args.relevance) and updated['spec']['template']['spec']['containers'][0]['resources']['limits']!={'cpu':'1','memory':'2Gi'}:
         raise RuntimeError('updated_ocr_resources_not_confirmed')
     environment={entry['name']:entry.get('value') for entry in updated['spec']['template']['spec']['containers'][0].get('env',[])}
+    if args.relevance and updated['spec']['template']['spec']['containers'][0].get('env',[])!=container.get('env',[]):
+        raise RuntimeError('existing_environment_changed_review_required')
     if any(environment.get(key)!=entry for key,entry in value['environment_update'].items()):
         raise RuntimeError('updated_pipeline_mode_not_confirmed')
     receipt.update(completed=True,revision=updated['status'].get('latestReadyRevisionName'))

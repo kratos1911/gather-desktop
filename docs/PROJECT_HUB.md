@@ -39,6 +39,7 @@ reload the full conversation or historical snapshots for routine coding.
 - [[docs/INGESTION_JOBS]], [[docs/INGESTION_COORDINATOR]], [[docs/EXACT_JOB_CLAIM]]
 - [[docs/TEXT_PUBLICATION]], [[docs/PUBLISHED_SEARCH]], [[docs/QUERY_SEARCH]]
 - [[docs/SEARCH_CONTEXT]], [[docs/CHUNK_RETRIEVAL_RESULTS]]
+- [[docs/SEARCH_RELEVANCE]]: score gate, cached calibration and remaining false matches
 - [[docs/knowledge/SEARCH_CONCEPTS]], [[docs/knowledge/Search flow.canvas]]
 
 ## Model serving, security and future slices

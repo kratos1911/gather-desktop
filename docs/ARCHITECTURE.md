@@ -1,6 +1,6 @@
 # Current architecture
 
-Current behavior and boundaries, updated 3 November 2026.
+Current behavior and boundaries, updated 4 November 2026.
 [Prior architecture journal](history/2026-10-26/ARCHITECTURE-2026-10-26.md)
 preserves earlier proposals/evidence. Status belongs in [MEMORY](MEMORY.md);
 next implementation belongs in [TASKS](../TASKS.md).
@@ -39,7 +39,9 @@ do not grant access.
    idle helpers can be evicted while retaining the global two-helper cap.
 3. Search: Auth -> owned publication metadata -> empty if a complete page proves
    no publication; otherwise query embedding in the matching model space ->
-   published vector ranking -> exact-version reads -> bounded source context.
+   published vector ranking -> pinned-space relevance gate -> exact-version reads
+   -> bounded source context. The gate removes weak candidates before full reads;
+   it does not prove answerability. See SEARCH_RELEVANCE.md.
 4. Open: requested source/version must still be owned, published and unchanged;
    never redirect an old citation silently to a replacement.
 5. Delete: tombstone immediately hides content; an authenticated owner-scoped
