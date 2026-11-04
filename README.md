@@ -6,7 +6,7 @@ Gather is a Windows knowledge library with a unified collection, cloud-powered
 semantic search and citations back to the exact saved source.
 
 **Status — 4 November 2026:** working, restricted private pilot. Selected
-TXT/Markdown, native-text PDF and DOCX flows have been verified against the
+TXT/Markdown, native-text PDF, DOCX and bounded English PNG/JPEG OCR flows have been verified against the
 hosted backend and Windows app. Public signup and production distribution are
 not released. The separate default design preview uses fictional sample data.
 
@@ -22,6 +22,7 @@ for the current source, setup scripts and linked documentation.
 | TXT and Markdown | Select a UTF-8 file, review it locally, explicitly save it and process it automatically. |
 | Native-text PDFs | Extract selectable text with page references; preserve the immutable original and exact saved version. |
 | Word documents | Extract supported DOCX main-body text, including table-cell paragraphs, with paragraph citations. |
+| Image OCR | Recognize printed English in bounded PNG/JPEG images; search the recognized text and open the original with cited text regions. |
 | Reliable processing | Durable jobs, idempotent submission, bounded claims/leases/retries, truthful states and explicit failure recovery. |
 | Semantic search | Use matching pinned document/query embeddings, retrieve published passages and assemble bounded source context. |
 | Source-grounded reading | Open the exact owned published version; show text offsets, PDF pages or extracted DOCX paragraphs. |
@@ -77,6 +78,10 @@ the current deployed storage/import implementation.
 
 ## Progress and evidence
 
+- **Image OCR:** generated PNG import reached ready automatically, semantic search
+  found its cited text and the exact original opened in the Windows app. Two real
+  embedding requests; approved API memory is now 2 GiB. See [OCR scope/evidence](docs/IMAGE_OCR.md).
+
 - **Connected Windows/cloud flow:** sign in → select/review/save → automatic
   ready → custom semantic search → exact saved text. Supported deletion/cleanup
   was also verified through the app.
@@ -105,7 +110,8 @@ Detailed evidence: [DOCX](https://github.com/kratos1911/gather-desktop/blob/code
 - Original files and extracted text are bounded to 64 KiB, with at most three
   processing passages. Additional parser and request limits apply.
 - PDFs require selectable text on every page, with at most 20 pages. Scanned
-  documents, OCR and image indexing are not implemented.
+  PDFs are not OCR-enabled. Separate PNG/JPEG English OCR accepts at most 64 KiB
+  and 1,048,576 pixels; object/scene image search is not implemented.
 - DOCX support covers a bounded subset of main-body text, not Word page layout,
   images or universal Office compatibility. Legacy DOC, active/ambiguous content
   and unsupported packages are rejected. Expanded archives are capped at 1 MiB
@@ -114,7 +120,7 @@ Detailed evidence: [DOCX](https://github.com/kratos1911/gather-desktop/blob/code
   requires explicit recovery within existing attempt limits.
 - The installer is unsigned. A clean Windows environment, cross-version upgrades,
   broader accessibility/security/dependency review and public-release gates remain open.
-- **Next:** safe links/bookmarks in the same Library. PPTX, photo/OCR retrieval
+- **Next:** safe links/bookmarks in the same Library. PPTX and photo object/scene retrieval
   and broader quality evaluation remain planned; chat is deferred.
 
 Current scope and release gates: [MEMORY](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/docs/MEMORY.md), [TASKS](https://github.com/kratos1911/gather-desktop/blob/codex/durable-ingestion-jobs/TASKS.md)

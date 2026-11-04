@@ -100,7 +100,10 @@ class LibrarySession:
 
     def open(self, source_id, version_id):
         documents=self._rpc('open_published_text', {'p_source':source_id,'p_version':version_id})
-        try: return enrich_published(self._api,source_id,version_id,documents)
+        try:
+            from services.worker.image_processing import attach_original
+            return attach_original(self._api,source_id,version_id,
+                enrich_published(self._api,source_id,version_id,documents))
         except Exception: raise LibraryError('library_operation_failed') from None
 
     def delete(self, source_id):

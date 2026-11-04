@@ -4,6 +4,7 @@ import argparse
 import json
 from pathlib import Path
 import shutil
+import subprocess
 from uuid import uuid4
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -17,12 +18,13 @@ def main():
     parser.add_argument('--performance',action='store_true',help='Stage measured pipeline fixes over the deployed recovery image.')
     parser.add_argument('--docx',action='store_true',help='Stage the private DOCX extension over the optimized API image.')
     parser.add_argument('--docx-compat',action='store_true',help='Stage the reviewed Word styles compatibility correction over the deployed DOCX image.')
+    parser.add_argument('--image-ocr',action='store_true',help='Stage the bounded private image OCR extension on its verified local runtime.')
     options=parser.parse_args()
     recovery=options.recovery
-    if sum((recovery,options.performance,options.docx,options.docx_compat))>1:parser.error('Choose one overlay.')
+    if sum((recovery,options.performance,options.docx,options.docx_compat,options.image_ocr))>1:parser.error('Choose one overlay.')
     wheel=ROOT/'output/pdf-pilot/wheels/pypdf-6.21.4-py3-none-any.whl'
     if hashlib.sha256(wheel.read_bytes()).hexdigest()!=HASH:raise ValueError('parser_hash_mismatch')
-    artifact_directory=ROOT/('output/docx-compatibility' if options.docx_compat else 'output/docx-pilot' if options.docx else 'output/processing-speed' if options.performance else 'output/recovery-fix' if recovery else 'output/pdf-pilot')
+    artifact_directory=ROOT/('output/ocr-pilot' if options.image_ocr else 'output/docx-compatibility' if options.docx_compat else 'output/docx-pilot' if options.docx else 'output/processing-speed' if options.performance else 'output/recovery-fix' if recovery else 'output/pdf-pilot')
     artifact_directory.mkdir(parents=True,exist_ok=True)
     target=artifact_directory/('context-'+uuid4().hex);target.mkdir()
     for directory in ('services','scripts'):
@@ -47,16 +49,27 @@ p.unlink()
     base=('sha256:9fe1d130274debcfa00fce95e30484871776682caa4fa44d075e043c690493c1' if options.docx_compat else 'sha256:2c557d18f7e6d0a5dac28252663ea28234fbab9f0bffddc49224d8d8d50ae498' if options.docx else 'sha256:ae5a05c14d30aa1c259f962f766ece08ec5e778635f835a64041558c84b196d1' if options.performance else
           'sha256:72ce93fda395473d17dbce81247ced97f138e334ff8fef3c949cfb2ec479db8d' if recovery else BASE)
     base_ref='asia-south1-docker.pkg.dev/gather-development-511211/gather-pilot-images/library@'+base
+    if options.image_ocr:
+        runtime=json.loads((ROOT/'services/worker/ocr-runtime.json').read_text())
+        base=runtime['local_runtime_image']
+        runtime_tag=runtime['local_runtime_tag']
+        actual=subprocess.run(['docker','--context','desktop-linux','image','inspect',runtime_tag,'--format','{{.Id}}'],check=True,capture_output=True,text=True).stdout.strip()
+        if actual!=base:raise ValueError('ocr_runtime_image_changed')
+        # BuildKit resolves this cached image by tag; the exact ID was fenced above.
+        base_ref=runtime_tag
+        shutil.copyfile(ROOT/'services/worker/ocr-runtime.json',target/'ocr-runtime.json')
+        shutil.copyfile(ROOT/'services/worker/requirements-ocr.lock',target/'requirements-ocr.lock')
     (target/'Dockerfile').write_text('FROM '+base_ref+'''
 USER 0:0
 COPY pypdf-6.21.4-py3-none-any.whl install_pdf.py /app/
 RUN python /app/install_pdf.py
 COPY services /app/services
 COPY scripts /app/scripts
+'''+('COPY ocr-runtime.json requirements-ocr.lock /app/\n' if options.image_ocr else '')+'''
 USER 65532:65532
 ENTRYPOINT ["python","-m","services.worker.cloud_library"]
 ''')
-    (target/'.dockerignore').write_text('**\n!Dockerfile\n!install_pdf.py\n!*.whl\n!services/\n!services/**\n!scripts/\n!scripts/**\n')
+    (target/'.dockerignore').write_text('**\n!Dockerfile\n!install_pdf.py\n!*.whl\n!ocr-runtime.json\n!requirements-ocr.lock\n!services/\n!services/**\n!scripts/\n!scripts/**\n')
     receipt={'context':str(target),'base':base,'parser_sha256':HASH,'credentials_included':False,'user_documents_included':False}
     (artifact_directory/'staging.json').write_text(json.dumps(receipt,indent=2))
     print(json.dumps(receipt))

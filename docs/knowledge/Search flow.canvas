@@ -188,6 +188,15 @@
       "y": 1000.0,
       "width": 710,
       "height": 180
+    },
+    {
+      "id": "image-ocr",
+      "type": "file",
+      "file": "docs/IMAGE_OCR.md",
+      "x": -420,
+      "y": 1080,
+      "width": 330,
+      "height": 220
     }
   ],
   "edges": [
@@ -281,6 +290,13 @@
       "fromSide": "right",
       "toNode": "chat",
       "toSide": "left"
+    },
+    {
+      "id": "image-parse",
+      "fromNode": "image-ocr",
+      "fromSide": "top",
+      "toNode": "parse",
+      "toSide": "bottom"
     }
   ]
 }

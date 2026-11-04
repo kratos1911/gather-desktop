@@ -58,7 +58,8 @@ work; recovery rechecks under the existing transaction. See
 ## Deployment and limits
 
 Inference uses CPU2/5GiB, concurrency1, max1/min0. The approved library API uses
-CPU1/512MiB, platform concurrency4, single-flight app admission, max1/min0.
+CPU1/2GiB (approved image-OCR allocation), platform concurrency4,
+single-flight app admission, max1/min0.
 Model operations retain 15 seconds and request identity five seconds. Automatic
 startup permits the explicitly approved three readiness GETs inside one shared
 60-second deadline; embeddings never retry automatically. Two existing accounts
@@ -75,7 +76,12 @@ owned-version reads validate page metadata before displaying citations. See
 
 DOCX shares extracted-document staging validation while keeping typed PDF/DOCX
 wrappers and private format metadata. It is explicitly enabled in the hosted
-private API. R2 originals, PPTX/image/OCR formats and bookmark enrichment remain
+private API. PNG/JPEG English OCR uses the same extracted-document validator,
+with private upright-image region metadata and separate original/text hashes.
+The existing disposable parser decodes pixels and invokes the fixed Tesseract C
+API; recognized text enters the existing Qwen text space. Only explicit owned
+exact-version opening retrieves original image bytes. See [OCR contract](IMAGE_OCR.md).
+R2 originals, PPTX, photo object/scene embeddings and bookmark enrichment remain
 planned work. Chat remains deferred.
 
 ## Read only when relevant

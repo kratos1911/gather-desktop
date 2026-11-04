@@ -1,5 +1,10 @@
 # Private Windows/cloud delivery
 
+The current installed build includes [IMAGE_OCR](IMAGE_OCR.md): approved API
+revision00008-t86/2GiB, migration16 and selected native PNG import/automatic-ready/
+semantic-search/exact-original opening. Latest executable/installer proof lives
+under output/private-desktop/; generated-image acceptance is under output/ocr-pilot/.
+
 Current private formats include the subsequently approved bounded PDF and DOCX
 slices. [DOCX_IMPORT](DOCX_IMPORT.md) owns the current selected native/real-model
 DOCX evidence, exact API/native/installer identities and installed update. Earlier

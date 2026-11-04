@@ -1,6 +1,6 @@
 # Current Gather state
 
-Updated 4 November 2026. DOCX work builds on checkpoint `47f5516` on
+Updated 4 November 2026. OCR work builds on checkpoint `518f958` on
 `codex/durable-ingestion-jobs`. This file is current state, not a session log. Repository context was audited/reorganized; see FILE_AUDIT.md.
 See [tasks](../TASKS.md) for next acceptance and [topic index](PROJECT_HUB.md)
 for contracts. [Previous state journal](history/2026-10-26/MEMORY-2026-10-26.md)
@@ -98,35 +98,43 @@ DOCX is implemented and deployed through approved migration 15 and API revision
 00007-x4t (approved standard-Word style-part compatibility correction). Native selection/review/Save reached ready on attempt 1; one real query
 returned paragraph citations and exact saved opening passed. Exactly two successful
 model requests were confirmed. Only the approved generated PDF fixture was cleaned;
-personal PDF/A's sources were unchanged. The DOCX remains for inspection. Frontend
+personal PDF/A's sources were unchanged. That generated DOCX was subsequently
+cleaned with explicit approval for the OCR test below. Frontend
 74 checks, affected Linux checks, 13 SQL groups, final 23 parser-image checks and
-native/installer builds pass. The D: installed copy and normal shortcut use this
-verified build. See DOCX_IMPORT.md for scope and immutable artifact/source evidence.
+native/installer builds pass. See DOCX_IMPORT.md for its scope and historical evidence.
 
-Next product milestone: safe links/bookmarks in the same Library. Cold/larger-file
+Private PNG/JPEG English OCR is implemented and deployed in API revision
+00008-t86, with migration16 and the approved CPU1/2GiB allocation. The updated
+D: Windows app verified generated-image Save -> automatic ready -> semantic
+search -> exact original/OCR-region opening, with two real embedding requests.
+No explicit processing retry was needed. The image remains in pilot B's Library;
+personal PDF and pilot A sources were not modified. See IMAGE_OCR.md for bounds,
+selected evidence and unsuppressed dependency findings. Object/scene retrieval
+is separate; next product slice is safe links/bookmarks unless the user redirects.
+Cold/larger-file
 performance, general Office compatibility and clean-Windows/signing QA remain
 separate acceptance. Both pilot B source slots are full; never raise quotas or
 delete retained/personal sources implicitly.
 Evidence/limits belong in TASKS.md and PRIVATE_DESKTOP_DELIVERY.md. General
-signup/uploads, PPTX/OCR and chat remain gated/deferred.
+signup/uploads, PPTX, photo object/scene retrieval and chat remain gated/deferred.
 
 ## Fixed scope and operating constraints
 
 - Cloud CPU inference: private Gather Cloud Run in Mumbai, project
   `gather-development-511211`. Use explicit personal account/project flags from
   the existing helpers. Never use protected Intrixshield/work defaults.
-- Supabase `fatolholcjxpwocnpzws`, Sydney session pooler. Fifteen migrations were
+- Supabase `fatolholcjxpwocnpzws`, Sydney session pooler. Sixteen migrations were
   applied manually; CLI migration history is not automatically populated.
 - Qwen/Qwen3-Embedding-0.6B, pinned revision/dimensions in the serving contracts;
   512-dimensional query/document space. No end-user weight downloads.
-- Private two-account TXT/Markdown/native-text PDF/DOCX pilot: input <=64 KiB, three processing
+- Private two-account TXT/Markdown/native-text PDF/DOCX/PNG/JPEG OCR pilot: input <=64 KiB, three processing
   passages/model attempts; no automatic inference retries. Existing deadlines,
   quotas and per-process counters are not billing meters.
 - Normal min0/max1; the approved pilot budget is INR500 and alerts are not a
   hard spending cap. No new paid provisioning or always-warm changes without approval.
   Startup-only inference CPU boost is now explicitly approved/enabled; its benefit
   is unproven in the recorded sample. No permanent runtime CPU/memory increase.
-- Library API: approved CPU1/512MiB, max1/min0; application admission1, platform
+- Library API: approved CPU1/2GiB, max1/min0; application admission1, platform
   concurrency4, three model attempts per API instance, two allowed users only.
   Up to three readiness GETs within one 60s budget were explicitly approved;
   embedding requests never retry automatically.

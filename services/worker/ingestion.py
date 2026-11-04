@@ -18,6 +18,8 @@ from services.worker.model_availability import MODEL_HTTP
 from services.worker.pdf_processing import extract_pdf, PDFError, PARSER_VERSION as PDF_PARSER, validate_document
 from services.worker.docx_processing import (MEDIA as DOCX_MEDIA, PARSER_VERSION as DOCX_PARSER,
     DOCXError, extract_docx, validate_document as validate_docx)
+from services.worker.image_processing import (MEDIA as IMAGE_MEDIA, PARSER_VERSION as IMAGE_PARSER,
+    ImageError, extract_image, validate_document as validate_image)
 
 MAX_JOB_REQUESTS = 16  # Preserve the embedding client's default request budget.
 MAX_JOB_TOKENS = MAX_JOB_REQUESTS * MAX_TOKENS
@@ -45,10 +47,15 @@ class RuntimeProvider:
 
 
 def parser_version(media):
-    return DOCX_PARSER if media == DOCX_MEDIA else PDF_PARSER if media == 'application/pdf' else PARSER_VERSION
+    return IMAGE_PARSER if media in IMAGE_MEDIA else DOCX_PARSER if media == DOCX_MEDIA else PDF_PARSER if media == 'application/pdf' else PARSER_VERSION
 
 
 def parse(raw, media, *, cancel=None):
+    if media in IMAGE_MEDIA:
+        result = extract_image(raw, cancel=cancel)
+        if result['media_type'] != media:
+            raise ImageError('image_invalid')
+        return result
     if media == DOCX_MEDIA:
         return extract_docx(raw, cancel=cancel)
     if media == 'application/pdf':
@@ -73,6 +80,7 @@ def submit(repository, *, request_id, title, original, media, source_id=None, do
     document = parse(original, media) if document is None else document
     if media == 'application/pdf': validate_document(document,original)
     if media == DOCX_MEDIA: validate_docx(document,original)
+    if media in IMAGE_MEDIA: validate_image(document,original)
     parser = parser_version(media)
     return repository.call('submit_text', request_id, title, original, media,
                            parser, VERSION, MODEL, REVISION, DIMENSIONS, source_id)
@@ -188,7 +196,7 @@ def run_once(repository, provider, *, cancel=None, timing=None):
                 return provider.count_tokens(text)
 
             stage('chunk_original')
-            text = document['body'] if job['media_type'] in ('application/pdf',DOCX_MEDIA) else raw.decode('utf-8')
+            text = document['body'] if job['media_type'] in ('application/pdf',DOCX_MEDIA,*IMAGE_MEDIA) else raw.decode('utf-8')
             chunks = chunk_document(text, count_tokens)
             if len(chunks) > MAX_JOB_REQUESTS or sum(c['tokens'] for c in chunks) > MAX_JOB_TOKENS:
                 raise ValueError('invalid_input')
@@ -196,7 +204,10 @@ def run_once(repository, provider, *, cancel=None, timing=None):
             lease.renew()
             stage('stage_text')
             manifest = [{k: c[k] for k in ('id','start','end')} for c in chunks]
-            if job['media_type']==DOCX_MEDIA:
+            if job['media_type'] in IMAGE_MEDIA:
+                metadata={k:document[k] for k in ('media_type','width','height','engine','ocr_model_sha256','language','regions')}
+                repository.call('stage_image',*args,raw,document['body'],metadata,manifest)
+            elif job['media_type']==DOCX_MEDIA:
                 repository.call('stage_docx',*args,raw,document['body'],document['paragraphs'],manifest)
             elif job['media_type']=='application/pdf':
                 repository.call('stage_pdf',*args,raw,document['body'],document['pages'],manifest)
@@ -258,7 +269,7 @@ def run_once(repository, provider, *, cancel=None, timing=None):
             code = error.code
         if isinstance(error, ProviderFailure):
             code = error.code
-        if isinstance(error,(PDFError,DOCXError)) and str(error).endswith(('_timeout','_busy','_cancelled','_parser_unavailable')):
+        if isinstance(error,(PDFError,DOCXError,ImageError)) and str(error).endswith(('_timeout','_busy','_cancelled','_parser_unavailable')):
             code = 'timeout' if str(error).endswith('_timeout') else 'temporarily_unavailable'
         if isinstance(error, InferenceError) and str(error) == 'deadline_exceeded':
             code = 'timeout'

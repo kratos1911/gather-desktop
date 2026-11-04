@@ -61,6 +61,7 @@ def main():
         app=compose_pilot(admission,worker,provider,identity,key,text_files=True,automatic=True,record=record,
             pdf_files=os.environ.get('GATHER_PDF_PILOT')=='1',
             docx_files=os.environ.get('GATHER_DOCX_PILOT')=='1',
+            image_files=os.environ.get('GATHER_IMAGE_PILOT')=='1',
             reuse_worker=os.environ.get('GATHER_WORKER_DB_REUSE')=='1',
             early_prepare=os.environ.get('GATHER_EARLY_MODEL_START')=='1',
             record_timings=os.environ.get('GATHER_PIPELINE_TIMING')=='1')

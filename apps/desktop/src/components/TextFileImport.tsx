@@ -12,6 +12,8 @@ const messages: Record<string, string> = {
   cancelled: "File reading cancelled.",
   file_docx_invalid:
     "This is not a DOCX archive. Choose an original .docx file.",
+  file_image_invalid:
+    "Choose a single PNG/JPEG image of at most one megapixel and 64 KiB. Animation is unsupported.",
   file_pdf_invalid:
     "This file does not have a valid PDF header and trailer. Choose the original PDF file.",
 };
@@ -21,10 +23,12 @@ export function TextFileImport({
   onSave,
   allowPdf = false,
   allowDocx = false,
+  allowImages = false,
 }: {
   disabled: boolean;
   allowPdf?: boolean;
   allowDocx?: boolean;
+  allowImages?: boolean;
   onSave: (file: SelectedTextFile) => Promise<boolean>;
 }) {
   const [selected, setSelected] = useState<SelectedTextFile | null>(null);
@@ -51,6 +55,7 @@ export function TextFileImport({
         controller.signal,
         allowPdf,
         allowDocx,
+        allowImages,
       );
       if (!controller.signal.aborted) setSelected(result);
     } catch (failure) {
@@ -83,32 +88,35 @@ export function TextFileImport({
   return (
     <div className="text-file-import">
       <label htmlFor="pilot-text-file">
-        {allowDocx
-          ? allowPdf
-            ? "Choose a DOCX, PDF, TXT or Markdown file"
-            : "Choose a DOCX, TXT or Markdown file"
-          : allowPdf
-            ? "Choose a PDF, TXT or Markdown file"
-            : "Choose a TXT or Markdown file"}
+        {allowImages
+          ? "Choose an image or supported document"
+          : allowDocx
+            ? allowPdf
+              ? "Choose a DOCX, PDF, TXT or Markdown file"
+              : "Choose a DOCX, TXT or Markdown file"
+            : allowPdf
+              ? "Choose a PDF, TXT or Markdown file"
+              : "Choose a TXT or Markdown file"}
       </label>
       <input
         id="pilot-text-file"
         ref={input}
         type="file"
         accept={
-          allowDocx
+          (allowImages ? ".png,.jpg,.jpeg,image/png,image/jpeg," : "") +
+          (allowDocx
             ? ".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document," +
               (allowPdf ? ".pdf,application/pdf," : "") +
               ".txt,.md,.markdown,text/plain,text/markdown"
             : allowPdf
               ? ".pdf,.txt,.md,.markdown,application/pdf,text/plain,text/markdown"
-              : ".txt,.md,.markdown,text/plain,text/markdown"
+              : ".txt,.md,.markdown,text/plain,text/markdown")
         }
         disabled={disabled || saving}
         onChange={(event) => void choose(event.target.files?.[0])}
       />
       <p>
-        Private testing only.{" "}
+        Private testing only. {allowImages && "PNG/JPEG printed English text, "}
         {allowDocx
           ? allowPdf
             ? "DOCX body text, PDF with selectable text or UTF-8 text,"
@@ -129,14 +137,23 @@ export function TextFileImport({
           <div
             className="paper text-file-preview"
             aria-label={
-              selected.media.endsWith("wordprocessingml.document")
-                ? "Local Word document review"
-                : selected.media === "application/pdf"
-                  ? "Local PDF review"
-                  : "Local plain-text preview"
+              selected.previewImage
+                ? "Local image review"
+                : selected.media.endsWith("wordprocessingml.document")
+                  ? "Local Word document review"
+                  : selected.media === "application/pdf"
+                    ? "Local PDF review"
+                    : "Local plain-text preview"
             }
           >
             {selected.preview}
+            {selected.previewImage && (
+              <img
+                className="saved-image"
+                src={selected.previewImage}
+                alt={`Selected image: ${selected.title}`}
+              />
+            )}
           </div>
           {selected.previewTruncated && (
             <p>
@@ -157,6 +174,13 @@ export function TextFileImport({
             {selected.media === "application/pdf" &&
               " PDFs may have at most 20 pages, each with selectable text. Encrypted, scanned, empty-page and active-content PDFs are unsupported. The reader shows extracted text with page numbers, not original page artwork."}
           </p>
+          {allowImages && (
+            <p>
+              Image decoding and OCR run in Gather’s API in Mumbai. Only the
+              recognized text is sent to the embedding model. This does not
+              analyze photo objects or scenes.
+            </p>
+          )}
           <label className="text-file-confirm">
             <input
               type="checkbox"

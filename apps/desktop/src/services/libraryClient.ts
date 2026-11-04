@@ -2,8 +2,32 @@
 import { MODEL_HTTP, type ModelStatus } from "./modelAvailability";
 export const DOCX_MEDIA =
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document" as const;
+export type ImageMedia = "image/png" | "image/jpeg";
+export type OCRRegion = {
+  number: number;
+  start: number;
+  end: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  confidence: number;
+};
+export function isImageMedia(value: unknown): value is ImageMedia {
+  return value === "image/png" || value === "image/jpeg";
+}
+export function imageDataURL(media: ImageMedia, bytes: Uint8Array): string {
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 8192)
+    binary += String.fromCharCode(...bytes.subarray(i, i + 8192));
+  return `data:${media};base64,${btoa(binary)}`;
+}
 export type DocumentMedia =
-  "text/plain" | "text/markdown" | "application/pdf" | typeof DOCX_MEDIA;
+  | "text/plain"
+  | "text/markdown"
+  | "application/pdf"
+  | typeof DOCX_MEDIA
+  | ImageMedia;
 export type ImportReceipt = {
   source_id: string;
   version_id: string;
@@ -37,6 +61,7 @@ export type SourcePage = {
   cleanup_source_ids?: string[];
   pdf_enabled?: boolean;
   docx_enabled?: boolean;
+  image_enabled?: boolean;
 };
 export type SearchWindow = {
   source_id: string;
@@ -50,9 +75,10 @@ export type SearchWindow = {
   passage_ids: string[];
   seed_rank: number;
   similarity: number;
-  media_type?: "application/pdf" | typeof DOCX_MEDIA;
+  media_type?: "application/pdf" | typeof DOCX_MEDIA | ImageMedia;
   pages?: number[];
   paragraphs?: number[];
+  ocr_regions?: number[];
 };
 export type SearchResult = {
   version: string;
@@ -70,10 +96,17 @@ export type SourceText = {
   model_revision: string;
   dimensions: number;
   passages: { id: string; start: number; end: number }[];
-  media_type?: "application/pdf" | typeof DOCX_MEDIA;
+  media_type?: "application/pdf" | typeof DOCX_MEDIA | ImageMedia;
   text_sha256?: string;
   pages?: { number: number; start: number; end: number }[];
   paragraphs?: { number: number; start: number; end: number }[];
+  regions?: OCRRegion[];
+  width?: number;
+  height?: number;
+  image_base64?: string;
+  engine?: string;
+  ocr_model_sha256?: string;
+  language?: string;
 };
 export type PreparedImport = Readonly<{
   request_id: string;
@@ -87,6 +120,18 @@ export type PreparedImport = Readonly<{
 const MAX_REPLY = 512 * 1024;
 const ERROR_HTTP: Record<string, number> = {
   ...MODEL_HTTP,
+  image_size: 400,
+  image_invalid: 400,
+  image_dimensions: 400,
+  image_animated: 400,
+  image_text_required: 400,
+  image_text_limit: 400,
+  image_region_limit: 400,
+  image_invalid_output: 400,
+  image_parser_unavailable: 503,
+  image_busy: 429,
+  image_timeout: 504,
+  image_cancelled: 400,
   docx_size: 400,
   docx_invalid: 400,
   docx_invalid_output: 400,
@@ -169,6 +214,134 @@ function offsets(value: Record<string, unknown>, body: string) {
     throw new LibraryClientError("invalid_response");
   return { start, end };
 }
+export function validImageBytes(bytes: Uint8Array, media: ImageMedia): boolean {
+  const bounded = (w: number, h: number) =>
+    w > 0 && h > 0 && w <= 4096 && h <= 4096 && w * h <= 1048576;
+  if (!bytes.length || bytes.length > 65536) return false;
+  if (media === "image/png") {
+    if (
+      bytes.length < 33 ||
+      String.fromCharCode(...bytes.slice(0, 8)) !== "\x89PNG\r\n\x1a\n"
+    )
+      return false;
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    if (
+      view.getUint32(8) !== 13 ||
+      String.fromCharCode(...bytes.slice(12, 16)) !== "IHDR" ||
+      !bounded(view.getUint32(16), view.getUint32(20))
+    )
+      return false;
+    let position = 8,
+      chunks = 0;
+    while (position + 12 <= bytes.length && chunks++ < 128) {
+      const size = view.getUint32(position),
+        kind = String.fromCharCode(...bytes.slice(position + 4, position + 8));
+      if (size > bytes.length - position - 12 || kind === "acTL") return false;
+      position += size + 12;
+      if (kind === "IEND") return size === 0 && position === bytes.length;
+    }
+    return false;
+  }
+  if (
+    bytes[0] !== 255 ||
+    bytes[1] !== 216 ||
+    bytes[bytes.length - 2] !== 255 ||
+    bytes[bytes.length - 1] !== 217
+  )
+    return false;
+  let position = 2;
+  while (position + 4 <= bytes.length) {
+    if (bytes[position++] !== 255) return false;
+    while (bytes[position] === 255) position++;
+    const marker = bytes[position++],
+      size = bytes[position] * 256 + bytes[position + 1];
+    if (size < 2 || position + size > bytes.length) return false;
+    if (marker >= 192 && marker <= 207 && ![196, 200, 204].includes(marker))
+      return (
+        size >= 8 &&
+        bounded(
+          bytes[position + 5] * 256 + bytes[position + 6],
+          bytes[position + 3] * 256 + bytes[position + 4],
+        )
+      );
+    if (marker === 218 || marker === 217) return false;
+    position += size;
+  }
+  return false;
+}
+function imageMetadata(
+  value: Record<string, unknown>,
+  body: string,
+): Partial<SourceText> {
+  const width = integer(value.width),
+    height = integer(value.height),
+    length = Array.from(body).length;
+  if (
+    !width ||
+    !height ||
+    width > 4096 ||
+    height > 4096 ||
+    width * height > 1048576 ||
+    value.engine !== "tesseract-5.5.0-lstm" ||
+    value.language !== "eng" ||
+    value.ocr_model_sha256 !==
+      "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2" ||
+    value.pages !== undefined ||
+    value.paragraphs !== undefined
+  )
+    throw new LibraryClientError("invalid_response");
+  let previous = 0;
+  const regions = array(value.regions, 128).map((row, index): OCRRegion => {
+    const r = record(row);
+    const region = {
+      number: integer(r.number),
+      start: integer(r.start),
+      end: integer(r.end),
+      x: integer(r.x),
+      y: integer(r.y),
+      width: integer(r.width),
+      height: integer(r.height),
+      confidence: number(r.confidence),
+    };
+    if (
+      region.number !== index + 1 ||
+      region.start !== previous ||
+      region.end <= previous ||
+      region.end > length ||
+      !region.width ||
+      !region.height ||
+      region.x + region.width > width ||
+      region.y + region.height > height ||
+      region.confidence < 0 ||
+      region.confidence > 100 ||
+      !Array.from(body).slice(region.start, region.end).join("").trim()
+    )
+      throw new LibraryClientError("invalid_response");
+    previous = region.end;
+    return region;
+  });
+  const encoded = text(value.image_base64);
+  if (
+    !regions.length ||
+    previous !== length ||
+    !encoded ||
+    encoded.length > 87384 ||
+    encoded.length % 4 ||
+    !/^[A-Za-z0-9+/]+={0,2}$/.test(encoded)
+  )
+    throw new LibraryClientError("invalid_response");
+  return {
+    media_type: value.media_type as ImageMedia,
+    text_sha256: hash(value.text_sha256),
+    regions,
+    width,
+    height,
+    image_base64: encoded,
+    engine: text(value.engine),
+    ocr_model_sha256: text(value.ocr_model_sha256),
+    language: "eng",
+  };
+}
 export class LibraryClientError extends Error {
   constructor(public readonly code: string) {
     super(code);
@@ -236,13 +409,20 @@ export class LibraryClient {
       Array.from(title).length > 500 ||
       bytes.byteLength < 1 ||
       bytes.byteLength > 65536 ||
-      !["text/plain", "text/markdown", "application/pdf", DOCX_MEDIA].includes(
-        media,
-      )
+      ![
+        "text/plain",
+        "text/markdown",
+        "application/pdf",
+        DOCX_MEDIA,
+        "image/png",
+        "image/jpeg",
+      ].includes(media)
     )
       throw new LibraryClientError("invalid_import");
     try {
-      if (media === DOCX_MEDIA) {
+      if (isImageMedia(media)) {
+        if (!validImageBytes(bytes, media)) throw new Error();
+      } else if (media === DOCX_MEDIA) {
         if (String.fromCharCode(...bytes.slice(0, 4)) !== "PK\x03\x04")
           throw new Error();
       } else if (media !== "application/pdf")
@@ -459,7 +639,9 @@ export class LibraryClient {
       (result.pdf_enabled !== undefined &&
         typeof result.pdf_enabled !== "boolean") ||
       (result.docx_enabled !== undefined &&
-        typeof result.docx_enabled !== "boolean")
+        typeof result.docx_enabled !== "boolean") ||
+      (result.image_enabled !== undefined &&
+        typeof result.image_enabled !== "boolean")
     )
       throw new LibraryClientError("invalid_response");
     return {
@@ -469,6 +651,9 @@ export class LibraryClient {
       ...(result.docx_enabled === undefined
         ? {}
         : { docx_enabled: result.docx_enabled as boolean }),
+      ...(result.image_enabled === undefined
+        ? {}
+        : { image_enabled: result.image_enabled as boolean }),
       ...(result.pdf_enabled === undefined
         ? {}
         : { pdf_enabled: result.pdf_enabled }),
@@ -491,12 +676,27 @@ export class LibraryClient {
         encoder.encode(body).length > 8192
       )
         throw new LibraryClientError("invalid_response");
-      let locations: Pick<SearchWindow, "media_type" | "pages" | "paragraphs"> =
-        {};
-      if (
+      let locations: Pick<
+        SearchWindow,
+        "media_type" | "pages" | "paragraphs" | "ocr_regions"
+      > = {};
+      if (isImageMedia(value.media_type)) {
+        const numbers = array(value.ocr_regions, 128).map(integer);
+        if (
+          value.pages !== undefined ||
+          value.paragraphs !== undefined ||
+          !numbers.length ||
+          numbers.some(
+            (n, i) => n < 1 || n > 128 || (i > 0 && n <= numbers[i - 1]),
+          )
+        )
+          throw new LibraryClientError("invalid_response");
+        locations = { media_type: value.media_type, ocr_regions: numbers };
+      } else if (
         value.media_type !== undefined ||
         value.pages !== undefined ||
-        value.paragraphs !== undefined
+        value.paragraphs !== undefined ||
+        value.ocr_regions !== undefined
       ) {
         const docx = value.media_type === DOCX_MEDIA;
         const key = docx ? "paragraphs" : "pages";
@@ -548,6 +748,7 @@ export class LibraryClient {
     versionId: string,
     signal?: AbortSignal,
   ): Promise<SourceText | null> {
+    const generation = this.generation;
     const rows = array(
       await this.request(
         "open",
@@ -574,53 +775,90 @@ export class LibraryClient {
         throw new LibraryClientError("invalid_response");
       return { id: text(passage.id), start, end };
     });
-    let locations: Pick<
-      SourceText,
-      "media_type" | "text_sha256" | "pages" | "paragraphs"
-    > = {};
-    if (
+    let locations: Partial<SourceText> = {};
+    if (isImageMedia(value.media_type)) {
+      locations = imageMetadata(value, body);
+      const raw = Uint8Array.from(atob(locations.image_base64!), (c) =>
+        c.charCodeAt(0),
+      );
+      if (!validImageBytes(raw, value.media_type))
+        throw new LibraryClientError("invalid_response");
+      const hashes = await Promise.all([
+        crypto.subtle.digest("SHA-256", raw),
+        crypto.subtle.digest("SHA-256", encoder.encode(body)),
+      ]);
+      if (generation !== this.generation || signal?.aborted)
+        throw new LibraryClientError("cancelled");
+      const hex = hashes.map((buffer) =>
+        Array.from(new Uint8Array(buffer), (byte) =>
+          byte.toString(16).padStart(2, "0"),
+        ).join(""),
+      );
+      if (hex[0] !== value.source_sha256 || hex[1] !== value.text_sha256)
+        throw new LibraryClientError("invalid_response");
+    } else if (
       value.media_type !== undefined ||
       value.pages !== undefined ||
       value.paragraphs !== undefined ||
-      value.text_sha256 !== undefined
+      value.text_sha256 !== undefined ||
+      value.regions !== undefined ||
+      value.image_base64 !== undefined
     ) {
-      const docx = value.media_type === DOCX_MEDIA;
-      const key = docx ? "paragraphs" : "pages";
-      let previous = 0;
-      const spans = array(value[key], docx ? 128 : 20).map((row, index) => {
-        const span = record(row),
-          number = integer(span.number),
-          start = integer(span.start),
-          end = integer(span.end);
-        if (
-          number !== index + 1 ||
-          start !== previous ||
-          end <= start ||
-          end > length
-        )
-          throw new LibraryClientError("invalid_response");
-        previous = end;
-        return { number, start, end };
-      });
       if (
-        (!docx && value.media_type !== "application/pdf") ||
-        value[docx ? "pages" : "paragraphs"] !== undefined ||
-        !spans.length ||
-        previous !== length ||
-        !hashPattern.test(text(value.text_sha256))
+        value.regions !== undefined ||
+        value.image_base64 !== undefined ||
+        value.ocr_regions !== undefined
       )
         throw new LibraryClientError("invalid_response");
-      locations = docx
-        ? {
-            media_type: DOCX_MEDIA,
-            paragraphs: spans,
-            text_sha256: text(value.text_sha256),
-          }
-        : {
-            media_type: "application/pdf",
-            pages: spans,
-            text_sha256: text(value.text_sha256),
-          };
+      let documentLocations: Pick<
+        SourceText,
+        "media_type" | "text_sha256" | "pages" | "paragraphs"
+      > = {};
+      if (
+        value.media_type !== undefined ||
+        value.pages !== undefined ||
+        value.paragraphs !== undefined ||
+        value.text_sha256 !== undefined
+      ) {
+        const docx = value.media_type === DOCX_MEDIA;
+        const key = docx ? "paragraphs" : "pages";
+        let previous = 0;
+        const spans = array(value[key], docx ? 128 : 20).map((row, index) => {
+          const span = record(row),
+            number = integer(span.number),
+            start = integer(span.start),
+            end = integer(span.end);
+          if (
+            number !== index + 1 ||
+            start !== previous ||
+            end <= start ||
+            end > length
+          )
+            throw new LibraryClientError("invalid_response");
+          previous = end;
+          return { number, start, end };
+        });
+        if (
+          (!docx && value.media_type !== "application/pdf") ||
+          value[docx ? "pages" : "paragraphs"] !== undefined ||
+          !spans.length ||
+          previous !== length ||
+          !hashPattern.test(text(value.text_sha256))
+        )
+          throw new LibraryClientError("invalid_response");
+        documentLocations = docx
+          ? {
+              media_type: DOCX_MEDIA,
+              paragraphs: spans,
+              text_sha256: text(value.text_sha256),
+            }
+          : {
+              media_type: "application/pdf",
+              pages: spans,
+              text_sha256: text(value.text_sha256),
+            };
+      }
+      locations = documentLocations;
     }
     return {
       ...identity(value),

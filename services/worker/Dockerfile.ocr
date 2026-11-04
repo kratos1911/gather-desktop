@@ -1,0 +1,15 @@
+# Build context is explicitly staged on D: and contains no user documents/secrets.
+ARG BASE_IMAGE=asia-south1-docker.pkg.dev/gather-development-511211/gather-pilot-images/library@sha256:95bb6106f63623dc90949e34e58359d31ca7974c2478efdcd4a6ab10032e0844
+FROM ${BASE_IMAGE}
+USER 0:0
+# Only the C API and fixed English data; no OCR CLI, font rendering or OSD package.
+RUN apt-get update -qq \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends \
+       libtesseract5=5.5.0-1+b1 tesseract-ocr-eng=1:4.1.0-2 \
+    && rm -rf /var/lib/apt/lists/*
+COPY ocr-wheels /app/ocr-wheels
+COPY install_ocr_runtime.py /app/install_ocr_runtime.py
+RUN python /app/install_ocr_runtime.py \
+    && rmdir /app/ocr-wheels
+USER 65532:65532
+ENTRYPOINT ["python"]

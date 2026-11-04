@@ -535,3 +535,11 @@ supported main body, never execute fields/macros or follow relationships. Word
 pagination depends on layout, so cite stable extracted paragraph ranges with a
 separate text hash. Keep raw archive identity and exact saved-version ownership
 alongside them. See [[docs/DOCX_IMPORT]].
+
+## OCR searches recognized text, not the image's objects
+
+Decode an authenticated bounded image in the disposable parser, recognize English
+text, then reuse the existing text-embedding space. Preserve raw-image and
+extracted-text hashes separately. Cite line regions with upright pixel boxes and
+exact text offsets; confidence is an engine score, not proof of correctness.
+Opening retrieves the owned exact original for comparison. See [[docs/IMAGE_OCR]].

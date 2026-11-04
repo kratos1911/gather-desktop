@@ -30,6 +30,7 @@ export type LibraryState = Readonly<{
   libraryStatus: "idle" | "loading" | "ready" | "error";
   pdfEnabled: boolean;
   docxEnabled: boolean;
+  imageEnabled: boolean;
 }>;
 const initial = (): LibraryState => ({
   signedIn: false,
@@ -50,6 +51,7 @@ const initial = (): LibraryState => ({
   libraryStatus: "idle",
   pdfEnabled: false,
   docxEnabled: false,
+  imageEnabled: false,
 });
 
 export class LibraryWorkspace {
@@ -162,6 +164,17 @@ export class LibraryWorkspace {
             "access_denied",
             "session_required",
             "busy",
+            "image_size",
+            "image_invalid",
+            "image_dimensions",
+            "image_animated",
+            "image_text_required",
+            "image_text_limit",
+            "image_region_limit",
+            "image_invalid_output",
+            "image_parser_unavailable",
+            "image_busy",
+            "image_timeout",
             "docx_size",
             "docx_invalid",
             "docx_invalid_output",
@@ -364,6 +377,7 @@ export class LibraryWorkspace {
           cleanupEnabled: page.cleanup_source_ids !== undefined,
           pdfEnabled: page.pdf_enabled === true,
           docxEnabled: page.docx_enabled === true,
+          imageEnabled: page.image_enabled === true,
         });
       },
       () => this.update({ libraryStatus: "error" }),

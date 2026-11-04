@@ -60,7 +60,7 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-006 | Partial: identity/private schema | Hosted private pilot; fifteen approved migrations applied. PDF/DOCX/recovery ownership permissions checked; general signup/audience policy remain gated; [hosted setup](docs/HOSTED_SUPABASE_SETUP.md) |
 | TASK-007 | Private pilot verified; general app partial | Selected synthetic Markdown passed import -> publish -> search/open -> deletion/cleanup. Automatic processing/owned cleanup verified; release gates remain; [file pilot](docs/PRIVATE_TEXT_FILES.md) |
 | TASK-008 | PDF and bounded DOCX private flows verified | DOCX native import reached ready on attempt 1; real search/cited opening passed with two model requests. Approved migration 15/API/native installed update are live; general Office compatibility, PPTX and public release remain open. [DOCX contract](docs/DOCX_IMPORT.md), [PDF contract](docs/PDF_IMPORT.md) |
-| TASK-009 | Planned: photo/OCR retrieval | JPEG/PNG/scanned text, distinct model spaces and separately measured quality |
+| TASK-009 | Private English OCR verified/deployed; photo search planned | PNG/JPEG -> OCR -> existing text search -> exact original/region opening passed in the Windows app with two real embeddings and no explicit recovery. Migration16/API CPU1/2GiB deployed with approval. Object/scene embeddings remain separate. [OCR contract](docs/IMAGE_OCR.md) |
 | TASK-010 | Deferred by user: chat | Selected-source isolation/citations; do not start before search priorities |
 | TASK-011 | Partial: automated quality | Focused local checks/builds pass; remote manual CI/native E2E not claimed |
 | TASK-012 | Continuous release gate | Ownership, limits, cleanup, dependencies/licences/secrets and [privacy gates](docs/PRIVACY_RELEASE_AUDIT.md) |
@@ -81,6 +81,11 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-024 | Private ingestion performance implemented/verified | Profiled stages, bounded worker reuse and early readiness are deployed. Same small-PDF warm comparison: worker 39–41s -> 18–19s, observed ready 61s -> 33–35s. Cold/larger-file/p95 behavior is not established; [PROCESSING_SPEED](docs/PROCESSING_SPEED.md) |
 
 ## Latest verification
+
+Image OCR: 80 frontend checks, 20 isolated SQL groups, affected backend148 and
+final patched-runtime45 focused checks pass (overlap, not additive). Ten generated
+image cases, builds/installer identity and one hosted/native semantic flow pass.
+Package scan reuse, patch evidence and remaining findings: IMAGE_OCR.md.
 
 Windows startup: installed PE subsystem 2 and a normal GUI launch with zero owned
 console processes verified; frontend/native/installer builds pass. No model calls.

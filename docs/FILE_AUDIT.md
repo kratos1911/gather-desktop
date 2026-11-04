@@ -149,3 +149,11 @@ private/model directories. Inspect the CSV for current/historical literal
 references, static import references and role. Review dynamic/configuration/
 discovery/manual use before any future deletion. Generated reports belong in
 output; keep current docs concise and preserve history/evidence deliberately.
+
+Image OCR uses services/worker/image_processing.py, the typed image migration and
+tests/database/image_publication.sql. Dockerfile.ocr, install_ocr_runtime.py,
+requirements-ocr.lock and ocr-runtime.json are reviewed build/provenance inputs;
+retain them despite no runtime imports. The PNG/JPEG files and README under
+apps/desktop/src/test-fixtures/image-ocr are synthetic frontend test inputs.
+Generated probes, images, package inventories, scans and installers remain under
+ignored output/ocr-pilot/ and output/private-desktop/; do not purge as cleanup.

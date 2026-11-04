@@ -853,3 +853,14 @@ after a standard-producer fixture exposed legitimate larger style parts. Keep
 total expansion at 1 MiB and upload/text/XML/resource limits unchanged. Include
 a standard-producer check alongside minimal security fixtures; unchanged extracted
 body/model inputs allow reuse of the existing live inference evidence.
+
+## 4 November 2026: bounded private English image OCR
+
+Use fixed Tesseract 5.5.0 English data through its C API and Pillow 13.0.0 in
+the existing disposable parser. Local PNG/JPEG tests fit the unchanged parser
+limits; Paddle remains an unmeasured alternative. Reuse Qwen text vectors rather
+than imply object/scene retrieval. Preserve original/text identities and region
+provenance. The user approved 2 GiB only for the existing API, with CPU/scaling
+and aggregate INR500 allowance unchanged. Minimize runtime packages to the C
+library and English data; hash-verified pyasn1/setuptools updates address available
+patches. Retain unsuppressed remaining OS findings and public-release gates.

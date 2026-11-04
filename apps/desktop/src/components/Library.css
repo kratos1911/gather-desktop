@@ -425,6 +425,13 @@
   padding: 60px 0 70px;
   align-items: center;
 }
+.saved-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 20px auto;
+  background: #fff;
+}
 .library-welcome h2 {
   font-size: clamp(28px, 3vw, 42px);
   font-weight: 500;

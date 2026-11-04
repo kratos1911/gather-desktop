@@ -9,6 +9,7 @@ import hashlib
 import re
 from services.worker.pdf_processing import validate_text
 from services.worker.docx_processing import MEDIA as DOCX_MEDIA, validate_text as validate_docx_text
+from services.worker.image_processing import MEDIA as IMAGE_MEDIA, validate_text as validate_image_text
 
 VERSION = 'source-neighbors-v1'
 MAX_CANDIDATES = 100
@@ -38,6 +39,8 @@ class Snapshot:
     media_type: str = 'text/plain'
     pages: tuple[tuple[int,int,int],...] = ()
     paragraphs: tuple[tuple[int,int,int],...] = ()
+    image_regions: tuple[dict,...] = ()
+    image_dimensions: tuple[int,int] | tuple[()] = ()
 
 
 @dataclass(frozen=True)
@@ -84,13 +87,17 @@ before producing any output, including those beyond the first five sources.
             raise ValueError('invalid_source_text') from None
         if not isinstance(source.source_sha256,str) or not re.fullmatch('[0-9a-f]{64}',source.source_sha256):
             raise ValueError('source_integrity')
-        if source.media_type==DOCX_MEDIA:
-            if type(source.paragraphs) is not tuple or source.pages: raise ValueError('source_integrity')
+        if source.media_type in IMAGE_MEDIA:
+            if source.pages or source.paragraphs or type(source.image_regions) is not tuple or len(source.image_dimensions)!=2:
+                raise ValueError('source_integrity')
+            validate_image_text(source.text,list(source.image_regions),source.text_sha256,*source.image_dimensions)
+        elif source.media_type==DOCX_MEDIA:
+            if type(source.paragraphs) is not tuple or source.pages or source.image_regions or source.image_dimensions: raise ValueError('source_integrity')
             validate_docx_text(source.text,[dict(number=n,start=a,end=b) for n,a,b in source.paragraphs],source.text_sha256)
         elif source.media_type=='application/pdf':
-            if source.paragraphs or not isinstance(source.pages,tuple): raise ValueError('source_integrity')
+            if source.paragraphs or not isinstance(source.pages,tuple) or source.image_regions or source.image_dimensions: raise ValueError('source_integrity')
             validate_text(source.text,[dict(number=n,start=a,end=b) for n,a,b in source.pages],source.text_sha256)
-        elif source.media_type!='text/plain' or source.text_sha256 is not None or source.pages or source.paragraphs or len(encoded)>65536 or hashlib.sha256(encoded).hexdigest()!=source.source_sha256:
+        elif source.media_type!='text/plain' or source.text_sha256 is not None or source.pages or source.paragraphs or source.image_regions or source.image_dimensions or len(encoded)>65536 or hashlib.sha256(encoded).hexdigest()!=source.source_sha256:
             raise ValueError('source_integrity')
         if not isinstance(source.passages, tuple) or not 1 <= len(source.passages) <= 256:
             raise ValueError('passage_limit')
@@ -171,7 +178,10 @@ before producing any output, including those beyond the first five sources.
             'start': window['start'], 'end': window['end'], 'offset_unit': 'unicode_code_point',
             'text': source.text[window['start']:window['end']], 'utf8_bytes': window['bytes'],
             'skipped_neighbors': window['skipped']})
-        if source.media_type==DOCX_MEDIA:
+        if source.media_type in IMAGE_MEDIA:
+            windows[-1].update(media_type=source.media_type,ocr_regions=[r['number'] for r in source.image_regions
+                if r['start']<window['end'] and r['end']>window['start']])
+        elif source.media_type==DOCX_MEDIA:
             windows[-1].update(media_type=DOCX_MEDIA,paragraphs=[n for n,a,b in source.paragraphs
                 if a<window['end'] and b>window['start']])
         elif source.media_type=='application/pdf':

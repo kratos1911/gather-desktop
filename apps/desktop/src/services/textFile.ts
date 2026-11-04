@@ -2,6 +2,8 @@
 import {
   LibraryClientError,
   DOCX_MEDIA,
+  imageDataURL,
+  validImageBytes,
   type DocumentMedia,
 } from "./libraryClient";
 
@@ -12,6 +14,7 @@ export type SelectedTextFile = Readonly<{
   bytes: Uint8Array;
   preview: string;
   previewTruncated: boolean;
+  previewImage?: string;
 }>;
 
 function hasControls(value: string, allowLayout = false): boolean {
@@ -31,6 +34,7 @@ export async function readTextFile(
   signal: AbortSignal,
   allowPdf = false,
   allowDocx = false,
+  allowImages = false,
 ): Promise<SelectedTextFile> {
   if (signal.aborted) throw new LibraryClientError("cancelled");
   if (
@@ -42,7 +46,8 @@ export async function readTextFile(
     !(
       /\.(txt|md|markdown)$/i.test(file.name) ||
       (allowPdf && /\.pdf$/i.test(file.name)) ||
-      (allowDocx && /\.docx$/i.test(file.name))
+      (allowDocx && /\.docx$/i.test(file.name)) ||
+      (allowImages && /\.(png|jpe?g)$/i.test(file.name))
     )
   )
     throw new LibraryClientError("file_type");
@@ -82,6 +87,20 @@ export async function readTextFile(
     reader.readAsArrayBuffer(file.slice(0, MAX_TEXT_FILE_BYTES + 1));
   });
   if (signal.aborted) throw new LibraryClientError("cancelled");
+  if (/\.(png|jpe?g)$/i.test(file.name)) {
+    const media = /\.png$/i.test(file.name) ? "image/png" : "image/jpeg";
+    if (!validImageBytes(bytes, media))
+      throw new LibraryClientError("file_image_invalid");
+    return Object.freeze({
+      title: file.name,
+      media,
+      bytes,
+      previewTruncated: false,
+      preview:
+        "Image selected locally. After you confirm and save, Gather will read printed English text using OCR. Object and scene search is not enabled.",
+      previewImage: imageDataURL(media, bytes),
+    });
+  }
   if (/\.docx$/i.test(file.name)) {
     if (String.fromCharCode(...bytes.slice(0, 4)) !== "PK\x03\x04")
       throw new LibraryClientError("file_docx_invalid");

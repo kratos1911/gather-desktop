@@ -157,7 +157,9 @@ def search(query, *, api, provider, limit=20, cancel=None):
             snapshots.append(Snapshot(owner, sid, doc['version_id'], doc['source_sha256'], doc['body'], passages,
                 text_sha256=doc.get('text_sha256'),media_type=doc.get('media_type','text/plain'),
                 pages=tuple((p['number'],p['start'],p['end']) for p in doc.get('pages',[])),
-                paragraphs=tuple((p['number'],p['start'],p['end']) for p in doc.get('paragraphs',[]))))
+                paragraphs=tuple((p['number'],p['start'],p['end']) for p in doc.get('paragraphs',[])),
+                image_regions=tuple(doc.get('regions',[])),
+                image_dimensions=(doc['width'],doc['height']) if 'regions' in doc else ()))
             metadata[sid] = {'title': seed['title'], 'similarity': seed['similarity']}
         active()
         # Preserve original ranking even when several hits share one source.

@@ -1,5 +1,13 @@
 # Privacy and release audit
 
+PNG/JPEG private extension, 4 November: [IMAGE_OCR](IMAGE_OCR.md) records explicit
+review/consent, bounded pixel decoding and English OCR in Gather's Mumbai API.
+Confirmed originals and recognized text use the existing Supabase/Sydney storage;
+only recognized text goes to the existing Qwen/Mumbai embedding service. No new
+recipient, signup, telemetry or public-upload permission. Originals are fetched
+only for owned exact-version opening. OCR mistakes and photo-search limitations
+are disclosed; public hostile-upload/confinement and final policy gates stay open.
+
 DOCX private extension review, 2 November: [DOCX_IMPORT](DOCX_IMPORT.md) records
 the tested parser/storage/UI safeguards, approved hosted flow and consent copy. Reuses the
 same two-account original/text processors and deletion chain; no new recipient,

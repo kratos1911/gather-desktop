@@ -8,6 +8,7 @@ import {
 import {
   LibraryClient,
   LibraryClientError,
+  isImageMedia,
   type LibrarySource,
   type SearchWindow,
 } from "../services/libraryClient";
@@ -65,6 +66,22 @@ const messages: Record<string, string> = {
   docx_invalid_output:
     "DOCX validation failed. The document was not published.",
   docx_size: "Choose a nonempty DOCX of at most 64 KiB.",
+  image_size: "Choose a nonempty PNG/JPEG image of at most 64 KiB.",
+  image_invalid:
+    "This image could not be safely decoded. Choose an original PNG or JPEG.",
+  image_dimensions:
+    "This pilot accepts images of at most one megapixel and 4,096 pixels per side.",
+  image_animated: "Choose a single image. Animated images are unsupported.",
+  image_text_required:
+    "No readable text was found. Try a clear image of printed English text. Photo object search is not enabled.",
+  image_text_limit: "The image contains more text than this OCR pilot accepts.",
+  image_region_limit: "The image exceeds the 128 text-region limit.",
+  image_invalid_output:
+    "OCR validation failed. No partial image result was published.",
+  image_parser_unavailable: "Image OCR is unavailable on this server.",
+  image_busy: "Another document is being checked. Wait before trying again.",
+  image_timeout: "OCR reached its deadline. It was not retried automatically.",
+  image_cancelled: "Image processing was cancelled.",
   docx_busy: "Another document is being checked. Wait before trying again.",
   docx_timeout:
     "DOCX extraction reached its deadline. It was not retried automatically.",
@@ -94,6 +111,7 @@ const filters = [
   "Everything",
   "PDFs",
   "Word documents",
+  "Images",
   "Markdown",
   "Text files",
 ] as const;
@@ -178,11 +196,14 @@ function PanelDialog({
 }
 
 function fileType(title: string) {
+  if (/\.(png|jpe?g)$/i.test(title)) return "Images";
   if (/\.docx$/i.test(title)) return "Word documents";
   if (/\.pdf$/i.test(title)) return "PDFs";
   return /\.(md|markdown)$/i.test(title) ? "Markdown" : "Text files";
 }
 function fileLabel(title: string) {
+  if (fileType(title) === "Images")
+    return /\.png$/i.test(title) ? "PNG" : "JPEG";
   if (fileType(title) === "Word documents") return "DOCX";
   if (fileType(title) === "PDFs") return "PDF";
   return fileType(title) === "Markdown" ? "MD" : "TXT";
@@ -256,10 +277,15 @@ export default function Library() {
   );
   useEffect(() => workspace.watchImport(), [workspace, state.imported]);
   useEffect(() => {
-    if ((state.opened?.pages || state.opened?.paragraphs) && readerPage)
+    if (
+      (state.opened?.pages ||
+        state.opened?.paragraphs ||
+        state.opened?.regions) &&
+      readerPage
+    )
       document
         .getElementById(
-          `${state.opened?.paragraphs ? "docx-paragraph" : "pdf-page"}-${readerPage}`,
+          `${state.opened?.regions ? "ocr-region" : state.opened?.paragraphs ? "docx-paragraph" : "pdf-page"}-${readerPage}`,
         )
         ?.scrollIntoView?.({ block: "start" });
   }, [state.opened, readerPage]);
@@ -516,6 +542,11 @@ export default function Library() {
                 {filters
                   .filter(
                     (value) =>
+                      (value !== "Images" ||
+                        state.imageEnabled ||
+                        state.sources.some((source) =>
+                          /\.(png|jpe?g)$/i.test(source.title),
+                        )) &&
                       (value !== "PDFs" ||
                         state.pdfEnabled ||
                         state.sources.some((source) =>
@@ -671,7 +702,10 @@ export default function Library() {
                           disabled={state.busy}
                           onClick={() => {
                             setReaderPage(
-                              hit.pages?.[0] ?? hit.paragraphs?.[0] ?? null,
+                              hit.pages?.[0] ??
+                                hit.paragraphs?.[0] ??
+                                hit.ocr_regions?.[0] ??
+                                null,
                             );
                             act(() =>
                               workspace.open(hit.source_id, hit.version_id),
@@ -687,7 +721,13 @@ export default function Library() {
                           >
                             <p>{window.text}</p>
                             <small>
-                              {window.paragraphs ? (
+                              {window.ocr_regions ? (
+                                <>
+                                  OCR regions {window.ocr_regions.join(", ")} ·
+                                  extracted characters {window.start}–
+                                  {window.end}
+                                </>
+                              ) : window.paragraphs ? (
                                 <>
                                   Paragraphs {window.paragraphs.join(", ")} ·
                                   extracted characters {window.start}–
@@ -713,7 +753,10 @@ export default function Library() {
                             disabled={state.busy}
                             onClick={() => {
                               setReaderPage(
-                                hit.pages?.[0] ?? hit.paragraphs?.[0] ?? null,
+                                hit.pages?.[0] ??
+                                  hit.paragraphs?.[0] ??
+                                  hit.ocr_regions?.[0] ??
+                                  null,
                               );
                               act(() =>
                                 workspace.open(hit.source_id, hit.version_id),
@@ -948,6 +991,7 @@ export default function Library() {
             <TextFileImport
               allowPdf={state.pdfEnabled}
               allowDocx={state.docxEnabled}
+              allowImages={state.imageEnabled}
               disabled={state.busy || !!state.pendingImport}
               onSave={async (file) => {
                 const started = epoch.current;
@@ -976,6 +1020,13 @@ export default function Library() {
               <p className="library-footnote">
                 Private testing · two existing accounts
               </p>
+              {state.imageEnabled && (
+                <p>
+                  PNG/JPEG images with printed English text are supported
+                  through OCR, up to one megapixel. Photo object search is not
+                  enabled.
+                </p>
+              )}
               <p>
                 {state.docxEnabled
                   ? state.pdfEnabled
@@ -1035,27 +1086,66 @@ export default function Library() {
           reader
           dismiss={() => workspace.closeSource()}
         >
-          <p className="reader-version">Exact published version · plain text</p>
+          <p className="reader-version">
+            Exact published version ·{" "}
+            {state.opened.regions
+              ? "original image and OCR text"
+              : "plain text"}
+          </p>
+          {isImageMedia(state.opened.media_type) &&
+            state.opened.image_base64 && (
+              <>
+                <img
+                  className="saved-image"
+                  src={`data:${state.opened.media_type};base64,${state.opened.image_base64}`}
+                  alt={`Saved original: ${state.opened.title}`}
+                />
+                <p className="library-footnote">
+                  OCR can contain mistakes. Check the original image when a
+                  detail matters.
+                </p>
+              </>
+            )}
           <article className="saved-document" aria-label="Saved document text">
-            {(state.opened.pages ?? state.opened.paragraphs)
-              ? (state.opened.pages ?? state.opened.paragraphs)!.map((page) => (
+            {state.opened.regions
+              ? state.opened.regions.map((region) => (
                   <section
                     className="pdf-page"
-                    id={`${state.opened!.paragraphs ? "docx-paragraph" : "pdf-page"}-${page.number}`}
-                    key={page.number}
+                    id={`ocr-region-${region.number}`}
+                    key={region.number}
                   >
-                    <h3>
-                      {state.opened!.paragraphs ? "Paragraph" : "Page"}{" "}
-                      {page.number}
-                    </h3>
-                    <div>
+                    <h3>Text region {region.number}</h3>
+                    <p>
                       {Array.from(state.opened!.body)
-                        .slice(page.start, page.end)
+                        .slice(region.start, region.end)
                         .join("")}
-                    </div>
+                    </p>
+                    <small>
+                      OCR confidence score {region.confidence.toFixed(1)} / 100
+                    </small>
                   </section>
                 ))
-              : state.opened.body}
+              : (state.opened.pages ?? state.opened.paragraphs)
+                ? (state.opened.pages ?? state.opened.paragraphs)!.map(
+                    (page) => (
+                      <section
+                        className="pdf-page"
+                        id={`${state.opened!.paragraphs ? "docx-paragraph" : "pdf-page"}-${page.number}`}
+                        key={page.number}
+                      >
+                        <h3>
+                          {state.opened!.paragraphs ? "Paragraph" : "Page"}{" "}
+                          {page.number}
+                        </h3>
+                        <div>
+                          {Array.from(state.opened!.body)
+                            .slice(page.start, page.end)
+                            .join("")}
+                        </div>
+                      </section>
+                    ),
+                  )
+                : state.opened.body}
           </article>
           <div className="reader-actions">
             <button

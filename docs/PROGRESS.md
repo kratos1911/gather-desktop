@@ -3,6 +3,25 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 4 November 2026: private image OCR rollout and native acceptance
+
+Added bounded PNG/JPEG English OCR through fixed Tesseract C API/Pillow, private
+typed staging, image/text hashes, region citations and exact owned original opening.
+Reused jobs, publication, deletion and Qwen text vectors. With explicit approval,
+applied migration16 and deployed API revision00008-t86 at CPU1/2GiB/min0/max1;
+updated the existing D: installer. Removed only the approved generated DOCX source.
+Generated PNG Save -> automatic ready -> semantic search -> original/OCR reader
+passed with two real embeddings and no explicit recovery. Cold dispatch44.99s,
+parse0.77s; not general latency/accuracy evidence. Generated image retained.
+
+Checks: frontend80, SQL20 groups, affected backend148 before security overlay,
+final focused OCR/auth45, ten real generated-image cases, frontend/native/installer
+builds, format and installed binary identity passed. Groups overlap. Patched
+pyasn1/setuptools and removed32 unused OS packages. Reused the completed raw scan
+with exact inventory delta after stopping a RAM-heavy repeat scan during indexing;
+remaining findings unsuppressed. Native controls required the direct Windows skill;
+browser origin restriction stayed intact. See IMAGE_OCR.md and output/ocr-pilot/.
+
 ## 4 November 2026: remove the attached Windows console
 
 The installed debug binary used console subsystem 3 and owned a conhost child.

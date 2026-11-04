@@ -1,3 +1,8 @@
+4 November: the trusted image capability advertises `image_enabled` in owned
+listing. Existing import/open routes accept bounded PNG/JPEG only when enabled;
+original bytes are attached only to explicit exact-version opening. No additional
+route or public origin is introduced. See IMAGE_OCR.md.
+
 26 October: /v1/model-status accepts only {} after the existing user/Origin/Host checks and returns a strict state/used/limit snapshot. Search errors may expose only fixed MODEL_HTTP code/status pairs. No upstream body or automatic inference retry. See MODEL_AVAILABILITY.md.
 
 26 October: sixth POST route /v1/list accepts optional limit (1..20) and cursor (null or base64url <=256 characters). It returns validated owned metadata and next_cursor without inference. Existing admission/CORS/deadlines apply. See SAVED_LIBRARY.md.
