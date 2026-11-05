@@ -3,6 +3,18 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 5 November 2026: hybrid/startup search follow-up
+
+Prepared owned full-text keyword retrieval with RRF beside the unchanged semantic
+gate, plus the existing60s readiness gate before one15s embedding. Search-only
+API/client envelopes90s/95s and visible pending status are built. Local synthetic
+verification:88 exact-image backend checks,15 SQL groups,81 frontend checks,
+lint/web/native builds pass. Fixed two SQL fixture errors and an outdated identity
+mock; production guards unchanged. Approved migration17/image2ad87ce8 deployed
+in API00013-7zd; installed rebuild verified. Cold `cedar`42.52s and warm descriptive
+12.31s both returned only the cited OCR note. Two readiness GETs precede two
+successful embeddings; no replay or document mutation. See HYBRID_SEARCH.md.
+
 ## 4–5 November 2026: single fresh authentication per search
 
 Added bearer/origin/thread-bound Auth response reuse only inside PilotSession's

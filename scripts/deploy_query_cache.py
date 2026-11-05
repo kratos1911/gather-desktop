@@ -19,20 +19,22 @@ SECRETS={'token':('gather-upstash-rest-token','/secrets/gather_upstash/token'),
          'key':('gather-query-cache-key','/secrets/gather_query_cache/key')}
 
 
-def plan(correct=False,auth_scope=False):
-    proof=json.loads((ROOT/('output/search-auth/image-verification.json' if auth_scope else 'output/upstash-cache/corrected-image-verification.json' if correct else 'output/upstash-cache/image-verification.json')).read_text())
-    expected=('sha256:40fcacab2d1a104c60bb4296f9339f68d4d2a920f288002a2d1694faafe3f4b1' if auth_scope else
+def plan(correct=False,auth_scope=False,search_fixes=False):
+    proof=json.loads((ROOT/('output/search-fixes/image-verification.json' if search_fixes else 'output/search-auth/image-verification.json' if auth_scope else 'output/upstash-cache/corrected-image-verification.json' if correct else 'output/upstash-cache/image-verification.json')).read_text())
+    expected=('sha256:2ad87ce89be798168683314f26e73d9de5281110e5e163cba2112005a805356d' if search_fixes else
+              'sha256:40fcacab2d1a104c60bb4296f9339f68d4d2a920f288002a2d1694faafe3f4b1' if auth_scope else
               'sha256:8cff0f17326cafd02c9f3bd51272a2ece8278c5272aca4b4ec513a64117e6ccb' if correct else
               'sha256:ab41ddcdcb165f0edfd58d1a6d539df2ff669be4a55350f07b60816b7353bf6b')
     if proof.get('passed') is not True or proof['image']!=expected:
         raise ValueError('unverified_cache_image')
     return dict(project=PROJECT,account=ACCOUNT,region=REGION,service=SERVICE,
         image=REGION+'-docker.pkg.dev/'+PROJECT+'/gather-pilot-images/library@'+proof['image'],
-        cache_endpoint=CACHE_ENDPOINT,cache_ttl_seconds=600,cache_operation_seconds=1 if correct or auth_scope else .5,
+        cache_endpoint=CACHE_ENDPOINT,cache_ttl_seconds=600,cache_operation_seconds=1 if correct or auth_scope or search_fixes else .5,
         secrets=[value[0] for value in SECRETS.values()],secret_reader=RUNTIME,
         cpu=1,memory='2Gi',minimum=0,maximum=1,
         budget='Existing INR500 allowance; Upstash remains Free',model_changes=False,
-        new_secret_or_iam_changes=not (correct or auth_scope),authentication_scope_change=auth_scope)
+        new_secret_or_iam_changes=not (correct or auth_scope or search_fixes),authentication_scope_change=auth_scope,
+        search_fixes=search_fixes,**({'api_request_timeout_seconds':90,'startup_seconds':60,'inference_seconds':15} if search_fixes else {}))
 
 
 def main():
@@ -40,9 +42,10 @@ def main():
     parser.add_argument('--apply',action='store_true')
     parser.add_argument('--correct',action='store_true',help='Cache deadline/diagnostic image only; retain existing secrets, IAM and environment.')
     parser.add_argument('--auth-scope',action='store_true',help='Request-local authentication reuse only; retain all settings and secrets.')
+    parser.add_argument('--search-fixes',action='store_true',help='Reviewed hybrid/startup image; API request timeout 90s, other resources and secrets unchanged.')
     args=parser.parse_args()
-    if args.correct and args.auth_scope:parser.error('Choose one reviewed patch.')
-    value=plan(args.correct,args.auth_scope)
+    if sum((args.correct,args.auth_scope,args.search_fixes))>1:parser.error('Choose one reviewed patch.')
+    value=plan(args.correct,args.auth_scope,args.search_fixes)
     if not args.apply:
         print(json.dumps(value,indent=2));return
     executable=shutil.which('gcloud.cmd')
@@ -63,21 +66,26 @@ def main():
             raise ValueError('gather_configuration_changed')
         return spec,container
     current=describe();old_spec,old=bound(current)
-    expected_previous=('sha256:8cff0f17326cafd02c9f3bd51272a2ece8278c5272aca4b4ec513a64117e6ccb' if args.auth_scope else
+    expected_previous=('sha256:40fcacab2d1a104c60bb4296f9339f68d4d2a920f288002a2d1694faafe3f4b1' if args.search_fixes else
+        'sha256:8cff0f17326cafd02c9f3bd51272a2ece8278c5272aca4b4ec513a64117e6ccb' if args.auth_scope else
         'sha256:ab41ddcdcb165f0edfd58d1a6d539df2ff669be4a55350f07b60816b7353bf6b' if args.correct else PREVIOUS)
     if not old['image'].endswith('@'+expected_previous):raise ValueError('gather_revision_changed_review_required')
-    path=ROOT/('output/search-auth/deployment.json' if args.auth_scope else 'output/upstash-cache/corrected-deployment.json' if args.correct else 'output/upstash-cache/deployment.json')
+    path=ROOT/('output/search-fixes/deployment.json' if args.search_fixes else 'output/search-auth/deployment.json' if args.auth_scope else 'output/upstash-cache/corrected-deployment.json' if args.correct else 'output/upstash-cache/deployment.json')
     receipt=dict(value,completed=False,secrets_prepared=[],previous_revision=current['status']['latestReadyRevisionName'])
     path.write_text(json.dumps(receipt,indent=2))
-    if args.correct or args.auth_scope:
+    if args.correct or args.auth_scope or args.search_fixes:
         before={row['name']:row.get('value') for row in old.get('env',[])}
         if before.get('GATHER_QUERY_CACHE')!='1' or before.get('GATHER_UPSTASH_URL')!=CACHE_ENDPOINT:
             raise ValueError('existing_cache_configuration_changed')
-        call('run','services','update',SERVICE,'--region='+REGION,'--image='+value['image'])
+        options=['--timeout=90s'] if args.search_fixes else []
+        if args.search_fixes and old_spec.get('timeoutSeconds')!=30:
+            raise ValueError('api_request_timeout_changed_review_required')
+        call('run','services','update',SERVICE,'--region='+REGION,'--image='+value['image'],*options)
         updated=describe();new_spec,new=bound(updated)
         if (new['image']!=value['image'] or new.get('env',[])!=old.get('env',[])
                 or new_spec.get('volumes',[])!=old_spec.get('volumes',[])
-                or new.get('volumeMounts',[])!=old.get('volumeMounts',[])):
+                or new.get('volumeMounts',[])!=old.get('volumeMounts',[])
+                or (args.search_fixes and new_spec.get('timeoutSeconds')!=90)):
             raise RuntimeError('corrective_configuration_not_verified')
         receipt.update(completed=True,revision=updated['status']['latestReadyRevisionName'])
         path.write_text(json.dumps(receipt,indent=2));print(json.dumps(receipt,indent=2));return

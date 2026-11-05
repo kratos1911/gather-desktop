@@ -890,3 +890,13 @@ one synchronous search. Bind the scope to bearer/origin/thread, clear it finally
 and reverify every next request. Keep private gates and database/RLS reads live;
 do not add an identity TTL cache or decoded-JWT shortcut. This removes one network
 verification without changing session revocation policy, pooling or batching.
+
+## 5 November 2026: separate startup and fuse independent keyword evidence
+
+Retain the calibrated cosine gate rather than lowering it for one failing query.
+Add owner/published-version-scoped simple-config full-text retrieval, then RRF
+over semantic/keyword ranks. Keep cosine values as cosine, not fusion confidence.
+Reuse bounded60s readiness only on embedding cache misses, before the existing15s
+embedding. User specifically approved API timeout30->90, migration17 and the
+matching Windows update. Keep all other request limits, model cap, resources,
+min0/max1, secrets/IAM and INR500 allowance. See HYBRID_SEARCH.md.

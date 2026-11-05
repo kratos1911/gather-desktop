@@ -1,6 +1,6 @@
 # Current Gather state
 
-Updated for the single-auth follow-up, based on checkpoint `b9af26d` on
+Updated for the hybrid/startup follow-up, based on checkpoint `ba077be` on
 `codex/durable-ingestion-jobs`. This file is current state, not a session log. Repository context was audited/reorganized; see FILE_AUDIT.md.
 See [tasks](../TASKS.md) for next acceptance and [topic index](PROJECT_HUB.md)
 for contracts. [Previous state journal](history/2026-10-26/MEMORY-2026-10-26.md)
@@ -122,9 +122,12 @@ Active TTL600s and approved Redis deadline1s; credentials stay backend-only. See
 QUERY_EMBEDDING_CACHE.md for evidence and the initial timeout/fallback. Search
 still has substantial Auth/DB latency. No1, single request-local authentication,
 is now verified/deployed in API00012-x89; no identity reuse across requests.
-SEARCH_AUTH_SCOPE.md owns evidence. Connection reuse/batching are not implemented
-by this change and remain next performance work. Safe links/
-bookmarks remain the next product-format slice. No file/model/schema changes.
+SEARCH_AUTH_SCOPE.md owns its evidence. TASK-027 hybrid search/startup is now
+verified in API00013-7zd, migration17 and the rebuilt installed app. The selected
+cold Cedar and warm descriptive queries both return only the cited OCR note.
+Startup precedes one15s embedding; two live embeddings total. HYBRID_SEARCH.md
+owns limits/evidence. Connection reuse/batching remain future performance work.
+Safe links/bookmarks remain the next format slice. No document/model changes.
 Cold/larger-file
 performance, general Office compatibility and clean-Windows/signing QA remain
 separate acceptance. Both pilot B source slots are full; never raise quotas or
@@ -137,7 +140,7 @@ signup/uploads, PPTX, photo object/scene retrieval and chat remain gated/deferre
 - Cloud CPU inference: private Gather Cloud Run in Mumbai, project
   `gather-development-511211`. Use explicit personal account/project flags from
   the existing helpers. Never use protected Intrixshield/work defaults.
-- Supabase `fatolholcjxpwocnpzws`, Sydney session pooler. Sixteen migrations were
+- Supabase `fatolholcjxpwocnpzws`, Sydney session pooler. Seventeen migrations were
   applied manually; CLI migration history is not automatically populated.
 - Qwen/Qwen3-Embedding-0.6B, pinned revision/dimensions in the serving contracts;
   512-dimensional query/document space. No end-user weight downloads.

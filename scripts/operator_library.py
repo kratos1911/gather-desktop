@@ -33,8 +33,8 @@ PILOT_USERS = frozenset(('8b8de9a3-6600-465d-9ae6-8a0f2271c1dc',
 
 
 class PilotSession(LibrarySession):
-    def __init__(self, *args, text_files=False, dispatcher=None,pdf_files=False,docx_files=False,image_files=False,cancel=None,query_cache=None):
-        super().__init__(*args,query_cache=query_cache)
+    def __init__(self, *args, text_files=False, dispatcher=None,pdf_files=False,docx_files=False,image_files=False,cancel=None,query_cache=None,search_prepare=None,hybrid_search=False):
+        super().__init__(*args,query_cache=query_cache,search_prepare=search_prepare,hybrid_search=hybrid_search)
         self.text_files = text_files
         self.dispatcher = dispatcher
         self.pdf_files=pdf_files
@@ -193,7 +193,8 @@ def compose_pilot(config,worker_config,provider,identity,key,*,text_files=False,
             repo=DatabaseRepository(config,owner=owner,operation_timeout=15)
             return AutomaticAdmission(repo) if dispatcher is not None else repo
         return PilotSession(SessionClient(BASE,key,token,cancel=cancel),admission,provider,
-            text_files=text_files,dispatcher=dispatcher,pdf_files=pdf_files,docx_files=docx_files,image_files=image_files,cancel=cancel,query_cache=query_cache)
+            text_files=text_files,dispatcher=dispatcher,pdf_files=pdf_files,docx_files=docx_files,image_files=image_files,cancel=cancel,query_cache=query_cache,
+            search_prepare=lambda cancelled:wait_for_automatic_startup(identity,cancel=cancelled),hybrid_search=True)
     return LibraryAPI(session,dispatcher=dispatcher)
 
 

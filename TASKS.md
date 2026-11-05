@@ -81,6 +81,7 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-024 | Private ingestion performance implemented/verified | Profiled stages, bounded worker reuse and early readiness are deployed. Same small-PDF warm comparison: worker 39–41s -> 18–19s, observed ready 61s -> 33–35s. Cold/larger-file/p95 behavior is not established; [PROCESSING_SPEED](docs/PROCESSING_SPEED.md) |
 | TASK-025 | Private encrypted Redis cache verified/deployed | Owner/model/query-scoped vectors, fresh Auth/source reads and selected native miss/hit pass.49 focused checks and delivery evidence: [query cache](docs/QUERY_EMBEDDING_CACHE.md). Auth/DB latency and broader cache effectiveness remain. |
 | TASK-026 | No1 single-auth optimization verified/deployed | Request-local identity reuse, fresh next-request Auth and unchanged ownership guards pass101 focused checks. One cached before/after pair with saved real vector used no inference; [evidence](docs/SEARCH_AUTH_SCOPE.md). Pooling/batching remain separate. |
+| TASK-027 | Hybrid/startup fixes verified and deployed | Migration17/API00013-7zd and installed app verified. Cold `cedar` and warm descriptive query each return only the cited OCR note, exactly two embeddings total. 88 packaged backend, 15 SQL groups, 81 frontend checks and builds pass. [Evidence](docs/HYBRID_SEARCH.md). |
 
 ## Latest verification
 

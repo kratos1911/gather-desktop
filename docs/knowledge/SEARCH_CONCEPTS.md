@@ -536,6 +536,14 @@ pagination depends on layout, so cite stable extracted paragraph ranges with a
 separate text hash. Keep raw archive identity and exact saved-version ownership
 alongside them. See [[docs/DOCX_IMPORT]].
 
+## Combine word matches and meaning
+
+Hybrid retrieval uses independent owned keyword and semantic candidates. RRF
+combines their rank positions, so an exact word need not pass a cosine cutoff.
+Both paths still require a live published version and verified owner. Startup
+readiness has a separate bounded allowance from one embedding request; cache
+hits need no model startup. See [[docs/HYBRID_SEARCH]] for delivery status.
+
 ## Reuse authentication only inside one request
 
 The private wrapper and coordinator can share a verified user ID while the same

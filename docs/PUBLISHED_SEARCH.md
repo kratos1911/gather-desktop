@@ -9,9 +9,10 @@ desktop. Test evidence and current completion status are recorded in TASKS.md.
 | Operation | Input | Result |
 | --- | --- | --- |
 | `POST /rest/v1/rpc/search_published_text` | `p_query` numeric vector, `p_model`, `p_revision`, `p_dimensions`, optional `p_limit` | Ranked published passages with source/version IDs, title, hash, offsets, body, model identity and cosine similarity |
+| `POST /rest/v1/rpc/search_published_keywords` | Same pinned vector inputs plus `p_text` | Owned published passages ranked by full-text matching; cosine field stays real similarity. [Hybrid policy](HYBRID_SEARCH.md) |
 | `POST /rest/v1/rpc/open_published_text` | `p_source`, `p_version` | One exact published text snapshot and its ordered passage manifest, or an empty array |
 
-Both calls use the user's authenticated bearer session. PostgREST validates the
+These calls use the user's authenticated bearer session. PostgREST validates the
 JWT; the SQL functions derive ownership from `auth.uid()`. No owner parameter or
 worker/service credential belongs in a desktop payload. Only the authenticated
 role receives function grants. Private staging and ingestion functions remain

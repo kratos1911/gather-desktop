@@ -14,6 +14,7 @@ import type { ModelStatus } from "./modelAvailability";
 export type LibraryState = Readonly<{
   signedIn: boolean;
   busy: boolean;
+  searching: boolean;
   error: string | null;
   pendingImport: PreparedImport | null;
   imported: ImportReceipt | null;
@@ -35,6 +36,7 @@ export type LibraryState = Readonly<{
 const initial = (): LibraryState => ({
   signedIn: false,
   busy: false,
+  searching: false,
   error: null,
   pendingImport: null,
   imported: null,
@@ -386,10 +388,12 @@ export class LibraryWorkspace {
   async search(query: string): Promise<void> {
     // Clear previous results immediately; do not display old hits under a new query.
     if (this.state.busy) throw new LibraryClientError("busy");
-    this.update({ results: null, opened: null });
+    if (!this.state.signedIn) throw new LibraryClientError("session_required");
+    this.update({ results: null, opened: null, searching: true });
     await this.perform(
       (signal) => this.client.search(query, signal),
-      (results) => this.update({ results }),
+      (results) => this.update({ results, searching: false }),
+      () => this.update({ searching: false }),
     );
   }
   clearSearch(): void {

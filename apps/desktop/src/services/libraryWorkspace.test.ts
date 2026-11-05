@@ -523,6 +523,7 @@ describe("library workspace (synthetic transport)", () => {
         }),
     );
     const pending = workspace.search("query");
+    expect(workspace.getSnapshot().searching).toBe(true);
     workspace.setSession(null);
     resolve(
       reply({
@@ -535,6 +536,7 @@ describe("library workspace (synthetic transport)", () => {
     await pending;
     expect(workspace.getSnapshot()).toMatchObject({
       signedIn: false,
+      searching: false,
       busy: false,
       error: null,
       results: null,

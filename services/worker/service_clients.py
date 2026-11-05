@@ -75,6 +75,8 @@ class SessionClient:
             '/auth/v1/user': ('GET', None),
             '/rest/v1/rpc/search_published_text': ('POST',
                 {'p_query','p_model','p_revision','p_dimensions','p_limit'}),
+            '/rest/v1/rpc/search_published_keywords': ('POST',
+                {'p_text','p_query','p_model','p_revision','p_dimensions','p_limit'}),
             '/rest/v1/rpc/open_published_text': ('POST', {'p_source','p_version'}),
             '/rest/v1/rpc/read_published_docx': ('POST', {'p_source','p_version'}),
             '/rest/v1/rpc/read_published_image': ('POST', {'p_source','p_version'}),

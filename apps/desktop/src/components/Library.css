@@ -837,3 +837,8 @@
     scroll-behavior: auto !important;
   }
 }
+.gather-library .library-search-status {
+  margin: 1rem 0;
+  color: var(--lib-muted);
+  font-size: 0.95rem;
+}

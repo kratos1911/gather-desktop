@@ -533,6 +533,12 @@ export default function Library() {
                 <span>Search</span>
               </button>
             </form>
+            {state.searching && (
+              <p className="library-search-status" role="status">
+                Searching your library. After idle, the search service can take
+                up to a minute to start.
+              </p>
+            )}
             <div className="library-controls">
               <div
                 className="library-filters"

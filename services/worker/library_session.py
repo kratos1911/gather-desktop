@@ -26,11 +26,14 @@ def identifier(value):
 
 
 class LibrarySession:
-    def __init__(self, api, admission_factory, provider, *, query_cache=None):
+    def __init__(self, api, admission_factory, provider, *, query_cache=None, search_prepare=None, hybrid_search=False):
         if not isinstance(api, SessionClient) or not callable(admission_factory):
             raise ValueError('invalid_library_configuration')
         self._api, self._admission, self._provider = api, admission_factory, provider
         self._query_cache = query_cache
+        if (search_prepare is not None and not callable(search_prepare)) or type(hybrid_search) is not bool:
+            raise ValueError('invalid_library_configuration')
+        self._search_prepare, self._hybrid_search = search_prepare, hybrid_search
 
     def _owner(self):
         try:
@@ -61,8 +64,11 @@ class LibrarySession:
     def search(self, query, *, limit=20, cancel=None):
         try:
             # Fresh Auth per request; a search scope may reuse its verified ID.
-            return search(query, api=self._api, provider=self._provider, limit=limit, cancel=cancel,
-                          query_cache=self._query_cache)
+            from services.worker.search_startup import SearchStartupProvider
+            provider = (SearchStartupProvider(self._provider, self._search_prepare)
+                        if self._search_prepare is not None else self._provider)
+            return search(query, api=self._api, provider=provider, limit=limit, cancel=cancel,
+                          query_cache=self._query_cache, hybrid=self._hybrid_search)
         except SearchError as error:
             if str(error) in MODEL_HTTP or str(error) in ('cancelled','invalid_query','session_unavailable',
                               'library_unavailable','search_failed'):

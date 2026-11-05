@@ -207,7 +207,10 @@ class LibraryAPI:
             operation = asyncio.create_task(asyncio.to_thread(invoke))
             self._operations.add(operation)
             watcher = asyncio.create_task(disconnected())
-            done, _ = await asyncio.wait([operation, watcher], timeout=30,
+            # Search alone may spend 60s in the existing startup gate, followed
+            # by its existing 30s operation allowance. Inference stays at 15s.
+            operation_timeout = 90 if path == '/v1/search' else 30
+            done, _ = await asyncio.wait([operation, watcher], timeout=operation_timeout,
                                          return_when=asyncio.FIRST_COMPLETED)
             if watcher in done:
                 return

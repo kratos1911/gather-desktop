@@ -19,6 +19,7 @@ from services.worker.source_listing import page, parameters
 from services.worker.model_availability import ModelServiceError
 from services.worker.document_metadata import enrich_published
 from services.worker.search_relevance import selected_indices, validate_space
+from services.worker.hybrid_search import fuse
 
 
 class SearchError(Exception):
@@ -31,7 +32,29 @@ def _uuid(value):
     return value
 
 
-def search(query, *, api, provider, limit=20, cancel=None, query_cache=None):
+def _validate_rows(rows, limit, *, ordered):
+    if not isinstance(rows, list) or len(rows) > limit:
+        raise ValueError('candidate_limit')
+    seen, previous_score = set(), math.inf
+    for row in rows:
+        sid, vid = _uuid(row['source_id']), _uuid(row['version_id'])
+        pid, score = row['passage_id'], row['similarity']
+        if (not isinstance(pid, str) or not 0 < len(pid) <= 128
+            or (sid, vid, pid) in seen
+            or (row['model_id'], row['model_revision'], row['dimensions']) != (MODEL, REVISION, DIMENSIONS)
+            or type(score) not in (float, int) or not math.isfinite(score)
+            or not -1.000001 <= score <= 1.000001 or (ordered and score > previous_score)
+            or not isinstance(row['title'], str) or len(row['title']) > 500
+            or not isinstance(row['body'], str) or len(row['body'].encode('utf-8')) > 8192
+            or type(row['start_offset']) is not int or type(row['end_offset']) is not int
+            or not 0 <= row['start_offset'] < row['end_offset'] <= 65536
+            or not isinstance(row['source_sha256'], str) or len(row['source_sha256']) != 64):
+            raise ValueError('invalid_candidate')
+        previous_score = score
+        seen.add((sid, vid, pid))
+
+
+def search(query, *, api, provider, limit=20, cancel=None, query_cache=None, hybrid=False):
     """Owned metadata preflight, at most one embedding/ranking and five reads.
 
     No automatic retries, model startup, synthetic fallback or owner payload.
@@ -53,7 +76,8 @@ def search(query, *, api, provider, limit=20, cancel=None, query_cache=None):
     stage = 'session'
     try:
         active()
-        if type(limit) is not int or not 1 <= limit <= MAX_CANDIDATES:
+        if (type(limit) is not int or not 1 <= limit <= MAX_CANDIDATES
+                or type(hybrid) is not bool or (hybrid and limit*2 > MAX_CANDIDATES)):
             raise SearchError('invalid_query')
         request = {'role': 'query', 'texts': [query]}
         try:
@@ -110,30 +134,23 @@ def search(query, *, api, provider, limit=20, cancel=None, query_cache=None):
             'p_query': vector, 'p_model': MODEL, 'p_revision': REVISION,
             'p_dimensions': DIMENSIONS, 'p_limit': limit,
         })
-        if not isinstance(rows, list) or len(rows) > limit:
-            raise ValueError('candidate_limit')
-        selected, omitted, seen, previous_score = {}, [], set(), math.inf
-        for row in rows:
-            sid, vid = _uuid(row['source_id']), _uuid(row['version_id'])
-            pid = row['passage_id']
-            score = row['similarity']
-            if (not isinstance(pid, str) or not 0 < len(pid) <= 128
-                    or (sid, vid, pid) in seen
-                    or (row['model_id'], row['model_revision'], row['dimensions']) != (MODEL, REVISION, DIMENSIONS)
-                    or type(score) not in (float, int) or not math.isfinite(score)
-                    or not -1.000001 <= score <= 1.000001 or score > previous_score
-                    or not isinstance(row['title'], str) or len(row['title']) > 500
-                    or not isinstance(row['body'], str) or len(row['body'].encode('utf-8')) > 8192
-                    or type(row['start_offset']) is not int or type(row['end_offset']) is not int
-                    or not 0 <= row['start_offset'] < row['end_offset'] <= 65536
-                    or not isinstance(row['source_sha256'], str) or len(row['source_sha256']) != 64):
-                raise ValueError('invalid_candidate')
-            previous_score = score
-            seen.add((sid, vid, pid))
+        _validate_rows(rows, limit, ordered=True)
+        selected, omitted = {}, []
         # Validate every candidate first. Weak rows never trigger full-source reads
         # or enter context through another accepted passage from the same source.
         accepted = selected_indices([row['similarity'] for row in rows])
         retained = [rows[i] for i in accepted]
+        if hybrid:
+            keywords = call('POST','/rest/v1/rpc/search_published_keywords', {
+                'p_text':query,'p_query':vector,'p_model':MODEL,'p_revision':REVISION,
+                'p_dimensions':DIMENSIONS,'p_limit':limit,
+            })
+            _validate_rows(keywords, limit, ordered=False)
+            # The SQL branch enforces full-text matching and ownership. Semantic
+            # candidates still pass the unchanged floor; lexical ranks are not
+            # treated as cosine scores or as proof that a question is answered.
+            retained = fuse(retained, keywords, limit)
+            rows = retained
         for row in retained:
             sid, vid = row['source_id'], row['version_id']
             if sid in selected:

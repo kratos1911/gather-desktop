@@ -224,6 +224,15 @@
       "y": 780,
       "width": 330,
       "height": 220
+    },
+    {
+      "id": "hybrid-search",
+      "type": "file",
+      "file": "docs/HYBRID_SEARCH.md",
+      "x": 1840,
+      "y": 520,
+      "width": 330,
+      "height": 230
     }
   ],
   "edges": [
@@ -347,6 +356,14 @@
       "toNode": "query-cache",
       "toSide": "bottom",
       "label": "fresh per request"
+    },
+    {
+      "id": "hybrid-relevance",
+      "fromNode": "search-relevance",
+      "fromSide": "right",
+      "toNode": "hybrid-search",
+      "toSide": "left",
+      "label": "keyword + semantic ranks"
     }
   ]
 }

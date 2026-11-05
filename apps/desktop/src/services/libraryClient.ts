@@ -910,10 +910,13 @@ export class LibraryClient {
       generation = this.generation;
     this.active = controller;
     let timedOut = false;
-    const timeout = setTimeout(() => {
-      timedOut = true;
-      controller.abort();
-    }, 30000);
+    const timeout = setTimeout(
+      () => {
+        timedOut = true;
+        controller.abort();
+      },
+      route === "search" ? 95000 : 30000,
+    );
     const abort = () => controller.abort();
     signal?.addEventListener("abort", abort, { once: true });
     let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;

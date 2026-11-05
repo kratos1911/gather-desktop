@@ -21,6 +21,25 @@ afterEach(() => {
 });
 
 describe("library HTTP client (synthetic responses)", () => {
+  it("gives search a bounded startup allowance without resending it", async () => {
+    vi.useFakeTimers();
+    const { client, send } = setup();
+    send.mockImplementationOnce(
+      (_url, init) =>
+        new Promise((_resolve, reject) => {
+          init?.signal?.addEventListener("abort", () =>
+            reject(new DOMException("aborted", "AbortError")),
+          );
+        }),
+    );
+    const pending = client.search("cedar");
+    const checked = expect(pending).rejects.toMatchObject({ code: "timeout" });
+    await vi.advanceTimersByTimeAsync(30000);
+    expect(send.mock.calls[0][1]?.signal?.aborted).toBe(false);
+    await vi.advanceTimersByTimeAsync(65000);
+    await checked;
+    expect(send).toHaveBeenCalledTimes(1);
+  });
   it("rejects mixed or incomplete DOCX citation metadata without retrying", async () => {
     const { client, send } = setup();
     const doc = {

@@ -41,6 +41,7 @@ reload the full conversation or historical snapshots for routine coding.
 - [[docs/TEXT_PUBLICATION]], [[docs/PUBLISHED_SEARCH]], [[docs/QUERY_SEARCH]]
 - [[docs/SEARCH_CONTEXT]], [[docs/CHUNK_RETRIEVAL_RESULTS]]
 - [[docs/SEARCH_RELEVANCE]]: score gate, cached calibration and remaining false matches
+- [[docs/HYBRID_SEARCH]]: keyword/semantic rank fusion and separate bounded search startup
 - [[docs/QUERY_EMBEDDING_CACHE]]: encrypted Upstash reuse, fresh ownership and observed latency limits
 - [[docs/knowledge/SEARCH_CONCEPTS]], [[docs/knowledge/Search flow.canvas]]
 

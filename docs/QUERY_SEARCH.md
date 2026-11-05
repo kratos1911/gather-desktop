@@ -1,5 +1,9 @@
 # Query-to-context coordinator
 
+5 November: the private composition now uses [hybrid search](HYBRID_SEARCH.md).
+It adds an owned keyword candidate RPC and bounded readiness before a cache-miss
+embedding. The semantic-only helper mode remains for compatible fixtures/tools.
+
 4 November: [SEARCH_RELEVANCE.md](SEARCH_RELEVANCE.md) adds a pinned-space score
 floor/near-best window before source reads. Local replay/checks and the approved
 hosted/native Cedar regression pass. Rejected hits do not reenter context assembly.
@@ -30,11 +34,13 @@ The provider contract is the existing ingestion infer/count_tokens interface.
 Count the exact pinned Qwen query template; pass raw query text with role=query
 to inference, which applies the template once. Maximum input is 8 KiB and 2,048
 templated tokens, preserving runtime limits. Validate exact model/revision/512
-dimensions, numeric finite output and unit norm. No inference retry, model startup,
-automatic normalization of bad outputs or synthetic production fallback.
+dimensions, numeric finite output and unit norm. No inference retry, automatic
+normalization of bad outputs or synthetic production fallback. Trusted readiness
+preparation precedes the separate inference deadline.
 
-One call performs Auth verification, one inference request, one search RPC and
-at most five reader RPCs. Up to 100 candidates are validated before source
+One call performs Auth verification, up to one inference request, a vector RPC,
+an optional keyword RPC and at most five source reads. Up to 100 total candidates
+are validated before source
 selection; no more than five snapshots are fetched. The existing assembler caps
 each excerpt at 8 KiB and total excerpt text at 32 KiB. Return source/version/hash,
 Unicode offsets, original seed rank, title, similarity and omission reasons.

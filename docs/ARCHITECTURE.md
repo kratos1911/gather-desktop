@@ -1,6 +1,6 @@
 # Current architecture
 
-Current behavior and boundaries, updated 4 November 2026.
+Current behavior and boundaries, updated 5 November 2026.
 [Prior architecture journal](history/2026-10-26/ARCHITECTURE-2026-10-26.md)
 preserves earlier proposals/evidence. Status belongs in [MEMORY](MEMORY.md);
 next implementation belongs in [TASKS](../TASKS.md).
@@ -40,11 +40,11 @@ do not grant access.
    idle helpers can be evicted while retaining the global two-helper cap.
 3. Search: one fresh Auth verification per request (private wrapper/coordinator
    share the verified ID only in that request) -> owned metadata -> empty if a complete page proves
-   no publication; otherwise optional encrypted query-vector cache or one query
-   embedding in the matching model space ->
-   published vector ranking -> pinned-space relevance gate -> exact-version reads
-   -> bounded source context. The gate removes weak candidates before full reads;
-   it does not prove answerability. See SEARCH_RELEVANCE.md.
+   no publication; otherwise encrypted query-vector cache, or bounded readiness
+   before one query embedding -> owned semantic and full-text keyword rankings ->
+   original semantic gate and reciprocal rank fusion -> exact-version reads ->
+   bounded source context. Keyword matching does not depend on the cosine floor.
+   Neither ranking proves answerability. See [hybrid search](HYBRID_SEARCH.md).
    The cache preserves fresh Auth/metadata/ranking/version reads; it never supplies
    documents or permissions. See [query cache](QUERY_EMBEDDING_CACHE.md).
 4. Open: requested source/version must still be owned, published and unchanged;
@@ -68,8 +68,9 @@ Inference uses CPU2/5GiB, concurrency1, max1/min0. The approved library API uses
 CPU1/2GiB (approved image-OCR allocation), platform concurrency4,
 single-flight app admission, max1/min0.
 Model operations retain 15 seconds and request identity five seconds. Automatic
-startup permits the explicitly approved three readiness GETs inside one shared
-60-second deadline; embeddings never retry automatically. Two existing accounts
+worker and search-miss startup permit up to three readiness GETs inside one shared
+60-second deadline; embeddings never retry automatically. Search's API/client
+allowances are 90s/95s, other app operations remain 30s. Two existing accounts
 and three model attempts per API instance remain private-pilot limits.
 
 The separate private Windows build uses the approved hosted API. The default build

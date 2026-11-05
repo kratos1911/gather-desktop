@@ -2,6 +2,7 @@
 import io
 import json
 import threading
+import time
 import unittest
 from email.message import Message
 from urllib.error import HTTPError
@@ -47,7 +48,11 @@ class AvailabilityTests(unittest.TestCase):
         with patch('services.worker.service_clients.request_json') as send:
             self.assertEqual(self.client.check_ready(cancel=self.cancel),'model_identity_unavailable')
         send.assert_not_called()
-        with patch('scripts.operator_library.google_token') as mint:
+        # This case isolates mint timeout forwarding; claim validation has its
+        # own tests. A bare Mock token is not a valid cached identity.
+        with patch('scripts.operator_library.google_token') as mint, \
+                patch('services.worker.cloud_identity._claims',return_value=time.time()+3600):
+            mint.return_value.get.return_value='synthetic-token'
             RefreshingPilotToken().get(cancel=self.cancel,timeout=2)
             mint.assert_called_once_with(timeout=2)
 

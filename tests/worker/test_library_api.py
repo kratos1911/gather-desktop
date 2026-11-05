@@ -205,3 +205,15 @@ class APITests(unittest.IsolatedAsyncioTestCase):
                      'media':'text/plain','content_base64':'%%%invalid'})
         self.assertEqual(result[0]['status'],400)
         self.factory.assert_not_called()
+
+    async def test_only_search_has_separate_startup_allowance(self):
+        from unittest.mock import patch
+        original=asyncio.wait
+        allowances=[]
+        async def observe(*args,**kwargs):
+            allowances.append(kwargs['timeout'])
+            return await original(*args,**kwargs)
+        with patch('services.worker.library_api.asyncio.wait',side_effect=observe):
+            self.assertEqual((await self.request('/v1/search',{'query':'cedar'}))[0]['status'],200)
+            self.assertEqual((await self.request())[0]['status'],200)
+        self.assertEqual(allowances,[90,30])
