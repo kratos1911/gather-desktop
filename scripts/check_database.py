@@ -18,6 +18,7 @@ def run(*args, input=None, timeout=60):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--trial-usage-only', action='store_true', help='Verify trial model quotas without model calls.')
     parser.add_argument('--keyword-only',action='store_true',help='Verify owned published keyword retrieval with synthetic vectors only.')
     parser.add_argument('--listing-only',action='store_true',help='Apply schema and run only source listing acceptance checks.')
     parser.add_argument('--automatic-only',action='store_true',help='Apply schema and run automatic dispatch and exact-claim checks.')
@@ -49,7 +50,8 @@ def main():
                  *sorted((ROOT / 'supabase/migrations').glob('*.sql')),
                  ROOT / ('tests/database/image_publication.sql' if args.image_only else 'tests/database/docx_publication.sql' if args.docx_only else 'tests/database/recovery_readiness.sql' if args.recovery_only else 'tests/database/pdf_publication.sql' if args.pdf_only else 'tests/database/owned_cleanup.sql' if args.cleanup_only else 'tests/database/automatic_processing.sql' if args.automatic_only else 'tests/database/source_listing.sql')]
         if args.keyword_only: files[-1]=ROOT/'tests/database/keyword_search.sql'
-        files += ([] if args.keyword_only or args.image_only or args.listing_only or args.automatic_only or args.cleanup_only or args.pdf_only or args.recovery_only or args.docx_only else [
+        if args.trial_usage_only: files[-1]=ROOT/'tests/database/trial_model_usage.sql'
+        files += ([] if args.trial_usage_only or args.keyword_only or args.image_only or args.listing_only or args.automatic_only or args.cleanup_only or args.pdf_only or args.recovery_only or args.docx_only else [
                  ROOT / 'tests/database/ownership.sql',
                  ROOT / 'tests/database/lifecycle.sql',
                  ROOT / 'tests/database/ingestion_jobs.sql'])
@@ -61,6 +63,9 @@ def main():
         for line in result.stderr.splitlines():
             if 'PASS:' in line:
                 print(line)
+        if args.trial_usage_only:
+            trial_usage_concurrency(name)
+            return
         if args.keyword_only:
             print('Keyword SQL checks passed. Synthetic Auth claim shim/vectors; no hosted or semantic-quality claim.')
             return
@@ -102,6 +107,20 @@ def main():
     finally:
         # Exact random task container only. No global prune or shared services.
         run('rm', '-f', '-v', name)
+
+
+def trial_usage_concurrency(name):
+    def reserve(owner):
+        result = run('exec', '-i', name, 'psql', '-X', '-qAt', '-U', 'postgres', '-v',
+                     'ON_ERROR_STOP=1', input=("set role gather_ingestion_coordinator; "
+                     f"set request.jwt.claim.sub='{owner}'; select gather_private.trial_query_usage(true);"))
+        return json.loads(result.stdout)['state']
+
+    owners = ('00000000-0000-0000-0000-000000000801', '00000000-0000-0000-0000-000000000802')
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        assert sorted(pool.map(reserve, owners)) == ['available', 'trial_capacity_exhausted']
+    assert reserve(owners[0]) in ('trial_capacity_exhausted', 'trial_quota_exhausted')
+    print('PASS: fresh concurrent connections share the same final service slot')
 
 
 def concurrency_checks(name):

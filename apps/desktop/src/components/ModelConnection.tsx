@@ -32,12 +32,17 @@ export function ModelConnection({
               ? "The readiness request reached its deadline. No embedding was submitted. Startup or network delay may be involved; the cause is unconfirmed. Wait before explicitly checking again."
               : MODEL_MESSAGES[status.state]}
           </p>
-          <p>
-            At that check, this local API process had used {status.used} of{" "}
-            {status.limit} model attempts. Readiness checks do not consume that
-            attempt allowance. This is a local pilot safety limit, not a billing
-            or token-usage meter.
-          </p>
+          {status.period === "utc_day" ? (
+            <p>
+              At that check, your account had used {status.used} of{" "}
+              {status.limit} model attempts for the UTC day.
+            </p>
+          ) : (
+            <p>
+              At that check, this API process had used {status.used} of{" "}
+              {status.limit} model attempts.
+            </p>
+          )}
         </div>
       )}
     </section>

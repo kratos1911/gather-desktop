@@ -7,6 +7,10 @@ preserves all earlier acceptance text and checkpoints.
 
 ## Next sequence
 
+Recruiter trial readiness starts with TASK-028. Durable model metering is the
+first slice. Next verify realistic file limits, quota-aware import recovery and
+multi-account use before packaging the downloadable trial.
+
 The main Library now uses owned saved files and one semantic search, with a
 minimal dark interface. Native sign-in/listing/opening passed; new UI import,
 search and deletion paths passed synthetic HTTP integration checks. See
@@ -82,6 +86,7 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-025 | Private encrypted Redis cache verified/deployed | Owner/model/query-scoped vectors, fresh Auth/source reads and selected native miss/hit pass.49 focused checks and delivery evidence: [query cache](docs/QUERY_EMBEDDING_CACHE.md). Auth/DB latency and broader cache effectiveness remain. |
 | TASK-026 | No1 single-auth optimization verified/deployed | Request-local identity reuse, fresh next-request Auth and unchanged ownership guards pass101 focused checks. One cached before/after pair with saved real vector used no inference; [evidence](docs/SEARCH_AUTH_SCOPE.md). Pooling/batching remain separate. |
 | TASK-027 | Hybrid/startup fixes verified and deployed | Migration17/API00013-7zd and installed app verified. Cold `cedar` and warm descriptive query each return only the cited OCR note, exactly two embeddings total. 88 packaged backend, 15 SQL groups, 81 frontend checks and builds pass. [Evidence](docs/HYBRID_SEARCH.md). |
+| TASK-028 | Recruiter trial backend started | Durable per-account and service model quotas implemented locally. Hosted configuration, quota-aware import recovery and representative file sizes remain open. [Contract](docs/TRIAL_MODEL_USAGE.md). |
 
 ## Latest verification
 

@@ -27,6 +27,7 @@ from services.worker.automatic_processing import AutomaticAdmission, AutomaticDi
 from services.worker.pdf_processing import PDFError
 from services.worker.docx_processing import DOCXError, MEDIA as DOCX_MEDIA
 from services.worker.image_processing import ImageError, MEDIA as IMAGE_MEDIA
+from services.worker.trial_usage import TrialModel
 
 PILOT_USERS = frozenset(('8b8de9a3-6600-465d-9ae6-8a0f2271c1dc',
                          '903b7ed0-9d21-467c-907a-4032d589f4c4'))
@@ -115,6 +116,18 @@ class PilotSession(LibrarySession):
                 raise LibraryError('pilot_fixture_only')
             return super().search(query,limit=limit,cancel=cancel)
 
+    def _search_model(self):
+        if isinstance(self._provider, TrialModel):
+            repository = self._admission(self._owner())
+            return self._provider.bind(lambda: repository.call('trial_query_usage', True))
+        return super()._search_model()
+
+    def _model_status(self, owner, *, cancel):
+        if isinstance(self._provider, TrialModel):
+            return self._provider.status(
+                lambda: self._admission(owner).call('trial_query_usage', False), cancel=cancel)
+        return super()._model_status(owner, cancel=cancel)
+
 
 class PilotWorker(ExpectedWorker):
     def __init__(self, *args, text_files=False, automatic=False):
@@ -122,8 +135,11 @@ class PilotWorker(ExpectedWorker):
         self.text_files = text_files
         self.automatic = automatic
         self.cleanup_wait_seconds = getattr(self.worker,'cleanup_wait_seconds',6)
+        self._trial_ticket = None
 
     def call(self, function, *args):
+        if function == 'claim_text_job':
+            self._trial_ticket = None
         value = (self.worker.call('claim_automatic_text_job' if self.automatic else 'claim_target_text_job',self.job_id)
                  if function == 'claim_text_job' else self.worker.call(function,*args))
         if function == 'claim_text_job':
@@ -133,9 +149,15 @@ class PilotWorker(ExpectedWorker):
                 raise WorkerStartError('different_job_claimed')
             if value.get('owner_id') not in PILOT_USERS:
                 raise WorkerStartError('pilot_user_only')
+            self._trial_ticket = (value['id'], value['lease_token'])
         if function == 'read_job_original' and not self.text_files and value != RAW.hex():
             raise ValueError('pilot_fixture_only')
         return value
+
+    def charge_trial_document(self):
+        if self._trial_ticket is None:
+            raise WorkerStartError('trial_claim_required')
+        return self.worker.call('charge_trial_document', *self._trial_ticket)
 
     def job_scope(self):
         from contextlib import nullcontext
@@ -178,16 +200,19 @@ def compose_pilot(config,worker_config,provider,identity,key,*,text_files=False,
     if automatic:
         repository=DatabaseRepository(worker_config,operation_timeout=15,reuse_worker=reuse_worker)
         def create_worker(job):
-            return WorkerRun(PilotWorker(repository,job,text_files=text_files,automatic=True),
-                StartupProvider(provider,lambda cancel:wait_for_automatic_startup(identity,cancel=cancel),
+            worker = PilotWorker(repository,job,text_files=text_files,automatic=True)
+            model = provider.bind(worker.charge_trial_document) if isinstance(provider, TrialModel) else provider
+            return WorkerRun(worker,
+                StartupProvider(model,lambda cancel:wait_for_automatic_startup(identity,cancel=cancel),
                                 background=early_prepare),record_timings=record_timings)
         def local_record(job,result):
             target=ROOT/'output/operator-pilot'/('automatic-'+uuid4().hex+'.json')
             target.parent.mkdir(parents=True,exist_ok=True)
             target.write_text(json.dumps({'job_id':job,'result':result,
-                'process_model_requests':provider.calls},indent=2),encoding='utf-8')
+                'process_model_requests':getattr(provider,'calls',None)},indent=2),encoding='utf-8')
             print('Automatic processing: '+','.join(r['state'] for r in result['outcomes']),flush=True)
-        dispatcher=AutomaticDispatcher(repository,create_worker,lambda:provider.calls<3,record or local_record)
+        dispatcher=AutomaticDispatcher(repository,create_worker,
+            lambda: isinstance(provider, TrialModel) or provider.calls < 3, record or local_record)
     def session(token,cancel):
         def admission(owner):
             repo=DatabaseRepository(config,owner=owner,operation_timeout=15)

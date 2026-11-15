@@ -14,7 +14,7 @@ import threading
 import time
 import weakref
 
-from services.worker.database_transport import (ROOT, MAX_WIRE, MAX_REPLY, SLOTS,
+from services.worker.database_transport import (ROOT, MAX_WIRE, MAX_REPLY, SLOTS, ADMISSION_FUNCTIONS,
     DatabaseConfig, DatabaseRepository, configure_connection, open_connection, encode_result)
 from services.worker.ingestion_repository import FUNCTIONS, PostgresRepository, RepositoryError
 from services.worker.service_transport import strict_json
@@ -195,7 +195,7 @@ class WorkerSession:
                                connect_ms=0.0,context_ms=0.0,execute_ms=0.0)
 
     def call(self,function,*args):
-        if function in ('submit_text','submit_automatic_text') or function not in FUNCTIONS or len(args)!=FUNCTIONS[function]:
+        if function in ADMISSION_FUNCTIONS or function not in FUNCTIONS or len(args)!=FUNCTIONS[function]:
             raise ValueError('unsupported_repository_operation')
         key=threading.get_ident()
         if not self.reuse:
@@ -245,7 +245,7 @@ def child_main():
                 if configuration is None: configuration=value['config'],value['operation_timeout']
                 if configuration!=(value['config'],value['operation_timeout']): raise ValueError()
                 function,args=value['function'],value['args']
-                if function in ('submit_text','submit_automatic_text') or function not in FUNCTIONS or len(args)!=FUNCTIONS[function]:
+                if function in ADMISSION_FUNCTIONS or function not in FUNCTIONS or len(args)!=FUNCTIONS[function]:
                     raise ValueError()
                 args=[bytes.fromhex(a['bytes_hex']) if type(a) is dict and set(a)=={'bytes_hex'} else a for a in args]
                 def factory():

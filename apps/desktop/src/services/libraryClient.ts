@@ -887,11 +887,28 @@ export class LibraryClient {
     const state = text(value.state),
       used = integer(value.used);
     if (
+      state !== "ready" &&
+      !Object.prototype.hasOwnProperty.call(MODEL_HTTP, state)
+    )
+      throw new LibraryClientError("invalid_response");
+    if (value.period === "utc_day" && Object.keys(value).length === 4) {
+      const limit = integer(value.limit);
+      if (
+        limit < 1 ||
+        limit > 10000 ||
+        used > limit ||
+        state === "model_budget_exhausted" ||
+        (state === "trial_quota_exhausted") !== (used === limit)
+      )
+        throw new LibraryClientError("invalid_response");
+      return { state, used, limit, period: "utc_day" };
+    }
+    if (
       Object.keys(value).length !== 3 ||
       value.limit !== 3 ||
       used > 3 ||
-      (state !== "ready" &&
-        !Object.prototype.hasOwnProperty.call(MODEL_HTTP, state)) ||
+      state === "trial_quota_exhausted" ||
+      state === "trial_capacity_exhausted" ||
       (state === "model_budget_exhausted") !== (used === 3)
     )
       throw new LibraryClientError("invalid_response");

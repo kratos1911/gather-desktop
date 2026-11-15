@@ -84,6 +84,8 @@ describe("library HTTP client (synthetic responses)", () => {
     const { client, send } = setup();
     for (const [status, body, expected] of [
       [429, { error: "model_budget_exhausted" }, "model_budget_exhausted"],
+      [429, { error: "trial_quota_exhausted" }, "trial_quota_exhausted"],
+      [429, { error: "trial_capacity_exhausted" }, "trial_capacity_exhausted"],
       [
         502,
         { error: "model_identity_unavailable" },
@@ -126,6 +128,19 @@ describe("library HTTP client (synthetic responses)", () => {
       send.mockResolvedValueOnce(respond(value));
       await expect(client.modelStatus()).rejects.toThrow("invalid_response");
     }
+  });
+  it("accepts the account allowance period and rejects inconsistent counters", async () => {
+    const { client, send } = setup();
+    const status = {
+      state: "trial_quota_exhausted",
+      used: 20,
+      limit: 20,
+      period: "utc_day",
+    };
+    send.mockResolvedValueOnce(respond(status));
+    await expect(client.modelStatus()).resolves.toEqual(status);
+    send.mockResolvedValueOnce(respond({ ...status, used: 19 }));
+    await expect(client.modelStatus()).rejects.toThrow("invalid_response");
   });
   it("calls the native transport without using the client as its receiver", async () => {
     const transport = vi.fn(function (this: unknown) {

@@ -3,6 +3,14 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 15 November 2026: recruiter trial model quotas
+
+Added opt-in PostgreSQL metering for search and indexing, with a daily account
+limit and monthly service limit. Verified 82 backend tests, 13 disposable SQL
+checks including concurrent reservations, 82 frontend tests, and web and Windows
+builds. Trial activation and representative file acceptance remain open.
+Details in [trial model quotas](TRIAL_MODEL_USAGE.md).
+
 ## 5 November 2026: hybrid/startup search follow-up
 
 Prepared owned full-text keyword retrieval with RRF beside the unchanged semantic

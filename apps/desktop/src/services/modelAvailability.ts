@@ -8,8 +8,12 @@ export const MODEL_HTTP: Record<string, number> = {
   model_deadline: 504,
   model_not_ready: 503,
   model_budget_exhausted: 429,
+  trial_quota_exhausted: 429,
+  trial_capacity_exhausted: 429,
 };
-export type ModelStatus = { state: string; used: number; limit: 3 };
+export type ModelStatus =
+  | { state: string; used: number; limit: 3; period?: never }
+  | { state: string; used: number; limit: number; period: "utc_day" };
 export const MODEL_MESSAGES: Record<string, string> = {
   ready:
     "The service reported ready at this check. A successful embedding/search still needs its own validation.",
@@ -27,6 +31,10 @@ export const MODEL_MESSAGES: Record<string, string> = {
     "The service reports that the model is not ready. Wait and explicitly check again. If it persists, the operator should inspect the Gather service; this response alone does not establish the cause.",
   model_budget_exhausted:
     "This local API process has used its three model attempts. No further model request was sent. Review the pilot spend before intentionally restarting the Gather API for another test session.",
+  trial_quota_exhausted:
+    "You’ve reached your daily model allowance. It resets at midnight UTC. You can still open saved files.",
+  trial_capacity_exhausted:
+    "Gather’s model allowance for this month has been used. You can still open saved files.",
   model_unavailable:
     "Model availability could not be established. Use Check model connection for a separate diagnostic; your search will not be retried automatically.",
 };

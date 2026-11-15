@@ -29,6 +29,7 @@ reload the full conversation or historical snapshots for routine coding.
 - [[docs/SAVED_LIBRARY]]: owner listing, pagination, reconnect state
 - [[docs/EMPTY_LIBRARY_SEARCH]]: no inference when publication is proven empty
 - [[docs/MODEL_AVAILABILITY]]: explicit readiness, fixed errors, measured limits
+- [[docs/TRIAL_MODEL_USAGE]]: durable model quotas and recruiter trial status
 - [[docs/LIBRARY_API]], [[docs/LIBRARY_SESSION]], [[docs/SERVICE_CLIENTS]]
 - [[docs/SEARCH_AUTH_SCOPE]]: single Auth verification per search, request boundaries and observed timing
 - [[docs/DESIGN_AVOID_LIST]], [[docs/DESIGN_DIRECTION]]

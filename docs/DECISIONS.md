@@ -900,3 +900,10 @@ Reuse bounded60s readiness only on embedding cache misses, before the existing15
 embedding. User specifically approved API timeout30->90, migration17 and the
 matching Windows update. Keep all other request limits, model cap, resources,
 min0/max1, secrets/IAM and INR500 allowance. See HYBRID_SEARCH.md.
+
+## 15 November 2026: shared durable trial usage
+
+Reserve one embedding attempt against a daily account limit and monthly service
+limit in the same database transaction. Derive the owner from verified admission
+or a live worker lease. Fail closed on uncertain commits and keep quota numbers
+operator-configured. Existing pilot startup and enrollment remain separate.

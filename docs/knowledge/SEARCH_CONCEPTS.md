@@ -572,3 +572,9 @@ text, then reuse the existing text-embedding space. Preserve raw-image and
 extracted-text hashes separately. Cite line regions with upright pixel boxes and
 exact text offsets; confidence is an engine score, not proof of correctness.
 Opening retrieves the owned exact original for comparison. See [[docs/IMAGE_OCR]].
+
+## Reserve model attempts before dispatch
+
+The trial ties search to its verified session and indexing to its live job lease.
+A database transaction charges both the account and service before model dispatch.
+Cache hits skip the reservation. See [[docs/TRIAL_MODEL_USAGE]].

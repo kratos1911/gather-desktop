@@ -12,6 +12,8 @@ class AutomaticAdmission:
         self.repository = repository
 
     def call(self, function, *args):
+        if function == 'trial_query_usage':
+            return self.repository.call(function, *args)
         if function != 'submit_text':
             raise ValueError('unsupported_repository_operation')
         return self.repository.call('submit_automatic_text',*args)

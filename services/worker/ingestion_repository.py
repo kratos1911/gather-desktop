@@ -24,6 +24,7 @@ FUNCTIONS = {
     'submit_automatic_text': 10, 'next_automatic_text_job': 0,
     'claim_automatic_text_job': 1,
     'stage_pdf': 6, 'stage_docx': 6, 'stage_image': 6,
+    'trial_query_usage': 1, 'charge_trial_document': 2,
 }
 
 

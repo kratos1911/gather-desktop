@@ -33,6 +33,11 @@ is historical and must not override this file.
 
 ## Current limitations and next work
 
+Recruiter trial readiness takes priority over new formats. The durable model
+quota mode is implemented locally with no hosted activation. Next verify
+quota-aware import recovery and storage/parser limits for typical files, then
+test with independent trial sessions. See TRIAL_MODEL_USAGE.md.
+
 Native-text PDF support is implemented and deployed in the existing private API,
 with migration13 explicitly approved and applied. The Windows PDF build passes
 focused checks. Pilot B's generated two-page hosted-pilot.pdf reached ready after

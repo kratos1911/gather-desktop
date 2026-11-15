@@ -64,9 +64,10 @@ class LibrarySession:
     def search(self, query, *, limit=20, cancel=None):
         try:
             # Fresh Auth per request; a search scope may reuse its verified ID.
+            provider = self._search_model()
             from services.worker.search_startup import SearchStartupProvider
-            provider = (SearchStartupProvider(self._provider, self._search_prepare)
-                        if self._search_prepare is not None else self._provider)
+            if self._search_prepare is not None:
+                provider = SearchStartupProvider(provider, self._search_prepare)
             return search(query, api=self._api, provider=provider, limit=limit, cancel=cancel,
                           query_cache=self._query_cache, hybrid=self._hybrid_search)
         except SearchError as error:
@@ -76,6 +77,9 @@ class LibrarySession:
             raise LibraryError('search_failed') from None
         except Exception:
             raise LibraryError('search_failed') from None
+
+    def _search_model(self):
+        return self._provider
 
     def _rpc(self, name, payload):
         self._owner()
@@ -91,12 +95,15 @@ class LibrarySession:
         return self._rpc('source_processing_status_with_recovery', {'p_source':source_id})
 
     def model_status(self, *, cancel=None):
-        self._owner()  # User identity must be verified before any cloud probe.
+        owner = self._owner()  # Verify identity before any cloud probe.
         try:
-            return status_reply(self._provider.check_ready(cancel=cancel))
+            return status_reply(self._model_status(owner, cancel=cancel))
         except Exception:
             if cancel is not None and cancel.is_set(): raise LibraryError('cancelled') from None
             raise LibraryError('model_unavailable') from None
+
+    def _model_status(self, owner, *, cancel):
+        return self._provider.check_ready(cancel=cancel)
 
     def list_sources(self, *, limit=20, cursor=None):
         self._owner()

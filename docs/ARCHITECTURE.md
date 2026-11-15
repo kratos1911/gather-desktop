@@ -67,6 +67,9 @@ work; recovery rechecks under the existing transaction. See
 Inference uses CPU2/5GiB, concurrency1, max1/min0. The approved library API uses
 CPU1/2GiB (approved image-OCR allocation), platform concurrency4,
 single-flight app admission, max1/min0.
+An opt-in trial build can reserve embedding attempts in PostgreSQL using a
+verified account or a live worker lease. It is locally verified and inactive
+on the hosted pilot. See [trial model quotas](TRIAL_MODEL_USAGE.md).
 Model operations retain 15 seconds and request identity five seconds. Automatic
 worker and search-miss startup permit up to three readiness GETs inside one shared
 60-second deadline; embeddings never retry automatically. Search's API/client

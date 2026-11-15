@@ -54,6 +54,9 @@ class DatabaseConfig:
             raise ValueError('invalid_database_configuration')
 
 
+ADMISSION_FUNCTIONS = {'submit_text', 'submit_automatic_text', 'trial_query_usage'}
+
+
 class DatabaseRepository:
     def __init__(self, config, *, owner=None, operation_timeout=DEADLINE, reuse_worker=False):
         if not isinstance(config,DatabaseConfig):
@@ -94,8 +97,7 @@ class DatabaseRepository:
                 with self._scope_lock: self._scope = None
 
     def call(self, function, *args):
-        admission = {'submit_text','submit_automatic_text'}
-        allowed = admission if self._owner else set(FUNCTIONS)-admission
+        allowed = ADMISSION_FUNCTIONS if self._owner else set(FUNCTIONS)-ADMISSION_FUNCTIONS
         if function not in allowed or len(args) != FUNCTIONS[function]:
             raise ValueError('unsupported_repository_operation')
         if self._scope is not None:
@@ -221,8 +223,7 @@ def child_main():
         config = DatabaseConfig(**value['config'])
         validated = DatabaseRepository(config,owner=value['owner'],operation_timeout=value.get('operation_timeout',DEADLINE))
         function, args = value['function'], value['args']
-        admission = {'submit_text','submit_automatic_text'}
-        allowed = admission if validated._owner else set(FUNCTIONS)-admission
+        allowed = ADMISSION_FUNCTIONS if validated._owner else set(FUNCTIONS)-ADMISSION_FUNCTIONS
         if function not in allowed or len(args)!=FUNCTIONS[function]:
             raise ValueError()
         args = [bytes.fromhex(a['bytes_hex']) if isinstance(a,dict) and set(a)=={'bytes_hex'} else a for a in args]
