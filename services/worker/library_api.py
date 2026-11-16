@@ -24,6 +24,7 @@ from services.worker.image_processing import MEDIA as IMAGE_MEDIA, validate_byte
 ROUTES = {
     '/v1/import': ({'request_id', 'title', 'media', 'content_base64'}, {'source_id','confirm_cloud_storage'}),
     '/v1/search': ({'query'}, {'limit'}),
+    '/v1/search-previews': ({'query'}, {'limit'}),
     '/v1/status': ({'source_id'}, set()),
     '/v1/open': ({'source_id', 'version_id'}, set()),
     '/v1/delete': ({'source_id'}, set()),
@@ -32,6 +33,7 @@ ROUTES = {
     '/v1/process': ({'source_id','job_id','expected_attempts'}, set()),
     '/v1/cleanup': ({'source_id'}, set()),
 }
+SEARCH_ROUTES = ('/v1/search','/v1/search-previews')
 
 
 def validate(path, value):
@@ -59,7 +61,7 @@ def validate(path, value):
         elif value['media']=='application/pdf': validate_pdf_bytes(raw)
         else: parse(raw, value['media'])
         value['original'] = raw
-    if path == '/v1/search':
+    if path in SEARCH_ROUTES:
         if (not isinstance(value['query'], str) or not value['query'].strip()
                 or len(value['query'].encode('utf-8')) > 8192
                 or type(value.get('limit', 20)) is not int
@@ -70,11 +72,12 @@ def validate(path, value):
 
 class LibraryAPI:
     """Single-flight HTTP; trusted composition may attach a separate dispatcher."""
-    def __init__(self, session_factory, *, dispatcher=None):
-        if not callable(session_factory):
+    def __init__(self, session_factory, *, dispatcher=None, search_previews=False):
+        if not callable(session_factory) or type(search_previews) is not bool:
             raise ValueError('invalid_configuration')
         self.factory = session_factory
         self.dispatcher = dispatcher
+        self.search_previews = search_previews
         self.slot = threading.BoundedSemaphore(1)
         self.stopping = threading.Event()
         self._active = set()
@@ -128,7 +131,7 @@ class LibraryAPI:
         path = scope.get('path')
         if self.stopping.is_set():
             return await reply(503, {'error':'server_stopping'})
-        if path not in ROUTES:
+        if path not in ROUTES or (path == '/v1/search-previews' and not self.search_previews):
             return await reply(404, {'error':'not_found'})
         if scope['method'] != 'POST':
             return await reply(405, {'error':'method_not_allowed'})
@@ -194,8 +197,8 @@ class LibraryAPI:
                 if cancel.is_set():
                     raise LibraryError('cancelled')
                 method = getattr(session, {'/v1/import':'import_text','/v1/list':'list_sources',
-                    '/v1/model-status':'model_status'}.get(path, path[4:]))
-                if path in ('/v1/search','/v1/model-status'):
+                    '/v1/model-status':'model_status','/v1/search-previews':'search_previews'}.get(path, path[4:]))
+                if path in (*SEARCH_ROUTES,'/v1/model-status'):
                     return method(**value, cancel=cancel)
                 return method(**value)
 
@@ -209,7 +212,7 @@ class LibraryAPI:
             watcher = asyncio.create_task(disconnected())
             # Search alone may spend 60s in the existing startup gate, followed
             # by its existing 30s operation allowance. Inference stays at 15s.
-            operation_timeout = 90 if path == '/v1/search' else 30
+            operation_timeout = 90 if path in SEARCH_ROUTES else 30
             done, _ = await asyncio.wait([operation, watcher], timeout=operation_timeout,
                                          return_when=asyncio.FIRST_COMPLETED)
             if watcher in done:
@@ -240,6 +243,8 @@ class LibraryAPI:
                 return await reply(status, {'error': code if code in MODEL_HTTP or code in pdf_codes or code in DOCX_ERRORS or code in IMAGE_ERRORS or code in ('session_unavailable','busy') else 'operation_failed'})
             except Exception:
                 return await reply(503, {'error':'operation_failed'})
+            if path == '/v1/list' and self.search_previews:
+                result = dict(result, search_previews_enabled=True)
             await reply(202 if path == '/v1/import' else 200, result)
         finally:
             cancel.set()

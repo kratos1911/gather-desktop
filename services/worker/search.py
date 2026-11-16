@@ -7,6 +7,7 @@ contract; hosted transport and deployment verification remain pending.
 Provider uses the same explicit infer/count_tokens contract as ingestion.
 """
 import math
+import re
 import threading
 from uuid import UUID
 
@@ -20,6 +21,11 @@ from services.worker.model_availability import ModelServiceError
 from services.worker.document_metadata import enrich_published
 from services.worker.search_relevance import selected_indices, validate_space
 from services.worker.hybrid_search import fuse
+from services.worker.docx_processing import MEDIA as DOCX_MEDIA
+from services.worker.image_processing import MEDIA as IMAGE_MEDIA
+
+PREVIEW_VERSION = 'search-previews-v1'
+PREVIEW_CHARACTERS = 240
 
 
 class SearchError(Exception):
@@ -54,7 +60,66 @@ def _validate_rows(rows, limit, *, ordered):
         seen.add((sid, vid, pid))
 
 
-def search(query, *, api, provider, limit=20, cancel=None, query_cache=None, hybrid=False):
+def _preview_location(row):
+    media = row['media_type']
+    numbers = row['locations']
+    if media in ('text/plain', 'text/markdown'):
+        if numbers != []:
+            raise ValueError('unexpected_preview_locations')
+        return {}
+    if media == 'application/pdf':
+        key, maximum = 'pages', 20
+    elif media == DOCX_MEDIA:
+        key, maximum = 'paragraphs', 128
+    elif media in IMAGE_MEDIA:
+        key, maximum = 'ocr_regions', 128
+    else:
+        raise ValueError('unsupported_preview_media')
+    if (type(numbers) is not list or not 1 <= len(numbers) <= maximum
+            or any(type(n) is not int or not 1 <= n <= maximum for n in numbers)
+            or numbers != sorted(set(numbers))):
+        raise ValueError('invalid_preview_locations')
+    return {'media_type': media, key: numbers}
+
+
+def _preview_response(batch, limit):
+    if type(batch) is not dict or set(batch) != {'semantic', 'keywords'}:
+        raise ValueError('invalid_preview_batch')
+    semantic, keywords = batch['semantic'], batch['keywords']
+    for branch, ordered in ((semantic, True), (keywords, False)):
+        _validate_rows(branch, limit, ordered=ordered)
+        for row in branch:
+            if (not row['body'].strip() or len(row['body']) > PREVIEW_CHARACTERS
+                    or row['end_offset'] - row['start_offset'] != len(row['body'])
+                    or not re.fullmatch('[0-9a-f]{64}', row['source_sha256'])):
+                raise ValueError('invalid_preview_text')
+            _preview_location(row)
+    accepted = selected_indices([row['similarity'] for row in semantic])
+    rows = fuse([semantic[i] for i in accepted], keywords, limit)
+    windows, omitted, seen = [], [], {}
+    for rank, row in enumerate(rows, 1):
+        sid, version = row['source_id'], row['version_id']
+        if sid in seen:
+            if seen[sid] != version:
+                raise ValueError('mixed_versions')
+            continue
+        seen[sid] = version
+        if len(windows) == MAX_SOURCES:
+            omitted.append({'source_id': sid, 'reason': 'source_limit'})
+            continue
+        windows.append({
+            'source_id': sid, 'version_id': version, 'title': row['title'],
+            'source_sha256': row['source_sha256'], 'text': row['body'],
+            'start': row['start_offset'], 'end': row['end_offset'],
+            'offset_unit': 'unicode_code_point', 'passage_ids': [row['passage_id']],
+            'seed_rank': rank, 'similarity': row['similarity'],
+            **_preview_location(row),
+        })
+    return {'version': PREVIEW_VERSION, 'windows': windows, 'omitted_sources': omitted,
+            'utf8_bytes': sum(len(item['text'].encode('utf-8')) for item in windows)}
+
+
+def search(query, *, api, provider, limit=20, cancel=None, query_cache=None, hybrid=False, compact=False):
     """Owned metadata preflight, at most one embedding/ranking and five reads.
 
     No automatic retries, model startup, synthetic fallback or owner payload.
@@ -77,7 +142,8 @@ def search(query, *, api, provider, limit=20, cancel=None, query_cache=None, hyb
     try:
         active()
         if (type(limit) is not int or not 1 <= limit <= MAX_CANDIDATES
-                or type(hybrid) is not bool or (hybrid and limit*2 > MAX_CANDIDATES)):
+                or type(hybrid) is not bool or type(compact) is not bool
+                or (hybrid and limit*2 > MAX_CANDIDATES) or (compact and limit > 20)):
             raise SearchError('invalid_query')
         request = {'role': 'query', 'texts': [query]}
         try:
@@ -95,6 +161,8 @@ def search(query, *, api, provider, limit=20, cancel=None, query_cache=None, hyb
         if listing['next_cursor'] is None and not any(
                 row['published_version_id'] is not None for row in listing['items']):
             active()
+            if compact:
+                return _preview_response({'semantic': [], 'keywords': []}, limit)
             context = assemble_context(owner,[],[])
             active()
             return context
@@ -130,6 +198,14 @@ def search(query, *, api, provider, limit=20, cancel=None, query_cache=None, hyb
         if abs(math.hypot(*vector) - 1) > .001:
             raise ValueError('invalid_vector_norm')
         stage = 'retrieval'
+        if compact:
+            batch = call('POST', '/rest/v1/rpc/search_published_previews', {
+                'p_text': query, 'p_query': vector, 'p_model': MODEL, 'p_revision': REVISION,
+                'p_dimensions': DIMENSIONS, 'p_limit': limit,
+            })
+            previews = _preview_response(batch, limit)
+            active()
+            return previews
         rows = call('POST', '/rest/v1/rpc/search_published_text', {
             'p_query': vector, 'p_model': MODEL, 'p_revision': REVISION,
             'p_dimensions': DIMENSIONS, 'p_limit': limit,

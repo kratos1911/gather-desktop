@@ -3,6 +3,14 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## Compact search responses
+
+Packaged the opt-in API route and rebuilt Windows. Verified 84 backend tests in
+the candidate image, 45 isolated SQL checks covering rankings and format
+citations, 83 frontend tests, lint and both builds. The compact path skips
+full-document reads and combines the two ranking requests. Hosted activation
+and timing remain pending. See [compact search responses](SEARCH_PREVIEWS.md).
+
 ## Compact search cards
 
 Implemented the first search experience milestone. A long PDF preview shows one

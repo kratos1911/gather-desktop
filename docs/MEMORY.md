@@ -33,9 +33,10 @@ is historical and must not override this file.
 
 ## Current limitations and next work
 
-The Windows candidate includes compact result cards. The installed pilot can
-continue to use its existing search contract. Returning compact API summaries
-and removing full-source reads from search remain the next performance step.
+The Windows candidate includes compact result cards and negotiates the locally
+verified compact search response. Hosted activation is pending. The next
+performance step is matched latency measurement and bounded connection reuse.
+See [compact search responses](SEARCH_PREVIEWS.md).
 
 Recruiter trial readiness takes priority over new formats. The durable model
 quota mode is implemented locally with no hosted activation. Next verify

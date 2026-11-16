@@ -32,6 +32,7 @@ export type LibraryState = Readonly<{
   pdfEnabled: boolean;
   docxEnabled: boolean;
   imageEnabled: boolean;
+  searchPreviewsEnabled: boolean;
 }>;
 const initial = (): LibraryState => ({
   signedIn: false,
@@ -54,6 +55,7 @@ const initial = (): LibraryState => ({
   pdfEnabled: false,
   docxEnabled: false,
   imageEnabled: false,
+  searchPreviewsEnabled: false,
 });
 
 export class LibraryWorkspace {
@@ -380,6 +382,7 @@ export class LibraryWorkspace {
           pdfEnabled: page.pdf_enabled === true,
           docxEnabled: page.docx_enabled === true,
           imageEnabled: page.image_enabled === true,
+          searchPreviewsEnabled: page.search_previews_enabled === true,
         });
       },
       () => this.update({ libraryStatus: "error" }),
@@ -391,7 +394,8 @@ export class LibraryWorkspace {
     if (!this.state.signedIn) throw new LibraryClientError("session_required");
     this.update({ results: null, opened: null, searching: true });
     await this.perform(
-      (signal) => this.client.search(query, signal),
+      (signal) =>
+        this.client.search(query, signal, this.state.searchPreviewsEnabled),
       (results) => this.update({ results, searching: false }),
       () => this.update({ searching: false }),
     );

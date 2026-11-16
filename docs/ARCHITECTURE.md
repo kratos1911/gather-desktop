@@ -47,6 +47,8 @@ do not grant access.
    Neither ranking proves answerability. See [hybrid search](HYBRID_SEARCH.md).
    The Library presents one bounded excerpt per saved version from the highest
    ranked window and reads the full document through the reader on Open.
+   A locally verified opt-in route combines ranking and cited preview lookup
+   in one database request. See [compact search responses](SEARCH_PREVIEWS.md).
    The cache preserves fresh Auth/metadata/ranking/version reads; it never supplies
    documents or permissions. See [query cache](QUERY_EMBEDDING_CACHE.md).
 4. Open: requested source/version must still be owned, published and unchanged;

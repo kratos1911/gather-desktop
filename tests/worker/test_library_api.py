@@ -52,6 +52,19 @@ class APITests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('cancel',self.session.search.call_args.kwargs)
         self.assertIn('cancel',self.session.model_status.call_args.kwargs)
 
+    async def test_search_previews_advertised_only_when_enabled(self):
+        path = '/v1/search-previews'
+        self.assertEqual((await self.request(path, {'query': 'cedar'}))[0]['status'], 404)
+        self.factory.assert_not_called()
+        self.app = LibraryAPI(self.factory, search_previews=True)
+        listing = await self.request('/v1/list', {})
+        self.assertIs(json.loads(listing[1]['body'])['search_previews_enabled'], True)
+        self.session.search_previews.return_value = {'version': 'search-previews-v1', 'windows': []}
+        self.assertEqual((await self.request(path, {'query': 'cedar'}))[0]['status'], 200)
+        self.session.search_previews.assert_called_once()
+        self.assertIn('cancel', self.session.search_previews.call_args.kwargs)
+        self.session.search.assert_not_called()
+
     async def test_listing_rejects_invalid_cursor_limits_and_owner_before_work(self):
         for value in ({'owner':ID},{'limit':True},{'limit':21},{'cursor':'x'*257},{'cursor':'not-json'}):
             self.assertEqual((await self.request('/v1/list',value=value))[0]['status'],400)

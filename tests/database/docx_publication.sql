@@ -67,6 +67,13 @@ begin
   if public.read_published_docx(sid,vid) is not null or public.request_source_deletion(sid) then raise exception 'foreign access';end if;
   perform set_config('request.jwt.claim.sub',owner_id::text,true);
   if (select count(*) from public.search_published_text(vector,'Qwen/Qwen3-Embedding-0.6B','pinned-test-revision',512,20) r where r.source_id=sid)<>2 then raise exception 'owned DOCX not searchable'; end if;
+  if not exists(
+    select 1 from jsonb_array_elements(public.search_published_previews(
+      'two',vector,'Qwen/Qwen3-Embedding-0.6B','pinned-test-revision',512)->'keywords') as hit
+    where hit->>'source_id'=sid::text and hit->>'version_id'=vid::text
+      and hit->>'media_type'='application/vnd.openxmlformats-officedocument.wordprocessingml.document' and hit->'locations'='[2]'::jsonb
+  ) then raise exception 'wrong docx preview citation'; end if;
+  raise notice 'PASS: docx compact keyword preview retains exact location';
   perform set_config('request.jwt.claim.sub',other_id::text,true);
   if exists(select 1 from public.search_published_text(vector,'Qwen/Qwen3-Embedding-0.6B','pinned-test-revision',512,20) r where r.source_id=sid)
     or exists(select 1 from public.open_published_text(sid,vid)) then raise exception 'foreign DOCX visible';end if;

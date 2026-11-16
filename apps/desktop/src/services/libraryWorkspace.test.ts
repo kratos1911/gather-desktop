@@ -17,6 +17,43 @@ const setup = () => {
   return { workspace, send };
 };
 describe("library workspace (synthetic transport)", () => {
+  it("uses compact search only when advertised and never replays a failed request", async () => {
+    const { workspace, send } = setup();
+    const searchReply = (version: string) =>
+      reply({
+        version,
+        windows: [],
+        utf8_bytes: 0,
+        omitted_sources: [],
+      });
+    send.mockResolvedValueOnce(
+      reply({ items: [], next_cursor: null, search_previews_enabled: true }),
+    );
+    await workspace.loadSources();
+    send.mockResolvedValueOnce(searchReply("search-previews-v1"));
+    await workspace.search("first query");
+    expect(workspace.getSnapshot().results?.version).toBe("search-previews-v1");
+    send.mockResolvedValueOnce(reply({ error: "library_unavailable" }, 503));
+    await workspace.search("second query");
+    expect(workspace.getSnapshot().error).toBe("library_unavailable");
+    workspace.setSession("different-session");
+    send.mockResolvedValueOnce(reply({ items: [], next_cursor: null }));
+    await workspace.loadSources();
+    send.mockResolvedValueOnce(searchReply("source-neighbors-v1"));
+    await workspace.search("third query");
+    expect(workspace.getSnapshot().results?.version).toBe(
+      "source-neighbors-v1",
+    );
+    expect(
+      send.mock.calls.map(([url]) => new URL(String(url)).pathname),
+    ).toEqual([
+      "/v1/list",
+      "/v1/search-previews",
+      "/v1/search-previews",
+      "/v1/list",
+      "/v1/search",
+    ]);
+  });
   it("restores bounded status watching when an existing job is resumed after reconnect", async () => {
     const { workspace, send } = setup();
     send.mockResolvedValueOnce(

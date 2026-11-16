@@ -109,12 +109,12 @@ class PilotSession(LibrarySession):
             raise LibraryError('model_budget_exhausted')
         return document
 
-    def search(self, query, *, limit=20, cancel=None):
+    def search(self, query, *, limit=20, cancel=None, compact=False):
         with self._api.search_authentication():
             self._owner()  # Fresh verification plus the private-user allowlist.
             if not self.text_files and query != QUERY:
                 raise LibraryError('pilot_fixture_only')
-            return super().search(query,limit=limit,cancel=cancel)
+            return super().search(query,limit=limit,cancel=cancel,compact=compact)
 
     def _search_model(self):
         if isinstance(self._provider, TrialModel):
@@ -194,7 +194,8 @@ def run_ready_worker(worker, identity):
 
 
 def compose_pilot(config,worker_config,provider,identity,key,*,text_files=False,automatic=False,record=None,pdf_files=False,
-                  reuse_worker=False,early_prepare=False,record_timings=False,docx_files=False,image_files=False,query_cache=None):
+                  reuse_worker=False,early_prepare=False,record_timings=False,docx_files=False,image_files=False,
+                  query_cache=None,search_previews=False):
     """Shared trusted composition for operator and explicit managed-cloud startup."""
     dispatcher=None
     if automatic:
@@ -220,7 +221,7 @@ def compose_pilot(config,worker_config,provider,identity,key,*,text_files=False,
         return PilotSession(SessionClient(BASE,key,token,cancel=cancel),admission,provider,
             text_files=text_files,dispatcher=dispatcher,pdf_files=pdf_files,docx_files=docx_files,image_files=image_files,cancel=cancel,query_cache=query_cache,
             search_prepare=lambda cancelled:wait_for_automatic_startup(identity,cancel=cancelled),hybrid_search=True)
-    return LibraryAPI(session,dispatcher=dispatcher)
+    return LibraryAPI(session,dispatcher=dispatcher,search_previews=search_previews)
 
 
 def main():

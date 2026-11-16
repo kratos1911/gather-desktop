@@ -71,7 +71,8 @@ def main():
             image_files=os.environ.get('GATHER_IMAGE_PILOT')=='1',
             reuse_worker=os.environ.get('GATHER_WORKER_DB_REUSE')=='1',
             early_prepare=os.environ.get('GATHER_EARLY_MODEL_START')=='1',
-            record_timings=os.environ.get('GATHER_PIPELINE_TIMING')=='1',query_cache=query_cache)
+            record_timings=os.environ.get('GATHER_PIPELINE_TIMING')=='1',query_cache=query_cache,
+            search_previews=os.environ.get('GATHER_SEARCH_PREVIEWS')=='1')
         create_cloud_server(app,os.environ).run()
     finally: identity.invalidate()
 

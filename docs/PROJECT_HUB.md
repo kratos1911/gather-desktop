@@ -32,6 +32,7 @@ reload the full conversation or historical snapshots for routine coding.
 - [[docs/TRIAL_MODEL_USAGE]]: durable model quotas and recruiter trial status
 - [[docs/LIBRARY_API]], [[docs/LIBRARY_SESSION]], [[docs/SERVICE_CLIENTS]]
 - [[docs/SEARCH_AUTH_SCOPE]]: single Auth verification per search, request boundaries and observed timing
+- [[docs/SEARCH_PREVIEWS]]: compact result contract, deferred reader and rollout
 - [[docs/DESIGN_AVOID_LIST]], [[docs/DESIGN_DIRECTION]]
 - [[docs/CLI_WORKFLOW]]: scoped writer/reviewer handoffs
 

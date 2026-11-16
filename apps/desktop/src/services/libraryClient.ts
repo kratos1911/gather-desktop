@@ -62,6 +62,7 @@ export type SourcePage = {
   pdf_enabled?: boolean;
   docx_enabled?: boolean;
   image_enabled?: boolean;
+  search_previews_enabled?: boolean;
 };
 export type SearchWindow = {
   source_id: string;
@@ -641,7 +642,9 @@ export class LibraryClient {
       (result.docx_enabled !== undefined &&
         typeof result.docx_enabled !== "boolean") ||
       (result.image_enabled !== undefined &&
-        typeof result.image_enabled !== "boolean")
+        typeof result.image_enabled !== "boolean") ||
+      (result.search_previews_enabled !== undefined &&
+        typeof result.search_previews_enabled !== "boolean")
     )
       throw new LibraryClientError("invalid_response");
     return {
@@ -657,23 +660,36 @@ export class LibraryClient {
       ...(result.pdf_enabled === undefined
         ? {}
         : { pdf_enabled: result.pdf_enabled }),
+      ...(result.search_previews_enabled === undefined
+        ? {}
+        : { search_previews_enabled: result.search_previews_enabled }),
     };
   }
 
-  async search(query: string, signal?: AbortSignal): Promise<SearchResult> {
+  async search(
+    query: string,
+    signal?: AbortSignal,
+    compact = false,
+  ): Promise<SearchResult> {
     if (!query.trim() || encoder.encode(query).length > 8192)
       throw new LibraryClientError("invalid_query");
     const result = record(
-      await this.request("search", { query, limit: 20 }, signal),
+      await this.request(
+        compact ? "search-previews" : "search",
+        { query, limit: 20 },
+        signal,
+      ),
     );
-    if (result.version !== "source-neighbors-v1")
+    const version = compact ? "search-previews-v1" : "source-neighbors-v1";
+    if (result.version !== version)
       throw new LibraryClientError("invalid_response");
     const windows = array(result.windows, 5).map((row) => {
       const value = record(row),
         body = text(value.text);
       if (
         value.offset_unit !== "unicode_code_point" ||
-        encoder.encode(body).length > 8192
+        encoder.encode(body).length > 8192 ||
+        (compact && (!body.trim() || Array.from(body).length > 240))
       )
         throw new LibraryClientError("invalid_response");
       let locations: Pick<
@@ -715,12 +731,15 @@ export class LibraryClient {
           ? { media_type: DOCX_MEDIA, paragraphs: numbers }
           : { media_type: "application/pdf", pages: numbers };
       }
+      const passageIds = array(value.passage_ids, compact ? 1 : 256).map(text);
+      if (compact && passageIds.length !== 1)
+        throw new LibraryClientError("invalid_response");
       return {
         ...identity(value),
         ...offsets(value, body),
         text: body,
         offset_unit: "unicode_code_point" as const,
-        passage_ids: array(value.passage_ids, 256).map(text),
+        passage_ids: passageIds,
         seed_rank: integer(value.seed_rank),
         similarity: number(value.similarity),
         ...locations,
@@ -733,7 +752,7 @@ export class LibraryClient {
     )
       throw new LibraryClientError("invalid_response");
     return {
-      version: result.version,
+      version,
       windows,
       utf8_bytes: size,
       omitted_sources: array(result.omitted_sources, 100).map((row) => {
@@ -932,7 +951,7 @@ export class LibraryClient {
         timedOut = true;
         controller.abort();
       },
-      route === "search" ? 95000 : 30000,
+      route === "search" || route === "search-previews" ? 95000 : 30000,
     );
     const abort = () => controller.abort();
     signal?.addEventListener("abort", abort, { once: true });

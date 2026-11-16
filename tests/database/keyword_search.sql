@@ -28,7 +28,8 @@ return sid;end $$;
 insert into auth.users values('00000000-0000-0000-0000-000000000701'),('00000000-0000-0000-0000-000000000702');
 insert into gather_private.source_quotas values('00000000-0000-0000-0000-000000000701',10,0),('00000000-0000-0000-0000-000000000702',10,0);
 select pg_temp.fixture('00000000-0000-0000-0000-000000000701','Archive requests belong in the Cedar queue.') as sid \gset own_
-select pg_temp.fixture('00000000-0000-0000-0000-000000000701','Cedar archive requests are documented.') as sid \gset second_
+select pg_temp.fixture('00000000-0000-0000-0000-000000000701',repeat('Prior background. ',35)||
+  'Cedar archive requests are documented. '||repeat('More details. ',40)) as sid \gset second_
 select pg_temp.fixture('00000000-0000-0000-0000-000000000702','Cedar belongs to another account.') as sid \gset foreign_
 select pg_temp.fixture('00000000-0000-0000-0000-000000000701','Cedar unpublished text.',false) as sid \gset draft_
 select pg_temp.fixture('00000000-0000-0000-0000-000000000701','Cedar deleted text.') as sid \gset deleted_
@@ -45,12 +46,30 @@ select pg_temp.assert_true((select count(*)=0 from public.search_published_keywo
 select pg_temp.assert_true((select bool_and(r.body=substring(d.body from r.start_offset+1 for r.end_offset-r.start_offset)) from public.search_published_keywords('cedar',:'vector','synthetic','v1',256) r cross join lateral public.open_published_text(r.source_id,r.version_id) d),'exact version offsets and citations retained');
 select pg_temp.expect_error(format('select * from public.search_published_keywords(%L,%L,%L,%L,256,0)','cedar',:'vector','synthetic','v1'),'22023','invalid count denied');
 select pg_temp.expect_error(format('select * from public.search_published_keywords(%L,%L,%L,%L,256)',repeat('x',8193),:'vector','synthetic','v1'),'22023','oversized text denied');
+select public.search_published_previews('cedar',:'vector','synthetic','v1',256) as batch \gset
+select pg_temp.assert_true(
+  (select array_agg(r->>'source_id' order by n) from jsonb_array_elements(:'batch'::jsonb->'semantic') with ordinality t(r,n)) =
+  (select array_agg(r.source_id::text order by r.ordinality) from public.search_published_text(:'vector','synthetic','v1',256) with ordinality r)
+  and
+  (select array_agg(r->>'source_id' order by n) from jsonb_array_elements(:'batch'::jsonb->'keywords') with ordinality t(r,n)) =
+  (select array_agg(r.source_id::text order by r.ordinality) from public.search_published_keywords('cedar',:'vector','synthetic','v1',256) with ordinality r),
+  'combined preview query preserves the order of both ranking branches');
+select pg_temp.assert_true(
+  (select length(r->>'body')=240 and (r->>'start_offset')::int>0 and (r->>'body') like '%Cedar%'
+    and (r->>'body')=substring(d.body from (r->>'start_offset')::int+1 for (r->>'end_offset')::int-(r->>'start_offset')::int)
+   from jsonb_array_elements(:'batch'::jsonb->'keywords') r
+   cross join lateral public.open_published_text((r->>'source_id')::uuid,(r->>'version_id')::uuid) d
+   where r->>'source_id'=:'second_sid'),
+  'late keyword preview is bounded and retains exact Unicode offsets');
+select pg_temp.expect_error(format('select public.search_published_previews(%L,%L,%L,%L,256,21)','cedar',:'vector','synthetic','v1'),'22023','preview candidate cap enforced');
 select set_config('request.jwt.claim.sub','00000000-0000-0000-0000-000000000702',true);
 select pg_temp.assert_true((select count(*)=1 and bool_and(source_id=:'foreign_sid'::uuid) from public.search_published_keywords('cedar',:'vector','synthetic','v1',256)),'second owner independently scoped');
 select set_config('request.jwt.claim.sub','',true);
 select pg_temp.expect_error(format('select * from public.search_published_keywords(%L,%L,%L,%L,256)','cedar',:'vector','synthetic','v1'),'42501','missing identity denied');
+select pg_temp.expect_error(format('select public.search_published_previews(%L,%L,%L,%L,256)','cedar',:'vector','synthetic','v1'),'42501','preview requires an identity');
 set local role anon;
 select pg_temp.expect_error(format('select * from public.search_published_keywords(%L,%L,%L,%L,256)','cedar',:'vector','synthetic','v1'),'42501','anonymous execution denied');
+select pg_temp.expect_error(format('select public.search_published_previews(%L,%L,%L,%L,256)','cedar',:'vector','synthetic','v1'),'42501','anonymous preview execution denied');
 reset role;
 select pg_temp.fixture('00000000-0000-0000-0000-000000000701','Orchard replaces the old note.',false,:'own_sid');
 set local role authenticated;
@@ -59,6 +78,8 @@ reset role;
 select pg_temp.fixture('00000000-0000-0000-0000-000000000701','Orchard replaces the old note.',true,:'own_sid');
 set local role authenticated;
 select pg_temp.assert_true((select count(*)=1 from public.search_published_keywords('cedar',:'vector','synthetic','v1',256)),'activated replacement hides old keyword text');
+select pg_temp.assert_true(jsonb_array_length(public.search_published_previews('cedar',:'vector','synthetic','v1',256)->'keywords')=1,'replacement hides old keyword preview');
 select public.request_source_deletion(:'second_sid');
 select pg_temp.assert_true((select count(*)=0 from public.search_published_keywords('cedar',:'vector','synthetic','v1',256)),'deletion hides an existing keyword hit immediately');
+select pg_temp.assert_true(jsonb_array_length(public.search_published_previews('cedar',:'vector','synthetic','v1',256)->'keywords')=0,'deletion hides an existing keyword preview');
 rollback;

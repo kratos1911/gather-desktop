@@ -53,6 +53,13 @@ begin
   raise notice 'PASS: partial vectors hidden; complete PDF publishes atomically';
   set local role authenticated;
   if public.read_published_pdf(sid,vid)->'pages'<>pages then raise exception 'wrong PDF pages';end if;
+  if not exists(
+    select 1 from jsonb_array_elements(public.search_published_previews(
+      'two',vector,'Qwen/Qwen3-Embedding-0.6B','pinned-test-revision',512)->'keywords') as hit
+    where hit->>'source_id'=sid::text and hit->>'version_id'=vid::text
+      and hit->>'media_type'='application/pdf' and hit->'locations'='[2]'::jsonb
+  ) then raise exception 'wrong pdf preview citation'; end if;
+  raise notice 'PASS: pdf compact keyword preview retains exact location';
   if (select t.body from public.open_published_text(sid,vid) t)<>body then raise exception 'wrong extracted text';end if;
   perform set_config('request.jwt.claim.sub',other_id::text,true);
   if public.read_published_pdf(sid,vid) is not null or public.request_source_deletion(sid) then raise exception 'foreign access';end if;

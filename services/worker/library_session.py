@@ -61,7 +61,10 @@ class LibrarySession:
         except Exception:
             raise LibraryError('import_failed') from None
 
-    def search(self, query, *, limit=20, cancel=None):
+    def search_previews(self, query, *, limit=20, cancel=None):
+        return self.search(query, limit=limit, cancel=cancel, compact=True)
+
+    def search(self, query, *, limit=20, cancel=None, compact=False):
         try:
             # Fresh Auth per request; a search scope may reuse its verified ID.
             provider = self._search_model()
@@ -69,7 +72,7 @@ class LibrarySession:
             if self._search_prepare is not None:
                 provider = SearchStartupProvider(provider, self._search_prepare)
             return search(query, api=self._api, provider=provider, limit=limit, cancel=cancel,
-                          query_cache=self._query_cache, hybrid=self._hybrid_search)
+                          query_cache=self._query_cache, hybrid=self._hybrid_search, compact=compact)
         except SearchError as error:
             if str(error) in MODEL_HTTP or str(error) in ('cancelled','invalid_query','session_unavailable',
                               'library_unavailable','search_failed'):

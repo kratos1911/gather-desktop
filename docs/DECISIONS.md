@@ -916,3 +916,8 @@ when it exists. Use the ranked window as the fallback for semantic matches.
 Preserve the original citation and exact-version Open request. Add compact
 server responses in a separate change so the card works with existing clients
 and the deployed search contract.
+
+Add a separate compact route advertised through the authenticated listing.
+Reuse both ranking functions in one PostgreSQL snapshot and attach only
+excerpt text and overlapping citation locations. The existing reader rechecks
+the exact publication on Open. Preserve the legacy route for deployed clients.

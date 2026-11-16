@@ -325,6 +325,21 @@ describe("library HTTP client (synthetic responses)", () => {
     };
     send.mockResolvedValueOnce(respond(result));
     expect((await client.search("star")).windows[0]).toEqual(window);
+    const compact = { ...result, version: "search-previews-v1" };
+    send.mockResolvedValueOnce(respond(compact));
+    expect((await client.search("star", undefined, true)).windows[0]).toEqual(
+      window,
+    );
+    send.mockResolvedValueOnce(
+      respond({
+        ...compact,
+        windows: [{ ...window, text: "a".repeat(241), end: 251 }],
+        utf8_bytes: 241,
+      }),
+    );
+    await expect(client.search("star", undefined, true)).rejects.toMatchObject({
+      code: "invalid_response",
+    });
     send.mockResolvedValueOnce(
       respond({ ...result, windows: [{ ...window, end: 13 }] }),
     );
