@@ -152,8 +152,15 @@ it("refreshes a rejected recovery once and removes the stale action", async () =
     ["/v1/list", "/v1/process", "/v1/list"],
   );
 });
-it("enables PDF only from server capability and renders page-aware search/opening", async () => {
-  const text = body.slice(13);
+it("shows a compact PDF preview of a late match and opens the cited page on demand", async () => {
+  const text =
+    "BOILERPLATE ONLY\n" +
+    "Background material. ".repeat(20) +
+    "📄 The RETENTION rule applies here. " +
+    "Further context. ".repeat(20) +
+    "END OF FULL TEXT";
+  const previewBody = body.slice(0, 13) + text;
+  const end = Array.from(previewBody).length;
   const send = vi
     .fn<typeof fetch>()
     .mockResolvedValueOnce(
@@ -170,7 +177,7 @@ it("enables PDF only from server capability and renders page-aware search/openin
             title: "guide.pdf",
             text,
             start: 13,
-            end: body.length,
+            end,
             offset_unit: "unicode_code_point",
             passage_ids: ["p"],
             seed_rank: 1,
@@ -190,14 +197,14 @@ it("enables PDF only from server capability and renders page-aware search/openin
           version_id: ID,
           source_sha256: "0".repeat(64),
           title: "guide.pdf",
-          body,
-          passages: [{ id: "p", start: 0, end: body.length }],
+          body: previewBody,
+          passages: [{ id: "p", start: 13, end }],
           model_id: "model",
           model_revision: "revision",
           dimensions: 2,
           media_type: "application/pdf",
           text_sha256: "1".repeat(64),
-          pages,
+          pages: [pages[0], { ...pages[1], end }],
         },
       ]),
     );
@@ -208,10 +215,26 @@ it("enables PDF only from server capability and renders page-aware search/openin
   });
   expect(send).toHaveBeenCalledTimes(1);
   fireEvent.click(screen.getByRole("button", { name: "Search saved files" }));
-  await screen.findByText(/Pages 2 · extracted characters/);
-  fireEvent.click(screen.getByRole("button", { name: "Open saved text" }));
+  const result = await screen.findByRole("list", { name: "Search results" });
+  expect(within(result).getAllByRole("listitem")).toHaveLength(1);
+  expect(
+    within(result).getByText(/Pages 2 · extracted characters/),
+  ).toBeTruthy();
+  const excerpt = within(result).getByText(/The RETENTION rule/);
+  expect(Array.from(excerpt.textContent ?? "").length).toBeLessThanOrEqual(240);
+  expect(result.textContent).not.toContain("BOILERPLATE ONLY");
+  expect(result.textContent).not.toContain("END OF FULL TEXT");
+  expect(screen.queryByRole("dialog")).toBeNull();
+  expect(send).toHaveBeenCalledTimes(2);
+  fireEvent.click(
+    within(result).getByRole("button", { name: "Open guide.pdf" }),
+  );
   const reader = await screen.findByRole("dialog", { name: "guide.pdf" });
   expect(within(reader).getByRole("heading", { name: "Page 2" })).toBeTruthy();
+  expect(JSON.parse(send.mock.calls[2][1]?.body as string)).toEqual({
+    source_id: ID,
+    version_id: ID,
+  });
   expect(
     within(reader).getByLabelText("Saved document text").textContent,
   ).toContain(text);

@@ -87,6 +87,7 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-026 | No1 single-auth optimization verified/deployed | Request-local identity reuse, fresh next-request Auth and unchanged ownership guards pass101 focused checks. One cached before/after pair with saved real vector used no inference; [evidence](docs/SEARCH_AUTH_SCOPE.md). Pooling/batching remain separate. |
 | TASK-027 | Hybrid/startup fixes verified and deployed | Migration17/API00013-7zd and installed app verified. Cold `cedar` and warm descriptive query each return only the cited OCR note, exactly two embeddings total. 88 packaged backend, 15 SQL groups, 81 frontend checks and builds pass. [Evidence](docs/HYBRID_SEARCH.md). |
 | TASK-028 | Recruiter trial backend started | Durable per-account and service model quotas implemented locally. Hosted configuration, quota-aware import recovery and representative file sizes remain open. [Contract](docs/TRIAL_MODEL_USAGE.md). |
+| TASK-029 | Compact search cards implemented and verified locally | One bounded excerpt, citation and explicit Open per saved version. Synthetic layout and exact-page opening verified. Compact API summaries and latency measurement are next. |
 
 ## Latest verification
 

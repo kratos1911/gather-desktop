@@ -211,6 +211,54 @@ function fileLabel(title: string) {
 function matches(title: string, filter: Filter) {
   return filter === "Everything" || fileType(title) === filter;
 }
+function resultExcerpt(text: string, query: string) {
+  const limit = 240;
+  const excerpt = text.replace(/\s+/gu, " ").trim();
+  const points = Array.from(excerpt);
+  if (points.length <= limit) return excerpt;
+
+  const phrase = query.replace(/\s+/gu, " ").trim();
+  const match = phrase
+    ? new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "iu").exec(
+        excerpt,
+      )
+    : null;
+  // For semantic hits with no literal phrase, use the start of the ranked window.
+  const matchStart = match
+    ? Array.from(excerpt.slice(0, match.index)).length
+    : 0;
+  let start = Math.max(0, matchStart - 32);
+  if (start > 0 && points[start - 1] !== " " && points[start] !== " ") {
+    const boundary = points.indexOf(" ", start);
+    if (boundary >= start && boundary < matchStart) start = boundary + 1;
+  }
+  const prefix = start > 0 ? "…" : "";
+  const end = start + limit - prefix.length;
+  const suffix = end < points.length ? "…" : "";
+  const snippet = points
+    .slice(start, end - suffix.length)
+    .join("")
+    .trim();
+  const wordEnd = snippet.lastIndexOf(" ");
+  const visible =
+    suffix && wordEnd > snippet.length - 20
+      ? snippet.slice(0, wordEnd)
+      : snippet;
+  return prefix + visible + suffix;
+}
+function resultCitation(hit: SearchWindow) {
+  const location = hit.ocr_regions
+    ? `OCR regions ${hit.ocr_regions.join(", ")}`
+    : hit.paragraphs
+      ? `Paragraphs ${hit.paragraphs.join(", ")}`
+      : hit.pages
+        ? `Pages ${hit.pages.join(", ")}`
+        : null;
+  const offsets = `${hit.start}–${hit.end}`;
+  return location
+    ? `${location} · extracted characters ${offsets}`
+    : `Characters ${offsets}`;
+}
 function statusLabel(source: LibrarySource) {
   const replacement =
     source.published_version_id &&
@@ -407,12 +455,13 @@ export default function Library() {
       )}
     </>
   );
-  const grouped = new Map<string, SearchWindow[]>();
+  const grouped = new Map<string, SearchWindow>();
   for (const hit of state.results?.windows ?? []) {
     const id = `${hit.source_id}/${hit.version_id}`;
-    grouped.set(id, [...(grouped.get(id) ?? []), hit]);
+    const previous = grouped.get(id);
+    if (!previous || hit.seed_rank < previous.seed_rank) grouped.set(id, hit);
   }
-  const groups = [...grouped.values()].filter(([hit]) =>
+  const results = [...grouped.values()].filter((hit) =>
     matches(hit.title, filter),
   );
   const sources = state.sources.filter((source) =>
@@ -692,8 +741,8 @@ export default function Library() {
               aria-label={showResults ? "Search results" : "Saved files"}
             >
               {showResults
-                ? groups.map((windows) => {
-                    const hit = windows[0];
+                ? results.map((hit) => {
+                    const excerpt = resultExcerpt(hit.text, submitted ?? "");
                     return (
                       <li
                         className="saved-card result-card"
@@ -701,62 +750,19 @@ export default function Library() {
                       >
                         <div className="card-meta">
                           <span>{fileLabel(hit.title)}</span>
-                          <span className="ready-label">Matching passages</span>
                         </div>
-                        <button
-                          className="card-title"
-                          disabled={state.busy}
-                          onClick={() => {
-                            setReaderPage(
-                              hit.pages?.[0] ??
-                                hit.paragraphs?.[0] ??
-                                hit.ocr_regions?.[0] ??
-                                null,
-                            );
-                            act(() =>
-                              workspace.open(hit.source_id, hit.version_id),
-                            );
-                          }}
-                        >
+                        <h2 className="result-title" title={hit.title}>
                           {hit.title}
-                        </button>
-                        {windows.map((window) => (
-                          <div
-                            className="passage"
-                            key={`${window.start}/${window.end}`}
-                          >
-                            <p>{window.text}</p>
-                            <small>
-                              {window.ocr_regions ? (
-                                <>
-                                  OCR regions {window.ocr_regions.join(", ")} ·
-                                  extracted characters {window.start}–
-                                  {window.end}
-                                </>
-                              ) : window.paragraphs ? (
-                                <>
-                                  Paragraphs {window.paragraphs.join(", ")} ·
-                                  extracted characters {window.start}–
-                                  {window.end}
-                                </>
-                              ) : window.pages ? (
-                                <>
-                                  Pages {window.pages.join(", ")} · extracted
-                                  characters {window.start}–{window.end}
-                                </>
-                              ) : (
-                                <>
-                                  Characters {window.start}–{window.end}
-                                </>
-                              )}{" "}
-                              · exact saved version
-                            </small>
-                          </div>
-                        ))}
+                        </h2>
+                        {excerpt && <p className="result-excerpt">{excerpt}</p>}
+                        <small className="result-citation">
+                          {resultCitation(hit)}
+                        </small>
                         <div className="card-actions">
                           <button
-                            className="quiet-button"
+                            className="quiet-button result-open"
                             disabled={state.busy}
+                            aria-label={`Open ${hit.title}`}
                             onClick={() => {
                               setReaderPage(
                                 hit.pages?.[0] ??
@@ -769,7 +775,7 @@ export default function Library() {
                               );
                             }}
                           >
-                            Open saved text
+                            Open
                           </button>
                           <button
                             className="quiet-button danger-text"
@@ -871,7 +877,7 @@ export default function Library() {
                   ))}
             </ul>
             {state.libraryStatus === "ready" &&
-              !(showResults ? groups.length : sources.length) && (
+              !(showResults ? results.length : sources.length) && (
                 <div className="library-empty" role="status">
                   <h2>
                     {showResults

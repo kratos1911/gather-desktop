@@ -315,8 +315,7 @@
   text-align: left;
   background: transparent;
 }
-.card-open h2,
-.card-title {
+.card-open h2 {
   font-size: clamp(20px, 1.8vw, 27px) !important;
   font-weight: 600;
   letter-spacing: -0.03em;
@@ -358,24 +357,37 @@
 .gather-library .danger-text {
   color: #ffb7a9;
 }
-.card-title {
-  padding: 22px 0 18px;
-  text-align: left;
-  background: transparent;
-}
-.passage p {
-  white-space: pre-wrap;
+.result-title,
+.result-excerpt,
+.result-citation {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   overflow-wrap: anywhere;
-  line-height: 1.8;
-  font-family: "Segoe UI", sans-serif;
-  font-size: 15px;
-  margin-bottom: 14px;
 }
-.passage small {
-  display: block;
+.result-title {
+  -webkit-line-clamp: 2;
+  margin: 12px 0 6px;
+  font-size: 18px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+.result-excerpt {
+  -webkit-line-clamp: 3;
+  margin: 0 0 8px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.result-citation {
+  -webkit-line-clamp: 2;
   color: var(--lib-muted);
-  margin-bottom: 22px;
-  font-size: 11px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.gather-library .result-open:not(:disabled) {
+  color: var(--lib-ink);
+  font-weight: 650;
 }
 .library-empty {
   padding: 56px 16px;

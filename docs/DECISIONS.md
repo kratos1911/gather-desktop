@@ -907,3 +907,12 @@ Reserve one embedding attempt against a daily account limit and monthly service
 limit in the same database transaction. Derive the owner from verified admission
 or a live worker lease. Fail closed on uncertain commits and keep quota numbers
 operator-configured. Existing pilot startup and enrollment remain separate.
+
+## Compact search previews
+
+Render the highest-ranked window for each saved version as a three-line preview
+of at most 240 Unicode code points. Bring a late literal query match into view
+when it exists. Use the ranked window as the fallback for semantic matches.
+Preserve the original citation and exact-version Open request. Add compact
+server responses in a separate change so the card works with existing clients
+and the deployed search contract.

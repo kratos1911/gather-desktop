@@ -172,7 +172,7 @@ describe("unified authenticated library (synthetic HTTP fixtures)", () => {
       "How long are backups kept?",
     );
     expect(screen.getByText(/Characters 0–/)).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Open saved text" }));
+    fireEvent.click(screen.getByRole("button", { name: "Open notes.md" }));
     const reader = await screen.findByRole("dialog", { name: "notes.md" });
     expect(
       within(reader).getByLabelText("Saved document text").textContent,
@@ -191,9 +191,7 @@ describe("unified authenticated library (synthetic HTTP fixtures)", () => {
       screen.getByRole("button", { name: "Delete file permanently" }),
     );
     await screen.findByText(/Deletion complete/);
-    expect(
-      screen.queryByRole("button", { name: "Open saved text" }),
-    ).toBeNull();
+    expect(screen.queryByRole("button", { name: "Open notes.md" })).toBeNull();
     expect(
       send.mock.calls.map(([url]) => new URL(String(url)).pathname),
     ).toEqual([

@@ -3,6 +3,14 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## Compact search cards
+
+Implemented the first search experience milestone. A long PDF preview shows one
+bounded excerpt and an explicit Open button. Agent Desktop confirmed normal
+and narrow layouts in an isolated synthetic preview and verified opening at
+page 2. The rebuilt Windows candidate also reached sign-in. All 82 frontend
+tests, lint and builds passed. Measurements of search latency are still pending.
+
 ## 15 November 2026: recruiter trial model quotas
 
 Added opt-in PostgreSQL metering for search and indexing, with a daily account
