@@ -32,12 +32,38 @@ work in this fixture. The p95 uses the nearest-rank sample.
 | One helper and connection per call | 3 | 3 | 730 ms | 801 ms |
 | Reuse within a search | 3 | 1 | 242 ms | 270 ms |
 
-## Hosted verification pending
+## Hosted verification on 16 November 2026
 
-After the compact route is approved and active, compare the same version with
-reuse off and on, using the same synthetic corpus and query set. Report p50/p95
-and failure counts for cache hits, warm cache misses, and cold startup separately.
-Pair API receipts with the desktop submit-to-results measurements. Proposed p95
-targets are 2 seconds for cache hits and 5 seconds for warm misses. Collect live
-measurements before claiming either target. Cold model or API startup has its
-own distribution. Set the reuse flag to `0` to restore the per-call helper.
+Applied `202611160001_search_previews.sql` in Gather Supabase. SQL readback
+confirmed execute for authenticated sessions and denial for anonymous users.
+Cloud Run rejected an unauthenticated compact search with HTTP 401 on both
+revisions. The candidate image passed 75 focused backend tests in an isolated
+container. Registry digest `sha256:7cc93f2e08f95586f54a515b526c7bbf45fd77c7ba70853255efaad83f2076e2`.
+
+Both API revisions used the same image, preview route, cache and configuration.
+Connection reuse was the only flag changed. The Windows timing client called
+the live API sequentially as pilot B. The cached cohort used the same Cedar
+query and the same published synthetic OCR note. Receipts pair HTTP response
+time with content-free Cloud Run timing entries. Four embeddings succeeded,
+all on observed cache misses. All 16 searches succeeded. An explicit Open
+returned the same published version and exact cited substring.
+
+| HTTP search measure | Baseline | Reuse enabled |
+| --- | ---: | ---: |
+| Cached p50, 6 per revision | 4.17 s | 2.52 s |
+| Cached sample p95, 6 per revision | 5.23 s | 3.13 s |
+| Median database time for cached searches | 2.19 s | 0.54 s |
+| Warm misses | 6.75 s (1) | 4.89 and 5.77 s (2) |
+| Observed model cold start | 36.63 s (1) | No paired sample |
+
+The cold sample included 29.68 seconds of model readiness and matched one
+Cloud Run model-instance startup. Warm misses used different Cedar phrasings.
+The six-sample p95 is the sample maximum. The 2-second cached p95 target and
+5-second warm-miss p95 target remain unmet in these samples. Hosted timings
+end at HTTP response validation on the client and exclude desktop rendering.
+
+`gather-library-pilot-sl-opt-7433154` serves 100% of traffic in Mumbai with
+previews, stage timings, connection reuse and the existing cache enabled.
+CPU 1, 2 GiB, min 0/max 1, API timeout, credentials and inference settings were
+preserved. Route back to `gather-library-pilot-sl-base-7433154` to disable reuse
+while keeping previews. Safe receipts are under `output/search-latency/`.

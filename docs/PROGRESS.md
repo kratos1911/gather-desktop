@@ -3,6 +3,14 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 16 November 2026: hosted compact search and connection reuse
+
+Applied the owned compact-preview RPC, verified authenticated access and rolled
+out two revisions of the same tested image for comparison. All 16 synthetic
+searches and exact-version Open passed. Confirmed four model requests total.
+Cached median improved from 4.17 s to 2.52 s. The optimized revision serves all
+traffic. The live targets and cold-sample limits are in [search latency](SEARCH_LATENCY.md).
+
 ## Search latency measurement and connection reuse
 
 Added opt-in, content-free backend stage timings and local desktop timings.

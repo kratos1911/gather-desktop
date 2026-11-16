@@ -18,12 +18,10 @@ apply on both Search and Open. Preview offsets refer to the exact substring.
 In the tested compact path, Auth, library preflight, and the combined ranking
 are three Supabase requests. The legacy hybrid path uses four plus one full
 text read per chosen source and an additional read for each formatted source.
-The total excerpt budget drops from 32 KiB to at most 4,800 UTF-8 bytes. These
-are request and payload bounds. Hosted latency measurements remain pending.
+The total excerpt budget drops from 32 KiB to at most 4,800 UTF-8 bytes.
 
-The local API image and Windows build are verified with synthetic fixtures.
-To activate the hosted path after approval, apply only
-`202611160001_search_previews.sql`, deploy the reviewed API image with
-`GATHER_SEARCH_PREVIEWS=1`, then use the updated Windows candidate. Disabling
-the flag and refreshing the library returns the new desktop to the existing
-route. The unactivated recruiter quota mode remains a separate rollout.
+Gather applied `202611160001_search_previews.sql` and activated the hosted path.
+The synthetic Cedar checks returned one compact OCR citation, and opening
+retrieved the exact saved version. The Windows build negotiates the active
+route. Disabling the flag and refreshing the library returns the desktop to
+the legacy route. See [hosted timing and rollout](SEARCH_LATENCY.md).
