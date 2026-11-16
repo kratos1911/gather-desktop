@@ -90,6 +90,7 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-029 | Compact search cards implemented and verified locally | One bounded excerpt, citation and explicit Open per saved version. Synthetic layout and exact-page opening verified. Compact API summaries and latency measurement are next. |
 | TASK-030 | Compact search responses verified in the hosted pilot | Versioned route returns clipped text and citations in one ranking RPC. Synthetic search and exact-version Open passed. [Contract](docs/SEARCH_PREVIEWS.md) |
 | TASK-031 | Search timings and connection reuse deployed and measured | Six live cache hits per version reduced median from 4.17 s to 2.52 s. Cached p95 and warm-miss targets remain open. [Evidence](docs/SEARCH_LATENCY.md) |
+| TASK-032 | Native search acceptance exercised locally and in cloud, relevance gate open | NLP preview/open, idempotent save retry, deletion, cache freshness and quota restoration passed. Cedar and paraphrases reuse same-revision evidence. An absent-topic query returned an unrelated note. [Evidence](docs/SEARCH_ACCEPTANCE.md) |
 
 ## Latest verification
 

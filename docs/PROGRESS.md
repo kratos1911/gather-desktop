@@ -3,6 +3,15 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 17 November 2026: native search acceptance
+
+Rebuilt the Windows pilot and passed 99 backend, 83 frontend and 41 isolated
+database checks. The hosted native NLP preview, exact Open, same-ID import
+recovery and physical cleanup passed. The cached result disappeared after
+deletion and the approved temporary slot was restored. The live absent-topic
+check returned one unrelated note and remains a release gate. See
+[native search acceptance](SEARCH_ACCEPTANCE.md).
+
 ## 16 November 2026: hosted compact search and connection reuse
 
 Applied the owned compact-preview RPC, verified authenticated access and rolled

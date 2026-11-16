@@ -39,6 +39,11 @@ query cache. A small hosted comparison verified faster cache hits. Cold model
 startup and both proposed p95 targets remain open. The latest local build adds
 desktop timing. See [search latency](SEARCH_LATENCY.md).
 
+Point 4 exercised the rebuilt Windows client against that deployment. Native
+NLP preview/open, retry, deletion and quota restoration passed. An absent-topic
+query returned an irrelevant note, leaving release acceptance open. See
+[native search acceptance](SEARCH_ACCEPTANCE.md).
+
 Recruiter trial readiness takes priority over new formats. The durable model
 quota mode is implemented locally with no hosted activation. Next verify
 quota-aware import recovery and storage/parser limits for typical files, then

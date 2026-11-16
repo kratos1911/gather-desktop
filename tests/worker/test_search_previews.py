@@ -1,5 +1,6 @@
 """Synthetic request boundaries for the compact search path."""
 import unittest
+from unittest.mock import Mock
 
 from services.worker.search import SearchError, search
 from tests.worker.test_search import Provider, Session
@@ -47,3 +48,22 @@ class SearchPreviewTests(unittest.TestCase):
         self.assertEqual(result['windows'], [])
         self.assertEqual(self.provider.calls, [])
         self.assertEqual(len(self.session.calls), 2)
+
+    def test_cached_query_reads_current_rankings_after_the_matching_source_disappears(self):
+        cache = Mock()
+        cache.get.return_value = [1.] + [0.] * 511
+        query = 'NLP'
+
+        first_result = search(query, api=self.api, provider=self.provider, query_cache=cache, compact=True)
+        deleted_source = first_result['windows'][0]['source_id']
+        self.session.listing = [row for row in self.session.listing if row['source_id'] != deleted_source]
+        # The remaining published source is below the relevance floor, with no keyword match.
+        self.batch = {'semantic': [self.batch['semantic'][0]], 'keywords': []}
+        repeated = search(query, api=self.api, provider=self.provider, query_cache=cache, compact=True)
+
+        self.assertTrue(self.session.listing)
+        self.assertEqual(repeated, {'version': 'search-previews-v1', 'windows': [],
+                                    'omitted_sources': [], 'utf8_bytes': 0})
+        self.assertEqual(self.provider.calls, [])
+        self.assertEqual(cache.get.call_count, 2)
+        self.assertEqual(sum(path.endswith('search_published_previews') for _, path, _ in self.session.calls), 2)
