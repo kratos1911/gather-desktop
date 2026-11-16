@@ -20,6 +20,7 @@ export type LibraryState = Readonly<{
   imported: ImportReceipt | null;
   processing: ProcessingStatus | null;
   results: SearchResult | null;
+  searchTiming: Readonly<{ started: number; received: number }> | null;
   opened: SourceText | null;
   cleanupSourceId: string | null;
   cleanupSources: string[];
@@ -43,6 +44,7 @@ const initial = (): LibraryState => ({
   imported: null,
   processing: null,
   results: null,
+  searchTiming: null,
   opened: null,
   cleanupSourceId: null,
   cleanupSources: [],
@@ -392,17 +394,28 @@ export class LibraryWorkspace {
     // Clear previous results immediately; do not display old hits under a new query.
     if (this.state.busy) throw new LibraryClientError("busy");
     if (!this.state.signedIn) throw new LibraryClientError("session_required");
-    this.update({ results: null, opened: null, searching: true });
+    const started = performance.now();
+    this.update({
+      results: null,
+      opened: null,
+      searching: true,
+      searchTiming: null,
+    });
     await this.perform(
       (signal) =>
         this.client.search(query, signal, this.state.searchPreviewsEnabled),
-      (results) => this.update({ results, searching: false }),
+      (results) =>
+        this.update({
+          results,
+          searching: false,
+          searchTiming: { started, received: performance.now() },
+        }),
       () => this.update({ searching: false }),
     );
   }
   clearSearch(): void {
     if (this.state.busy) throw new LibraryClientError("busy");
-    this.update({ results: null, opened: null, error: null });
+    this.update({ results: null, opened: null, error: null, searchTiming: null });
   }
   closeSource(): void {
     this.update({ opened: null });

@@ -141,6 +141,31 @@ class SearchAuthenticationTests(unittest.TestCase):
             self.assertEqual(sum(c.args[1]=='/auth/v1/user' for c in send.call_args_list),3)
         self.assertFalse(provider.calls)
 
+    def test_search_timing_separates_readiness_and_embedding_from_cache_hits(self):
+        owner=sorted(PILOT_USERS)[0]; api=client(owner); data=Session(); provider=Provider()
+        cached=Mock(); cached.get.side_effect=[None,[1.]+[0.]*511]
+        receipts=[]; prepare=Mock()
+
+        def remote(base,path,headers,payload,**options):
+            if path=='/auth/v1/user':
+                return {'id':owner}
+            return data('POST',path,payload)
+
+        library=PilotSession(api,Mock(),provider,text_files=True,query_cache=cached,
+                             search_prepare=prepare,record_search=receipts.append)
+        with patch('services.worker.service_clients.request_json',side_effect=remote):
+            library.search('private synthetic query')
+            library.search('private synthetic query')
+        miss, hit=receipts
+        self.assertEqual(set(miss),{'outcome','route','cache','total_ms','stages_ms'})
+        self.assertEqual((miss['outcome'],miss['cache'],hit['cache']),('ok','miss','hit'))
+        self.assertEqual(set(miss['stages_ms']),{'auth','database','source_reads','tokenization',
+                                               'readiness','embedding','cache_read','cache_write'})
+        self.assertEqual(set(hit['stages_ms']),{'auth','database','source_reads','tokenization','cache_read'})
+        self.assertNotIn('private synthetic query',str(receipts))
+        self.assertNotIn(owner,str(receipts))
+        prepare.assert_called_once()
+
     def test_private_user_and_fixture_guards_still_run_before_model_or_reads(self):
         for owner,query,code in [(OWNER,QUERY,'session_unavailable'),
                                   (sorted(PILOT_USERS)[0],'arbitrary','pilot_fixture_only')]:

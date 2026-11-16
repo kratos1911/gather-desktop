@@ -10,6 +10,7 @@ from services.worker.service_transport import (
     TransportError, credential, origin, request_json, strict_json,
 )
 from services.worker.model_availability import ModelServiceError, transport_failure
+from services.worker.search_http import SearchHTTP, SEARCH_PATHS
 
 
 def _claims(token, role):
@@ -30,7 +31,7 @@ def _claims(token, role):
 
 class SessionClient:
     """One bearer session, fixed owner-scoped routes, five-second I/O deadline."""
-    def __init__(self, base, public_key, token, *, cancel=None, _test_loopback=False):
+    def __init__(self, base, public_key, token, *, cancel=None, reuse_search_http=False, _test_loopback=False):
         self._base = origin(base, test_loopback=_test_loopback)
         credential(public_key)
         credential(token)
@@ -41,6 +42,8 @@ class SessionClient:
         self._cancel = cancel
         self._search_auth = None
         self._search_auth_lock = threading.Lock()
+        self._reuse_search_http = reuse_search_http
+        self._test_loopback = _test_loopback
 
     @contextmanager
     def search_authentication(self):
@@ -51,13 +54,21 @@ class SessionClient:
         """
         if not self._search_auth_lock.acquire(blocking=False):
             raise TransportError('busy')
+        transport = None
         try:
+            if self._reuse_search_http:
+                transport = SearchHTTP(self._base, self._headers, self._cancel,
+                                       test_loopback=self._test_loopback)
             self._search_auth = dict(thread=threading.get_ident(),base=self._base,
-                                     headers=dict(self._headers),user=None)
+                                     headers=dict(self._headers),user=None,http=transport)
             yield
         finally:
-            self._search_auth = None
-            self._search_auth_lock.release()
+            try:
+                if transport is not None:
+                    transport.close()
+            finally:
+                self._search_auth = None
+                self._search_auth_lock.release()
 
     def _search_binding(self):
         scope = self._search_auth
@@ -102,8 +113,11 @@ class SessionClient:
         scope = self._search_binding()
         if path == '/auth/v1/user' and scope is not None and scope['user'] is not None:
             return dict(scope['user'])
-        result = request_json(self._base, path, self._headers, payload,
-                              timeout=5, cancel=self._cancel)
+        if scope is not None and scope['http'] is not None and path in SEARCH_PATHS:
+            result = scope['http'].request(path, payload)
+        else:
+            result = request_json(self._base, path, self._headers, payload,
+                                  timeout=5, cancel=self._cancel)
         self._search_binding()
         if path == '/auth/v1/user' and scope is not None:
             # Retain only a canonical verified user ID, never Auth profile data.

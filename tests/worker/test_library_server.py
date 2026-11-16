@@ -35,7 +35,7 @@ class HTTPTests(unittest.TestCase):
                     return {'id':OWNER}
                 if token == 'test-b' or self.deleted:
                     return []
-                if path.endswith('source_processing_status'):
+                if path.endswith('source_processing_status_with_recovery'):
                     return [{'state':'ready'}]
                 if path.endswith('request_source_deletion'):
                     self.deleted = True

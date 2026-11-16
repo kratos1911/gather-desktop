@@ -1,11 +1,13 @@
 """Request-local readiness before the single embedding attempt, never a retry."""
 from services.worker.model_availability import ModelServiceError
 from services.inference.runtime import InferenceError
+from services.worker.search_timing import timed
 
 
 class SearchStartupProvider:
-    def __init__(self, provider, prepare):
+    def __init__(self, provider, prepare, *, timing=None):
         self.provider, self.prepare = provider, prepare
+        self.timing = timing
         self.count_tokens = provider.count_tokens
 
     def infer(self, request, *, cancel):
@@ -14,7 +16,7 @@ class SearchStartupProvider:
         if type(calls) is int and calls >= 3:
             raise ModelServiceError('service_unavailable', 'model_budget_exhausted')
         try:
-            self.prepare(cancel)
+            timed(self.timing, 'readiness', self.prepare, cancel)
         except Exception as error:
             if cancel.is_set(): raise InferenceError('cancelled') from None
             reason = {
@@ -28,4 +30,4 @@ class SearchStartupProvider:
             }.get(str(error), 'model_unavailable')
             raise ModelServiceError('service_unavailable', reason) from None
         if cancel.is_set(): raise InferenceError('cancelled')
-        return self.provider.infer(request, cancel=cancel)
+        return timed(self.timing, 'embedding', self.provider.infer, request, cancel=cancel)

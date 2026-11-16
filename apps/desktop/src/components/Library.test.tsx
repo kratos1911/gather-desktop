@@ -153,6 +153,12 @@ describe("unified authenticated library (synthetic HTTP fixtures)", () => {
       .mockResolvedValueOnce(reply(true))
       .mockResolvedValueOnce(reply(true));
     setup(send);
+    const measure = vi.fn();
+    vi.stubGlobal("performance", {
+      now: performance.now.bind(performance),
+      clearMeasures: vi.fn(),
+      measure,
+    });
     render(<App />);
     await screen.findByLabelText("Password");
     await login();
@@ -168,6 +174,10 @@ describe("unified authenticated library (synthetic HTTP fixtures)", () => {
     expect(send).toHaveBeenCalledTimes(1);
     fireEvent.click(screen.getByRole("button", { name: "Search saved files" }));
     await screen.findByRole("list", { name: "Search results" });
+    expect(measure).toHaveBeenCalledWith("gather-search-render", {
+      start: expect.any(Number),
+      end: expect.any(Number),
+    });
     expect(JSON.parse(send.mock.calls[1][1]?.body as string).query).toBe(
       "How long are backups kept?",
     );

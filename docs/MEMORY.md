@@ -34,9 +34,10 @@ is historical and must not override this file.
 ## Current limitations and next work
 
 The Windows candidate includes compact result cards and negotiates the locally
-verified compact search response. Hosted activation is pending. The next
-performance step is matched latency measurement and bounded connection reuse.
-See [compact search responses](SEARCH_PREVIEWS.md).
+verified compact search response. The latest local build adds desktop render
+timing. The API can measure search stages and reuse a Supabase connection within
+one search. Hosted activation and matched live timings remain pending. See
+[compact search responses](SEARCH_PREVIEWS.md) and [search latency](SEARCH_LATENCY.md).
 
 Recruiter trial readiness takes priority over new formats. The durable model
 quota mode is implemented locally with no hosted activation. Next verify

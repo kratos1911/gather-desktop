@@ -64,15 +64,16 @@ class LibrarySession:
     def search_previews(self, query, *, limit=20, cancel=None):
         return self.search(query, limit=limit, cancel=cancel, compact=True)
 
-    def search(self, query, *, limit=20, cancel=None, compact=False):
+    def search(self, query, *, limit=20, cancel=None, compact=False, timing=None):
         try:
             # Fresh Auth per request; a search scope may reuse its verified ID.
             provider = self._search_model()
             from services.worker.search_startup import SearchStartupProvider
             if self._search_prepare is not None:
-                provider = SearchStartupProvider(provider, self._search_prepare)
+                provider = SearchStartupProvider(provider, self._search_prepare, timing=timing)
             return search(query, api=self._api, provider=provider, limit=limit, cancel=cancel,
-                          query_cache=self._query_cache, hybrid=self._hybrid_search, compact=compact)
+                          query_cache=self._query_cache, hybrid=self._hybrid_search, compact=compact,
+                          timing=timing)
         except SearchError as error:
             if str(error) in MODEL_HTTP or str(error) in ('cancelled','invalid_query','session_unavailable',
                               'library_unavailable','search_failed'):

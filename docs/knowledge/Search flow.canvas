@@ -242,6 +242,15 @@
       "y": 780,
       "width": 330,
       "height": 220
+    },
+    {
+      "id": "search-latency",
+      "type": "file",
+      "file": "docs/SEARCH_LATENCY.md",
+      "x": 1500,
+      "y": 1050,
+      "width": 330,
+      "height": 220
     }
   ],
   "edges": [
@@ -381,6 +390,14 @@
       "toNode": "hybrid-search",
       "toSide": "bottom",
       "label": "reserve on model calls"
+    },
+    {
+      "id": "auth-latency",
+      "fromNode": "search-auth",
+      "fromSide": "bottom",
+      "toNode": "search-latency",
+      "toSide": "top",
+      "label": "reuse within one search"
     }
   ]
 }

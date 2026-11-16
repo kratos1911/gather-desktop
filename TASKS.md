@@ -89,6 +89,7 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-028 | Recruiter trial backend started | Durable per-account and service model quotas implemented locally. Hosted configuration, quota-aware import recovery and representative file sizes remain open. [Contract](docs/TRIAL_MODEL_USAGE.md). |
 | TASK-029 | Compact search cards implemented and verified locally | One bounded excerpt, citation and explicit Open per saved version. Synthetic layout and exact-page opening verified. Compact API summaries and latency measurement are next. |
 | TASK-030 | Compact search responses verified locally | Versioned route returns clipped text and citations in one ranking RPC. Hosted rollout and matched latency measurement remain open. [Contract](docs/SEARCH_PREVIEWS.md) |
+| TASK-031 | Search timings and request-local connection reuse verified locally | Same three fixture calls use one connection instead of three. Hosted enablement and live p50/p95 remain open. [Evidence](docs/SEARCH_LATENCY.md) |
 
 ## Latest verification
 

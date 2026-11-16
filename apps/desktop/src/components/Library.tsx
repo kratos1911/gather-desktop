@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   useSyncExternalStore,
@@ -315,6 +316,22 @@ export default function Library() {
     string | undefined;
   const textFiles =
     connectedPilot || import.meta.env.VITE_GATHER_PILOT_TEXT_FILES === "1";
+  const searchTiming = state.results ? state.searchTiming : null;
+  useLayoutEffect(() => {
+    if (!searchTiming || typeof performance.measure !== "function") return;
+    const end = performance.now();
+    for (const [name, start] of [
+      ["gather-search-to-results", searchTiming.started],
+      ["gather-search-render", searchTiming.received],
+    ] as const) {
+      performance.clearMeasures(name);
+      performance.measure(name, { start, end });
+    }
+    return () => {
+      performance.clearMeasures("gather-search-to-results");
+      performance.clearMeasures("gather-search-render");
+    };
+  }, [searchTiming]);
   useEffect(
     () => () => {
       epoch.current++;

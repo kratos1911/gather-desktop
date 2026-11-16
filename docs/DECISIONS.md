@@ -921,3 +921,10 @@ Add a separate compact route advertised through the authenticated listing.
 Reuse both ranking functions in one PostgreSQL snapshot and attach only
 excerpt text and overlapping citation locations. The existing reader rechecks
 the exact publication on Open. Preserve the legacy route for deployed clients.
+
+## Bound connection reuse to a single search
+
+Reuse the Auth and read-only search connection within the existing verified
+session scope. Preserve per-call deadlines and killable transport. Discard the
+connection on scope exit and require fresh Auth on the next search. Keep the
+reuse flag independent of timing so rollout can compare the same search code.

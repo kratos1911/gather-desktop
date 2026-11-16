@@ -65,6 +65,8 @@ def main():
         query_cache=from_environment(os.environ,record=cache_event)
         def record(_job,result):
             print(processing_log(result,getattr(provider,'calls',None)),flush=True)
+        def search_log(timing):
+            print('Search timing: '+json.dumps(timing,separators=(',',':')),flush=True)
         app=compose_pilot(admission,worker,provider,identity,key,text_files=True,automatic=True,record=record,
             pdf_files=os.environ.get('GATHER_PDF_PILOT')=='1',
             docx_files=os.environ.get('GATHER_DOCX_PILOT')=='1',
@@ -72,7 +74,9 @@ def main():
             reuse_worker=os.environ.get('GATHER_WORKER_DB_REUSE')=='1',
             early_prepare=os.environ.get('GATHER_EARLY_MODEL_START')=='1',
             record_timings=os.environ.get('GATHER_PIPELINE_TIMING')=='1',query_cache=query_cache,
-            search_previews=os.environ.get('GATHER_SEARCH_PREVIEWS')=='1')
+            search_previews=os.environ.get('GATHER_SEARCH_PREVIEWS')=='1',
+            reuse_search_http=os.environ.get('GATHER_SEARCH_HTTP_REUSE')=='1',
+            record_search=search_log if os.environ.get('GATHER_SEARCH_TIMING')=='1' else None)
         create_cloud_server(app,os.environ).run()
     finally: identity.invalidate()
 

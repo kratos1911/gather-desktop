@@ -578,3 +578,9 @@ Opening retrieves the owned exact original for comparison. See [[docs/IMAGE_OCR]
 The trial ties search to its verified session and indexing to its live job lease.
 A database transaction charges both the account and service before model dispatch.
 Cache hits skip the reservation. See [[docs/TRIAL_MODEL_USAGE]].
+
+## Reuse the connection within one search
+
+Auth and owned search reads can share the socket until the search ends. The
+next search verifies the session again. Measure cache hits, warm misses and
+cold startup separately. See [[docs/SEARCH_LATENCY]].

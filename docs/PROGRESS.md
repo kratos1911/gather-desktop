@@ -3,6 +3,14 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## Search latency measurement and connection reuse
+
+Added opt-in, content-free backend stage timings and local desktop timings.
+In 15 measured loopback samples per mode, one scoped connection replaced three
+connections for the same three requests and the median fell from 730 ms to
+242 ms. 75 backend and 83 frontend tests, typecheck, lint and web/native builds
+passed. Hosted timings are pending. See [search latency](SEARCH_LATENCY.md).
+
 ## Compact search responses
 
 Packaged the opt-in API route and rebuilt Windows. Verified 84 backend tests in

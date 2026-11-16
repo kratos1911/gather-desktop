@@ -33,9 +33,13 @@ describe("library workspace (synthetic transport)", () => {
     send.mockResolvedValueOnce(searchReply("search-previews-v1"));
     await workspace.search("first query");
     expect(workspace.getSnapshot().results?.version).toBe("search-previews-v1");
+    const timing = workspace.getSnapshot().searchTiming;
+    expect(timing).not.toBeNull();
+    expect(timing!.received).toBeGreaterThanOrEqual(timing!.started);
     send.mockResolvedValueOnce(reply({ error: "library_unavailable" }, 503));
     await workspace.search("second query");
     expect(workspace.getSnapshot().error).toBe("library_unavailable");
+    expect(workspace.getSnapshot().searchTiming).toBeNull();
     workspace.setSession("different-session");
     send.mockResolvedValueOnce(reply({ items: [], next_cursor: null }));
     await workspace.loadSources();

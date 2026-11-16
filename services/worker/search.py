@@ -21,6 +21,8 @@ from services.worker.model_availability import ModelServiceError
 from services.worker.document_metadata import enrich_published
 from services.worker.search_relevance import selected_indices, validate_space
 from services.worker.hybrid_search import fuse
+from services.worker.search_startup import SearchStartupProvider
+from services.worker.search_timing import timed
 from services.worker.docx_processing import MEDIA as DOCX_MEDIA
 from services.worker.image_processing import MEDIA as IMAGE_MEDIA
 
@@ -119,7 +121,8 @@ def _preview_response(batch, limit):
             'utf8_bytes': sum(len(item['text'].encode('utf-8')) for item in windows)}
 
 
-def search(query, *, api, provider, limit=20, cancel=None, query_cache=None, hybrid=False, compact=False):
+def search(query, *, api, provider, limit=20, cancel=None, query_cache=None, hybrid=False, compact=False,
+           timing=None):
     """Owned metadata preflight, at most one embedding/ranking and five reads.
 
     No automatic retries, model startup, synthetic fallback or owner payload.
@@ -134,7 +137,9 @@ def search(query, *, api, provider, limit=20, cancel=None, query_cache=None, hyb
 
     def call(method, path, payload=None):
         active()
-        result = api(method, path, payload)
+        phase = {'retrieval': 'database', 'source_open': 'source_reads'}.get(stage)
+        result = (timed(timing, phase, api, method, path, payload) if phase is not None
+                  else api(method, path, payload))
         active()
         return result
 
@@ -169,7 +174,8 @@ def search(query, *, api, provider, limit=20, cancel=None, query_cache=None, hyb
 
         def send(_body):
             active()
-            result = provider.infer(request, cancel=cancel)
+            model_timing = None if isinstance(provider, SearchStartupProvider) else timing
+            result = timed(model_timing, 'embedding', provider.infer, request, cancel=cancel)
             active()
             if not isinstance(result, dict) or (
                 result.get('model'), result.get('revision'), result.get('dimensions')
@@ -181,10 +187,14 @@ def search(query, *, api, provider, limit=20, cancel=None, query_cache=None, hyb
         # Runtime applies that template once. Preserve its 2048-token ceiling.
         stage = 'model'
         validate_space(MODEL, REVISION, DIMENSIONS)
-        tokens = provider.count_tokens(templated)
+        tokens = timed(timing, 'tokenization', provider.count_tokens, templated)
         if type(tokens) is not int or not 0 < tokens <= 2048:
             raise ValueError('invalid_query_tokens')
-        vector = query_cache.get(owner,query,cancel=cancel) if query_cache is not None else None
+        vector = None
+        if query_cache is not None:
+            vector = timed(timing, 'cache_read', query_cache.get, owner, query, cancel=cancel)
+            if timing is not None:
+                timing.cache = 'hit' if vector is not None else 'miss'
         active()
         if vector is None:
             vector = embed_texts([templated], model=MODEL,
@@ -193,7 +203,7 @@ def search(query, *, api, provider, limit=20, cancel=None, query_cache=None, hyb
             if abs(math.hypot(*vector)-1) > .001:
                 raise ValueError('invalid_vector_norm')
             if query_cache is not None:
-                query_cache.put(owner,query,vector,cancel=cancel)
+                timed(timing, 'cache_write', query_cache.put, owner, query, vector, cancel=cancel)
             active()
         if abs(math.hypot(*vector) - 1) > .001:
             raise ValueError('invalid_vector_norm')

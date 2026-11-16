@@ -28,13 +28,14 @@ from services.worker.pdf_processing import PDFError
 from services.worker.docx_processing import DOCXError, MEDIA as DOCX_MEDIA
 from services.worker.image_processing import ImageError, MEDIA as IMAGE_MEDIA
 from services.worker.trial_usage import TrialModel
+from services.worker.search_timing import SearchTiming, timed
 
 PILOT_USERS = frozenset(('8b8de9a3-6600-465d-9ae6-8a0f2271c1dc',
                          '903b7ed0-9d21-467c-907a-4032d589f4c4'))
 
 
 class PilotSession(LibrarySession):
-    def __init__(self, *args, text_files=False, dispatcher=None,pdf_files=False,docx_files=False,image_files=False,cancel=None,query_cache=None,search_prepare=None,hybrid_search=False):
+    def __init__(self, *args, text_files=False, dispatcher=None,pdf_files=False,docx_files=False,image_files=False,cancel=None,query_cache=None,search_prepare=None,hybrid_search=False,record_search=None):
         super().__init__(*args,query_cache=query_cache,search_prepare=search_prepare,hybrid_search=hybrid_search)
         self.text_files = text_files
         self.dispatcher = dispatcher
@@ -42,6 +43,7 @@ class PilotSession(LibrarySession):
         self.docx_files=docx_files
         self.image_files=image_files
         self.cancel=cancel
+        self.record_search=record_search
 
     def import_text(self, **values):
         try:
@@ -110,11 +112,22 @@ class PilotSession(LibrarySession):
         return document
 
     def search(self, query, *, limit=20, cancel=None, compact=False):
-        with self._api.search_authentication():
-            self._owner()  # Fresh verification plus the private-user allowlist.
-            if not self.text_files and query != QUERY:
-                raise LibraryError('pilot_fixture_only')
-            return super().search(query,limit=limit,cancel=cancel,compact=compact)
+        timing = SearchTiming() if self.record_search is not None else None
+        succeeded = False
+        try:
+            with self._api.search_authentication():
+                timed(timing, 'auth', self._owner)  # Verify the private-user allowlist.
+                if not self.text_files and query != QUERY:
+                    raise LibraryError('pilot_fixture_only')
+                result = super().search(query,limit=limit,cancel=cancel,compact=compact,timing=timing)
+            succeeded = True
+            return result
+        finally:
+            if timing is not None:
+                try:
+                    self.record_search(timing.receipt(succeeded=succeeded,compact=compact))
+                except Exception:
+                    pass  # Diagnostics must not change the search response.
 
     def _search_model(self):
         if isinstance(self._provider, TrialModel):
@@ -195,7 +208,7 @@ def run_ready_worker(worker, identity):
 
 def compose_pilot(config,worker_config,provider,identity,key,*,text_files=False,automatic=False,record=None,pdf_files=False,
                   reuse_worker=False,early_prepare=False,record_timings=False,docx_files=False,image_files=False,
-                  query_cache=None,search_previews=False):
+                  query_cache=None,search_previews=False,reuse_search_http=False,record_search=None):
     """Shared trusted composition for operator and explicit managed-cloud startup."""
     dispatcher=None
     if automatic:
@@ -218,9 +231,10 @@ def compose_pilot(config,worker_config,provider,identity,key,*,text_files=False,
         def admission(owner):
             repo=DatabaseRepository(config,owner=owner,operation_timeout=15)
             return AutomaticAdmission(repo) if dispatcher is not None else repo
-        return PilotSession(SessionClient(BASE,key,token,cancel=cancel),admission,provider,
+        return PilotSession(SessionClient(BASE,key,token,cancel=cancel,reuse_search_http=reuse_search_http),admission,provider,
             text_files=text_files,dispatcher=dispatcher,pdf_files=pdf_files,docx_files=docx_files,image_files=image_files,cancel=cancel,query_cache=query_cache,
-            search_prepare=lambda cancelled:wait_for_automatic_startup(identity,cancel=cancelled),hybrid_search=True)
+            search_prepare=lambda cancelled:wait_for_automatic_startup(identity,cancel=cancelled),
+            hybrid_search=True,record_search=record_search)
     return LibraryAPI(session,dispatcher=dispatcher,search_previews=search_previews)
 
 
