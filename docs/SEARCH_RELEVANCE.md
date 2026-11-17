@@ -1,5 +1,35 @@
 # Private search relevance filter
 
+## Unrelated candidate filter, 17 November 2026
+
+Hybrid search now checks for a shared content term in the candidate text or
+title before applying the existing score floor and near-best band. It folds
+case and compatibility forms, ignores common function words, and recognizes
+basic plural endings. A cosine score of at least 0.65 retains a semantic-only
+candidate without shared terms. The exact-keyword ranking branch still enters
+fusion independently. The compact route evaluates its existing bounded preview;
+the legacy hybrid route evaluates the ranked passage. Both return the original
+saved text and citation offsets.
+
+The pinned Qwen model reproduced the reported false match locally: the turtle
+query scored 0.2477 against the synthetic Orchard note, just over the old 0.24
+floor. In the same test it now returns an empty result. The second unrelated
+case also returns empty. The Cedar and NLP exact queries and three paraphrases
+retain their expected documents. The test used 11 local embeddings on four
+synthetic sources and seven fixed queries. A hash-verified replay of the two
+previous corpora kept expected top-five sources for all 64 answerable queries
+using both full passages and simulated compact excerpts.
+
+The ten topic-adjacent absent queries in those saved corpora still produce
+candidates. They share subject terms with the sources or exceed the strong-score
+threshold. The release evidence applies to queries whose topic is unrelated
+to the retrieved file. See [native acceptance](SEARCH_ACCEPTANCE.md).
+
+The candidate passed 107 focused checks on the local host and in its image.
+The frontend build passed. Local receipts are under `output/search-evidence/`.
+
+## Earlier score-only rollout
+
 4 November 2026: local checks and approved hosted/native Cedar regression pass.
 One real query embedding used; no document, database or resource-setting changes.
 

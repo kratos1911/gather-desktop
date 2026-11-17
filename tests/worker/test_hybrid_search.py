@@ -57,10 +57,27 @@ class HybridTests(unittest.TestCase):
         self.assertEqual(len(self.run_search('Orchard')['windows']),1)
 
     def test_no_keyword_hit_preserves_semantic_relevance_gate(self):
+        self.api.note('Cedar archive requests go to the queue.')
+        self.api.keywords=[]
         self.api.rows[0]['similarity']=.23
         self.assertEqual(self.run_search()['windows'],[])
         self.api.rows[0]['similarity']=.5
-        self.assertEqual(len(self.run_search()['windows']),1)
+        self.assertEqual(len(self.run_search('Where should I send an archive request?')['windows']),1)
+
+    def test_unrelated_search_does_not_open_an_unsupported_candidate(self):
+        self.api.note('The Orchard team stores project backups for fourteen days.')
+        self.api.rows[0]['similarity']=.54
+        self.api.keywords=[]
+        result=self.run_search('When do leatherback turtles come ashore to lay eggs?')
+        self.assertEqual(result['windows'],[])
+        self.assertFalse(any(call[1].endswith('open_published_text') for call in self.api.calls))
+
+    def test_high_similarity_paraphrase_survives_without_shared_terms(self):
+        self.api.note('The courier must attend all uncrating of ceramic vessels.')
+        self.api.rows[0]['similarity']=.68
+        self.api.keywords=[]
+        result=self.run_search('Who watches borrowed pottery emerge from its packaging?')
+        self.assertEqual(len(result['windows']),1)
 
     def test_duplicate_passage_has_one_source_read(self):
         self.api.note('A Cedar queue note.')

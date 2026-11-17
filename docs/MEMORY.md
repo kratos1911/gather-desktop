@@ -41,8 +41,9 @@ desktop timing. See [search latency](SEARCH_LATENCY.md).
 
 Point 4 exercised the rebuilt Windows client against that deployment. Native
 NLP preview/open, retry, deletion and quota restoration passed. An absent-topic
-query returned an irrelevant note, leaving release acceptance open. See
-[native search acceptance](SEARCH_ACCEPTANCE.md).
+query returned an irrelevant note. The local correction uses shared content
+terms or strong similarity for semantic candidates and passes the pinned-model
+reproduction. Hosted retest is pending. See [native search acceptance](SEARCH_ACCEPTANCE.md).
 
 Recruiter trial readiness takes priority over new formats. The durable model
 quota mode is implemented locally with no hosted activation. Next verify

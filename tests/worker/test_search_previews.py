@@ -41,6 +41,32 @@ class SearchPreviewTests(unittest.TestCase):
         with self.assertRaisesRegex(SearchError, '^library_unavailable$'):
             search('cedar', api=self.api, provider=self.provider, compact=True)
 
+    def test_unsupported_highest_score_does_not_push_out_a_supported_preview(self):
+        unrelated, relevant = self.batch['semantic']
+        irrelevant_body = 'The Orchard team stores project backups for fourteen days.'
+        relevant_body = 'Send archive requests to the Cedar queue.'
+        unrelated = dict(unrelated, similarity=.62, body=irrelevant_body,
+                         end_offset=unrelated['start_offset'] + len(irrelevant_body))
+        relevant = dict(relevant, similarity=.42, body=relevant_body,
+                        end_offset=relevant['start_offset'] + len(relevant_body))
+        self.batch = {'semantic': [unrelated, relevant], 'keywords': []}
+        query = 'Where should I send an archive request?'
+        result = search(query, api=self.api, provider=self.provider, compact=True)
+        self.assertEqual([window['text'] for window in result['windows']], [relevant_body])
+
+    def test_unrelated_compact_search_returns_empty_using_cached_vector(self):
+        unrelated = self.batch['semantic'][0]
+        body = 'The Orchard team stores project backups for fourteen days.'
+        self.batch = {'semantic': [dict(unrelated, similarity=.54, body=body,
+                        end_offset=unrelated['start_offset'] + len(body))], 'keywords': []}
+        cache = Mock()
+        cache.get.return_value = [1.] + [0.] * 511
+        query = 'When do leatherback turtles come ashore to lay eggs?'
+        result = search(query, api=self.api, provider=self.provider, query_cache=cache, compact=True)
+        self.assertEqual(result['windows'], [])
+        self.assertEqual(result['utf8_bytes'], 0)
+        self.assertEqual(self.provider.calls, [])
+
     def test_empty_library_keeps_compact_version_and_skips_inference(self):
         self.session.listing = []
         result = search('cedar', api=self.api, provider=self.provider, compact=True)

@@ -3,6 +3,13 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 17 November 2026: unrelated search candidate rejection
+
+Added content-term corroboration for weaker semantic hits in both hybrid
+routes. With pinned local vectors the previously failing turtle query returns
+empty. All 64 saved answerable outcomes, 107 backend checks and the web build
+passed. The verified image awaits hosted retest. See [search relevance](SEARCH_RELEVANCE.md).
+
 ## 17 November 2026: native search acceptance
 
 Rebuilt the Windows pilot and passed 99 backend, 83 frontend and 41 isolated

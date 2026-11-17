@@ -64,7 +64,7 @@ results. Cloud Run confirmed three successful embeddings for import and the
 two fresh queries. Safe receipts and the native preview are under
 `output/search-acceptance/`.
 
-## Release gate
+## Original release gate
 
 The absent-topic gate remains open. Hash-verified dense rankings for the
 existing synthetic evaluation sets show a strongest absent-query score of
@@ -74,3 +74,11 @@ the dense candidate lists. This is an offline diagnostic of the score floor.
 The next relevance check needs independent answerable and absent queries and
 a policy that preserves valid paraphrases. Keep the tested candidate available
 for that check.
+
+## Corrective candidate
+
+The tested candidate drops semantic hits with neither a shared content term
+nor a strong similarity score. The original turtle query returns empty in a
+local replay with the pinned model and the original synthetic text. The saved
+answerable-query evaluation retained 64 of 64 expected-source outcomes.
+See [search relevance](SEARCH_RELEVANCE.md) for the rule and its quality limits.

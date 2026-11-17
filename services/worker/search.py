@@ -19,7 +19,7 @@ from services.worker.search_context import (
 from services.worker.source_listing import page, parameters
 from services.worker.model_availability import ModelServiceError
 from services.worker.document_metadata import enrich_published
-from services.worker.search_relevance import selected_indices, validate_space
+from services.worker.search_relevance import selected_indices, supported_semantic, validate_space
 from services.worker.hybrid_search import fuse
 from services.worker.search_startup import SearchStartupProvider
 from services.worker.search_timing import timed
@@ -84,7 +84,7 @@ def _preview_location(row):
     return {'media_type': media, key: numbers}
 
 
-def _preview_response(batch, limit):
+def _preview_response(batch, limit, query):
     if type(batch) is not dict or set(batch) != {'semantic', 'keywords'}:
         raise ValueError('invalid_preview_batch')
     semantic, keywords = batch['semantic'], batch['keywords']
@@ -96,8 +96,7 @@ def _preview_response(batch, limit):
                     or not re.fullmatch('[0-9a-f]{64}', row['source_sha256'])):
                 raise ValueError('invalid_preview_text')
             _preview_location(row)
-    accepted = selected_indices([row['similarity'] for row in semantic])
-    rows = fuse([semantic[i] for i in accepted], keywords, limit)
+    rows = fuse(supported_semantic(query, semantic), keywords, limit)
     windows, omitted, seen = [], [], {}
     for rank, row in enumerate(rows, 1):
         sid, version = row['source_id'], row['version_id']
@@ -167,7 +166,7 @@ def search(query, *, api, provider, limit=20, cancel=None, query_cache=None, hyb
                 row['published_version_id'] is not None for row in listing['items']):
             active()
             if compact:
-                return _preview_response({'semantic': [], 'keywords': []}, limit)
+                return _preview_response({'semantic': [], 'keywords': []}, limit, query)
             context = assemble_context(owner,[],[])
             active()
             return context
@@ -213,7 +212,7 @@ def search(query, *, api, provider, limit=20, cancel=None, query_cache=None, hyb
                 'p_text': query, 'p_query': vector, 'p_model': MODEL, 'p_revision': REVISION,
                 'p_dimensions': DIMENSIONS, 'p_limit': limit,
             })
-            previews = _preview_response(batch, limit)
+            previews = _preview_response(batch, limit, query)
             active()
             return previews
         rows = call('POST', '/rest/v1/rpc/search_published_text', {
@@ -224,19 +223,17 @@ def search(query, *, api, provider, limit=20, cancel=None, query_cache=None, hyb
         selected, omitted = {}, []
         # Validate every candidate first. Weak rows never trigger full-source reads
         # or enter context through another accepted passage from the same source.
-        accepted = selected_indices([row['similarity'] for row in rows])
-        retained = [rows[i] for i in accepted]
         if hybrid:
             keywords = call('POST','/rest/v1/rpc/search_published_keywords', {
                 'p_text':query,'p_query':vector,'p_model':MODEL,'p_revision':REVISION,
                 'p_dimensions':DIMENSIONS,'p_limit':limit,
             })
             _validate_rows(keywords, limit, ordered=False)
-            # The SQL branch enforces full-text matching and ownership. Semantic
-            # candidates still pass the unchanged floor; lexical ranks are not
-            # treated as cosine scores or as proof that a question is answered.
-            retained = fuse(retained, keywords, limit)
+            retained = fuse(supported_semantic(query, rows), keywords, limit)
             rows = retained
+        else:
+            accepted = selected_indices([row['similarity'] for row in rows])
+            retained = [rows[i] for i in accepted]
         for row in retained:
             sid, vid = row['source_id'], row['version_id']
             if sid in selected:
