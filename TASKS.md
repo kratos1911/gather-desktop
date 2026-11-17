@@ -90,7 +90,7 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-029 | Compact search cards implemented and verified locally | One bounded excerpt, citation and explicit Open per saved version. Synthetic layout and exact-page opening verified. Compact API summaries and latency measurement are next. |
 | TASK-030 | Compact search responses verified in the hosted pilot | Versioned route returns clipped text and citations in one ranking RPC. Synthetic search and exact-version Open passed. [Contract](docs/SEARCH_PREVIEWS.md) |
 | TASK-031 | Search timings and connection reuse deployed and measured | Six live cache hits per version reduced median from 4.17 s to 2.52 s. Cached p95 and warm-miss targets remain open. [Evidence](docs/SEARCH_LATENCY.md) |
-| TASK-032 | Relevance correction verified locally, hosted acceptance pending | The original unrelated query now returns empty with pinned local vectors. Full-passage and compact replays preserve the 64 saved answerable outcomes. [Evidence](docs/SEARCH_ACCEPTANCE.md) |
+| TASK-032 | Reported unrelated result fixed and verified in Gather | Live Windows turtle search returns empty and the Orchard paraphrase finds its expected note. Local replay preserves 64 answerable outcomes. Topic-adjacent relevance remains part of TASK-005. [Evidence](docs/SEARCH_ACCEPTANCE.md) |
 
 ## Latest verification
 

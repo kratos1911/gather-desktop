@@ -28,6 +28,12 @@ to the retrieved file. See [native acceptance](SEARCH_ACCEPTANCE.md).
 The candidate passed 107 focused checks on the local host and in its image.
 The frontend build passed. Local receipts are under `output/search-evidence/`.
 
+The approved image now serves all Gather traffic in Mumbai. The two live
+Windows checks passed against the existing synthetic collection. See the
+[hosted corrective retest](SEARCH_ACCEPTANCE.md#hosted-corrective-retest-17-november-2026).
+The previous revision `gather-library-pilot-sl-opt-7433154` is the rollback
+target. Safe deployment and request receipts are under `output/search-evidence/`.
+
 ## Earlier score-only rollout
 
 4 November 2026: local checks and approved hosted/native Cedar regression pass.

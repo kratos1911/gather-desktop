@@ -8,7 +8,9 @@ This journal records concise dated evidence once, not replicated status prefixes
 Added content-term corroboration for weaker semantic hits in both hybrid
 routes. With pinned local vectors the previously failing turtle query returns
 empty. All 64 saved answerable outcomes, 107 backend checks and the web build
-passed. The verified image awaits hosted retest. See [search relevance](SEARCH_RELEVANCE.md).
+passed. Deployed the reviewed image and verified both live Windows queries.
+The turtle search returned empty, and the Orchard paraphrase returned its
+synthetic note. Cloud logs confirmed two embeddings. See [search relevance](SEARCH_RELEVANCE.md).
 
 ## 17 November 2026: native search acceptance
 

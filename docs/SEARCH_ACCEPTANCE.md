@@ -66,19 +66,26 @@ two fresh queries. Safe receipts and the native preview are under
 
 ## Original release gate
 
-The absent-topic gate remains open. Hash-verified dense rankings for the
+The absent-topic gate was open after the initial run. Hash-verified dense rankings for the
 existing synthetic evaluation sets show a strongest absent-query score of
 0.6803 and a weakest valid match score of 0.2697. A floor high enough to suppress
 all ten saved absent cases would discard 42 of 73 expected source matches from
 the dense candidate lists. This is an offline diagnostic of the score floor.
 The next relevance check needs independent answerable and absent queries and
-a policy that preserves valid paraphrases. Keep the tested candidate available
-for that check.
+a policy that preserves valid paraphrases.
 
-## Corrective candidate
+## Hosted corrective retest, 17 November 2026
 
 The tested candidate drops semantic hits with neither a shared content term
 nor a strong similarity score. The original turtle query returns empty in a
 local replay with the pinned model and the original synthetic text. The saved
 answerable-query evaluation retained 64 of 64 expected-source outcomes.
 See [search relevance](SEARCH_RELEVANCE.md) for the rule and its quality limits.
+
+After the approved rollout, the Windows client searched pilot A's existing
+synthetic collection. The original turtle query showed “Nothing found this
+time.” The Orchard backup paraphrase returned only `automatic-pilot.md`, with
+“fourteen days” in the excerpt. Both compact requests returned HTTP 200 on
+`gather-library-pilot-evidence-70aedd16`, which serves 100% of Gather traffic.
+Cloud logs confirmed two successful embeddings. This clears the reported
+off-topic acceptance failure. Topic-adjacent checks remain in TASK-005.
