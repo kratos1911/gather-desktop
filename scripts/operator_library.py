@@ -208,7 +208,7 @@ def run_ready_worker(worker, identity):
 
 def compose_pilot(config,worker_config,provider,identity,key,*,text_files=False,automatic=False,record=None,pdf_files=False,
                   reuse_worker=False,early_prepare=False,record_timings=False,docx_files=False,image_files=False,
-                  query_cache=None,search_previews=False,reuse_search_http=False,record_search=None):
+                  query_cache=None,search_previews=False,reuse_search_http=False,record_search=None,file_previews=False):
     """Shared trusted composition for operator and explicit managed-cloud startup."""
     dispatcher=None
     if automatic:
@@ -235,7 +235,7 @@ def compose_pilot(config,worker_config,provider,identity,key,*,text_files=False,
             text_files=text_files,dispatcher=dispatcher,pdf_files=pdf_files,docx_files=docx_files,image_files=image_files,cancel=cancel,query_cache=query_cache,
             search_prepare=lambda cancelled:wait_for_automatic_startup(identity,cancel=cancelled),
             hybrid_search=True,record_search=record_search)
-    return LibraryAPI(session,dispatcher=dispatcher,search_previews=search_previews)
+    return LibraryAPI(session,dispatcher=dispatcher,search_previews=search_previews,file_previews=file_previews)
 
 
 def main():

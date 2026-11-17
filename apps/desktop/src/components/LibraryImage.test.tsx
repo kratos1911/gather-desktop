@@ -229,8 +229,9 @@ describe("image OCR contracts (synthetic HTTP fixtures)", () => {
     fireEvent.click(screen.getByRole("button", { name: "Search saved files" }));
     await screen.findByText(/OCR regions 1, 2, 3/);
     fireEvent.click(
-      screen.getByRole("button", { name: `Open ${source.title}` }),
+      screen.getByRole("button", { name: `Preview ${source.title}` }),
     );
+    fireEvent.click(screen.getByRole("button", { name: "Read saved text" }));
     const reader = await screen.findByRole("dialog", {
       name: "synthetic-note.png",
     });

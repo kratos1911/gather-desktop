@@ -14,6 +14,7 @@ import {
   type SearchWindow,
 } from "../services/libraryClient";
 import { LibraryWorkspace } from "../services/libraryWorkspace";
+import { openSavedOriginal } from "../services/openSavedOriginal";
 import {
   libraryEndpoint,
   connectedPilot,
@@ -42,6 +43,10 @@ const messages: Record<string, string> = {
     "Sign-in failed. Check your account password, then try again.",
   source_unavailable:
     "This saved version is no longer available. Refresh your library to see its current state.",
+  original_save_failed:
+    "Gather could not save a copy in Downloads. Check that the folder is available and try again.",
+  original_saved_without_viewer:
+    "The file is in Downloads → Gather. Open it there with an app that supports this format.",
   processing_not_eligible:
     "This attempt cannot resume yet. Refresh first; the job may be active, complete, waiting, or outside automatic processing.",
   cleanup_pending:
@@ -302,6 +307,12 @@ export default function Library() {
   const [submitted, setSubmitted] = useState<string | null>(null);
   const [filter, setFilter] = useState<Filter>("Everything");
   const [readerPage, setReaderPage] = useState<number | null>(null);
+  const [previewTarget, setPreviewTarget] = useState<{
+    sourceId: string;
+    versionId: string;
+    search: boolean;
+  } | null>(null);
+  const [openingOriginal, setOpeningOriginal] = useState(false);
   const [panel, setPanel] = useState<Panel>(null);
   const [deleting, setDeleting] = useState<{
     source_id: string;
@@ -367,24 +378,6 @@ export default function Library() {
       void workspace.loadSources();
     }
   }, [workspace, state.busy, state.imported, state.processing]);
-  useEffect(() => {
-    const focusSearch = (event: KeyboardEvent) => {
-      if (
-        state.signedIn &&
-        event.ctrlKey &&
-        event.key.toLowerCase() === "k" &&
-        !panel &&
-        !state.opened &&
-        !deleting
-      ) {
-        event.preventDefault();
-        search.current?.focus();
-      }
-    };
-    document.addEventListener("keydown", focusSearch);
-    return () => document.removeEventListener("keydown", focusSearch);
-  }, [panel, state.signedIn, state.opened, deleting]);
-
   function act(work: () => Promise<void>) {
     const started = epoch.current;
     setLocalError(null);
@@ -430,6 +423,8 @@ export default function Library() {
     workspace.setSession(null);
     setPanel(null);
     setDeleting(null);
+    setPreviewTarget(null);
+    setOpeningOriginal(false);
     setQuery("");
     setSubmitted(null);
     setFilter("Everything");
@@ -440,6 +435,7 @@ export default function Library() {
   function everything() {
     if (state.busy) return;
     workspace.clearSearch();
+    setPreviewTarget(null);
     setQuery("");
     setSubmitted(null);
     setFilter("Everything");
@@ -485,6 +481,45 @@ export default function Library() {
     matches(source.title, filter),
   );
   const showResults = state.results !== null;
+  const previewHit = previewTarget?.search
+    ? grouped.get(`${previewTarget.sourceId}/${previewTarget.versionId}`)
+    : undefined;
+  const previewSource =
+    previewTarget && !previewTarget.search
+      ? state.sources.find(
+          (file) =>
+            file.source_id === previewTarget.sourceId &&
+            file.published_version_id === previewTarget.versionId,
+        )
+      : undefined;
+  const previewFile = previewHit ?? previewSource;
+  useEffect(() => {
+    const focusSearch = (event: KeyboardEvent) => {
+      if (
+        state.signedIn &&
+        event.ctrlKey &&
+        event.key.toLowerCase() === "k" &&
+        !panel &&
+        !state.opened &&
+        !previewFile &&
+        !deleting
+      ) {
+        event.preventDefault();
+        search.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", focusSearch);
+    return () => document.removeEventListener("keydown", focusSearch);
+  }, [panel, state.signedIn, state.opened, previewFile, deleting]);
+
+  function showPreview(
+    sourceId: string,
+    versionId: string,
+    searchResult: boolean,
+  ) {
+    setOpeningOriginal(false);
+    setPreviewTarget({ sourceId, versionId, search: searchResult });
+  }
 
   return (
     <div
@@ -658,7 +693,7 @@ export default function Library() {
             </div>
           </>
         )}
-        {!panel && !deleting && !state.opened && notice}
+        {!panel && !deleting && !state.opened && !previewFile && notice}
         {!state.signedIn ? (
           <section
             className="library-welcome"
@@ -768,32 +803,25 @@ export default function Library() {
                         <div className="card-meta">
                           <span>{fileLabel(hit.title)}</span>
                         </div>
-                        <h2 className="result-title" title={hit.title}>
-                          {hit.title}
-                        </h2>
-                        {excerpt && <p className="result-excerpt">{excerpt}</p>}
-                        <small className="result-citation">
-                          {resultCitation(hit)}
-                        </small>
+                        <button
+                          className="card-open result-preview-trigger"
+                          disabled={state.busy}
+                          aria-label={`Preview ${hit.title}`}
+                          onClick={() =>
+                            showPreview(hit.source_id, hit.version_id, true)
+                          }
+                        >
+                          <span className="result-title" title={hit.title}>
+                            {hit.title}
+                          </span>
+                          {excerpt && (
+                            <span className="result-excerpt">{excerpt}</span>
+                          )}
+                          <small className="result-citation">
+                            {resultCitation(hit)}
+                          </small>
+                        </button>
                         <div className="card-actions">
-                          <button
-                            className="quiet-button result-open"
-                            disabled={state.busy}
-                            aria-label={`Open ${hit.title}`}
-                            onClick={() => {
-                              setReaderPage(
-                                hit.pages?.[0] ??
-                                  hit.paragraphs?.[0] ??
-                                  hit.ocr_regions?.[0] ??
-                                  null,
-                              );
-                              act(() =>
-                                workspace.open(hit.source_id, hit.version_id),
-                              );
-                            }}
-                          >
-                            Open
-                          </button>
                           <button
                             className="quiet-button danger-text"
                             disabled={state.busy}
@@ -822,16 +850,15 @@ export default function Library() {
                       </div>
                       <button
                         className="card-open"
-                        aria-label={`Open ${source.title}`}
+                        aria-label={`Preview ${source.title}`}
                         disabled={state.busy || !source.published_version_id}
                         onClick={() => {
-                          setReaderPage(null);
-                          act(() =>
-                            workspace.open(
+                          if (source.published_version_id)
+                            showPreview(
                               source.source_id,
-                              source.published_version_id!,
-                            ),
-                          );
+                              source.published_version_id,
+                              false,
+                            );
                         }}
                       >
                         <h2>{source.title}</h2>
@@ -844,6 +871,11 @@ export default function Library() {
                         >
                           {statusLabel(source)}
                         </span>
+                        {source.preview && (
+                          <span className="result-excerpt library-card-excerpt">
+                            {source.preview}
+                          </span>
+                        )}
                       </button>
                       {source.error_code && (
                         <p className="card-error">
@@ -1113,6 +1145,72 @@ export default function Library() {
             <PolicyPage kind={panel} />
           )}
           {notice}
+        </PanelDialog>
+      )}
+      {previewFile && previewTarget && (
+        <PanelDialog
+          title={previewFile.title}
+          dismiss={() => {
+            if (openingOriginal && state.busy) workspace.cancel();
+            setPreviewTarget(null);
+          }}
+        >
+          <p className="file-preview-excerpt">
+            {previewHit
+              ? resultExcerpt(previewHit.text, submitted ?? "")
+              : (previewSource?.preview ??
+                "A short preview isn’t available for this file.")}
+          </p>
+          {previewHit && (
+            <p className="result-citation">{resultCitation(previewHit)}</p>
+          )}
+          <div className="file-preview-actions">
+            {state.originalOpenEnabled && (
+              <button
+                className="add-file"
+                disabled={state.busy}
+                onClick={() => {
+                  setOpeningOriginal(true);
+                  act(async () => {
+                    const started = epoch.current;
+                    const opened = await workspace.openOriginal(
+                      previewTarget.sourceId,
+                      previewTarget.versionId,
+                      openSavedOriginal,
+                    );
+                    if (opened && started === epoch.current)
+                      setPreviewTarget(null);
+                  });
+                }}
+              >
+                {openingOriginal && state.busy ? "Opening…" : "Open original"}
+              </button>
+            )}
+            <button
+              className={
+                state.originalOpenEnabled ? "quiet-button" : "add-file"
+              }
+              disabled={state.busy}
+              onClick={() => {
+                setReaderPage(
+                  previewHit?.pages?.[0] ??
+                    previewHit?.paragraphs?.[0] ??
+                    previewHit?.ocr_regions?.[0] ??
+                    null,
+                );
+                setPreviewTarget(null);
+                act(() =>
+                  workspace.open(
+                    previewTarget.sourceId,
+                    previewTarget.versionId,
+                  ),
+                );
+              }}
+            >
+              Read saved text
+            </button>
+          </div>
+          {openingOriginal && notice}
         </PanelDialog>
       )}
       {state.opened && (

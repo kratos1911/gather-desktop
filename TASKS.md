@@ -91,6 +91,7 @@ model retries, no larger limits and no broad automation authorization from this 
 | TASK-030 | Compact search responses verified in the hosted pilot | Versioned route returns clipped text and citations in one ranking RPC. Synthetic search and exact-version Open passed. [Contract](docs/SEARCH_PREVIEWS.md) |
 | TASK-031 | Search timings and connection reuse deployed and measured | Six live cache hits per version reduced median from 4.17 s to 2.52 s. Cached p95 and warm-miss targets remain open. [Evidence](docs/SEARCH_LATENCY.md) |
 | TASK-032 | Reported unrelated result fixed and verified in Gather | Live Windows turtle search returns empty and the Orchard paraphrase finds its expected note. Local replay preserves 64 answerable outcomes. Topic-adjacent relevance remains part of TASK-005. [Evidence](docs/SEARCH_ACCEPTANCE.md) |
+| TASK-033 | Card previews and original opening verified in Gather | The live Windows preview made zero extra requests. Opening one synthetic Markdown original returned exact bytes and launched the Windows default app. [Evidence](docs/FILE_PREVIEWS.md) |
 
 ## Latest verification
 

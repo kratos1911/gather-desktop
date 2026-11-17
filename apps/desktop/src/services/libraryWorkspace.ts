@@ -8,6 +8,7 @@ import {
   type SearchResult,
   type SourceText,
   type LibrarySource,
+  type SavedOriginal,
 } from "./libraryClient";
 import type { ModelStatus } from "./modelAvailability";
 
@@ -34,6 +35,7 @@ export type LibraryState = Readonly<{
   docxEnabled: boolean;
   imageEnabled: boolean;
   searchPreviewsEnabled: boolean;
+  originalOpenEnabled: boolean;
 }>;
 const initial = (): LibraryState => ({
   signedIn: false,
@@ -58,6 +60,7 @@ const initial = (): LibraryState => ({
   docxEnabled: false,
   imageEnabled: false,
   searchPreviewsEnabled: false,
+  originalOpenEnabled: false,
 });
 
 export class LibraryWorkspace {
@@ -385,6 +388,7 @@ export class LibraryWorkspace {
           docxEnabled: page.docx_enabled === true,
           imageEnabled: page.image_enabled === true,
           searchPreviewsEnabled: page.search_previews_enabled === true,
+          originalOpenEnabled: page.original_open_enabled === true,
         });
       },
       () => this.update({ libraryStatus: "error" }),
@@ -415,7 +419,12 @@ export class LibraryWorkspace {
   }
   clearSearch(): void {
     if (this.state.busy) throw new LibraryClientError("busy");
-    this.update({ results: null, opened: null, error: null, searchTiming: null });
+    this.update({
+      results: null,
+      opened: null,
+      error: null,
+      searchTiming: null,
+    });
   }
   closeSource(): void {
     this.update({ opened: null });
@@ -428,6 +437,29 @@ export class LibraryWorkspace {
       (opened) =>
         this.update({ opened, error: opened ? null : "source_unavailable" }),
     );
+  }
+  async openOriginal(
+    sourceId: string,
+    versionId: string,
+    deliver: (file: SavedOriginal) => Promise<void>,
+  ): Promise<boolean> {
+    let opened = false;
+    await this.perform(
+      async (signal) => {
+        const original = await this.client.original(
+          sourceId,
+          versionId,
+          signal,
+        );
+        if (signal.aborted) throw new LibraryClientError("cancelled");
+        if (!original) throw new LibraryClientError("source_unavailable");
+        await deliver(original);
+      },
+      () => {
+        opened = true;
+      },
+    );
+    return opened;
   }
   async delete(sourceId: string): Promise<void> {
     const generation = this.generation;

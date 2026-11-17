@@ -142,7 +142,8 @@ it("uses paragraph citations and renders saved DOCX text literally", async () =>
   expect(send).toHaveBeenCalledTimes(1);
   fireEvent.click(screen.getByRole("button", { name: "Search saved files" }));
   await screen.findByText(/Paragraphs 2 · extracted characters/);
-  fireEvent.click(screen.getByRole("button", { name: "Open guide.docx" }));
+  fireEvent.click(screen.getByRole("button", { name: "Preview guide.docx" }));
+  fireEvent.click(screen.getByRole("button", { name: "Read saved text" }));
   const reader = await screen.findByRole("dialog", { name: "guide.docx" });
   expect(
     within(reader).getByRole("heading", { name: "Paragraph 2" }),

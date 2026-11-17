@@ -27,6 +27,7 @@ ROUTES = {
     '/v1/search-previews': ({'query'}, {'limit'}),
     '/v1/status': ({'source_id'}, set()),
     '/v1/open': ({'source_id', 'version_id'}, set()),
+    '/v1/open-original': ({'source_id', 'version_id'}, set()),
     '/v1/delete': ({'source_id'}, set()),
     '/v1/list': (set(), {'limit','cursor'}),
     '/v1/model-status': (set(), set()),
@@ -72,12 +73,13 @@ def validate(path, value):
 
 class LibraryAPI:
     """Single-flight HTTP; trusted composition may attach a separate dispatcher."""
-    def __init__(self, session_factory, *, dispatcher=None, search_previews=False):
-        if not callable(session_factory) or type(search_previews) is not bool:
+    def __init__(self, session_factory, *, dispatcher=None, search_previews=False, file_previews=False):
+        if not callable(session_factory) or type(search_previews) is not bool or type(file_previews) is not bool:
             raise ValueError('invalid_configuration')
         self.factory = session_factory
         self.dispatcher = dispatcher
         self.search_previews = search_previews
+        self.file_previews = file_previews
         self.slot = threading.BoundedSemaphore(1)
         self.stopping = threading.Event()
         self._active = set()
@@ -131,7 +133,8 @@ class LibraryAPI:
         path = scope.get('path')
         if self.stopping.is_set():
             return await reply(503, {'error':'server_stopping'})
-        if path not in ROUTES or (path == '/v1/search-previews' and not self.search_previews):
+        if (path not in ROUTES or (path == '/v1/search-previews' and not self.search_previews)
+                or (path == '/v1/open-original' and not self.file_previews)):
             return await reply(404, {'error':'not_found'})
         if scope['method'] != 'POST':
             return await reply(405, {'error':'method_not_allowed'})
@@ -197,9 +200,12 @@ class LibraryAPI:
                 if cancel.is_set():
                     raise LibraryError('cancelled')
                 method = getattr(session, {'/v1/import':'import_text','/v1/list':'list_sources',
-                    '/v1/model-status':'model_status','/v1/search-previews':'search_previews'}.get(path, path[4:]))
+                    '/v1/model-status':'model_status','/v1/search-previews':'search_previews',
+                    '/v1/open-original':'open_original'}.get(path, path[4:]))
                 if path in (*SEARCH_ROUTES,'/v1/model-status'):
                     return method(**value, cancel=cancel)
+                if path == '/v1/list' and self.file_previews:
+                    return method(**value, include_previews=True)
                 return method(**value)
 
             async def disconnected():
@@ -245,6 +251,8 @@ class LibraryAPI:
                 return await reply(503, {'error':'operation_failed'})
             if path == '/v1/list' and self.search_previews:
                 result = dict(result, search_previews_enabled=True)
+            if path == '/v1/list' and self.file_previews:
+                result = dict(result, original_open_enabled=True)
             await reply(202 if path == '/v1/import' else 200, result)
         finally:
             cancel.set()

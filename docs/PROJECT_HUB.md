@@ -33,6 +33,7 @@ reload the full conversation or historical snapshots for routine coding.
 - [[docs/LIBRARY_API]], [[docs/LIBRARY_SESSION]], [[docs/SERVICE_CLIENTS]]
 - [[docs/SEARCH_AUTH_SCOPE]]: single Auth verification per search, request boundaries and observed timing
 - [[docs/SEARCH_PREVIEWS]]: compact result contract, deferred reader and rollout
+- [[docs/FILE_PREVIEWS]]: card previews, exact originals and Windows opening
 - [[docs/SEARCH_LATENCY]]: per-stage timings, bounded reuse and comparison
 - [[docs/SEARCH_ACCEPTANCE]]: native acceptance cases, hosted receipts and open relevance checks
 - [[docs/DESIGN_AVOID_LIST]], [[docs/DESIGN_DIRECTION]]

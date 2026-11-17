@@ -329,6 +329,32 @@
 .card-open:disabled h2 {
   color: #c9ced8;
 }
+.card-open:not(:disabled):hover h2,
+.result-preview-trigger:not(:disabled):hover .result-title {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+.result-preview-trigger {
+  padding: 0;
+}
+.result-excerpt.library-card-excerpt {
+  -webkit-line-clamp: 2;
+  margin-top: 10px;
+  color: var(--lib-muted);
+}
+.file-preview-excerpt {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 15px;
+  line-height: 1.65;
+  margin: 0 0 18px;
+}
+.file-preview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
 .ready-label,
 .pending-label {
   font-size: 12px;
@@ -384,10 +410,6 @@
   margin-bottom: 12px;
   font-size: 12px;
   line-height: 1.4;
-}
-.gather-library .result-open:not(:disabled) {
-  color: var(--lib-ink);
-  font-weight: 650;
 }
 .library-empty {
   padding: 56px 16px;

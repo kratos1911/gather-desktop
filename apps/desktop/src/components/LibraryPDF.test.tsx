@@ -227,8 +227,10 @@ it("shows a compact PDF preview of a late match and opens the cited page on dema
   expect(screen.queryByRole("dialog")).toBeNull();
   expect(send).toHaveBeenCalledTimes(2);
   fireEvent.click(
-    within(result).getByRole("button", { name: "Open guide.pdf" }),
+    within(result).getByRole("button", { name: "Preview guide.pdf" }),
   );
+  expect(send).toHaveBeenCalledTimes(2);
+  fireEvent.click(screen.getByRole("button", { name: "Read saved text" }));
   const reader = await screen.findByRole("dialog", { name: "guide.pdf" });
   expect(within(reader).getByRole("heading", { name: "Page 2" })).toBeTruthy();
   expect(JSON.parse(send.mock.calls[2][1]?.body as string)).toEqual({

@@ -12,7 +12,7 @@ from services.worker.service_clients import SessionClient
 from services.worker.service_transport import TransportError
 from services.worker.source_listing import parameters, page
 from services.worker.model_availability import MODEL_HTTP, status_reply
-from services.worker.document_metadata import enrich_published
+from services.worker.document_metadata import checked_original, enrich_published
 
 
 class LibraryError(Exception):
@@ -109,10 +109,11 @@ class LibrarySession:
     def _model_status(self, owner, *, cancel):
         return self._provider.check_ready(cancel=cancel)
 
-    def list_sources(self, *, limit=20, cursor=None):
+    def list_sources(self, *, limit=20, cursor=None, include_previews=False):
         self._owner()
         try:
-            rows = self._api('POST','/rest/v1/rpc/list_library_sources_with_recovery',parameters(limit,cursor))
+            name = 'list_library_file_previews' if include_previews else 'list_library_sources_with_recovery'
+            rows = self._api('POST','/rest/v1/rpc/'+name,parameters(limit,cursor))
             return page(rows,limit,cursor)
         except Exception:
             raise LibraryError('library_unavailable') from None
@@ -124,6 +125,13 @@ class LibrarySession:
             return attach_original(self._api,source_id,version_id,
                 enrich_published(self._api,source_id,version_id,documents))
         except Exception: raise LibraryError('library_operation_failed') from None
+
+    def open_original(self, source_id, version_id):
+        original = self._rpc('read_published_original', {'p_source': source_id, 'p_version': version_id})
+        try:
+            return checked_original(source_id, version_id, original)
+        except Exception:
+            raise LibraryError('library_operation_failed') from None
 
     def delete(self, source_id):
         # Tombstone now; durable cleanup removes original/derivatives separately.

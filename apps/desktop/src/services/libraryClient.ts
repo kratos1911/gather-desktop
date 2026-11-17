@@ -28,6 +28,11 @@ export type DocumentMedia =
   | "application/pdf"
   | typeof DOCX_MEDIA
   | ImageMedia;
+export type SavedOriginal = {
+  title: string;
+  media: DocumentMedia;
+  bytes: Uint8Array<ArrayBuffer>;
+};
 export type ImportReceipt = {
   source_id: string;
   version_id: string;
@@ -54,6 +59,7 @@ export type LibrarySource = {
   attempts: number | null;
   error_code: string | null;
   can_resume?: boolean;
+  preview?: string | null;
 };
 export type SourcePage = {
   items: LibrarySource[];
@@ -63,6 +69,7 @@ export type SourcePage = {
   docx_enabled?: boolean;
   image_enabled?: boolean;
   search_previews_enabled?: boolean;
+  original_open_enabled?: boolean;
 };
 export type SearchWindow = {
   source_id: string;
@@ -600,6 +607,15 @@ export class LibraryClient {
           ? {}
           : { can_resume: value.can_resume as boolean }),
       };
+      if (value.preview !== undefined) {
+        const preview = value.preview === null ? null : text(value.preview);
+        if (
+          preview !== null &&
+          (!source.published_version_id || Array.from(preview).length > 240)
+        )
+          throw new LibraryClientError("invalid_response");
+        source.preview = preview?.trim() ? preview : null;
+      }
       if (
         (value.can_resume !== undefined &&
           typeof value.can_resume !== "boolean") ||
@@ -644,7 +660,9 @@ export class LibraryClient {
       (result.image_enabled !== undefined &&
         typeof result.image_enabled !== "boolean") ||
       (result.search_previews_enabled !== undefined &&
-        typeof result.search_previews_enabled !== "boolean")
+        typeof result.search_previews_enabled !== "boolean") ||
+      (result.original_open_enabled !== undefined &&
+        typeof result.original_open_enabled !== "boolean")
     )
       throw new LibraryClientError("invalid_response");
     return {
@@ -663,6 +681,9 @@ export class LibraryClient {
       ...(result.search_previews_enabled === undefined
         ? {}
         : { search_previews_enabled: result.search_previews_enabled }),
+      ...(result.original_open_enabled === undefined
+        ? {}
+        : { original_open_enabled: result.original_open_enabled }),
     };
   }
 
@@ -760,6 +781,56 @@ export class LibraryClient {
         return { source_id: id(value.source_id), reason: text(value.reason) };
       }),
     };
+  }
+
+  async original(
+    sourceId: string,
+    versionId: string,
+    signal?: AbortSignal,
+  ): Promise<SavedOriginal | null> {
+    const generation = this.generation;
+    const reply = await this.request(
+      "open-original",
+      { source_id: id(sourceId), version_id: id(versionId) },
+      signal,
+    );
+    if (reply === null) return null;
+    const value = record(reply);
+    const title = text(value.title);
+    const media = text(value.media_type) as DocumentMedia;
+    const encoded = text(value.content_base64);
+    if (
+      value.source_id !== sourceId ||
+      value.version_id !== versionId ||
+      !title.trim() ||
+      Array.from(title).length > 500 ||
+      ![
+        "text/plain",
+        "text/markdown",
+        "application/pdf",
+        DOCX_MEDIA,
+        "image/png",
+        "image/jpeg",
+      ].includes(media) ||
+      encoded.length < 4 ||
+      encoded.length > 87384 ||
+      encoded.length % 4 !== 0 ||
+      !/^[A-Za-z0-9+/]+={0,2}$/.test(encoded)
+    )
+      throw new LibraryClientError("invalid_response");
+    const bytes = Uint8Array.from(atob(encoded), (char) => char.charCodeAt(0));
+    if (bytes.length < 1 || bytes.length > 65536)
+      throw new LibraryClientError("invalid_response");
+    const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
+    if (generation !== this.generation || signal?.aborted)
+      throw new LibraryClientError("cancelled");
+    if (
+      Array.from(digest, (byte) => byte.toString(16).padStart(2, "0")).join(
+        "",
+      ) !== value.source_sha256
+    )
+      throw new LibraryClientError("invalid_response");
+    return { title, media, bytes };
   }
 
   async open(

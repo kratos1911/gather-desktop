@@ -39,6 +39,11 @@ query cache. A small hosted comparison verified faster cache hits. Cold model
 startup and both proposed p95 targets remain open. The latest local build adds
 desktop timing. See [search latency](SEARCH_LATENCY.md).
 
+The current Windows build shows short excerpts from list or search data.
+Card preview makes zero additional requests. **Open original** fetches the
+exact cloud version and opens a copy in Downloads → Gather. The live synthetic
+Markdown check passed. See [file previews](FILE_PREVIEWS.md).
+
 Point 4 exercised the rebuilt Windows client against that deployment. Native
 NLP preview/open, retry, deletion and quota restoration passed. An absent-topic
 query returned an irrelevant note. The active correction uses shared content

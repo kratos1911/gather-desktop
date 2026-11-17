@@ -10,6 +10,10 @@ import {
 import App from "../App";
 import Library from "./Library";
 import { signInPilot } from "../services/pilotAuth";
+import { openSavedOriginal } from "../services/openSavedOriginal";
+vi.mock("../services/openSavedOriginal", () => ({
+  openSavedOriginal: vi.fn(),
+}));
 vi.mock("../services/pilotAuth", async (original) => ({
   ...(await original<object>()),
   signInPilot: vi.fn(),
@@ -167,7 +171,9 @@ describe("unified authenticated library (synthetic HTTP fixtures)", () => {
     expect(screen.getAllByRole("textbox")).toHaveLength(1);
     expect(screen.queryByText("Operator pilot")).toBeNull();
     expect(screen.queryByText("The art of remembering")).toBeNull();
-    expect(screen.getByRole("button", { name: "Open notes.md" })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Preview notes.md" }),
+    ).toBeTruthy();
     fireEvent.change(screen.getByLabelText("Search your library"), {
       target: { value: "How long are backups kept?" },
     });
@@ -182,7 +188,9 @@ describe("unified authenticated library (synthetic HTTP fixtures)", () => {
       "How long are backups kept?",
     );
     expect(screen.getByText(/Characters 0–/)).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Open notes.md" }));
+    fireEvent.click(screen.getByRole("button", { name: "Preview notes.md" }));
+    expect(send).toHaveBeenCalledTimes(2);
+    fireEvent.click(screen.getByRole("button", { name: "Read saved text" }));
     const reader = await screen.findByRole("dialog", { name: "notes.md" });
     expect(
       within(reader).getByLabelText("Saved document text").textContent,
@@ -201,7 +209,9 @@ describe("unified authenticated library (synthetic HTTP fixtures)", () => {
       screen.getByRole("button", { name: "Delete file permanently" }),
     );
     await screen.findByText(/Deletion complete/);
-    expect(screen.queryByRole("button", { name: "Open notes.md" })).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "Preview notes.md" }),
+    ).toBeNull();
     expect(
       send.mock.calls.map(([url]) => new URL(String(url)).pathname),
     ).toEqual([
@@ -211,6 +221,62 @@ describe("unified authenticated library (synthetic HTTP fixtures)", () => {
       "/v1/delete",
       "/v1/cleanup",
     ]);
+  });
+  it("shows a listing excerpt locally and opens verified original bytes only on request", async () => {
+    const raw = new TextEncoder().encode("\ufeffExact saved text.\r\n");
+    const digest = vi
+      .fn()
+      .mockResolvedValue(new Uint8Array(32).fill(0x27).buffer);
+    const excerpt = "Exact saved text.";
+    const send = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(
+        reply({
+          items: [{ ...source, preview: excerpt }],
+          next_cursor: null,
+          original_open_enabled: true,
+        }),
+      )
+      .mockResolvedValueOnce(
+        reply({
+          source_id: ID,
+          version_id: ID,
+          title: source.title,
+          media_type: "text/markdown",
+          source_sha256: "27".repeat(32),
+          content_base64: btoa(String.fromCharCode(...raw)),
+        }),
+      );
+    setup(send);
+    vi.stubGlobal("crypto", { subtle: { digest } });
+    vi.mocked(openSavedOriginal).mockResolvedValue(undefined);
+    render(<Library />);
+    await login();
+    const card = screen.getByRole("button", { name: "Preview notes.md" });
+    expect(within(card).getByText(excerpt)).toBeTruthy();
+    fireEvent.click(card);
+    const preview = screen.getByRole("dialog", { name: "notes.md" });
+    expect(within(preview).getByText(excerpt)).toBeTruthy();
+    expect(send).toHaveBeenCalledTimes(1);
+    expect(openSavedOriginal).not.toHaveBeenCalled();
+    fireEvent.click(
+      within(preview).getByRole("button", { name: "Open original" }),
+    );
+    await waitFor(() =>
+      expect(openSavedOriginal).toHaveBeenCalledWith({
+        title: source.title,
+        media: "text/markdown",
+        bytes: Uint8Array.from(raw),
+      }),
+    );
+    expect(digest).toHaveBeenCalledTimes(1);
+    expect(digest.mock.calls[0][0]).toBe("SHA-256");
+    expect(Array.from(digest.mock.calls[0][1] as Uint8Array)).toEqual(
+      Array.from(raw),
+    );
+    expect(
+      send.mock.calls.map(([url]) => new URL(String(url)).pathname),
+    ).toEqual(["/v1/list", "/v1/open-original"]);
   });
   it("adds reviewed files to the same grid and updates them after automatic processing, without inference on typing", async () => {
     const send = vi
@@ -304,7 +370,7 @@ describe("unified authenticated library (synthetic HTTP fixtures)", () => {
     expect(
       (
         screen.getByRole("button", {
-          name: "Open waiting.txt",
+          name: "Preview waiting.txt",
         }) as HTMLButtonElement
       ).disabled,
     ).toBe(true);
@@ -313,13 +379,15 @@ describe("unified authenticated library (synthetic HTTP fixtures)", () => {
     ).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Markdown" }));
     expect(
-      screen.queryByRole("button", { name: "Open waiting.txt" }),
+      screen.queryByRole("button", { name: "Preview waiting.txt" }),
     ).toBeNull();
     view.unmount();
     render(<Library />);
     expect(screen.queryByText("notes.md")).toBeNull();
     await login();
-    expect(screen.getByRole("button", { name: "Open notes.md" })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Preview notes.md" }),
+    ).toBeTruthy();
     expect(send).toHaveBeenCalledTimes(2);
   });
   it("discards late search data on sign-out and exposes readiness only under account settings", async () => {

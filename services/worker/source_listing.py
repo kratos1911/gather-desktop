@@ -51,7 +51,11 @@ def page(rows,limit=MAX_PAGE,cursor=None):
         raise ValueError('invalid_listing')
     previous = position(cursor)
     for row in rows:
-        if type(row) is not dict or set(row) not in (FIELDS,FIELDS|{'can_resume'}):
+        if type(row) is not dict or set(row)-{'preview','can_resume'} != FIELDS:
+            raise ValueError('invalid_listing')
+        preview = row.get('preview')
+        if preview is not None and (type(preview) is not str or not 1 <= len(preview) <= 240
+                                   or row['published_version_id'] is None):
             raise ValueError('invalid_listing')
         if 'can_resume' in row and (type(row['can_resume']) is not bool or
             (row['can_resume'] and (row['state'] not in ('queued','processing') or

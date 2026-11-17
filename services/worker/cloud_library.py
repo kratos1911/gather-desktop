@@ -75,6 +75,7 @@ def main():
             early_prepare=os.environ.get('GATHER_EARLY_MODEL_START')=='1',
             record_timings=os.environ.get('GATHER_PIPELINE_TIMING')=='1',query_cache=query_cache,
             search_previews=os.environ.get('GATHER_SEARCH_PREVIEWS')=='1',
+            file_previews=os.environ.get('GATHER_FILE_PREVIEWS')=='1',
             reuse_search_http=os.environ.get('GATHER_SEARCH_HTTP_REUSE')=='1',
             record_search=search_log if os.environ.get('GATHER_SEARCH_TIMING')=='1' else None)
         create_cloud_server(app,os.environ).run()

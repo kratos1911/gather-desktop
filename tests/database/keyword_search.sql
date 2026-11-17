@@ -35,8 +35,21 @@ select pg_temp.fixture('00000000-0000-0000-0000-000000000701','Cedar unpublished
 select pg_temp.fixture('00000000-0000-0000-0000-000000000701','Cedar deleted text.') as sid \gset deleted_
 select set_config('request.jwt.claim.sub','00000000-0000-0000-0000-000000000701',true);
 select public.request_source_deletion(:'deleted_sid');
+select version_id as vid from gather_private.published_sources where source_id=:'own_sid'::uuid \gset own_
+select version_id as vid from gather_private.published_sources where source_id=:'foreign_sid'::uuid \gset foreign_
+select version_id as vid from gather_private.published_sources where source_id=:'second_sid'::uuid \gset second_
 select to_jsonb(array[0,1]||array_fill(0,array[254]))::text as vector \gset
 set local role authenticated;
+select pg_temp.assert_true((select count(*)=3 and count(preview)=2 and max(length(preview))=240
+  and bool_and(source_id not in (:'foreign_sid'::uuid,:'deleted_sid'::uuid))
+  from public.list_library_file_previews()),'library excerpts are bounded to owned publications');
+select pg_temp.assert_true((select preview is null from public.list_library_file_previews()
+  where source_id=:'draft_sid'::uuid),'unpublished source has no excerpt');
+select pg_temp.assert_true((public.read_published_original(:'own_sid',:'own_vid')->>'content_base64') =
+  encode(convert_to('Archive requests belong in the Cedar queue.','UTF8'),'base64'),
+  'explicit open returns exact immutable original bytes');
+select pg_temp.assert_true(public.read_published_original(:'foreign_sid',:'foreign_vid') is null
+  and public.read_published_original(:'own_sid',:'second_vid') is null,'foreign and mismatched original reads return no data');
 select pg_temp.assert_true((select count(*)=2 and bool_and(similarity=0) from public.search_published_keywords('cedar',:'vector','synthetic','v1',256)),'exact word survives zero cosine; drafts, deleted and foreign rows hidden');
 select pg_temp.assert_true((select count(*)=2 from public.search_published_keywords('CEDAR',:'vector','synthetic','v1',256)),'case-insensitive matching');
 select pg_temp.assert_true((select count(*)=0 from public.search_published_keywords('cedars',:'vector','synthetic','v1',256)),'whole tokens, not substring matching');
@@ -68,18 +81,28 @@ select set_config('request.jwt.claim.sub','',true);
 select pg_temp.expect_error(format('select * from public.search_published_keywords(%L,%L,%L,%L,256)','cedar',:'vector','synthetic','v1'),'42501','missing identity denied');
 select pg_temp.expect_error(format('select public.search_published_previews(%L,%L,%L,%L,256)','cedar',:'vector','synthetic','v1'),'42501','preview requires an identity');
 set local role anon;
+select pg_temp.expect_error('select * from public.list_library_file_previews()','42501','anonymous library excerpts denied');
+select pg_temp.expect_error(format('select public.read_published_original(%L,%L)',:'own_sid',:'own_vid'),'42501','anonymous original denied');
 select pg_temp.expect_error(format('select * from public.search_published_keywords(%L,%L,%L,%L,256)','cedar',:'vector','synthetic','v1'),'42501','anonymous execution denied');
 select pg_temp.expect_error(format('select public.search_published_previews(%L,%L,%L,%L,256)','cedar',:'vector','synthetic','v1'),'42501','anonymous preview execution denied');
 reset role;
 select pg_temp.fixture('00000000-0000-0000-0000-000000000701','Orchard replaces the old note.',false,:'own_sid');
 set local role authenticated;
 select pg_temp.assert_true((select count(*)=2 from public.search_published_keywords('cedar',:'vector','synthetic','v1',256)),'replacement staging preserves previous publication');
+select pg_temp.assert_true((select preview='Archive requests belong in the Cedar queue.'
+  from public.list_library_file_previews() where source_id=:'own_sid'::uuid),'queued replacement preserves the published excerpt');
 reset role;
 select pg_temp.fixture('00000000-0000-0000-0000-000000000701','Orchard replaces the old note.',true,:'own_sid');
 set local role authenticated;
 select pg_temp.assert_true((select count(*)=1 from public.search_published_keywords('cedar',:'vector','synthetic','v1',256)),'activated replacement hides old keyword text');
 select pg_temp.assert_true(jsonb_array_length(public.search_published_previews('cedar',:'vector','synthetic','v1',256)->'keywords')=1,'replacement hides old keyword preview');
+select pg_temp.assert_true(public.read_published_original(:'own_sid',:'own_vid') is null
+  and (select preview='Orchard replaces the old note.' from public.list_library_file_previews()
+       where source_id=:'own_sid'::uuid),'replacement swaps the excerpt and closes the old original');
 select public.request_source_deletion(:'second_sid');
 select pg_temp.assert_true((select count(*)=0 from public.search_published_keywords('cedar',:'vector','synthetic','v1',256)),'deletion hides an existing keyword hit immediately');
 select pg_temp.assert_true(jsonb_array_length(public.search_published_previews('cedar',:'vector','synthetic','v1',256)->'keywords')=0,'deletion hides an existing keyword preview');
+select pg_temp.assert_true(public.read_published_original(:'second_sid',:'second_vid') is null
+  and not exists(select 1 from public.list_library_file_previews() where source_id=:'second_sid'::uuid),
+  'deletion hides the original and the library excerpt immediately');
 rollback;

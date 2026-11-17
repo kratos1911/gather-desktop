@@ -1,5 +1,6 @@
 """Actual loopback HTTP; simulated Auth/database/vectors, no cloud calls."""
 import base64
+from hashlib import sha256
 import http.client
 import json
 import socket
@@ -22,6 +23,7 @@ class HTTPTests(unittest.TestCase):
         self.vid = self.data.docs[self.sid][0]['version_id']
         self.calls = []
         self.deleted = False
+        self.original = '\ufeffSaved original\r\n'.encode()
         self.repo = Mock()
         self.repo.call.return_value = {'source_id': self.sid, 'version_id': self.vid,
                                       'job_id': OWNER, 'state':'queued'}
@@ -33,6 +35,15 @@ class HTTPTests(unittest.TestCase):
                     if token not in ('test-a','test-b'):
                         raise ValueError('secret token')
                     return {'id':OWNER}
+                if path.endswith('/read_published_original'):
+                    if (token != 'test-a' or self.deleted or payload != {
+                            'p_source': self.sid, 'p_version': self.vid}):
+                        return None
+                    return {'source_id':self.sid,'version_id':self.vid,'title':'Original.md',
+                            'media_type':'text/markdown','source_sha256':sha256(self.original).hexdigest(),
+                            'content_base64':base64.b64encode(self.original).decode()}
+                if path.endswith('/list_library_file_previews'):
+                    return [dict(row, preview='Saved original') for row in self.data.listing] if token == 'test-a' else []
                 if token == 'test-b' or self.deleted:
                     return []
                 if path.endswith('source_processing_status_with_recovery'):
@@ -91,6 +102,23 @@ class HTTPTests(unittest.TestCase):
         self.assertEqual(self.request('/v1/import',{'user_id':OWNER})[0],400)
         self.repo.call.assert_not_called()
         self.assertEqual(self.provider.calls,[])
+
+    def test_file_preview_and_original_require_capability_and_exact_owned_version(self):
+        target = {'source_id':self.sid, 'version_id':self.vid}
+        self.assertEqual(self.request('/v1/open-original',target)[0],404)
+        self.app.file_previews = True
+        status, page = self.request('/v1/list',{'limit':20})
+        self.assertEqual(status,200)
+        self.assertTrue(page['original_open_enabled'])
+        self.assertEqual(page['items'][0]['preview'],'Saved original')
+        self.assertNotIn('content_base64',page['items'][0])
+        self.assertFalse(any(path.endswith('read_published_original') for _, path in self.calls))
+        status, reply = self.request('/v1/open-original',target)
+        self.assertEqual(status,200)
+        self.assertEqual(base64.b64decode(reply['content_base64']),self.original)
+        self.assertEqual(self.request('/v1/open-original',target,token='test-b'),(200,None))
+        self.assertEqual(self.request('/v1/open-original',dict(target,version_id=OWNER)),(200,None))
+        self.assertFalse(self.provider.calls)
 
     def test_origin_host_public_bind_and_dependency_guards(self):
         for headers in ({'Origin':'https://evil.invalid'}, {'Host':'evil.invalid'}):

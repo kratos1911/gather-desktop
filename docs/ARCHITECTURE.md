@@ -56,6 +56,9 @@ do not grant access.
    documents or permissions. See [query cache](QUERY_EMBEDDING_CACHE.md).
 4. Open: requested source/version must still be owned, published and unchanged;
    never redirect an old citation silently to a replacement.
+   Card previews reuse text from the current results or owned list. Explicit
+   original fetch verifies the saved version before Windows opens a copy.
+   See [file previews](FILE_PREVIEWS.md).
 5. Delete: tombstone immediately hides content; an authenticated owner-scoped
    cleanup wrapper removes originals/derivatives/jobs after guards pass and
    returns confirmed completion. Pending cleanup restores on reconnect. A minimal

@@ -3,6 +3,14 @@
 Current state is in [MEMORY](MEMORY.md); current tasks are in [TASKS](../TASKS.md).
 This journal records concise dated evidence once, not replicated status prefixes.
 
+## 17 November 2026: instant card previews and exact originals
+
+Added bounded listing excerpts, a short preview on card click and explicit
+original opening via the Windows default app. Passed 84 frontend, 51 backend
+and 31 SQL checks. Applied the approved migration and API rollout. The live
+Markdown preview made zero requests, and one original fetch opened a
+byte-matching copy in VS Code. Updated the Gather shortcut. See [file previews](FILE_PREVIEWS.md).
+
 ## 17 November 2026: unrelated search candidate rejection
 
 Added content-term corroboration for weaker semantic hits in both hybrid
